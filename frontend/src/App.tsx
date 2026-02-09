@@ -1,34 +1,42 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import quizzieLogo from './assets/logo-sidebar.png' 
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
+      
+      <aside className="sidebar">
+        <div className="sidebar-header">
+           <img src={quizzieLogo} alt="Quizzie Logo" className="sidebar-logo" />
+        </div>
+        <nav className="sidebar-nav">
+          <div className="nav-item active">Inicio</div>
+          <div className="nav-item">Cuestionarios</div>
+          <div className="nav-item">Ajustes</div>
+        </nav>
+      </aside>
+
+      <button 
+        className="sidebar-toggle-btn" 
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        title={sidebarOpen ? "Cerrar menú" : "Abrir menú"}
+      >
+        {sidebarOpen ? 'X' : '☰'}
+      </button>
+
+      <div className="mobile-overlay" onClick={() => setSidebarOpen(false)}></div>  
+      <main className="main-content">
+        <div className="content-body">
+          <h1>¡Bienvenido a Quizzie!</h1>
+          <p>
+            ¿Estás preparado para poner a prueba tus conocimientos?
+          </p>
+        </div>
+      </main>
+    </div>
   )
 }
 

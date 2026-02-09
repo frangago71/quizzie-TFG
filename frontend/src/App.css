@@ -1,42 +1,223 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
+  --sidebar-width: 250px;
+  --header-height: 60px;
+
+  --primary-cyan: #55ccaa;
+  --primary-magenta: #bc00a1;
+  --secondary-cyan: #007976;
+  --secondary-magenta: #661465; 
+
+  --color-white: #ffffff;
+  --bg-light: #ffffff;
+  --bg-dark: #242424;
+
+  --text-dark: rgba(0, 0, 0, 0.87);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-light);
+  position: relative;
+}
+
+.sidebar {
+  width: 0;
+  height: 100%;
+  background-color: var(--primary-cyan);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.menu-open .sidebar {
+  width: var(--sidebar-width);
+  opacity: 1;
+  padding: 20px 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  min-height: 40px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.sidebar-logo {
+  max-width: 185px;
+  height: auto;
+  object-fit: contain;
+}
+
+.sidebar-nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  width: 100%;
+  padding: 15px 25px;
+  cursor: pointer;
+  border-radius: 0;
+  margin-bottom: 0;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  border-left: 4px solid transparent;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding-left: 21px;
+}
+
+.sidebar-toggle-btn {
+  position: absolute;
+  z-index: 2000;
+  top: 15px;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  background-color: var(--primary-cyan); 
+  color: white;
+  
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  font-size: 1.2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: var(--color-white);
+  border: 2px solid var(--secondary-cyan);
+  color: var(--secondary-cyan);
+  transform: scale(1.05);
+}
+
+.menu-open .sidebar-toggle-btn {
+  top: 10px;
+  left: calc(var(--sidebar-width) - 15px);
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  background-color: transparent;
+  color: var(--color-white);
+}
+
+.menu-open .sidebar-toggle-btn:hover {
+  transform: translateX(-50%) scale(1.1);
+  background-color: var(--color-white);
+  color: var(--secondary-cyan);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--text-dark); 
+}
+
+.content-body {
+  padding: 4rem 2rem 2rem 2rem;
+  overflow-y: auto;
+  flex: 1;
   text-align: center;
+  color: var(--text-dark);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 768px) {
+  
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    width: 250px !important;
+    transform: translateX(-100%);
+    opacity: 1;
+    padding: 20px 0;
   }
-  to {
-    transform: rotate(360deg);
+
+  .menu-open .sidebar {
+    width: var(--sidebar-width);
+    opacity: 1;
+    transform: translateX(0);
+    padding: 20px 0;
+  }
+
+  .sidebar-toggle-btn {
+    top: 15px;
+    left: 15px;
+    background-color: var(--primary-cyan); 
+  }
+
+  .menu-open .sidebar-toggle-btn {
+    top: 20px;
+    left: 250px;
+  }
+
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .menu-open .mobile-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .content-body {
+    padding: 5rem 1rem 2rem 1rem; 
+    
+    width: 100%;
+    overflow-wrap: break-word; 
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (min-width: 769px) {
+  .mobile-overlay {
+    display: none;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
