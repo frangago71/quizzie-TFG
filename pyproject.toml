@@ -34,3 +34,8 @@ questions = [
     { type = "confirm", name = "is_breaking_change", message = "Is this a BREAKING CHANGE?" },
     { type = "input", name = "footer", message = "Footer (e.g., Closes #12):" }
 ]
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.13.7",
+]
