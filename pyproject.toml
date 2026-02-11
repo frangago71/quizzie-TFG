@@ -1,0 +1,36 @@
+[tool.commitizen]
+name = "cz_customize" 
+version = "0.0.0"     
+tag_format = "v$version"
+version_files = [
+    "frontend/package.json:version"
+]
+
+[tool.commitizen.customize]
+message_template = "{{change_type}}({{scope}}): {{subject}}"
+example = "feat(ui): cool new feature"
+schema = "<type>(<scope>): <subject>"
+
+bump_pattern = "^(BREAKING CHANGE|feat|fix)"
+bump_map = {"BREAKING CHANGE" = "MAJOR", "feat" = "MINOR", "fix" = "PATCH"}
+
+questions = [
+    { type = "list", name = "change_type", message = "Select the type of change you are committing", choices = [
+        {value = "feat", name = "feat:     A new feature (MINOR)"},
+        {value = "fix", name = "fix:      A bug fix (PATCH)"},
+        {value = "docs", name = "docs:     Documentation only changes"},
+        {value = "style", name = "style:    Changes that do not affect the meaning of the code"},
+        {value = "refactor", name = "refactor:  A code change that neither fixes a bug nor adds a feature"},
+        {value = "perf", name = "perf:      A code change that improves performance"},
+        {value = "test", name = "test:      Adding missing or correcting existing tests"},
+        {value = "build", name = "build:    Changes that affect the build system or external dependencies"},
+        {value = "ci", name = "ci:        Changes to CI configuration files and scripts"},
+        {value = "chore", name = "chore:     Other changes that don't modify src or test files"},
+        {value = "revert", name = "revert:    Reverts a previous commit"}
+    ]},
+    { type = "input", name = "scope", message = "Scope (optional):" },
+    { type = "input", name = "subject", message = "Subject (short description):" },
+    { type = "input", name = "body", message = "Body (long description, optional):" },
+    { type = "confirm", name = "is_breaking_change", message = "Is this a BREAKING CHANGE?" },
+    { type = "input", name = "footer", message = "Footer (e.g., Closes #12):" }
+]
