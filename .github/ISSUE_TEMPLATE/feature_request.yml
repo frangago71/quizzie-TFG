@@ -2,6 +2,13 @@ name: Feature request
 description: Task for implementing specific Functional Requirements (FR).
 body:
   - type: input
+    id: references
+    attributes:
+      label: Related Functional Requirement
+      placeholder: "e.g., RF-22(#31)"
+    validations:
+      required: true
+  - type: input
     id: obj_id
     attributes:
       label: Related objective
