@@ -1,0 +1,27 @@
+name: Feature request
+description: Task for implementing specific Functional Requirements (FR).
+body:
+  - type: input
+    id: obj_id
+    attributes:
+      label: Related objective
+      placeholder: "e.g., OBJ-05"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: "Explain the technical implementation logic..."
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ] Logic implemented according to specifications.
+        - [ ] Unit tests passed.
+        - [ ] Documentation updated.
+    validations:
+      required: true

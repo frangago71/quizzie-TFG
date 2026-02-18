@@ -1,0 +1,32 @@
+name: Infrastructure & DevOps
+description: Environment setup, deployment, and database management.
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Task category
+      options:
+        - Deployment
+        - Database migration
+        - CI/CD configuration
+        - Environment setup
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: actions
+    attributes:
+      label: Actions to perform
+      placeholder: "Detail the technical steps for this infrastructure task..."
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification steps
+      value: |
+        - [ ] Process executed in the target environment.
+        - [ ] Connectivity and logs verified.
+        - [ ] Backup or rollback plan confirmed (if applicable).
+    validations:
+      required: true

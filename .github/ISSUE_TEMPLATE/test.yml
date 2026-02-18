@@ -1,0 +1,27 @@
+name: Testing task
+description: Plan and implementation of test cases.
+body:
+  - type: checkboxes
+    id: test_type
+    attributes:
+      label: Test Category
+      options:
+        - label: Unit testing
+        - label: Integration testing
+        - label: E2E testing
+        - label: Manual QA
+        - label: Other
+  - type: input
+    id: references
+    attributes:
+      label: Related Functional Requirements and issues
+      placeholder: "e.g., RF-22(#31)"
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: Test plan
+      placeholder: "Describe scenarios and expected results..."
+    validations:
+      required: true

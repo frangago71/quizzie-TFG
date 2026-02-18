@@ -1,0 +1,34 @@
+name: Documentation
+description: Tasks related to TFG memory, technical specifications, or README.
+body:
+  - type: input
+    id: section
+    attributes:
+      label: Memory section / Document
+      placeholder: "e.g., Chapter 4: System Design"
+    validations:
+      required: true
+  - type: input
+    id: obj_ref
+    attributes:
+      label: Related objectives
+      placeholder: "e.g., OBJ-01, OBJ-02"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope of work
+      placeholder: "Describe the content to be written or the diagrams to be created..."
+    validations:
+      required: true
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Deliverables
+      value: |
+        - [ ] Text drafted and reviewed.
+        - [ ] Diagrams or visual assets included.
+        - [ ] Consistency check with previous chapters.
+    validations:
+      required: true
