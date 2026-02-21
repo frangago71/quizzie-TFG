@@ -1,3 +1,15 @@
+[project]
+name = "quizzie-tfg"
+version = "0.1.0"
+description = "Proyecto para mi TFG"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.128.0",
+    "sqlmodel>=0.0.32",
+    "uvicorn>=0.40.0",
+]
+
 [tool.commitizen]
 name = "cz_customize" 
 version = "0.0.0"     
@@ -7,7 +19,7 @@ version_files = [
 ]
 
 [tool.commitizen.customize]
-message_template = "{{change_type}}({{scope}}): {{subject}}"
+message_template = "{{change_type}}{% if scope %}({{scope}}){% endif %}: {{subject}}"
 example = "feat(ui): cool new feature"
 schema = "<type>(<scope>): <subject>"
 
@@ -31,7 +43,7 @@ questions = [
     { type = "input", name = "scope", message = "Scope (optional):" },
     { type = "input", name = "subject", message = "Subject (short description):" },
     { type = "input", name = "body", message = "Body (long description, optional):" },
-    { type = "confirm", name = "is_breaking_change", message = "Is this a BREAKING CHANGE?" },
+    { type = "confirm", name = "is_breaking_change", message = "Is this a BREAKING CHANGE?", default=false },
     { type = "input", name = "footer", message = "Footer (e.g., Closes #12):" }
 ]
 
