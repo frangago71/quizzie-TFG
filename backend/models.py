@@ -9,7 +9,7 @@ class Teacher(SQLModel, table=True):
     
     quizzes: List["Quiz"] = Relationship(back_populates="teacher")
     groups: List["Group"] = Relationship(back_populates="teacher")
-    sessions: List["Session"] = Relationship(back_populates="teacher")
+    rooms: List["Room"] = Relationship(back_populates="teacher")
 
 class Group(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -18,15 +18,15 @@ class Group(SQLModel, table=True):
     teacher_id: int = Field(foreign_key="teacher.id")
     teacher: Teacher = Relationship(back_populates="groups")
     
-    sessions: List["Session"] = Relationship(back_populates="group")
+    rooms: List["Room"] = Relationship(back_populates="group")
     nicknames: List["Nickname"] = Relationship(back_populates="group")
 
 class Nickname(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     
-    session_id: Optional[int] = Field(default=None, foreign_key="session.id")
-    session: Optional["Session"] = Relationship(back_populates="nicknames")
+    room_id: Optional[int] = Field(default=None, foreign_key="room.id")
+    room: Optional["Room"] = Relationship(back_populates="nicknames")
     
     group_id: Optional[int] = Field(default=None, foreign_key="group.id")
     group: Optional["Group"] = Relationship(back_populates="nicknames")
@@ -42,7 +42,7 @@ class Quiz(SQLModel, table=True):
     teacher: Teacher = Relationship(back_populates="quizzes")
     
     questions: List["Question"] = Relationship(back_populates="quiz")
-    sessions: List["Session"] = Relationship(back_populates="quiz")
+    rooms: List["Room"] = Relationship(back_populates="quiz")
 
 class Question(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -61,29 +61,29 @@ class Answer(SQLModel, table=True):
     question_id: int = Field(foreign_key="question.id")
     question: Question = Relationship(back_populates="answers")
 
-class Session(SQLModel, table=True):
+class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     join_code: str = Field(unique=True)
     is_active: bool = Field(default=True)
     
     teacher_id: int = Field(foreign_key="teacher.id")
-    teacher: "Teacher" = Relationship(back_populates="sessions")
+    teacher: "Teacher" = Relationship(back_populates="rooms")
     
     quiz_id: int = Field(foreign_key="quiz.id")
-    quiz: "Quiz" = Relationship(back_populates="sessions")
+    quiz: "Quiz" = Relationship(back_populates="rooms")
     
     group_id: Optional[int] = Field(default=None, foreign_key="group.id")
-    group: Optional["Group"] = Relationship(back_populates="sessions")
+    group: Optional["Group"] = Relationship(back_populates="rooms")
 
-    nicknames: List["Nickname"] = Relationship(back_populates="session")
-    results: List["StudentResult"] = Relationship(back_populates="session")
+    nicknames: List["Nickname"] = Relationship(back_populates="room")
+    results: List["StudentResult"] = Relationship(back_populates="room")
 
 class StudentResult(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     score: int = Field(default=0)
     
-    session_id: int = Field(foreign_key="session.id")
-    session: Session = Relationship(back_populates="results")
+    room_id: int = Field(foreign_key="room.id")
+    room: Room = Relationship(back_populates="results")
     
     nickname_id: int = Field(foreign_key="nickname.id")
     nickname: Nickname = Relationship(back_populates="results")
