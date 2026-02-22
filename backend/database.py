@@ -1,6 +1,8 @@
+import os
 from sqlmodel import SQLModel, create_engine, Session
 
-sqlite_file_name = "database.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sqlite_file_name = os.path.join(BASE_DIR, "database.db")
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False} # Enables SQLite multi-threading in FastAPI.
