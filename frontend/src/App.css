@@ -152,6 +152,35 @@
   color: var(--text-dark);
 }
 
+.btn-main-magenta {
+  padding: 0 25px;
+  height: 48px; 
+  min-width: 160px;
+  border-radius: 10px; 
+  background-color: var(--primary-magenta);
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px var(--shadow-btn);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.btn-main-magenta:hover {
+  background-color: var(--color-white);
+  border: 2px solid var(--secondary-magenta);
+  color: var(--secondary-magenta);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px var(--shadow-magenta);
+}
+
 @media (max-width: 768px) {
   
   .sidebar {
