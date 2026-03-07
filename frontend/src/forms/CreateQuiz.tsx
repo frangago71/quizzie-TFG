@@ -3,7 +3,7 @@ import axios from 'axios';
 import './CreateQuiz.css';
 
 interface Answer { text: string; is_correct: boolean; }
-interface Question { text: string; points: number; answers: Answer[]; }
+interface Question { text: string; points: number | string; answers: Answer[]; }
 interface QuizData { title: string; description: string; questions: Question[]; }
 
 const CreateQuiz: React.FC = () => {
@@ -115,6 +115,50 @@ const CreateQuiz: React.FC = () => {
     }
   };
 
+  const handleDotClick = (targetIndex: number) => {
+    if (targetIndex === currentIndex) return;
+
+    const currentQ = quiz.questions[currentIndex];
+    const isQuestionEmpty =
+      currentQ.text.trim() === "" &&
+      currentQ.answers.every(a => a.text.trim() === "");
+
+    if (isQuestionEmpty && quiz.questions.length > 1) {
+      removeQuestion(currentIndex);
+      setCurrentIndex(targetIndex > currentIndex ? targetIndex - 1 : targetIndex);
+    } else {
+      setCurrentIndex(targetIndex);
+    }
+  };
+
+  const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valStr = e.target.value;
+
+    if (valStr === '') {
+      const newQs = [...quiz.questions];
+      newQs[currentIndex].points = '';
+      setQuiz({ ...quiz, questions: newQs });
+      return;
+    }
+
+    const val = parseInt(valStr, 10);
+    if (isNaN(val)) return;
+
+    const finalVal = val > 100 ? 100 : val;
+    const newQs = [...quiz.questions];
+    newQs[currentIndex].points = finalVal;
+    setQuiz({ ...quiz, questions: newQs });
+  };
+
+  const handlePointsBlur = () => {
+    const currentPoints = Number(quiz.questions[currentIndex].points);
+    if (isNaN(currentPoints) || currentPoints < 1) {
+      const newQs = [...quiz.questions];
+      newQs[currentIndex].points = 1;
+      setQuiz({ ...quiz, questions: newQs });
+    }
+  };
+
   const removeQuestion = (index: number) => {
     if (quiz.questions.length > 1) {
       const newQuestions = quiz.questions.filter((_, i) => i !== index);
@@ -132,13 +176,19 @@ const CreateQuiz: React.FC = () => {
     <div className="create-quiz-container">
       <header className="fixed-header-section">
         <div className="header-text-group">
-          <input
-            className="title-input"
-            type="text"
-            placeholder="Título del cuestionario"
-            value={quiz.title}
-            onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
-          />
+          <div className="title-row">
+            <input
+              className="title-input"
+              type="text"
+              placeholder="Título"
+              value={quiz.title}
+              onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
+            />
+            <button type="button" className="btn-main-magenta btn-header-action" onClick={handleSubmit}>
+              <span className="text-desktop">Crear cuestionario</span>
+              <span className="text-mobile">Crear</span>
+            </button>
+          </div>
           <textarea
             className="desc-input"
             placeholder="Añade una descripción aquí..."
@@ -146,53 +196,30 @@ const CreateQuiz: React.FC = () => {
             onChange={(e) => setQuiz({ ...quiz, description: e.target.value })}
           />
         </div>
-        <button type="button" className="btn-main-magenta" onClick={handleSubmit}>
-          Crear cuestionario
-        </button>
       </header>
 
-      <div className="nav-dots">
+      <div className="nav-dots pc-dots">
         {quiz.questions.map((_, i) => (
-          <div
-            key={i}
-            className={`dot ${i === currentIndex ? 'active' : ''}`}
-            onClick={() => {
-              const currentQ = quiz.questions[currentIndex];
-              const isQuestionEmpty =
-                currentQ.text.trim() === "" &&
-                currentQ.answers.every(a => a.text.trim() === "");
-
-              if (isQuestionEmpty && quiz.questions.length > 1) {
-                removeQuestion(currentIndex);
-                setCurrentIndex(i > currentIndex ? i - 1 : i);
-              } else {
-                setCurrentIndex(i);
-              }
-            }}
-          />
+          <div key={i} className={`dot ${i === currentIndex ? 'active' : ''}`} onClick={() => handleDotClick(i)} />
         ))}
       </div>
 
-      <div className="quiz-navigation-container">
-        <button
-          type="button"
-          className="quiz-slider-btn"
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-        >
-          ‹
-        </button>
+      <div className="quiz-top-nav-mobile">
+        <div className="nav-dots">
+          {quiz.questions.map((_, i) => (
+            <div key={i} className={`dot ${i === currentIndex ? 'active' : ''}`} onClick={() => handleDotClick(i)} />
+          ))}
+        </div>
+      </div>
+
+      <div className="quiz-main-layout">
+        <button type="button" className="quiz-slider-btn btn-pc-nav" onClick={handlePrev} disabled={currentIndex === 0}>‹</button>
 
         <div className="question-card">
           {quiz.questions.length > 1 && (
-            <button
-              type="button"
-              className="btn-remove-question-fixed"
-              onClick={() => removeQuestion(currentIndex)}
-            >
-              ✕
-            </button>
+            <button type="button" className="btn-remove-question-fixed" onClick={() => removeQuestion(currentIndex)}>✕</button>
           )}
+
           <div className="question-card-header">
             <span className="question-number">PREGUNTA {currentIndex + 1}</span>
             <div className="question-meta">
@@ -203,29 +230,8 @@ const CreateQuiz: React.FC = () => {
                 min="1"
                 max="100"
                 value={quiz.questions[currentIndex].points || ''}
-                onChange={(e) => {
-                  const rawValue = e.target.value;
-
-                  if (rawValue === "") {
-                    const newQs = [...quiz.questions];
-                    newQs[currentIndex].points = 0;
-                    setQuiz({ ...quiz, questions: newQs });
-                    return;
-                  }
-
-                  let val = parseInt(rawValue);
-                  if (val > 100) val = 100;
-                  const newQs = [...quiz.questions];
-                  newQs[currentIndex].points = val;
-                  setQuiz({ ...quiz, questions: newQs });
-                }}
-                onBlur={() => {
-                  if (quiz.questions[currentIndex].points < 1) {
-                    const newQs = [...quiz.questions];
-                    newQs[currentIndex].points = 1;
-                    setQuiz({ ...quiz, questions: newQs });
-                  }
-                }}
+                onChange={handlePointsChange}
+                onBlur={handlePointsBlur}
               />
             </div>
           </div>
@@ -272,28 +278,18 @@ const CreateQuiz: React.FC = () => {
                 )}
               </div>
             ))}
-            <div
-              className={`btn-add-ghost ${!canAddMore ? 'disabled' : ''}`}
-              onClick={() => canAddMore && addAnswer(currentIndex)}
-            >
-              <input
-                className="input-base"
-                type="text"
-                placeholder="Añadir opción..."
-                readOnly
-                style={{ cursor: canAddMore ? 'pointer' : 'not-allowed' }}
-              />
+            <div className={`btn-add-ghost ${!canAddMore ? 'disabled' : ''}`} onClick={() => canAddMore && addAnswer(currentIndex)}>
+              <input className="input-base" type="text" placeholder="Añadir opción..." readOnly />
             </div>
           </div>
         </div>
-        <button
-          type="button"
-          className="quiz-slider-btn"
-          onClick={handleNext}
-          disabled={isCurrentQuestionBlank}
-        >
-          ›
-        </button>
+
+        <div className="mobile-card-nav">
+          <button type="button" className="nav-arrow-bottom" onClick={handlePrev} disabled={currentIndex === 0}>‹</button>
+          <button type="button" className="nav-arrow-bottom" onClick={handleNext} disabled={isCurrentQuestionBlank}>›</button>
+        </div>
+
+        <button type="button" className="quiz-slider-btn btn-pc-nav" onClick={handleNext} disabled={isCurrentQuestionBlank}>›</button>
       </div>
     </div>
   );
