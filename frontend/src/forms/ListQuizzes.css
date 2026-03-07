@@ -1,0 +1,23 @@
+.quizzes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 20px;
+}
+
+.quiz-list-card {
+  background: var(--bg-gray);
+  color: var(--secondary-magenta);
+  padding: 20px;
+  border-radius: 15px;
+  border: 5px solid var(--primary-magenta);
+  border-right: 5px solid var(--primary-magenta);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.quiz-list-card:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
