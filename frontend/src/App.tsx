@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import quizzieLogo from './assets/logo-sidebar.png'
 import CreateQuiz from './forms/CreateQuiz.tsx'
+import ListQuizzes from './forms/ListQuizzes.tsx'
 import './App.css'
 
 function App() {
@@ -22,7 +23,12 @@ function App() {
             Inicio
           </div>
           
-          <div className="nav-item">Cuestionarios</div>
+          <div 
+            className={`nav-item ${currentScreen === 'cuestionarios' ? 'active' : ''}`} 
+            onClick={() => setCurrentScreen('cuestionarios')}
+          > 
+            Listar cuestionarios
+          </div>
           <div className="nav-item">Ajustes</div>
           
           <div 
@@ -49,6 +55,8 @@ function App() {
           
           {currentScreen === 'crear' ? (
             <CreateQuiz />
+          ) : currentScreen === 'cuestionarios' ? (
+            <ListQuizzes />
           ) : (
             <>
               <h1>¡Bienvenido a Quizzie!</h1>
