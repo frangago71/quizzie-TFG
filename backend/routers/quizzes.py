@@ -8,7 +8,7 @@ from ..schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate
 router = APIRouter(prefix="/content", tags=["Quizzes"])
 
 @router.get("/quizzes", response_model=List[Quiz])
-def read_quizzes(session: Session = Depends(get_session)):
+def get_quizzes(session: Session = Depends(get_session)):
     return session.exec(select(Quiz)).all()
 
 def get_current_teacher_id():
@@ -16,7 +16,7 @@ def get_current_teacher_id():
     return 1
 
 @router.post("/quizzes", status_code=201)
-def create_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session), 
+def get_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session), 
                                 teacher_id: int = Depends(get_current_teacher_id)):
     db_quiz = Quiz(
         title=quiz_data.title,
@@ -46,9 +46,9 @@ def create_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session),
     return {"message": "Quiz creado con éxito", "quiz_id": db_quiz.id}
 
 @router.get("/questions", response_model=List[Question])
-def read_questions(session: Session = Depends(get_session)):
+def get_questions(session: Session = Depends(get_session)):
     return session.exec(select(Question)).all()
 
 @router.get("/options", response_model=List[Option])
-def read_options(session: Session = Depends(get_session)):
+def get_options(session: Session = Depends(get_session)):
     return session.exec(select(Option)).all()
