@@ -27,7 +27,7 @@ class Quiz(SQLModel, table=True):
     )
     rooms: List["Room"] = Relationship(back_populates="quiz")
 
-    @field_validator("questions")
+    @field_validator("questions", check_fields=False)
     @classmethod
     def check_max_questions(cls, v):
         if len(v) > 30:
@@ -48,7 +48,7 @@ class Question(SQLModel, table=True):
     )
     answers: List["Answer"] = Relationship(back_populates="question")
 
-    @field_validator("options")
+    @field_validator("options", check_fields=False)
     @classmethod
     def check_max_options(cls, v):
         if len(v) > 8:
