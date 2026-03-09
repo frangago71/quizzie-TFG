@@ -9,7 +9,12 @@ interface QuizData { title: string; description: string; questions: Question[]; 
 const MAX_QUESTIONS = 30;
 const MAX_OPTIONS = 8;
 
-const CreateQuiz: React.FC = () => {
+interface CreateQuizProps {
+  onCancel: () => void;
+}
+
+const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel }) => {
+  void onCancel; 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quiz, setQuiz] = useState<QuizData>({
     title: '',
