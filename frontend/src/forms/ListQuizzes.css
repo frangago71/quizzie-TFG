@@ -223,3 +223,101 @@
   gap: 12px;           
   margin-left: 20px;   
 }
+
+@media (max-width: 768px) {
+  .list-quizzes-page {
+    padding: 0 15px;
+  }
+
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+
+  .filter-tabs {
+    width: 100%;
+  }
+
+  .filter-tabs .tab {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .quiz-horizontal-card {
+    flex-direction: column;
+    height: auto;
+    min-height: unset;
+  }
+
+  .quiz-image-container {
+    width: 100%;
+    min-width: 100%;
+    height: 180px;
+  }
+
+  .quiz-info-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .info-main-text {
+    order: 1;
+  }
+
+  .info-main-text h3 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .quiz-description {
+    order: 2;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #475569;
+    margin: 15px 0;
+  }
+
+  .info-footer-row {
+    order: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0 15px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .meta-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--gray-text);
+  }
+
+  .meta-date span {
+    font-size: 1rem;
+  }
+
+  .action-icons {
+    order: 4;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  .icon-btn {
+    padding: 8px;
+  }
+
+  .create-new-dashed {
+    padding: 30px 20px;
+  }
+}

@@ -13,6 +13,20 @@ const ListQuizzes: React.FC = () => {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const teacherId = 1;
 
+    const useIsMobile = () => {
+        const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+        useEffect(() => {
+            const handleResize = () => setIsMobile(window.innerWidth <= 768);
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }, []);
+
+        return isMobile;
+    };
+
+    const isMobile = useIsMobile();
+
     const parseDate = (dateStr: string | undefined) => {
         if (!dateStr) return "N/A";
         const date = new Date(dateStr);
@@ -90,31 +104,56 @@ const ListQuizzes: React.FC = () => {
                                 </div>
                             )}
                         </div>
-
                         <div className="quiz-info-content">
-                            <div className="info-top">
-                                <h3>{quiz.title}</h3>
-                                <div className="action-icons">
-                                    <button className="icon-btn"><Pencil size={18} /></button>
-                                    <button className="icon-btn"><Trash2 size={18} /></button>
-                                    <button className="icon-btn"><Eye size={18} /></button>
-                                </div>
-                            </div>
-
-                            <p className="quiz-description">{quiz.description}</p>
-
-                            <div className="info-bottom">
-                                <div className="meta-data">
-                                    <div className="meta-item">
-                                        <Calendar size={14} color="#94a3b8" />
-                                        <span>{parseDate(quiz.created_at)}</span>
+                            {isMobile ? (
+                                /* ESTRUCTURA PARA MÓVIL */
+                                <>
+                                    <div className="info-main-text">
+                                        <h3>{quiz.title}</h3>
+                                        <p className="quiz-description">{quiz.description}</p>
                                     </div>
-                                </div>
-                                <button className="btn-main magenta small">
-                                    <Play size={14} fill="white" />
-                                    Crear sala
-                                </button>
-                            </div>
+                                    <div className="info-footer-row">
+                                        <div className="meta-date">
+                                            <Calendar size={14} color="#94a3b8" />
+                                            <span>{parseDate(quiz.created_at ?? "")}</span>
+                                        </div>
+                                        <button className="btn-main small magenta">
+                                            <Play size={16} fill="white" />
+                                            Crear sala
+                                        </button>
+                                    </div>
+                                    <div className="action-icons">
+                                        <button className="icon-btn" title="Editar"><Pencil size={18} /></button>
+                                        <button className="icon-btn" title="Eliminar"><Trash2 size={18} /></button>
+                                        <button className="icon-btn" title="Ver"><Eye size={18} /></button>
+                                    </div>
+                                </>
+                            ) : (
+                                /* ESTRUCTURA PARA ORDENADOR */
+                                <>
+                                    <div className="info-top">
+                                        <h3>{quiz.title}</h3>
+                                        <div className="action-icons">
+                                            <button className="icon-btn" title="Editar"><Pencil size={18} /></button>
+                                            <button className="icon-btn" title="Eliminar"><Trash2 size={18} /></button>
+                                            <button className="icon-btn" title="Ver"><Eye size={18} /></button>
+                                        </div>
+                                    </div>
+                                    <p className="quiz-description">{quiz.description}</p>
+                                    <div className="info-bottom">
+                                        <div className="meta-data">
+                                            <div className="meta-item">
+                                                <Calendar size={14} color="#94a3b8" />
+                                                <span>{parseDate(quiz.created_at ?? "")}</span>
+                                            </div>
+                                        </div>
+                                        <button className="btn-main small magenta">
+                                            <Play size={16} fill="white" />
+                                            Crear sala
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 ))}
