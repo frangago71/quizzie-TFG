@@ -48,7 +48,7 @@ const ListQuizzes: React.FC = () => {
     }, []);
 
     if (showCreateForm) {
-        return <CreateQuiz onCancel={() => setShowCreateForm(false)} />;
+        return <CreateQuiz onCancel={() => setShowCreateForm(false)} onSuccess={() => { setShowCreateForm(false); window.location.reload(); }} />;
     }
 
     return (

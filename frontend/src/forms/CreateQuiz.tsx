@@ -11,9 +11,10 @@ const MAX_OPTIONS = 8;
 
 interface CreateQuizProps {
   onCancel: () => void;
+  onSuccess: () => void;
 }
 
-const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel }) => {
+const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel, onSuccess }) => {
   void onCancel; 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quiz, setQuiz] = useState<QuizData>({
@@ -155,7 +156,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel }) => {
     try {
       await axios.post('http://localhost:8000/content/quizzes', quiz);
       alert("¡Cuestionario creado con éxito! ");
-      window.location.reload();
+      onSuccess();
     } catch (err) {
       alert("Error al conectar con el servidor.");
       console.error(err);

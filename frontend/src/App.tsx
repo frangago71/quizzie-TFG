@@ -54,7 +54,9 @@ function App() {
         <div className="content-body">
           
           {currentScreen === 'crear' ? (
-            <CreateQuiz onCancel={() => setCurrentScreen('inicio')} />
+            <CreateQuiz 
+            onCancel={() => setCurrentScreen('inicio')}
+            onSuccess={() => setCurrentScreen('cuestionarios')} />
           ) : currentScreen === 'cuestionarios' ? (
             <ListQuizzes />
           ) : (
