@@ -58,7 +58,7 @@ class Answer(SQLModel, table=True):
     room: Room = Relationship(back_populates="answers")
     
     question_id: Optional[int] = Field(default=None, foreign_key="question.id", ondelete="SET NULL")
-    question: Optional["Question"] = Relationship(back_populates="responses")
+    question: Optional["Question"] = Relationship(back_populates="answers")
     
     option_id: Optional[int] = Field(default=None, foreign_key="option.id", ondelete="SET NULL")
-    option: Optional["Option"] = Relationship(back_populates="responses")
+    option: Optional["Option"] = Relationship(back_populates="answers")
