@@ -229,7 +229,7 @@ const CreateQuiz: React.FC = () => {
               value={quiz.title}
               onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
             />
-            <button type="button" className="btn-main-magenta btn-header-action" onClick={handleSubmit}>
+            <button type="button" className="btn-main magenta btn-header-action" onClick={handleSubmit}>
               <span className="text-desktop">Crear cuestionario</span>
               <span className="text-mobile">Crear</span>
             </button>
