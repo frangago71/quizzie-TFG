@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
+from pydantic import computed_field
 
 if TYPE_CHECKING:
     from .quizzes import Quiz
