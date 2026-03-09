@@ -11,8 +11,12 @@
   --color-soft-red: #f43e41;
   --color-red: #c30306;
 
+  --btn-black: #222121;
+  --btn-gray: #94a3b8;
+
   --text-dark: rgba(0, 0, 0, 0.87);
   --text-placeholder: #a0aec0;
+  --text-gray: #424548;
 
   --bg-light: #ffffff;
   --bg-dark: #242424;
@@ -142,6 +146,7 @@
   flex-direction: column;
   height: 100%;
   color: var(--text-dark); 
+  background: var(--bg-gray);
 }
 
 .content-body {
@@ -205,7 +210,22 @@
   background-color: var(--color-white);
 }
 
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--btn-gray); 
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
 
+.icon-btn:hover {
+  color: var(--btn-black); 
+  transform: scale(1.1); 
+}
 
 @media (max-width: 768px) {
   
