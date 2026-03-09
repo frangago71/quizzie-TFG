@@ -5,7 +5,7 @@ from typing import List
 from pydantic import computed_field
 from fastapi.middleware.cors import CORSMiddleware
 from .database import get_session, engine
-from .models import Teacher, Group, Quiz, Question, Answer, Room, Nickname, StudentResult
+from backend import models
 from .routers import users, quizzes, rooms
 
 def create_db_and_tables():

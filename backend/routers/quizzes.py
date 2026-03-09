@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
 from ..database import get_session
-from ..models.quizzes import Quiz, Question, Answer
-from ..schemas.quizzes import QuizCreate, QuestionCreate, AnswerCreate
+from ..models.quizzes import Quiz, Question, Option
+from ..schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate
 
 router = APIRouter(prefix="/content", tags=["Quizzes"])
 
 @router.get("/quizzes", response_model=List[Quiz])
-def read_quizzes(session: Session = Depends(get_session)):
+def get_quizzes(session: Session = Depends(get_session)):
     return session.exec(select(Quiz)).all()
 
 def get_current_teacher_id():
@@ -16,7 +16,7 @@ def get_current_teacher_id():
     return 1
 
 @router.post("/quizzes", status_code=201)
-def create_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session), 
+def get_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session), 
                                 teacher_id: int = Depends(get_current_teacher_id)):
     db_quiz = Quiz(
         title=quiz_data.title,
@@ -33,23 +33,22 @@ def create_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session),
         )
         session.add(db_question)
         
-        for a in q.answers:
-            db_answer = Answer(
-                text=a.text, 
-                is_correct=a.is_correct, 
+        for o in q.options:
+            db_option = Option(
+                text=o.text, 
+                is_correct=o.is_correct, 
                 question=db_question
             )
-            session.add(db_answer)
+            session.add(db_option)
             
     session.commit()
     session.refresh(db_quiz)
     return {"message": "Quiz creado con éxito", "quiz_id": db_quiz.id}
 
 @router.get("/questions", response_model=List[Question])
-def read_questions(session: Session = Depends(get_session)):
+def get_questions(session: Session = Depends(get_session)):
     return session.exec(select(Question)).all()
 
-@router.get("/answers", response_model=List[Answer])
-def read_answers(session: Session = Depends(get_session)):
-    return session.exec(select(Answer)).all()
-
+@router.get("/options", response_model=List[Option])
+def get_options(session: Session = Depends(get_session)):
+    return session.exec(select(Option)).all()

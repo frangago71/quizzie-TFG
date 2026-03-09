@@ -217,21 +217,21 @@
   appearance: none;
 }
 
-.answers-wrapper {
+.options-wrapper {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.answer-item {
+.option-item {
   display: flex;
   align-items: center;
   gap: 15px;
   width: 100%;
 }
 
-.answer-item .input-base {
+.option-item .input-base {
   flex: 1;
 }
 
@@ -264,7 +264,7 @@
   transform: translateX(5px);
 }
 
-.answer-item input[type="radio"] {
+.option-item input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
   width: 24px;
@@ -278,13 +278,13 @@
   background-color: var(--color-white);
 }
 
-.answer-item input[type="radio"]:checked {
+.option-item input[type="radio"]:checked {
   border-color: var(--primary-magenta);
   background-color: var(--primary-magenta);
   box-shadow: 0 0 0 4px var(--shadow-btn);
 }
 
-.answer-item input[type="radio"]:checked::after {
+.option-item input[type="radio"]:checked::after {
   content: '';
   position: absolute;
   top: 45%;
@@ -464,17 +464,17 @@
     margin: 0;
   }
 
-  .answer-item {
+  .option-item {
     flex-wrap: nowrap;
     gap: 10px;
   }
 
-  .answer-item .input-base {
+  .option-item .input-base {
     flex: 1 1 auto;
     min-width: 0;
   }
 
-  .answers-wrapper {
+  .options-wrapper {
     max-height: 40vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -482,15 +482,15 @@
     margin-bottom: 10px;
   }
 
-  .answers-wrapper::-webkit-scrollbar {
+  .options-wrapper::-webkit-scrollbar {
     width: 6px;
   }
 
-  .answers-wrapper::-webkit-scrollbar-track {
+  .options-wrapper::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .answers-wrapper::-webkit-scrollbar-thumb {
+  .options-wrapper::-webkit-scrollbar-thumb {
     background: var(--primary-magenta);
     border-radius: 10px;
   }

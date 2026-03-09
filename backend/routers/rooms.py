@@ -2,15 +2,19 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
 from ..database import get_session
-from ..models.rooms import Room, StudentResult
+from ..models.rooms import Room, Participant, Answer
 
 router = APIRouter(prefix="/content", tags=["Rooms"])
 
 @router.get("/rooms", response_model=List[Room])
-def read_rooms(session: Session = Depends(get_session)):
+def get_rooms(session: Session = Depends(get_session)):
     return session.exec(select(Room)).all()
 
-@router.get("/results", response_model=List[StudentResult])
-def read_results(session: Session = Depends(get_session)):
-    return session.exec(select(StudentResult)).all()
+@router.get("/participants", response_model=List[Participant])
+def get_participants(session: Session = Depends(get_session)):
+    return session.exec(select(Participant)).all()
+
+@router.get("/answers", response_model=List[Answer])
+def get_answers(session: Session = Depends(get_session)):
+    return session.exec(select(Answer)).all()
 

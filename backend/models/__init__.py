@@ -1,3 +1,3 @@
-from .users import Teacher, Group, Nickname
-from .quizzes import Quiz, Question, Answer
-from .rooms import Room, StudentResult
+from .users import TeacherRead, Teacher, Group, Student
+from .quizzes import Quiz, Question, Option
+from .rooms import Room, Participant, Answer

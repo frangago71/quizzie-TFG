@@ -2,21 +2,24 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './CreateQuiz.css';
 
-interface Answer { text: string; is_correct: boolean; }
-interface Question { text: string; points: number | string; answers: Answer[]; }
+interface Option { text: string; is_correct: boolean; }
+interface Question { text: string; points: number | string; options: Option[]; }
 interface QuizData { title: string; description: string; questions: Question[]; }
+
+const MAX_QUESTIONS = 30;
+const MAX_OPTIONS = 8;
 
 const CreateQuiz: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quiz, setQuiz] = useState<QuizData>({
     title: '',
     description: '',
-    questions: [{ text: '', points: 1, answers: [{ text: '', is_correct: true }, { text: '', is_correct: false }] }]
+    questions: [{ text: '', points: 1, options: [{ text: '', is_correct: true }, { text: '', is_correct: false }] }]
   });
 
   const isCurrentQuestionBlank =
     quiz.questions[currentIndex].text.trim() === "" &&
-    quiz.questions[currentIndex].answers.every(ans => ans.text.trim() === ""
+    quiz.questions[currentIndex].options.every(opt => opt.text.trim() === ""
     );
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -49,10 +52,16 @@ const CreateQuiz: React.FC = () => {
 
   const handleNext = () => {
     if (isCurrentQuestionBlank) return;
+    
     if (currentIndex === quiz.questions.length - 1) {
+      if (quiz.questions.length >= MAX_QUESTIONS) {
+        alert(`Has alcanzado el límite máximo de ${MAX_QUESTIONS} preguntas.`);
+        return;
+      }
+
       const newQuestion: Question = {
         text: '', points: 1,
-        answers: [{ text: '', is_correct: true }, { text: '', is_correct: false }]
+        options: [{ text: '', is_correct: true }, { text: '', is_correct: false }]
       };
       setQuiz({ ...quiz, questions: [...quiz.questions, newQuestion] });
     }
@@ -70,26 +79,30 @@ const CreateQuiz: React.FC = () => {
     }
   };
 
-  const addAnswer = (qIndex: number) => {
+  const addOption = (qIndex: number) => {
+    if (quiz.questions[qIndex].options.length >= MAX_OPTIONS) {
+      alert(`No puedes añadir más de ${MAX_OPTIONS} opciones por pregunta.`);
+      return;
+    }
     const newQuestions = [...quiz.questions];
-    newQuestions[qIndex].answers.push({ text: '', is_correct: false });
+    newQuestions[qIndex].options.push({ text: '', is_correct: false });
     setQuiz({ ...quiz, questions: newQuestions });
   };
 
-  const removeAnswer = (qIndex: number, aIndex: number) => {
+  const removeOption = (qIndex: number, oIndex: number) => {
     const newQuestions = [...quiz.questions];
-    if (newQuestions[qIndex].answers.length > 2) {
-      const wasCorrect = newQuestions[qIndex].answers[aIndex].is_correct;
-      newQuestions[qIndex].answers = newQuestions[qIndex].answers.filter((_, i) => i !== aIndex);
-      if (wasCorrect) newQuestions[qIndex].answers[0].is_correct = true;
+    if (newQuestions[qIndex].options.length > 2) {
+      const wasCorrect = newQuestions[qIndex].options[oIndex].is_correct;
+      newQuestions[qIndex].options = newQuestions[qIndex].options.filter((_, i) => i !== oIndex);
+      if (wasCorrect) newQuestions[qIndex].options[0].is_correct = true;
       setQuiz({ ...quiz, questions: newQuestions });
     }
   };
 
-  const setCorrectAnswer = (qIndex: number, aIndex: number) => {
+  const setCorrectOption = (qIndex: number, oIndex: number) => {
     const newQuestions = [...quiz.questions];
-    newQuestions[qIndex].answers = newQuestions[qIndex].answers.map((ans, i) => ({
-      ...ans, is_correct: i === aIndex
+    newQuestions[qIndex].options = newQuestions[qIndex].options.map((opt, i) => ({
+      ...opt, is_correct: i === oIndex
     }));
     setQuiz({ ...quiz, questions: newQuestions });
   };
@@ -116,19 +129,19 @@ const CreateQuiz: React.FC = () => {
         setCurrentIndex(i);
         return;
       }
-      if (q.answers.length < 2) {
+      if (q.options.length < 2) {
         alert(`Error en la pregunta ${questionNum}: Debe tener al menos 2 opciones.`);
         setCurrentIndex(i);
         return;
       }
-      if (!q.answers.some(a => a.is_correct)) {
+      if (!q.options.some(o => o.is_correct)) {
         alert(`Error en la pregunta ${questionNum}: Debes marcar una opción como correcta.`);
         setCurrentIndex(i);
         return;
       }
-      for (let j = 0; j < q.answers.length; j++) {
-        if (!q.answers[j].text.trim()) {
-          alert(`Error en la pregunta ${questionNum}: La respuesta número ${j + 1} está incompleta.`);
+      for (let j = 0; j < q.options.length; j++) {
+        if (!q.options[j].text.trim()) {
+          alert(`Error en la pregunta ${questionNum}: La opción número ${j + 1} está incompleta.`);
           setCurrentIndex(i);
           return;
         }
@@ -150,7 +163,7 @@ const CreateQuiz: React.FC = () => {
     const currentQ = quiz.questions[currentIndex];
     const isQuestionEmpty =
       currentQ.text.trim() === "" &&
-      currentQ.answers.every(a => a.text.trim() === "");
+      currentQ.options.every(o => o.text.trim() === "");
 
     if (isQuestionEmpty && quiz.questions.length > 1) {
       removeQuestion(currentIndex);
@@ -199,7 +212,10 @@ const CreateQuiz: React.FC = () => {
     }
   };
 
-  const canAddMore = quiz.questions[currentIndex].answers.every(ans => ans.text.trim() !== "");
+  const isNextDisabled = isCurrentQuestionBlank || (currentIndex === quiz.questions.length - 1 && quiz.questions.length >= MAX_QUESTIONS);
+
+  const currentOptionsCount = quiz.questions[currentIndex].options.length;
+  const canAddMoreOptions = currentOptionsCount < MAX_OPTIONS && quiz.questions[currentIndex].options.every(opt => opt.text.trim() !== "");
 
   return (
     <div className="create-quiz-container">
@@ -253,7 +269,7 @@ const CreateQuiz: React.FC = () => {
           )}
 
           <div className="question-card-header">
-            <span className="question-number">PREGUNTA {currentIndex + 1}</span>
+            <span className="question-number">PREGUNTA {currentIndex + 1} de {quiz.questions.length}</span>
             <div className="question-meta">
               <label>PUNTOS</label>
               <input
@@ -279,49 +295,58 @@ const CreateQuiz: React.FC = () => {
               setQuiz({ ...quiz, questions: newQs });
             }}
           />
-          <div className="answers-wrapper">
-            {quiz.questions[currentIndex].answers.map((a, aIndex) => (
-              <div key={aIndex} className="answer-item">
+          <div className="options-wrapper">
+            {quiz.questions[currentIndex].options.map((o, oIndex) => (
+              <div key={oIndex} className="option-item">
                 <input
                   type="radio"
                   name={`correct-${currentIndex}`}
-                  checked={a.is_correct}
-                  onChange={() => setCorrectAnswer(currentIndex, aIndex)}
+                  checked={o.is_correct}
+                  onChange={() => setCorrectOption(currentIndex, oIndex)}
                 />
                 <input
                   className="input-base"
                   type="text"
-                  placeholder={`Opción ${aIndex + 1}`}
-                  value={a.text}
+                  placeholder={`Opción ${oIndex + 1}`}
+                  value={o.text}
                   onChange={(e) => {
                     const newQs = [...quiz.questions];
-                    newQs[currentIndex].answers[aIndex].text = e.target.value;
+                    newQs[currentIndex].options[oIndex].text = e.target.value;
                     setQuiz({ ...quiz, questions: newQs });
                   }}
                 />
-                {quiz.questions[currentIndex].answers.length > 2 && (
+                {quiz.questions[currentIndex].options.length > 2 && (
                   <button
                     type="button"
                     className="btn-remove"
-                    onClick={() => removeAnswer(currentIndex, aIndex)}
+                    onClick={() => removeOption(currentIndex, oIndex)}
                   >
                     ✕
                   </button>
                 )}
               </div>
             ))}
-            <div className={`btn-add-ghost ${!canAddMore ? 'disabled' : ''}`} onClick={() => canAddMore && addAnswer(currentIndex)}>
-              <input className="input-base" type="text" placeholder="Añadir opción..." readOnly />
+            
+            <div 
+              className={`btn-add-ghost ${!canAddMoreOptions ? 'disabled' : ''}`} 
+              onClick={() => canAddMoreOptions && addOption(currentIndex)}
+            >
+              <input 
+                className="input-base" 
+                type="text" 
+                placeholder={currentOptionsCount >= MAX_OPTIONS ? "Límite de opciones alcanzado" : "Añadir opción..."} 
+                readOnly 
+              />
             </div>
           </div>
         </div>
 
         <div className="mobile-card-nav">
           <button type="button" className="nav-arrow-bottom" onClick={handlePrev} disabled={currentIndex === 0}>‹</button>
-          <button type="button" className="nav-arrow-bottom" onClick={handleNext} disabled={isCurrentQuestionBlank}>›</button>
+          <button type="button" className="nav-arrow-bottom" onClick={handleNext} disabled={isNextDisabled}>›</button>
         </div>
 
-        <button type="button" className="quiz-slider-btn btn-pc-nav" onClick={handleNext} disabled={isCurrentQuestionBlank}>›</button>
+        <button type="button" className="quiz-slider-btn btn-pc-nav" onClick={handleNext} disabled={isNextDisabled}>›</button>
       </div>
     </div>
   );
