@@ -3,7 +3,7 @@ from sqlmodel import Session, delete, SQLModel
 from database import engine
 from models.users import Teacher, Group, Student
 from models.quizzes import Quiz, Question, Option
-from models.rooms import Room, Participant, Answer
+from models.rooms import Room, Participant, Answer, RoomStatus
 
 def clear_database():
     with Session(engine) as session:
@@ -65,8 +65,8 @@ def create_seed_data():
         session.refresh(opt1)
 
         room = Room(
-            join_code="23FK98", 
-            is_active=True, 
+            join_code="987654", 
+            status=RoomStatus.WAITING,
             teacher_id=teacher.id,
             quiz_id=quiz.id,
             group_id=group.id
