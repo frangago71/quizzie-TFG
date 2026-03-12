@@ -46,7 +46,7 @@ git clone https://github.com/frangago71/quizzie-TFG.git
 cd quizzie-TFG
 ~~~
 
-Si no lo tienes, instala el gestor [uv](https://docs.astral.sh/uv/) y sincroniza las dependencias.
+Si no lo tienes, instala el gestor [uv](https://docs.astral.sh/uv/) y sincroniza las dependencias. Posteriormente, pobla la base de datos.
 
 ~~~bash
 cd backend
@@ -54,6 +54,9 @@ pip install uv
 
 # Usa uv para instalar las dependencias y crear el entorno virtual automáticamente
 uv sync
+
+# Pobla la base de datos
+uv run python -m seed
 ~~~
 
 Instala las librerías de Node.js necesarias.
