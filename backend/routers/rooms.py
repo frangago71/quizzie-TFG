@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
-from ..database import get_session
-from ..models.rooms import Room, Participant, Answer
+from database import get_session
+from models.rooms import Room, Participant, Answer
 
 router = APIRouter(prefix="/content", tags=["Rooms"])
 

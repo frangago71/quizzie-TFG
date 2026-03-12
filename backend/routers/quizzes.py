@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
-from ..database import get_session
-from ..models.quizzes import Quiz, Question, Option
-from ..schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate
+from database import get_session
+from models.quizzes import Quiz, Question, Option
+from schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate
 
 router = APIRouter(prefix="/content", tags=["Quizzes"])
 

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
-from ..database import get_session
-from ..models.quizzes import Quiz
-from ..models.users import Teacher, Group, Student, TeacherRead
+from database import get_session
+from routers.quizzes import Quiz
+from models.users import Teacher, Group, Student, TeacherRead
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

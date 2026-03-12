@@ -4,9 +4,9 @@ from sqlmodel import Session, select, SQLModel
 from typing import List
 from pydantic import computed_field
 from fastapi.middleware.cors import CORSMiddleware
-from .database import get_session, engine
-from backend import models
-from .routers import users, quizzes, rooms
+from database import get_session, engine
+from models import *
+from routers import users, quizzes, rooms
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
