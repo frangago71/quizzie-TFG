@@ -19,8 +19,8 @@ version_files = [
 ]
 
 [tool.commitizen.customize]
-message_template = "{{change_type}}{% if scope %}({{scope}}){% endif %}: {{subject}}"
-example = "feat(ui): cool new feature"
+message_template = "{{change_type}}{% if scope %}({{scope}}){% endif %}: {{subject}}{% if body %}\n\n{{body}}{% endif %}{% if is_breaking_change %}\n\nBREAKING CHANGE: {{footer}}{% elif footer %}\n\n{{footer}}{% endif %}"
+example = "feat(ui): add responsive layout"
 schema = "<type>(<scope>): <subject>"
 
 bump_pattern = "^(BREAKING CHANGE|feat|fix)"
