@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
+from enum import Enum
 
 if TYPE_CHECKING:
     from .users import Teacher, Group, Student
@@ -9,10 +10,15 @@ if TYPE_CHECKING:
 def get_utc_now():
     return datetime.now(timezone.utc)
 
+class RoomStatus(str, Enum):
+    WAITING = "waiting"
+    LIVE = "live"
+    FINISHED = "finished"
+    
 class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     join_code: str = Field(unique=True)
-    is_active: bool = Field(default=True)
+    status: RoomStatus = Field(default=RoomStatus.WAITING)  
     created_at: datetime = Field(default_factory=get_utc_now)
     
     teacher_id: int = Field(foreign_key="teacher.id")
