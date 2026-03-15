@@ -15,8 +15,15 @@ def get_current_teacher_id():
     # Se modificará cuando se implemente la gestión de usuarios y autenticación
     return 1
 
+@router.get("/quizzes/{quiz_id}", response_model=Quiz)
+def get_quiz(quiz_id: int, session: Session = Depends(get_session)):
+    quiz = session.get(Quiz, quiz_id)
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz no encontrado")
+    return quiz
+
 @router.post("/quizzes", status_code=201)
-def get_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session), 
+def post_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session), 
                                 teacher_id: int = Depends(get_current_teacher_id)):
     db_quiz = Quiz(
         title=quiz_data.title,
