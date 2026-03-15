@@ -2,11 +2,14 @@ import axios from 'axios';
 import type { Quiz } from '../types';
 import './ListQuizzes.css';
 import CreateQuiz from '../forms/CreateQuiz.tsx'
-
 import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Eye, Play, Plus, Calendar } from 'lucide-react';
 
-const ListQuizzes: React.FC = () => {
+interface ListQuizzesProps {
+  onStartRoom: (id: number) => void;
+}
+
+const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     void loading;
@@ -106,7 +109,6 @@ const ListQuizzes: React.FC = () => {
                         </div>
                         <div className="quiz-info-content">
                             {isMobile ? (
-                                /* ESTRUCTURA PARA MÓVIL */
                                 <>
                                     <div className="info-main-text">
                                         <h3>{quiz.title}</h3>
@@ -117,7 +119,7 @@ const ListQuizzes: React.FC = () => {
                                             <Calendar size={14} color="#94a3b8" />
                                             <span>{parseDate(quiz.created_at ?? "")}</span>
                                         </div>
-                                        <button className="btn-main small magenta">
+                                        <button className="btn-main small magenta" onClick={() => onStartRoom(quiz.id)}>
                                             <Play size={16} fill="white" />
                                             Crear sala
                                         </button>
@@ -129,7 +131,6 @@ const ListQuizzes: React.FC = () => {
                                     </div>
                                 </>
                             ) : (
-                                /* ESTRUCTURA PARA ORDENADOR */
                                 <>
                                     <div className="info-top">
                                         <h3>{quiz.title}</h3>
@@ -147,7 +148,7 @@ const ListQuizzes: React.FC = () => {
                                                 <span>{parseDate(quiz.created_at ?? "")}</span>
                                             </div>
                                         </div>
-                                        <button className="btn-main small magenta">
+                                        <button className="btn-main small magenta" onClick ={() => onStartRoom(quiz.id)}>
                                             <Play size={16} fill="white" />
                                             Crear sala
                                         </button>
