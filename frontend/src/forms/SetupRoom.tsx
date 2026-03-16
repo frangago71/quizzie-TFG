@@ -12,6 +12,13 @@ interface SetupRoomProps {
 const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) => {
     const [quiz, setQuiz] = useState<any>(null);
     const [isCreating, setIsCreating] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         if (quizId) {
@@ -62,10 +69,11 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
 
     return (
         <div className="setup-wrapper">
-            <button className="back-nav" onClick={onBack}>
-                <ChevronLeft size={20} /> Volver a cuestionarios
-            </button>
-
+            {!isMobile && (
+                <button className="back-nav" onClick={onBack}>
+                    <ChevronLeft size={20} /> Volver a cuestionarios
+                </button>
+            )}
             <div className="setup-main-container">
                 <div className="quiz-horizontal-card setup-header-card full-width">
                     <div className="quiz-image-container">
@@ -82,10 +90,10 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                             </div>
                         )}
                     </div>
-
                     <div className="quiz-info-content">
                         <h3>{quiz.title}</h3>
                         <p className="quiz-description">{quiz.description}</p>
+
                         <div className="info-bottom">
                             <div className="meta-item">
                                 <Calendar size={14} color="#94a3b8" />
@@ -94,10 +102,9 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                         </div>
                     </div>
                 </div>
-
                 <div className="setup-narrow-content">
                     <section className="settings-container">
-                        <h3 className="settings-section-title">Configuración de la sala</h3>
+                        <h3 className="settings-section-title">Configuración de la partida</h3>
 
                         <div className="setting-control locked">
                             <div className="setting-left">
@@ -140,15 +147,19 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                     </section>
                 </div>
             </div>
-
             <div className="setup-external-actions">
                 <button
                     className={`btn-main magenta ${isCreating ? 'disabled' : ''}`}
                     onClick={handleOpenSession}
                     disabled={isCreating}
                 >
-                    <Rocket size={20} /> Crear sala
+                    <Rocket size={20} /> {isCreating ? 'Creando sala...' : 'Crear sala'}
                 </button>
+                {isMobile && (
+                    <button className="back-nav" onClick={onBack}>
+                        <ChevronLeft size={20} /> Volver a cuestionarios
+                    </button>
+                )}
                 <p className="action-hint">Se generará un código de acceso una vez creada la sala.</p>
             </div>
         </div>
