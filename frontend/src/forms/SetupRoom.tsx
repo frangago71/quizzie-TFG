@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './SetupRoom.css';
 import { Calendar, Shuffle, ListTree, Trophy, ChevronLeft, Rocket } from 'lucide-react';
 
@@ -10,12 +11,12 @@ interface SetupRoomProps {
 
 const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) => {
     const [quiz, setQuiz] = useState<any>(null);
+    const [isCreating, setIsCreating] = useState(false);
 
     useEffect(() => {
         if (quizId) {
-            fetch(`http://localhost:8000/content/quizzes/${quizId}`)
-                .then(res => res.json())
-                .then(data => setQuiz(data))
+            axios.get(`http://localhost:8000/content/quizzes/${quizId}`)
+                .then(res => setQuiz(res.data))
                 .catch(err => console.error("Error cargando quiz:", err));
         }
     }, [quizId]);
@@ -27,16 +28,33 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
     };
 
     const handleOpenSession = async () => {
-        if (!quizId) return;
+        if (!quizId) {
+            alert("ID de cuestionario no válido.");
+            return;
+        }
+        setIsCreating(true);
         try {
-            const response = await fetch(`http://localhost:8000/content/rooms?quiz_id=${quizId}`, {
-                method: 'POST',
+            const response = await axios.post(`http://localhost:8000/content/rooms`, null, {
+                params: { quiz_id: quizId }
             });
-            if (!response.ok) throw new Error("Error al crear la sala");
-            const data = await response.json();
-            onOpenSession(data.join_code);
-        } catch (error) {
-            alert("Error: " + error);
+
+            onOpenSession(response.data.join_code);
+        } catch (error: any) {
+            if (error.response) {
+                const status = error.response.status;
+                const detail = error.response.data?.detail;
+                if (status === 400) {
+                    alert(detail || "No se puede crear la sala. Verifica si ya tienes una sala activa para este cuestionario.");
+                } else if (status === 404) {
+                    alert("El cuestionario seleccionado no existe.");
+                } else {
+                    alert(`Error ${status}: ${detail || "Error inesperado"}`);
+                }
+            } else {
+                alert("No hay respuesta del servidor.?");
+            }
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -77,11 +95,9 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                     </div>
                 </div>
 
-
                 <div className="setup-narrow-content">
                     <section className="settings-container">
-                        <h3 className="settings-section-title">Configuración de la partida</h3>
-
+                        <h3 className="settings-section-title">Configuración de la sala</h3>
 
                         <div className="setting-control locked">
                             <div className="setting-left">
@@ -123,16 +139,20 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                         </div>
                     </section>
                 </div>
-            </div > 
+            </div>
+
             <div className="setup-external-actions">
-                <button className="btn-main magenta" onClick={handleOpenSession}>
+                <button
+                    className={`btn-main magenta ${isCreating ? 'disabled' : ''}`}
+                    onClick={handleOpenSession}
+                    disabled={isCreating}
+                >
                     <Rocket size={20} /> Crear sala
                 </button>
                 <p className="action-hint">Se generará un código de acceso una vez creada la sala.</p>
             </div>
-        </div >
+        </div>
     );
-
 };
 
 export default SetupRoom;
