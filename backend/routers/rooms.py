@@ -48,6 +48,30 @@ def create_room(quiz_id: int, session: Session = Depends(get_session)):
     
     return new_room
 
+@router.get("/rooms/verify/{fullCode}")
+def verify_room_code(fullCode: str, session: Session = Depends(get_session)):
+    room = session.exec(select(Room).where(Room.join_code == fullCode)).first()
+    if not room:
+        raise HTTPException(
+            status_code=404, 
+            detail="No hay ninguna sala con ese código."
+        )
+    if room.status == "finished":
+        raise HTTPException(
+            status_code=400, 
+            detail="La sala ya está en finished."
+        )
+    if room.status in ["waiting", "live"]:
+        return {
+            "success": True,
+            "room_id": room.id,
+            "status": room.status
+        }
+    raise HTTPException(
+        status_code=400, 
+        detail="La sala no está disponible en este momento."
+    )
+
 @router.get("/participants", response_model=List[Participant])
 def get_participants(session: Session = Depends(get_session)):
     return session.exec(select(Participant)).all()
