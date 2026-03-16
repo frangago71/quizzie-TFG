@@ -37,7 +37,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
             const response = await axios.post(`http://localhost:8000/content/rooms`, null, {
                 params: { quiz_id: quizId }
             });
-
+            alert("¡Sala creada con éxito! Código de acceso: " + response.data.join_code);
             onOpenSession(response.data.join_code);
         } catch (error: any) {
             if (error.response) {
