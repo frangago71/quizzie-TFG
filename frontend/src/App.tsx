@@ -3,7 +3,9 @@ import quizzieLogo from './assets/logo-sidebar.png'
 import CreateQuiz from './forms/CreateQuiz.tsx'
 import ListQuizzes from './forms/ListQuizzes.tsx'
 import SetupRoom from './forms/SetupRoom.tsx' 
+import RoomCode from './forms/RoomCode.tsx'
 import './App.css'
+
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
@@ -64,12 +66,11 @@ function App() {
             <SetupRoom 
               quizId={selectedQuizId} 
               onBack={() => setCurrentScreen('cuestionarios')}
-              onOpenSession={(code) => console.log("PIN generado:", code)} 
+              onOpenSession={(code) => console.log("Código generado:", code)} 
             />
           ) : (
             <>
-              <h1>¡Bienvenido a Quizzie!</h1>
-              <p>¿Estás preparado para poner a prueba tus conocimientos?</p>
+              <RoomCode onJoinSuccess ={(code) => console.log("Sala encontrada con el código:", code)} />
             </>
           )}
 
