@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
+from sqlalchemy import func
 from typing import List
 from database import get_session
 from routers.quizzes import Quiz
 from models.users import Teacher, Group, Student, TeacherRead
+
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -27,3 +29,20 @@ def get_groups(session: Session = Depends(get_session)):
 @router.get("/students", response_model=List[Student])
 def get_students(session: Session = Depends(get_session)):
     return session.exec(select(Student)).all()
+
+@router.get("/students/verify/{nickname}")
+def verify_student(nickname: str, session: Session = Depends(get_session)):
+    clean_nickname = nickname.strip()
+    statement = select(Student).where(func.lower(Student.name) == clean_nickname.lower())
+    student = session.exec(statement).first()
+    if student:
+        return {
+            "exists": True,
+            "message": "Estudiante encontrado.",
+            "student_id": student.id,
+            "nickname": student.name
+        }
+    raise HTTPException(
+        status_code=404, 
+        detail="No hay ningún estudiante con ese uvus registrado. ¿Deseas registrar este uvus?"
+    )
