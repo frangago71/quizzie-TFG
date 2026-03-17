@@ -5,6 +5,7 @@ from typing import List
 from database import get_session
 from routers.quizzes import Quiz
 from models.users import Teacher, Group, Student, TeacherRead
+import re
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -46,3 +47,39 @@ def verify_student(nickname: str, session: Session = Depends(get_session)):
         status_code=404, 
         detail="No hay ningún estudiante con ese uvus registrado. ¿Deseas registrar este uvus?"
     )
+
+@router.post("/students")
+def create_student(nickname: str, session: Session = Depends(get_session)):
+    clean_nickname = nickname.strip()
+    uvus_pattern_number_letters = r"^[a-zA-Z]{3}\d{4}$"
+    uvus_pattern_name = r"^[a-zA-Z]{9,12}\d{0,2}$"
+    is_valid_a = re.match(uvus_pattern_number_letters, clean_nickname)
+    is_valid_b = re.match(uvus_pattern_name, clean_nickname)
+
+    if not (is_valid_a or is_valid_b):
+        raise HTTPException(
+            status_code=400,
+            detail="Formato de uvus incorrecto. Debe tener 3 letras seguidas de 4 números, o las 3 primeras letras de tu nombre y apellidos."
+        )
+
+    existing = session.exec(
+        select(Student).where(Student.name == clean_nickname)
+    ).first()
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="Este nickname ya está registrado.")
+
+    try:
+        new_student = Student(name=clean_nickname)
+        session.add(new_student)
+        session.commit()
+        session.refresh(new_student)
+        
+        return {
+            "success": True,
+            "student_id": new_student.id,
+            "nickname": new_student.name
+        }
+    except Exception:
+        session.rollback()
+        raise HTTPException(status_code=500, detail="Error interno al crear el estudiante.")
