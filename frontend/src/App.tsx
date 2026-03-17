@@ -4,14 +4,17 @@ import CreateQuiz from './forms/CreateQuiz.tsx'
 import ListQuizzes from './forms/ListQuizzes.tsx'
 import SetupRoom from './forms/SetupRoom.tsx' 
 import RoomCode from './forms/RoomCode.tsx'
+import NicknameEntry from './forms/NicknameEntry.tsx'
+import NewNickname from './forms/NewNickname.tsx'
 import './App.css'
-
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const [currentScreen, setCurrentScreen] = useState('inicio');
   
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
+  const [roomInfo, setRoomInfo] = useState<{ id?: number; code: string } | null>(null);
+  const [tempNickname, setTempNickname] = useState('');
 
   return (
     <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
@@ -22,7 +25,7 @@ function App() {
         </div>
         <nav className="sidebar-nav">
           <div 
-            className={`nav-item ${currentScreen === 'inicio' ? 'active' : ''}`} 
+            className={`nav-item ${currentScreen === 'inicio' || currentScreen === 'nickname' || currentScreen === 'notice' ? 'active' : ''}`} 
             onClick={() => setCurrentScreen('inicio')}
           >
             Inicio
@@ -68,10 +71,27 @@ function App() {
               onBack={() => setCurrentScreen('cuestionarios')}
               onOpenSession={(code) => console.log("Código generado:", code)} 
             />
+          ) : currentScreen === 'nickname' ? (
+            <NicknameEntry 
+              roomCode={roomInfo?.code || ''}
+              onNicknameExists={(studentId, nickname) => {
+                console.log("Creando participante con studentId:", studentId, "y nickname:", nickname, "en sala:", roomInfo?.id);
+              }}
+              onNicknameNotFound={(nickname) => {
+                setTempNickname(nickname);
+                setCurrentScreen('notice');
+              }}
+              onBack={() => setCurrentScreen('inicio')}
+            />
+          ) : currentScreen === 'notice' ? (
+            <NewNickname 
+              nickname={tempNickname}
+            />
           ) : (
-            <>
-              <RoomCode onJoinSuccess ={(code) => console.log("Sala encontrada con el código:", code)} />
-            </>
+            <RoomCode onJoinSuccess={(code) => {
+              setRoomInfo({ code: code });
+              setCurrentScreen('nickname');
+            }} />
           )}
 
         </div>
