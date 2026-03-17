@@ -76,6 +76,56 @@ def verify_room_code(fullCode: str, session: Session = Depends(get_session)):
 def get_participants(session: Session = Depends(get_session)):
     return session.exec(select(Participant)).all()
 
+
+@router.post("/participants")
+def create_participant(student_id: int, room_id: int, session: Session = Depends(get_session)):
+    student = session.get(models.Student, student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado.")
+
+    room = session.get(models.Room, room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada.")
+    
+    if room.status not in ["waiting", "live"]:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"No puedes unirte. La sala está en estado: {room.status}"
+        )
+
+    statement = select(models.Participant).where(
+        models.Participant.student_id == student_id,
+        models.Participant.room_id == room_id
+    )
+    existing = session.exec(statement).first()
+    
+    if existing:
+        return {
+            "success": True, 
+            "message": "El estudiante ya forma parte de la sala.",
+            "room_id": room_id,
+            "student_id": student_id
+        }
+
+    new_participant = models.Participant(
+        student_id=student_id,
+        room_id=room_id
+    )
+
+    try:
+        session.add(new_participant)
+        session.commit()
+        
+        return {
+            "success": True,
+            "message": "Participante vinculado correctamente.",
+            "room_id": room_id,
+            "student_id": student_id
+        }
+    except Exception:
+        session.rollback()
+        raise HTTPException(status_code=500, detail="Error al vincular el estudiante a la sala.")
+
 @router.get("/answers", response_model=List[Answer])
 def get_answers(session: Session = Depends(get_session)):
     return session.exec(select(Answer)).all()
