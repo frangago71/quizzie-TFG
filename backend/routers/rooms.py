@@ -4,6 +4,7 @@ from typing import List
 from database import get_session
 from models.rooms import Room, Participant, Answer, RoomStatus
 from models.quizzes import Quiz
+from models.users import Student
 import random
 import string
 
@@ -79,11 +80,11 @@ def get_participants(session: Session = Depends(get_session)):
 
 @router.post("/participants")
 def create_participant(student_id: int, room_id: int, session: Session = Depends(get_session)):
-    student = session.get(models.Student, student_id)
+    student = session.get(Student, student_id)
     if not student:
         raise HTTPException(status_code=404, detail="Estudiante no encontrado.")
 
-    room = session.get(models.Room, room_id)
+    room = session.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada.")
     
@@ -93,9 +94,9 @@ def create_participant(student_id: int, room_id: int, session: Session = Depends
             detail=f"No puedes unirte. La sala está en estado: {room.status}"
         )
 
-    statement = select(models.Participant).where(
-        models.Participant.student_id == student_id,
-        models.Participant.room_id == room_id
+    statement = select(Participant).where(
+        Participant.student_id == student_id,
+        Participant.room_id == room_id
     )
     existing = session.exec(statement).first()
     
@@ -107,7 +108,7 @@ def create_participant(student_id: int, room_id: int, session: Session = Depends
             "student_id": student_id
         }
 
-    new_participant = models.Participant(
+    new_participant = Participant(
         student_id=student_id,
         room_id=room_id
     )
