@@ -103,12 +103,11 @@ function App() {
           )}
 
           {currentScreen === 'lobby' && (
-            // <Lobby
-            //   roomId={roomId}
-            //   nickname={userNickname}
-            //   onStartQuiz={() => console.log("Iniciando cuestionario...")}
-            // />
-            <h3>Sala de espera</h3>
+            <Lobby
+              roomId={roomId}
+              nickname={userNickname}
+              onStartQuiz={() => console.log("Iniciando cuestionario...")}
+            />
           )}
 
         </div>
