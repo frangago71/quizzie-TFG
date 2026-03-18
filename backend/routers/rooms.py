@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlmodel import Session, select
 from typing import List
 from database import get_session
@@ -9,6 +9,38 @@ import random
 import string
 
 router = APIRouter(prefix="/content", tags=["Rooms"])
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[int, List[WebSocket]] = {}
+
+    async def connect(self, websocket: WebSocket, room_id: int):
+        await websocket.accept()
+        if room_id not in self.active_connections:
+            self.active_connections[room_id] = []
+        self.active_connections[room_id].append(websocket)
+
+    def disconnect(self, websocket: WebSocket, room_id: int):
+        if room_id in self.active_connections:
+            if websocket in self.active_connections[room_id]:
+                self.active_connections[room_id].remove(websocket)
+
+    async def broadcast_to_room(self, room_id: int, message: dict):
+        if room_id in self.active_connections:
+            for connection in self.active_connections[room_id]:
+                await connection.send_json(message)
+
+manager = ConnectionManager()
+
+@router.websocket("/rooms/{room_id}/ws")
+async def websocket_endpoint(websocket: WebSocket, room_id: int):
+    await manager.connect(websocket, room_id)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, room_id)
+
 
 @router.get("/rooms", response_model=List[Room])
 def get_rooms(session: Session = Depends(get_session)):
@@ -73,13 +105,22 @@ def verify_room_code(fullCode: str, session: Session = Depends(get_session)):
         detail="La sala no está disponible en este momento."
     )
 
+@router.get("/rooms/{room_id}/participants")
+def get_participants_names_by_room(room_id: int, session: Session = Depends(get_session)):
+    statement = (
+        select(Student.name)
+        .join(Participant, Participant.student_id == Student.id)
+        .where(Participant.room_id == room_id)
+    )
+    participants = session.exec(statement).all()
+    return list(participants)
+
 @router.get("/participants", response_model=List[Participant])
 def get_participants(session: Session = Depends(get_session)):
     return session.exec(select(Participant)).all()
 
-
 @router.post("/participants")
-def create_participant(student_id: int, room_id: int, session: Session = Depends(get_session)):
+async def create_participant(student_id: int, room_id: int, session: Session = Depends(get_session)):
     student = session.get(Student, student_id)
     if not student:
         raise HTTPException(status_code=404, detail="Estudiante no encontrado.")
@@ -101,6 +142,7 @@ def create_participant(student_id: int, room_id: int, session: Session = Depends
     existing = session.exec(statement).first()
     
     if existing:
+        await notify_room_update(room_id, session)
         return {
             "success": True, 
             "message": "El estudiante ya forma parte de la sala.",
@@ -108,24 +150,36 @@ def create_participant(student_id: int, room_id: int, session: Session = Depends
             "student_id": student_id
         }
 
-    new_participant = Participant(
-        student_id=student_id,
-        room_id=room_id
-    )
+    new_participant = Participant(student_id=student_id, room_id=room_id)
 
     try:
         session.add(new_participant)
         session.commit()
-        
+    
+        await notify_room_update(room_id, session)
+
         return {
             "success": True,
             "message": "Participante vinculado correctamente.",
             "room_id": room_id,
             "student_id": student_id
         }
-    except Exception:
+    except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=500, detail="Error al vincular el estudiante a la sala.")
+        raise HTTPException(status_code=500, detail=f"Error al vincular: {str(e)}")
+
+async def notify_room_update(room_id: int, session: Session):
+    statement = (
+        select(Student.name)
+        .join(Participant, Participant.student_id == Student.id)
+        .where(Participant.room_id == room_id)
+    )
+    participants = session.exec(statement).all()
+    
+    await manager.broadcast_to_room(room_id, {
+        "type": "participants_update",
+        "list": list(participants)
+    })
 
 @router.get("/answers", response_model=List[Answer])
 def get_answers(session: Session = Depends(get_session)):
