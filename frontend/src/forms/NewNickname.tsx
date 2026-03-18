@@ -16,7 +16,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
   const handleCreateAndJoin = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`http://localhost:8000/users/students?name=${nickname}`);
+      const res = await axios.post(`http://localhost:8000/users/students?nickname=${nickname}`);
       const newId = res.data.student_id;
 
       alert("Estudiante registrado. Uniéndolo a la sala...");
