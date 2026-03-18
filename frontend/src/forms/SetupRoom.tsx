@@ -5,7 +5,7 @@ import { Calendar, Shuffle, ListTree, Trophy, ChevronLeft, Rocket } from 'lucide
 
 interface SetupRoomProps {
     quizId: number | null;
-    onOpenSession: (joinCode: string) => void;
+    onOpenSession: (joinCode: string, roomId: number) => void;
     onBack: () => void;
 }
 
@@ -45,7 +45,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                 params: { quiz_id: quizId }
             });
             alert("¡Sala creada con éxito! Código de acceso: " + response.data.join_code);
-            onOpenSession(response.data.join_code);
+            onOpenSession(response.data.join_code, response.data.id);
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;

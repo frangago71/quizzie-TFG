@@ -5,7 +5,7 @@ import ListQuizzes from './forms/ListQuizzes.tsx'
 import SetupRoom from './forms/SetupRoom.tsx'
 import RoomCode from './forms/RoomCode.tsx'
 import NicknameEntry from './forms/NicknameEntry.tsx'
-// import Lobby from './forms/Lobby.tsx'
+import Lobby from './forms/Lobby.tsx'
 import './App.css'
 
 function App() {
@@ -74,7 +74,11 @@ function App() {
             <SetupRoom
               quizId={selectedQuizId}
               onBack={() => setCurrentScreen('cuestionarios')}
-              onOpenSession={(code) => console.log("Sesión abierta:", code)}
+              onOpenSession={(code, id) => {
+                setRoomCode(code);
+                setRoomId(id);      
+                setCurrentScreen('lobby'); 
+              }}
             />
           )}
 
@@ -99,7 +103,7 @@ function App() {
           )}
 
           {currentScreen === 'lobby' && (
-            // <Lobby 
+            // <Lobby
             //   roomId={roomId}
             //   nickname={userNickname}
             //   onStartQuiz={() => console.log("Iniciando cuestionario...")}
