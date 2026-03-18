@@ -75,7 +75,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
     <div className="join-container">
       <div className="join-header-text">
         <h2>Sala {roomCode}</h2>
-        <p>Introduce tu uvus para unirte a la sala.</p>
+        <p>Introduce tu uvus para unirte.</p>
       </div>
 
       <div className="join-card">
