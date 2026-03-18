@@ -33,7 +33,7 @@
 .join-card {
   width: 100%;
   max-width: 400px;
-  padding: 2rem; /* Reducimos el padding general de la card */
+  padding: 2rem; 
   display: flex;
   flex-direction: column;
 }
