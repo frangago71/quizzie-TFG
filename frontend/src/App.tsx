@@ -2,21 +2,19 @@ import { useState } from 'react'
 import quizzieLogo from './assets/logo-sidebar.png'
 import CreateQuiz from './forms/CreateQuiz.tsx'
 import ListQuizzes from './forms/ListQuizzes.tsx'
-import SetupRoom from './forms/SetupRoom.tsx' 
+import SetupRoom from './forms/SetupRoom.tsx'
 import RoomCode from './forms/RoomCode.tsx'
 import NicknameEntry from './forms/NicknameEntry.tsx'
-import NewNickname from './forms/NewNickname.tsx'
 import './App.css'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const [currentScreen, setCurrentScreen] = useState('inicio');
-  
+
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
-  
+
   const [roomCode, setRoomCode] = useState('');
   const [roomId, setRoomId] = useState<number>(0);
-  const [tempNickname, setTempNickname] = useState('');
 
   return (
     <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
@@ -26,23 +24,23 @@ function App() {
           <img src={quizzieLogo} alt="Quizzie Logo" className="sidebar-logo" />
         </div>
         <nav className="sidebar-nav">
-          <div 
-            className={`nav-item ${['inicio', 'nickname', 'newnickname'].includes(currentScreen) ? 'active' : ''}`} 
+          <div
+            className={`nav-item ${['inicio', 'nickname', 'newnickname'].includes(currentScreen) ? 'active' : ''}`}
             onClick={() => setCurrentScreen('inicio')}
           >
             Inicio
           </div>
-          <div 
-            className={`nav-item ${['cuestionarios', 'setup-room'].includes(currentScreen) ? 'active' : ''}`} 
+          <div
+            className={`nav-item ${['cuestionarios', 'setup-room'].includes(currentScreen) ? 'active' : ''}`}
             onClick={() => setCurrentScreen('cuestionarios')}
-          > 
+          >
             Listar cuestionarios
           </div>
           <div className="nav-item">Ajustes</div>
-          <div 
-            className={`nav-item ${currentScreen === 'crear' ? 'active' : ''}`} 
+          <div
+            className={`nav-item ${currentScreen === 'crear' ? 'active' : ''}`}
             onClick={() => setCurrentScreen('crear')}
-          > 
+          >
             Crear Cuestionario
           </div>
         </nav>
@@ -55,11 +53,12 @@ function App() {
 
       <main className="main-content">
         <div className="content-body">
-          
+
           {currentScreen === 'crear' && (
-            <CreateQuiz 
+            <CreateQuiz
               onCancel={() => setCurrentScreen('inicio')}
-              onSuccess={() => setCurrentScreen('cuestionarios')} />
+              onSuccess={() => setCurrentScreen('cuestionarios')}
+            />
           )}
 
           {currentScreen === 'cuestionarios' && (
@@ -70,29 +69,21 @@ function App() {
           )}
 
           {currentScreen === 'setup-room' && (
-            <SetupRoom 
-              quizId={selectedQuizId} 
+            <SetupRoom
+              quizId={selectedQuizId}
               onBack={() => setCurrentScreen('cuestionarios')}
-              onOpenSession={(code) => console.log("Código generado:", code)} 
+              onOpenSession={(code) => console.log("Sesión abierta:", code)}
             />
           )}
 
           {currentScreen === 'nickname' && (
-            <NicknameEntry 
+            <NicknameEntry
               roomCode={roomCode}
               roomId={roomId}
-              onNicknameExists={() => setCurrentScreen('lobby')}
-              onNicknameNotFound={(nickname) => {
-                setTempNickname(nickname);
-                setCurrentScreen('newnickname');
+              onNicknameExists={() => {
+                setCurrentScreen('lobby');
               }}
               onBack={() => setCurrentScreen('inicio')}
-            />
-          )}
-
-          {currentScreen === 'newnickname' && (
-            <NewNickname 
-              nickname={tempNickname}
             />
           )}
 
@@ -108,7 +99,7 @@ function App() {
             <div className="join-container">
               <div className="join-card">
                 <h2>¡Estás dentro!</h2>
-                <p>Esperando a que el profesor inicie...</p>
+                <p>Esperando a que el profesor inicie el cuestionario en la sala <strong>{roomCode}</strong>.</p>
               </div>
             </div>
           )}

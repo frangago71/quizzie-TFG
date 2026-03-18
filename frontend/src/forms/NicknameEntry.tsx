@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import NewNickname from './NewNickname.tsx';
 import './NicknameEntry.css';
 
 interface NicknameEntryProps {
   roomCode: string;
   roomId: number;
   onNicknameExists: (studentId: number, nickname: string) => void;
-  onNicknameNotFound: (nickname: string) => void;
   onBack: () => void;
 }
 
 const NicknameEntry: React.FC<NicknameEntryProps> = ({ 
-  roomCode, roomId, onNicknameExists, onNicknameNotFound, onBack 
+  roomCode, roomId, onNicknameExists, onBack 
 }) => {
   const [nickname, setNickname] = useState('');
   const [roomStatus, setRoomStatus] = useState<string>('waiting'); 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchRoomStatus = async () => {
@@ -38,7 +39,8 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
       const verifyRes = await axios.get(`http://localhost:8000/users/students/verify/${cleanNickname}`);
       
       if (verifyRes.data.exists) {
-        alert("¡Nickname verificado! Bienvenido de nuevo.");
+        alert("¡Nickname verificado! Uniéndose a sala...");
+        
         await axios.post(`http://localhost:8000/content/participants`, null, {
           params: {
             student_id: verifyRes.data.student_id,
@@ -47,12 +49,12 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
         });
         onNicknameExists(verifyRes.data.student_id, verifyRes.data.nickname);
       } else {
-        alert("El nickname no existe. Redirigiendo al registro...");
-        onNicknameNotFound(cleanNickname);
+        alert("El nickname no existe. Abriendo ventana de registro.");
+        setShowModal(true);
       }
 
     } catch (error: any) {
-      alert(error.response?.data?.detail || "Error al conectar con el servidor");
+      alert("Error en el proceso: " + (error.response?.data?.detail || error.message));
     } finally {
       setIsProcessing(false);
     }
@@ -90,7 +92,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
             onClick={handleVerifyNickname}
             disabled={!nickname.trim() || isProcessing}
           >
-            {isProcessing ? 'Entrando...' : 'Siguiente'}
+            {isProcessing ? 'Procesando...' : 'Siguiente'}
           </button>
           <button className="btn-back-link" onClick={onBack} disabled={isProcessing}>
             Volver atrás
@@ -103,6 +105,18 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
           {statusInfo.text}
         </span>
       </div>
+
+      {showModal && (
+        <NewNickname 
+          nickname={nickname.trim()}
+          roomId={roomId}
+          onConfirm={(id, name) => {
+            setShowModal(false);
+            onNicknameExists(id, name);
+          }}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
