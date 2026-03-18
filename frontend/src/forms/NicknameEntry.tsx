@@ -6,7 +6,7 @@ import './NicknameEntry.css';
 interface NicknameEntryProps {
   roomCode: string;
   roomId: number;
-  onNicknameExists: (studentId: number, nickname: string) => void;
+  onNicknameExists: (nickname: string) => void;
   onBack: () => void;
 }
 
@@ -54,7 +54,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
             room_id: roomId
           }
         });
-        onNicknameExists(verifyRes.data.student_id, verifyRes.data.nickname);
+        onNicknameExists(verifyRes.data.nickname);
       } else {
         alert("El uvus no existe. Abriendo ventana de registro.");
         setShowModal(true);
@@ -117,9 +117,9 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
         <NewNickname
           nickname={nickname.trim()}
           roomId={roomId}
-          onConfirm={(id, name) => {
+          onConfirm={(name) => {
             setShowModal(false);
-            onNicknameExists(id, name);
+            onNicknameExists(name);
           }}
           onCancel={() => setShowModal(false)}
         />

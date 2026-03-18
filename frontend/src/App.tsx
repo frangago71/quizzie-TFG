@@ -5,6 +5,7 @@ import ListQuizzes from './forms/ListQuizzes.tsx'
 import SetupRoom from './forms/SetupRoom.tsx'
 import RoomCode from './forms/RoomCode.tsx'
 import NicknameEntry from './forms/NicknameEntry.tsx'
+// import Lobby from './forms/Lobby.tsx'
 import './App.css'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
 
   const [roomCode, setRoomCode] = useState('');
   const [roomId, setRoomId] = useState<number>(0);
+  const [userNickname, setUserNickname] = useState<string | undefined>(undefined);
 
   return (
     <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
@@ -80,7 +82,8 @@ function App() {
             <NicknameEntry
               roomCode={roomCode}
               roomId={roomId}
-              onNicknameExists={() => {
+              onNicknameExists={(nickname) => {
+                setUserNickname(nickname);
                 setCurrentScreen('lobby');
               }}
               onBack={() => setCurrentScreen('inicio')}
@@ -96,12 +99,12 @@ function App() {
           )}
 
           {currentScreen === 'lobby' && (
-            <div className="join-container">
-              <div className="join-card">
-                <h2>¡Estás dentro!</h2>
-                <p>Esperando a que el profesor inicie el cuestionario en la sala <strong>{roomCode}</strong>.</p>
-              </div>
-            </div>
+            // <Lobby 
+            //   roomId={roomId}
+            //   nickname={userNickname}
+            //   onStartQuiz={() => console.log("Iniciando cuestionario...")}
+            // />
+            <h3>Sala de espera</h3>
           )}
 
         </div>
