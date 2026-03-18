@@ -10,11 +10,11 @@ interface NicknameEntryProps {
   onBack: () => void;
 }
 
-const NicknameEntry: React.FC<NicknameEntryProps> = ({ 
-  roomCode, roomId, onNicknameExists, onBack 
+const NicknameEntry: React.FC<NicknameEntryProps> = ({
+  roomCode, roomId, onNicknameExists, onBack
 }) => {
   const [nickname, setNickname] = useState('');
-  const [roomStatus, setRoomStatus] = useState<string>('waiting'); 
+  const [roomStatus, setRoomStatus] = useState<string>('waiting');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -33,14 +33,21 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
   const handleVerifyNickname = async () => {
     const cleanNickname = nickname.trim();
     if (!cleanNickname || isProcessing) return;
+    const patternA = /^[a-zA-Z]{3}\d{4}$/;
+    const patternB = /^[a-zA-Z]{9,12}\d{0,2}$/;
+    const isValid = patternA.test(cleanNickname) || patternB.test(cleanNickname);
 
+    if (!isValid) {
+      alert("Formato de uvus inválido. Debe contener: \n- 3 letras y 4 números (ej. abc1234) \n- o las primeras letras de tu nombre y apellidos");
+      return; 
+    }
     setIsProcessing(true);
     try {
       const verifyRes = await axios.get(`http://localhost:8000/users/students/verify/${cleanNickname}`);
-      
+
       if (verifyRes.data.exists) {
-        alert("¡Nickname verificado! Uniéndose a sala...");
-        
+        alert("¡Uvus verificado! Uniéndose a sala...");
+
         await axios.post(`http://localhost:8000/content/participants`, null, {
           params: {
             student_id: verifyRes.data.student_id,
@@ -49,7 +56,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
         });
         onNicknameExists(verifyRes.data.student_id, verifyRes.data.nickname);
       } else {
-        alert("El nickname no existe. Abriendo ventana de registro.");
+        alert("El uvus no existe. Abriendo ventana de registro.");
         setShowModal(true);
       }
 
@@ -60,8 +67,8 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
     }
   };
 
-  const statusInfo = roomStatus === 'live' 
-    ? { text: 'En curso', class: 'status-live' } 
+  const statusInfo = roomStatus === 'live'
+    ? { text: 'En curso', class: 'status-live' }
     : { text: 'En espera', class: 'status-waiting' };
 
   return (
@@ -87,7 +94,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
         </div>
 
         <div className="action-buttons">
-          <button 
+          <button
             className="btn-main magenta full-width"
             onClick={handleVerifyNickname}
             disabled={!nickname.trim() || isProcessing}
@@ -107,7 +114,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
       </div>
 
       {showModal && (
-        <NewNickname 
+        <NewNickname
           nickname={nickname.trim()}
           roomId={roomId}
           onConfirm={(id, name) => {
