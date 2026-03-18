@@ -14,15 +14,34 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, onStartQuiz }) => {
   const isHost = !nickname;
 
   useEffect(() => {
-    const fetchParticipants = async () => {
+    const fetchInitialParticipants = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/content/rooms/${roomId}/participants`);
         setParticipants(res.data);
       } catch (error) {
-        console.error("Error al cargar participantes:", error);
+        console.error("Error al cargar participantes iniciales:", error);
       }
     };
-    fetchParticipants();
+
+    fetchInitialParticipants();
+
+    const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
+
+    ws.onopen = () => console.log("Conectado al servidor de tiempo real");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "participants_update") {
+        setParticipants(data.list); 
+      }
+    };
+
+    ws.onerror = (error) => console.error("Error en WebSocket:", error);
+
+    return () => {
+      ws.close();
+    };
   }, [roomId]);
 
   const maxVisible = 15;
