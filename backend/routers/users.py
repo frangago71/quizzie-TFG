@@ -34,19 +34,18 @@ def get_students(session: Session = Depends(get_session)):
 @router.get("/students/verify/{nickname}")
 def verify_student(nickname: str, session: Session = Depends(get_session)):
     clean_nickname = nickname.strip()
-    statement = select(Student).where(func.lower(Student.name) == clean_nickname.lower())
-    student = session.exec(statement).first()
-    if student:
+    student = session.query(Student).filter(func.lower(Student.name) == func.lower(clean_nickname)).first()
+    if not student:
         return {
-            "exists": True,
-            "message": "Estudiante encontrado.",
-            "student_id": student.id,
-            "nickname": student.name
+            "exists": False, 
+            "message": "Nickname no encontrado en la base de datos"
         }
-    raise HTTPException(
-        status_code=404, 
-        detail="No hay ningún estudiante con ese uvus registrado. ¿Deseas registrar este uvus?"
-    )
+    
+    return {
+        "exists": True, 
+        "student_id": student.id, 
+        "nickname": student.name
+    }
 
 @router.post("/students")
 def create_student(nickname: str, session: Session = Depends(get_session)):
