@@ -13,7 +13,9 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState('inicio');
   
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
-  const [roomInfo, setRoomInfo] = useState<{ id?: number; code: string } | null>(null);
+  
+  const [roomCode, setRoomCode] = useState('');
+  const [roomId, setRoomId] = useState<number>(0);
   const [tempNickname, setTempNickname] = useState('');
 
   return (
@@ -25,20 +27,18 @@ function App() {
         </div>
         <nav className="sidebar-nav">
           <div 
-            className={`nav-item ${currentScreen === 'inicio' || currentScreen === 'nickname' || currentScreen === 'notice' ? 'active' : ''}`} 
+            className={`nav-item ${['inicio', 'nickname', 'newnickname'].includes(currentScreen) ? 'active' : ''}`} 
             onClick={() => setCurrentScreen('inicio')}
           >
             Inicio
           </div>
-          
           <div 
-            className={`nav-item ${currentScreen === 'cuestionarios' || currentScreen === 'setup-room' ? 'active' : ''}`} 
+            className={`nav-item ${['cuestionarios', 'setup-room'].includes(currentScreen) ? 'active' : ''}`} 
             onClick={() => setCurrentScreen('cuestionarios')}
           > 
             Listar cuestionarios
           </div>
           <div className="nav-item">Ajustes</div>
-          
           <div 
             className={`nav-item ${currentScreen === 'crear' ? 'active' : ''}`} 
             onClick={() => setCurrentScreen('crear')}
@@ -56,42 +56,61 @@ function App() {
       <main className="main-content">
         <div className="content-body">
           
-          {currentScreen === 'crear' ? (
+          {currentScreen === 'crear' && (
             <CreateQuiz 
               onCancel={() => setCurrentScreen('inicio')}
               onSuccess={() => setCurrentScreen('cuestionarios')} />
-          ) : currentScreen === 'cuestionarios' ? (
+          )}
+
+          {currentScreen === 'cuestionarios' && (
             <ListQuizzes onStartRoom={(id) => {
               setSelectedQuizId(id);
               setCurrentScreen('setup-room');
             }} />
-          ) : currentScreen === 'setup-room' ? (
+          )}
+
+          {currentScreen === 'setup-room' && (
             <SetupRoom 
               quizId={selectedQuizId} 
               onBack={() => setCurrentScreen('cuestionarios')}
               onOpenSession={(code) => console.log("Código generado:", code)} 
             />
-          ) : currentScreen === 'nickname' ? (
+          )}
+
+          {currentScreen === 'nickname' && (
             <NicknameEntry 
-              roomCode={roomInfo?.code || ''}
-              onNicknameExists={(studentId, nickname) => {
-                console.log("Creando participante con studentId:", studentId, "y nickname:", nickname, "en sala:", roomInfo?.id);
-              }}
+              roomCode={roomCode}
+              roomId={roomId}
+              onNicknameExists={() => setCurrentScreen('lobby')}
               onNicknameNotFound={(nickname) => {
                 setTempNickname(nickname);
-                setCurrentScreen('notice');
+                setCurrentScreen('newnickname');
               }}
               onBack={() => setCurrentScreen('inicio')}
             />
-          ) : currentScreen === 'notice' ? (
+          )}
+
+          {currentScreen === 'newnickname' && (
             <NewNickname 
               nickname={tempNickname}
             />
-          ) : (
-            <RoomCode onJoinSuccess={(code) => {
-              setRoomInfo({ code: code });
+          )}
+
+          {currentScreen === 'inicio' && (
+            <RoomCode onJoinSuccess={(code, id) => {
+              setRoomCode(code);
+              setRoomId(id);
               setCurrentScreen('nickname');
             }} />
+          )}
+
+          {currentScreen === 'lobby' && (
+            <div className="join-container">
+              <div className="join-card">
+                <h2>¡Estás dentro!</h2>
+                <p>Esperando a que el profesor inicie...</p>
+              </div>
+            </div>
           )}
 
         </div>

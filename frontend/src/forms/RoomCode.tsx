@@ -3,7 +3,7 @@ import axios from 'axios';
 import './RoomCode.css';
 
 interface RoomCodeProps {
-  onJoinSuccess: (code: string) => void;
+  onJoinSuccess: (code: string, room_id: number) => void;
 }
 
 const RoomCode: React.FC<RoomCodeProps> = ({ onJoinSuccess }) => {
@@ -40,7 +40,7 @@ const RoomCode: React.FC<RoomCodeProps> = ({ onJoinSuccess }) => {
 
       if (response.data.success) {
         alert("¡Código correcto!");
-        onJoinSuccess(fullCode);
+        onJoinSuccess(fullCode, response.data.room_id);
       }
     } catch (error: any) {
       const errorMsg = error.response?.data?.detail || "Error al verificar el código";
