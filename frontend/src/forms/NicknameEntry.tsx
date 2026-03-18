@@ -4,57 +4,63 @@ import './NicknameEntry.css';
 
 interface NicknameEntryProps {
   roomCode: string;
+  roomId: number;
   onNicknameExists: (studentId: number, nickname: string) => void;
   onNicknameNotFound: (nickname: string) => void;
   onBack: () => void;
 }
 
 const NicknameEntry: React.FC<NicknameEntryProps> = ({ 
-  roomCode, 
-  onNicknameExists, 
-  onNicknameNotFound,
-  onBack 
+  roomCode, roomId, onNicknameExists, onNicknameNotFound, onBack 
 }) => {
   const [nickname, setNickname] = useState('');
   const [roomStatus, setRoomStatus] = useState<string>('waiting'); 
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const fetchRoomStatus = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/content/rooms/verify/${roomCode}`);
-        if (response.data.status) {
-          setRoomStatus(response.data.status);
-        }
+        if (response.data.status) setRoomStatus(response.data.status);
       } catch (error) {
-        console.error("Error al recuperar el estado de la sala", error);
+        console.error(`Error al recuperar el estado de la sala:`, error);
       }
     };
-
     fetchRoomStatus();
   }, [roomCode]);
 
   const handleVerifyNickname = async () => {
-    if (!nickname.trim()) return;
+    const cleanNickname = nickname.trim();
+    if (!cleanNickname || isProcessing) return;
+
+    setIsProcessing(true);
     try {
-      const response = await axios.get(`http://localhost:8000/students/verify/${nickname}`);
-      if (response.data.exists) {
-        onNicknameExists(response.data.student_id, response.data.nickname);
-      }
-    } catch (error: any) {
-      if (error.response?.status === 404) {
-        onNicknameNotFound(nickname.trim());
+      const verifyRes = await axios.get(`http://localhost:8000/users/students/verify/${cleanNickname}`);
+      
+      if (verifyRes.data.exists) {
+        alert("¡Nickname verificado! Bienvenido de nuevo.");
+        await axios.post(`http://localhost:8000/content/participants`, null, {
+          params: {
+            student_id: verifyRes.data.student_id,
+            room_id: roomId
+          }
+        });
+        onNicknameExists(verifyRes.data.student_id, verifyRes.data.nickname);
       } else {
-        alert(error.response?.data?.detail || "Error al verificar el nickname");
+        alert("El nickname no existe. Redirigiendo al registro...");
+        onNicknameNotFound(cleanNickname);
       }
+
+    } catch (error: any) {
+      alert(error.response?.data?.detail || "Error al conectar con el servidor");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const getStatusDisplay = () => {
-    if (roomStatus === 'live') return { text: 'En curso', class: 'status-live' };
-    return { text: 'En espera', class: 'status-waiting' };
-  };
-
-  const statusInfo = getStatusDisplay();
+  const statusInfo = roomStatus === 'live' 
+    ? { text: 'En curso', class: 'status-live' } 
+    : { text: 'En espera', class: 'status-waiting' };
 
   return (
     <div className="join-container">
@@ -65,7 +71,6 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
 
       <div className="join-card">
         <span className="code-label">¿Cómo te llamas?</span>
-        
         <div className="nickname-input-wrapper">
           <span className="at-icon">@</span>
           <input
@@ -75,18 +80,19 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
             onChange={(e) => setNickname(e.target.value)}
             className="nickname-input"
             autoFocus
+            disabled={isProcessing}
           />
         </div>
 
         <div className="action-buttons">
           <button 
-            className="btn-main magenta"
+            className="btn-main magenta full-width"
             onClick={handleVerifyNickname}
-            disabled={!nickname.trim()}
+            disabled={!nickname.trim() || isProcessing}
           >
-            Siguiente
+            {isProcessing ? 'Entrando...' : 'Siguiente'}
           </button>
-          <button className="btn-back-link" onClick={onBack}>
+          <button className="btn-back-link" onClick={onBack} disabled={isProcessing}>
             Volver atrás
           </button>
         </div>
