@@ -106,6 +106,7 @@ function App() {
             <Lobby
               roomId={roomId}
               nickname={userNickname}
+              roomCode={roomCode}
               onStartQuiz={() => console.log("Iniciando cuestionario...")}
             />
           )}

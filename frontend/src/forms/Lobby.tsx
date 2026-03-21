@@ -6,11 +6,13 @@ import axios from 'axios';
 interface LobbyProps {
   roomId: number;
   nickname?: string;
+  roomCode?: string;
   onStartQuiz?: () => void;
 }
 
-const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, onStartQuiz }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }) => {
   const [participants, setParticipants] = useState<string[]>([]);
+  
   const isHost = !nickname;
 
   useEffect(() => {
@@ -47,14 +49,14 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, onStartQuiz }) => {
   const maxVisible = 15;
   const hasOverflow = participants.length > maxVisible;
   const overflowCount = hasOverflow ? (participants.length - (maxVisible - 1)) : 0;
-  const displayedNames = hasOverflow ? participants.slice(-(maxVisible - 1)) : participants;
+  const displayedNames = hasOverflow ? participants.slice(-(maxVisible - 1)) : participants; 
 
   return (
     <div className={`lobby-wrapper ${isHost ? 'is-host' : 'is-student'}`}>
       <header className="lobby-header">
         <div className="header-info">
           <h1>
-            {isHost ? "Sala de Espera - Panel del Profesor" : "¡Estás dentro,"} 
+            {isHost ? `Sala de Espera - ${roomCode}` : "¡Estás dentro,"} 
             {!isHost && <span className="accent-text"> {nickname}!</span>}
           </h1>
           <div className="lobby-status">
