@@ -7,13 +7,22 @@ interface LobbyProps {
   roomId: number;
   nickname?: string;
   roomCode?: string;
-  onStartQuiz?: () => void;
+  handleLiveRoom: (data: any) => void;
 }
 
-const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoom }) => {
   const [participants, setParticipants] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const isHost = !nickname;
+
+  const handleStartRoom = async () => {
+    try {
+      await axios.post(`http://localhost:8000/content/rooms/${roomId}/start`);
+    } catch (error) {
+      console.error("Error al iniciar el quiz:", error);
+      alert("No se pudo iniciar el cuestionario. Revisa la consola.");
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -31,16 +40,25 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }
     fetchInitialParticipants();
 
     const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
+
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === "participants_update") setParticipants(data.list); 
+
+      if (data.type === "participants_update") {
+        setParticipants(data.list); 
+      }
+
+      if (data.type === "game_start") {
+        console.log("¡Empieza el cuestionario!", data.data);
+        handleLiveRoom(data.data);
+      }
     };
 
     return () => {
       ws.close();
       window.removeEventListener('resize', handleResize);
     };
-  }, [roomId]);
+  }, [roomId, handleLiveRoom]);
 
   const maxVisible = isMobile ? 12 : 15;
   const hasOverflow = participants.length > maxVisible;
@@ -73,7 +91,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }
             </div>
           </div>
           {isHost && (
-            <button className="btn-start-game" onClick={onStartQuiz}>
+            <button className="btn-start-game" onClick={handleStartRoom}>
               <PlayCircle size={18} />
               Empezar
             </button>

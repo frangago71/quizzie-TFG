@@ -76,8 +76,8 @@ function App() {
               onBack={() => setCurrentScreen('cuestionarios')}
               onOpenSession={(code, id) => {
                 setRoomCode(code);
-                setRoomId(id);      
-                setCurrentScreen('lobby'); 
+                setRoomId(id);
+                setCurrentScreen('lobby');
               }}
             />
           )}
@@ -105,10 +105,21 @@ function App() {
           {currentScreen === 'lobby' && (
             <Lobby
               roomId={roomId}
-              nickname={userNickname}
               roomCode={roomCode}
-              onStartQuiz={() => console.log("Iniciando cuestionario...")}
+              nickname={userNickname}
+              handleLiveRoom={() => {
+                setCurrentScreen('live-room'); 
+              }}
             />
+          )}
+
+          {currentScreen === 'live-room' && (
+            // <QuizSession
+            //   isHost={!userNickname}
+            //   roomId={roomId}
+            //   initialData={gameData} 
+            // />
+            <h3>Sala activa</h3>
           )}
 
         </div>
