@@ -7,6 +7,7 @@ import RoomCode from './forms/RoomCode.tsx'
 import NicknameEntry from './forms/NicknameEntry.tsx'
 import Lobby from './forms/Lobby.tsx'
 import './App.css'
+import LiveRoom from './forms/LiveRoom.tsx'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
@@ -17,6 +18,7 @@ function App() {
   const [roomCode, setRoomCode] = useState('');
   const [roomId, setRoomId] = useState<number>(0);
   const [userNickname, setUserNickname] = useState<string | undefined>(undefined);
+  const [roomData, setRoomData] = useState<any>(null);
 
   return (
     <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
@@ -107,19 +109,21 @@ function App() {
               roomId={roomId}
               roomCode={roomCode}
               nickname={userNickname}
-              handleLiveRoom={() => {
-                setCurrentScreen('live-room'); 
+              handleLiveRoom={(data) => {
+                setRoomData(data);         
+                setCurrentScreen('live-room');
               }}
             />
           )}
 
           {currentScreen === 'live-room' && (
-            // <QuizSession
-            //   isHost={!userNickname}
-            //   roomId={roomId}
-            //   initialData={gameData} 
-            // />
-            <h3>Sala activa</h3>
+            <LiveRoom
+              isHost={!userNickname}
+              roomCode={roomCode}
+              roomId={roomId}
+              roomData={roomData} 
+              quizId={selectedQuizId ?? undefined}
+            />
           )}
 
         </div>
