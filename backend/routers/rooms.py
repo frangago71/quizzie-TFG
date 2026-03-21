@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from typing import List
 from database import get_session
 from models.rooms import Room, Participant, Answer, RoomStatus
-from models.quizzes import Quiz
+from models.quizzes import Quiz, Question, Option  
 from models.users import Student
 import random
 import string
@@ -114,6 +114,31 @@ def get_participants_names_by_room(room_id: int, session: Session = Depends(get_
     )
     participants = session.exec(statement).all()
     return list(participants)
+
+@router.post("/rooms/{room_id}/start")
+async def start_quiz(room_id: int, session: Session = Depends(get_session)):
+    room = session.get(Room, room_id)
+    statement = (
+        select(Question)
+        .where(Question.quiz_id == room.quiz_id)
+        .order_by(Question.id)
+    )
+    first_question = session.exec(statement).first()
+
+    await manager.broadcast_to_room(room_id, {
+        "type": "game_start",
+        "data": {
+            "question_id": first_question.id,
+            "text": first_question.text,
+            "response_time": 45, # Segundos para responder, se modificará en el room set up en un futuro
+            "options": [
+                {"id": opt.id, "text": opt.text} 
+                for opt in first_question.options
+            ]
+        }
+    })
+
+    return {"status": "started"}
 
 @router.get("/participants", response_model=List[Participant])
 def get_participants(session: Session = Depends(get_session)):
