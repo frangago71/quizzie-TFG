@@ -12,10 +12,13 @@ interface LobbyProps {
 
 const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }) => {
   const [participants, setParticipants] = useState<string[]>([]);
-  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const isHost = !nickname;
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+
     const fetchInitialParticipants = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/content/rooms/${roomId}/participants`);
@@ -28,25 +31,18 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }
     fetchInitialParticipants();
 
     const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
-
-    ws.onopen = () => console.log("Conectado al servidor de tiempo real");
-
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
-      if (data.type === "participants_update") {
-        setParticipants(data.list); 
-      }
+      if (data.type === "participants_update") setParticipants(data.list); 
     };
-
-    ws.onerror = (error) => console.error("Error en WebSocket:", error);
 
     return () => {
       ws.close();
+      window.removeEventListener('resize', handleResize);
     };
   }, [roomId]);
 
-  const maxVisible = 15;
+  const maxVisible = isMobile ? 12 : 15;
   const hasOverflow = participants.length > maxVisible;
   const overflowCount = hasOverflow ? (participants.length - (maxVisible - 1)) : 0;
   const displayedNames = hasOverflow ? participants.slice(-(maxVisible - 1)) : participants; 
@@ -56,20 +52,21 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }
       <header className="lobby-header">
         <div className="header-info">
           <h1>
-            {isHost ? `Sala de Espera - ${roomCode}` : "¡Estás dentro,"} 
-            {!isHost && <span className="accent-text"> {nickname}!</span>}
+            {isHost ? `Sala de Espera - ${roomCode}` : 
+              <>¡Estás dentro, <span className="accent-text">{nickname}!</span></>
+            }
           </h1>
           <div className="lobby-status">
             <span className="dot"></span>
             <span className="status-text">
-              {isHost ? "Esperando a que todos los participantes se unan..." : "Esperando a que comience el cuestionario..."}
+              {isHost ? "Esperando participantes..." : "Esperando a que comience el cuestionario..."}
             </span>
           </div>
         </div>
 
         <div className="header-actions">
           <div className="stat-badge">
-            <div className="stat-icon-box"><Users size={18} /></div>
+            <div className="stat-icon-box"><Users size={20} /></div>
             <div className="stat-content">
               <span className="stat-label">USUARIOS EN LA SALA</span>
               <span className="stat-number">{participants.length}</span>
@@ -78,7 +75,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, onStartQuiz }
           {isHost && (
             <button className="btn-start-game" onClick={onStartQuiz}>
               <PlayCircle size={18} />
-              Empezar Cuestionario
+              Empezar
             </button>
           )}
         </div>

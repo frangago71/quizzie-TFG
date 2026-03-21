@@ -175,3 +175,80 @@
   font-weight: 800;
   font-size: 1.2rem;
 }
+
+@media (max-width: 768px) {
+  .lobby-wrapper {
+    padding: 10px 15px;
+  }
+
+  .header-info h1 {
+    font-size: 2.2rem; 
+    line-height: 1.2;
+    word-break: break-word; 
+  }
+
+  .header-info h1 {
+    font-size: 1.8rem; 
+    letter-spacing: -0.5px;
+  }
+  
+  .lobby-header {
+    align-items: center; 
+  }
+
+  .status-text {
+    font-size: 0.85rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .stat-badge {
+    width: 100%; 
+    justify-content: center;
+    padding: 15px;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+  }
+
+  .participants-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px 10px;
+  }
+
+  .participants-card {
+    padding: 20px 15px;
+  }
+
+  .avatar-icon-wrapper {
+    width: 65px;
+    height: 65px;
+  }
+
+  .header-actions {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column; 
+    gap: 15px; 
+    align-items: center;
+  }
+
+  .stat-badge {
+    width: 100%; 
+    max-width: 320px; 
+    justify-content: center;
+  }
+
+  .btn-start-game {
+    width: 100%; 
+    max-width: 320px;
+    justify-content: center;
+    padding: 18px; 
+    font-size: 1.1rem;
+  }
+}
