@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Timer, Users, HelpCircle, Eye, EyeOff, Send, XCircle } from 'lucide-react';
+import { Timer, Users, HelpCircle, Eye, EyeOff, Send } from 'lucide-react';
 import './LiveRoom.css';
 import axios from 'axios';
 
@@ -125,7 +125,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId 
 
                     {isHost && step === 'answering' && (
                         <button className="lr-btn-finish" onClick={() => setTimeLeft(0)}>
-                            <XCircle size={18} /> Terminar
+                            Terminar
                         </button>
                     )}
                 </div>
