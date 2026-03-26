@@ -89,12 +89,12 @@ def verify_room_code(fullCode: str, session: Session = Depends(get_session)):
             status_code=404, 
             detail="No hay ninguna sala con ese código."
         )
-    if room.status == "finished":
+    if room.status == RoomStatus.FINISHED:
         raise HTTPException(
             status_code=400, 
             detail="La sala ya está en finished."
         )
-    if room.status in ["waiting", "live"]:
+    if room.status in [RoomStatus.WAITING, RoomStatus.LIVE]:
         return {
             "success": True,
             "room_id": room.id,
@@ -125,10 +125,17 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     )
     first_question = session.exec(statement).first()
 
+    if room.status != RoomStatus.WAITING:
+        raise HTTPException(status_code=400, detail="No se puede iniciar. La sala no está en estado WAITING.")
+
+    room.status = RoomStatus.LIVE
+    room.current_question_index = 1
+    session.commit()
+
     await manager.broadcast_to_room(room_id, {
         "type": "game_start",
         "data": {
-            "question_id": first_question.id,
+            "question_id": 1,
             "text": first_question.text,
             "response_time": 45, # Segundos para responder, se modificará en el room set up en un futuro
             "options": [
@@ -139,6 +146,50 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     })
 
     return {"status": "started"}
+
+@router.patch("/rooms/{room_id}/next-question")
+async def next_question(room_id: int, db: Session = Depends(get_session)):
+    room = db.query(Room).filter(Room.id == room_id).first()
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+
+    if room.status != RoomStatus.LIVE:
+        raise HTTPException(
+            status_code=400, 
+            detail="La sala debe estar abierta para pasar de pregunta"
+        )
+
+    questions = db.query(Question).filter(Question.quiz_id == room.quiz_id).order_by(Question.id).all()
+        
+    next_index = room.current_question_index + 1
+
+    if next_index <= len(questions):
+        next_q = questions[next_index - 1]
+        room.current_question_index = next_index
+        room.question_time = datetime.utcnow()
+        db.commit()
+
+        await manager.broadcast_to_room(room_id, {
+            "type": "next_question",
+            "data": {
+                "question_index": next_index,
+                "text": next_q.text,
+                "options": [{"id": opt.id, "text": opt.text} for opt in next_q.options]
+            }
+        })
+        return {"status": "success", "index": next_index}
+
+    else:
+        room.status = RoomStatus.FINISHED
+        room.current_question_index = 0
+        room.join_code = None
+        db.commit()
+
+        await manager.broadcast_to_room(room_id, {
+            "type": "game_over",
+            "data": {"status": "FINISHED"}
+        })
+        return {"status": "FINISHED", "message": "Quiz completado"}
 
 @router.get("/participants", response_model=List[Participant])
 def get_participants(session: Session = Depends(get_session)):
@@ -154,10 +205,10 @@ async def create_participant(student_id: int, room_id: int, session: Session = D
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada.")
     
-    if room.status not in ["waiting", "live"]:
+    if room.status not in [RoomStatus.WAITING, RoomStatus.LIVE]:
         raise HTTPException(
             status_code=400, 
-            detail=f"No puedes unirte. La sala está en estado: {room.status}"
+            detail=f"No puedes unirte. La sala está cerrada"
         )
 
     statement = select(Participant).where(

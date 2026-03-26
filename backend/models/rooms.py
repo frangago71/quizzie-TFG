@@ -17,9 +17,10 @@ class RoomStatus(str, Enum):
     
 class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    join_code: str = Field(unique=True)
+    join_code: Optional[str] = Field(default=123456, unique=True)
     status: RoomStatus = Field(default=RoomStatus.WAITING)  
     created_at: datetime = Field(default_factory=get_utc_now)
+    current_question_index: int = Field(default=0)
     
     teacher_id: int = Field(foreign_key="teacher.id")
     teacher: "Teacher" = Relationship(back_populates="rooms")
