@@ -166,7 +166,6 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
     if next_index <= len(questions):
         next_q = questions[next_index - 1]
         room.current_question_index = next_index
-        room.question_time = datetime.utcnow()
         db.commit()
 
         await manager.broadcast_to_room(room_id, {
