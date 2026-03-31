@@ -250,6 +250,37 @@
   text-align: center;
 }
 
+.host-controls-fixed {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 1000;
+}
+
+.next-question-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background-color: var(--primary-magenta);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.next-question-btn:hover {
+    transform: scale(1.05) translateX(5px);
+    background: var(--primary-magenta);
+}
+
+.next-question-btn svg {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
 .icon-magenta { color: var(--primary-magenta); }
 .eye-toggle-btn { background: none; border: none; color: var(--primary-magenta); cursor: pointer; display: flex; }
 

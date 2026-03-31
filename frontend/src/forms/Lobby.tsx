@@ -17,7 +17,9 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
   const handleStartRoom = async () => {
     try {
-      await axios.post(`http://localhost:8000/content/rooms/${roomId}/start`);
+      const r = await axios.post(`http://localhost:8000/content/rooms/${roomId}/start`);
+      handleLiveRoom(r.data);
+      
     } catch (error) {
       console.error("Error al iniciar el quiz:", error);
       alert("No se pudo iniciar el cuestionario. Revisa la consola.");

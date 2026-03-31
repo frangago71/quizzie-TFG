@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import quizzieLogo from './assets/logo-sidebar.png'
 import CreateQuiz from './forms/CreateQuiz.tsx'
 import ListQuizzes from './forms/ListQuizzes.tsx'
@@ -8,6 +8,7 @@ import NicknameEntry from './forms/NicknameEntry.tsx'
 import Lobby from './forms/Lobby.tsx'
 import './App.css'
 import LiveRoom from './forms/LiveRoom.tsx'
+import axios from 'axios' 
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
@@ -19,6 +20,38 @@ function App() {
   const [roomId, setRoomId] = useState<number>(0);
   const [userNickname, setUserNickname] = useState<string | undefined>(undefined);
   const [roomData, setRoomData] = useState<any>(null);
+
+  const updateRoomData = (newData: any) => {
+    setRoomData(newData);
+  };
+
+  useEffect(() => {
+    let interval: number | undefined;
+
+    if (currentScreen === 'live-room' && roomId) {
+      interval = setInterval(async () => {
+        try {
+          const response = await axios.get(`http://localhost:8000/content/rooms/${roomId}`);
+          
+          if (response.data.current_question_index !== roomData?.current_question_index) {
+            console.log("Nueva pregunta detectada vía polling");
+            setRoomData(response.data);
+          }
+
+          if (response.data.status === 'FINISHED') {
+            setRoomData(null);
+            setCurrentScreen('inicio');
+          }
+        } catch (error) {
+          console.error("Error actualizando datos de sala:", error);
+        }
+      }, 2000); 
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [currentScreen, roomId, roomData?.current_question_index]);
 
   return (
     <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
@@ -123,6 +156,7 @@ function App() {
               roomId={roomId}
               roomData={roomData} 
               quizId={selectedQuizId ?? undefined}
+              onUpdateData={updateRoomData}
             />
           )}
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Timer, Users, HelpCircle, Eye, EyeOff, Send } from 'lucide-react';
+import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight } from 'lucide-react';
 import './LiveRoom.css';
 import axios from 'axios';
 
@@ -9,10 +9,10 @@ interface LiveRoomProps {
     roomId: number;
     roomCode?: string;
     quizId?: number;
+    onUpdateData: (data: any) => void;
 }
 
-// const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode, quizId }) => {
-const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId }) => {
+const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode, quizId, onUpdateData }) => {
     const [phase, setPhase] = useState<'countdown' | 'playing'>('countdown');
     const [step, setStep] = useState<'reading' | 'answering'>('reading');
     const [count, setCount] = useState(3);
@@ -22,7 +22,37 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId 
     const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
     const [isSent, setIsSent] = useState(false);
 
-    const currentAnswersCount = 0;
+    if (!roomData || !roomData.options) {
+        return <div className="live-room-wrapper">Cargando...</div>;
+    }
+
+    const handleNextQuestion = async () => {
+        try {
+            const response = await axios.patch(`http://localhost:8000/content/rooms/${roomId}/next-question`);
+            if (response.data.status === "FINISHED") {
+                alert("¡Cuestionario finalizado!");
+                window.location.href = '/';
+                return;
+            }
+            if (response.data && response.data.text) {
+                onUpdateData(response.data);
+            }
+        } catch (error: any) {
+            if (error.response?.status === 400) {
+                alert("No hay más preguntas disponibles.");
+                window.location.href = '/';
+            } else {
+                console.error("Error al pasar de pregunta:", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        setStep('reading');
+        setTimeLeft(5);
+        setIsSent(false);
+        setSelectedOptionId(null);
+    }, [roomData.current_question_index, roomData.text]);
 
     useEffect(() => {
         const fetchQuizData = async () => {
@@ -89,7 +119,6 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId 
                             <span className="header-pin-badge">PIN DE SALA: {roomCode}</span>
                             <h1 className="header-quiz-title">{quizTitle || "Responda a las preguntas"}</h1>
                         </div>
-
                         <div className="header-right-stats">
                             <div className="live-stat-badge">
                                 {isHost ? (
@@ -100,7 +129,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId 
                                 <div className="stat-texts">
                                     <span className="stat-label">RESPUESTAS</span>
                                     <span className="stat-number">
-                                        {isHost ? (showAnswersCount ? currentAnswersCount : "••") : currentAnswersCount}
+                                        {isHost ? (showAnswersCount ? 0 : "••") : 0}
                                     </span>
                                 </div>
                             </div>
@@ -115,14 +144,12 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId 
                             <span className="time-text-large">{timeLeft}s</span>
                         </div>
                     )}
-
                     <div className="time-progress-container">
                         <div
                             className="time-progress-bar"
                             style={{ width: `${step === 'reading' ? readingProgress : answeringProgress}%` }}
                         />
                     </div>
-
                     {isHost && step === 'answering' && (
                         <button className="lr-btn-finish" onClick={() => setTimeLeft(0)}>
                             Terminar
@@ -170,6 +197,14 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomCode, quizId 
                         )}
                     </section>
                 </main>
+
+                {isHost && (
+                    <div className="host-controls-fixed">
+                        <button className="next-question-btn" onClick={handleNextQuestion}>
+                            <ChevronRight size={28} strokeWidth={3} />
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
