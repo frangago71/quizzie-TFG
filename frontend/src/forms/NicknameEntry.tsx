@@ -6,7 +6,7 @@ import './NicknameEntry.css';
 interface NicknameEntryProps {
   roomCode: string;
   roomId: number;
-  onNicknameExists: (nickname: string) => void;
+  onNicknameExists: (nickname: string, participantId: number) => void;
   onBack: () => void;
 }
 
@@ -33,30 +33,31 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
   const handleVerifyNickname = async () => {
     const cleanNickname = nickname.trim();
     if (!cleanNickname || isProcessing) return;
+    
     const patternA = /^[a-zA-Z]{3}\d{4}$/;
     const patternB = /^[a-zA-Z]{9,12}\d{0,2}$/;
     const isValid = patternA.test(cleanNickname) || patternB.test(cleanNickname);
 
     if (!isValid) {
-      alert("Formato de uvus inválido. Debe contener: \n- 3 letras y 4 números (ej. abc1234) \n- o las primeras letras de tu nombre y apellidos");
+      alert("Formato de uvus inválido.");
       return; 
     }
+
     setIsProcessing(true);
     try {
       const verifyRes = await axios.get(`http://localhost:8000/users/students/verify/${cleanNickname}`);
 
       if (verifyRes.data.exists) {
-        alert("¡Uvus verificado! Uniéndose a sala...");
-
-        await axios.post(`http://localhost:8000/content/participants`, null, {
+        const partRes = await axios.post(`http://localhost:8000/content/participants`, null, {
           params: {
             student_id: verifyRes.data.student_id,
             room_id: roomId
           }
         });
-        onNicknameExists(verifyRes.data.nickname);
+        
+        onNicknameExists(cleanNickname, partRes.data.participant_id);
+        
       } else {
-        alert("El uvus no existe. Abriendo ventana de registro.");
         setShowModal(true);
       }
 
@@ -117,9 +118,9 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
         <NewNickname
           nickname={nickname.trim()}
           roomId={roomId}
-          onConfirm={(name) => {
+          onConfirm={(name, participantId) => {
             setShowModal(false);
-            onNicknameExists(name);
+            onNicknameExists(name, participantId);
           }}
           onCancel={() => setShowModal(false)}
         />

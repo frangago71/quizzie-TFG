@@ -6,7 +6,7 @@ import './NewNickname.css';
 interface NewNicknameProps {
   nickname: string;
   roomId: number;
-  onConfirm: (name: string) => void;
+  onConfirm: (name: string, participantId: number) => void;
   onCancel: () => void;
 }
 
@@ -25,7 +25,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
         params: { student_id: newId, room_id: roomId }
       });
 
-      onConfirm(nickname);
+      onConfirm(nickname, res.data.participant_id);
       
     } catch (err: any) {
       alert("Error al registrar: " + (err.response?.data?.detail || "Error desconocido"));
