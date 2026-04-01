@@ -161,6 +161,7 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     data = {
         "status": room.status,
         "current_question_index": 1,
+        "question_id": first_question.id,
         "text": first_question.text,
         "options": [{"id": opt.id, "text": opt.text} for opt in first_question.options]
     }
@@ -184,6 +185,7 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
 
         data = {
             "current_question_index": next_index,
+            "question_id": next_q.id,
             "text": next_q.text,
             "options": [{"id": opt.id, "text": opt.text} for opt in next_q.options]
         }
