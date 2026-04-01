@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check } from 'lucide-react';
 import './LiveRoom.css';
+import './QuestionResults.css';
 import axios from 'axios';
 
 interface LiveRoomProps {
@@ -22,21 +23,26 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const [showAnswersCount, setShowAnswersCount] = useState(false);
     const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
     const [isSent, setIsSent] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+    const [statistics, setStatistics] = useState<Record<string, number>>({});
 
     useEffect(() => {
-        if (isHost) return; 
-
         const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
-
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
             
-            if (message.type === "next_question" || message.type === "room_start" || message.type === "room_update") {
+            if (["next_question", "room_start", "room_update"].includes(message.type)) {
                 onUpdateData(message.data);
+                setShowResults(false);
                 setPhase('playing');
                 setStep('reading');
                 setCount(0);
                 setTimeLeft(5);
+            }
+            
+            if (message.type === "show_results") {
+                setStatistics(message.data.statistics);
+                setShowResults(true);
             }
 
             if (message.type === "room_finish") {
@@ -44,9 +50,8 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                 window.location.href = '/';
             }
         };
-
         return () => ws.close();
-    }, [roomId, isHost, onUpdateData]);
+    }, [roomId, onUpdateData]);
 
     useEffect(() => {
         setIsSent(false);
@@ -55,39 +60,33 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     const handleNextQuestion = async () => {
         try {
-            const response = await axios.patch(`http://localhost:8000/content/rooms/${roomId}/next-question`);
-            if (response.data.status === "FINISHED") {
-                alert("¡Cuestionario finalizado!");
-                window.location.href = '/';
-                return;
-            }
-            if (response.data && response.data.text) {
-                onUpdateData(response.data);
-                setStep('reading');
-                setTimeLeft(5);
-            }
-        } catch (error: any) {
+            await axios.patch(`http://localhost:8000/content/rooms/${roomId}/next-question`);
+        } catch (error) {
             console.error("Error al pasar de pregunta:", error);
+        }
+    };
+
+    const handleShowResults = async () => {
+        try {
+            await axios.post(`http://localhost:8000/content/rooms/${roomId}/questions/${roomData.question_id}/finish`);
+        } catch (error) {
+            console.error("Error al finalizar pregunta:", error);
         }
     };
 
     const handleSubmitAnswer = async () => {
         if (!selectedOptionId || isSent || isHost || !participantId || !roomData?.question_id) return;
-
         try {
-            const response = await axios.post(`http://localhost:8000/content/answers`, null, {
+            await axios.post(`http://localhost:8000/content/answers`, null, {
                 params: {
                     participant_id: participantId,
                     option_id: selectedOptionId,
                     question_id: roomData.question_id
                 }
             });
-
-            if (response.data.success || response.status === 200 || response.status === 201) {
-                setIsSent(true);
-            }
-        } catch (error: any) {
-            console.error("Error al enviar:", error.response?.data?.detail);
+            setIsSent(true);
+        } catch (error) {
+            console.error("Error al enviar:", error);
         }
     };
 
@@ -142,6 +141,58 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
         );
     }
 
+    if (showResults) {
+        const totalVotes = Object.values(statistics).reduce((a, b) => a + b, 0);
+        return (
+            <div className="live-room-wrapper results-mode">
+                <div className="results-container animate-fade-in">
+                    <h1 className="results-title">{roomData.text}</h1>
+                    <div className="stats-grid">
+                        {roomData.options.map((opt: any, index: number) => (
+                            <div key={opt.id} className="stat-column">
+                                <span className="stat-count-big">{statistics[opt.id.toString()] || 0}</span>
+                                <div className="stat-label-box">
+                                    <span className="stat-letter-tag">Opción {String.fromCharCode(65 + index)}</span>
+                                    <span className="stat-option-text">{opt.text}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="results-summary-row">
+                        <div className="summary-card">
+                            <div className="summary-icon-box bg-blue"><Users size={22} /></div>
+                            <div className="summary-info">
+                                <span className="summary-label">Votos totales</span>
+                                <span className="summary-value">{totalVotes}</span>
+                            </div>
+                        </div>
+                        <div className="summary-card">
+                            <div className="summary-icon-box bg-green"><Check size={22} /></div>
+                            <div className="summary-info">
+                                <span className="summary-label">Precisión</span>
+                                <span className="summary-value">-- %</span>
+                            </div>
+                        </div>
+                        <div className="summary-card">
+                            <div className="summary-icon-box bg-purple"><Timer size={22} /></div>
+                            <div className="summary-info">
+                                <span className="summary-label">Tiempo medio</span>
+                                <span className="summary-value">-- s</span>
+                            </div>
+                        </div>
+                    </div>
+                    {isHost && (
+                        <div className="results-actions">
+                            <button className="btn-continue-host" onClick={handleNextQuestion}>
+                                Siguiente pregunta <ChevronRight size={22} />
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={`live-room-wrapper ${step === 'reading' ? 'reading-mode' : 'answering-mode'}`}>
             <div className="live-content-layout">
@@ -160,7 +211,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                 ) : <Users size={20} className="icon-magenta" />}
                                 <div className="stat-texts">
                                     <span className="stat-label">RESPUESTAS</span>
-                                    <span className="stat-number">{isHost ? (showAnswersCount ? 0 : "••") : 0}</span>
+                                    <span className="stat-number">{isHost ? (showAnswersCount ? 0 : "••") : "••"}</span>
                                 </div>
                             </div>
                         </div>
@@ -175,11 +226,20 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                         </div>
                     )}
                     <div className="time-progress-container">
-                        <div
-                            className="time-progress-bar"
-                            style={{ width: `${step === 'reading' ? readingProgress : answeringProgress}%` }}
-                        />
+                        <div className="time-progress-bar" style={{ width: `${step === 'reading' ? readingProgress : answeringProgress}%` }} />
                     </div>
+
+                    {isHost && step === 'answering' && (
+                        <div className="host-timer-controls">
+                            {timeLeft > 0 ? (
+                                <button className="lr-btn-finish" onClick={() => setTimeLeft(0)}>Terminar tiempo</button>
+                            ) : (
+                                <button className="lr-btn-finish" onClick={handleShowResults}>
+                                    <Eye size={18} /> Ver estadísticas
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <main className="live-main">
@@ -188,7 +248,6 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                             <div className="question-icon-box"><HelpCircle size={24} color="white" /></div>
                             <h2 className="question-text">{roomData.text}</h2>
                         </div>
-
                         {step === 'answering' && (
                             <div className="answering-area animate-fade-in">
                                 <div className="options-grid">
@@ -204,7 +263,6 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                         </button>
                                     ))}
                                 </div>
-
                                 {!isHost && (
                                     <div className="action-bar">
                                         <button
@@ -221,14 +279,6 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                         )}
                     </section>
                 </main>
-
-                {isHost && (
-                    <div className="host-controls-fixed">
-                        <button className="next-question-btn" onClick={handleNextQuestion}>
-                            <ChevronRight size={28} strokeWidth={3} />
-                        </button>
-                    </div>
-                )}
             </div>
         </div>
     );
