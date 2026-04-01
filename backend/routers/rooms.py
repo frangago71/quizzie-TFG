@@ -159,6 +159,7 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     session.commit()
 
     data = {
+        "status": room.status,
         "current_question_index": 1,
         "text": first_question.text,
         "options": [{"id": opt.id, "text": opt.text} for opt in first_question.options]
@@ -227,7 +228,8 @@ async def create_participant(student_id: int, room_id: int, session: Session = D
             "success": True, 
             "message": "El estudiante ya forma parte de la sala.",
             "room_id": room_id,
-            "student_id": student_id
+            "student_id": student_id,
+            "participant_id": existing.id
         }
 
     new_participant = Participant(student_id=student_id, room_id=room_id)
@@ -242,7 +244,8 @@ async def create_participant(student_id: int, room_id: int, session: Session = D
             "success": True,
             "message": "Participante vinculado correctamente.",
             "room_id": room_id,
-            "student_id": student_id
+            "student_id": student_id,
+            "participant_id": new_participant.id
         }
     except Exception as e:
         session.rollback()
@@ -265,3 +268,22 @@ async def notify_room_update(room_id: int, session: Session):
 def get_answers(session: Session = Depends(get_session)):
     return session.exec(select(Answer)).all()
 
+@router.post("/answers", status_code=201)
+def submit_answer(participant_id: int, option_id: int, question_id: int, session: Session = Depends(get_session)
+):
+    existing = session.exec(
+        select(Answer).where(
+            Answer.participant_id == participant_id,
+            Answer.question_id == question_id
+        )
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Ya has respondido a esta pregunta.")
+    new_answer = Answer(
+        participant_id=participant_id,
+        option_id=option_id,
+        question_id=question_id
+    )
+    session.add(new_answer)
+    session.commit()
+    return {"success": True}
