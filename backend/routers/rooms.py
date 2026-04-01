@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlmodel import Session, select
+from sqlalchemy import func
 from typing import List
 from database import get_session
 from models.rooms import Room, Participant, Answer, RoomStatus
@@ -289,3 +290,30 @@ def submit_answer(participant_id: int, option_id: int, question_id: int, session
     session.add(new_answer)
     session.commit()
     return {"success": True}
+
+
+@router.post("/rooms/{room_id}/questions/{question_id}/finish")
+async def finish_question(room_id: int, question_id: int, db: Session = Depends(get_session)):
+    room = db.get(Room, room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+
+    stats_query = (
+        select(Answer.option_id, func.count(Answer.id).label("total"))
+        .join(Participant, Answer.participant_id == Participant.id)
+        .where(Participant.room_id == room_id)
+        .where(Answer.question_id == question_id) 
+        .group_by(Answer.option_id)
+    )
+    results = db.exec(stats_query).all()
+    stats_dict = {str(row.option_id): row.total for row in results}
+
+    await manager.broadcast_to_room(room_id, {
+        "type": "show_results",
+        "data": {
+            "statistics": stats_dict,
+            "question_id": question_id
+        }
+    })
+
+    return {"status": "success", "question_id": question_id}
