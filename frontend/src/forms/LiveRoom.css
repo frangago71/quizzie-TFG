@@ -221,10 +221,37 @@
   color: white;
   padding: 14px 40px;
   border-radius: 12px;
-  border: none;
+  border: 2px solid transparent;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 15px var(--shadow-btn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-send-answer.not-selected {
+  filter: grayscale(0.8) opacity(0.4);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-send-answer.is-sent {
+  background-color: var(--secondary-magenta) !important;
+  color: var(--color-white) !important;
+  border: 2px solid var(--secondary-magenta) !important;
+  box-shadow: none;
+  cursor: default;
+  transform: none !important;
+}
+
+.btn-send-answer:hover:not(:disabled) {
+  background-color: var(--color-white);
+  color: var(--secondary-magenta);
+  border: 2px solid var(--secondary-magenta);
+  transform: translateY(-2px);
 }
 
 .live-stat-badge {

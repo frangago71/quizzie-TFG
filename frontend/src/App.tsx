@@ -8,7 +8,7 @@ import NicknameEntry from './forms/NicknameEntry.tsx'
 import Lobby from './forms/Lobby.tsx'
 import './App.css'
 import LiveRoom from './forms/LiveRoom.tsx'
-import axios from 'axios' 
+import axios from 'axios'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
@@ -20,6 +20,7 @@ function App() {
   const [roomId, setRoomId] = useState<number>(0);
   const [userNickname, setUserNickname] = useState<string | undefined>(undefined);
   const [roomData, setRoomData] = useState<any>(null);
+  const [participantId, setParticipantId] = useState<number | null>(null);
 
   const updateRoomData = (newData: any) => {
     setRoomData(newData);
@@ -32,10 +33,14 @@ function App() {
       interval = setInterval(async () => {
         try {
           const response = await axios.get(`http://localhost:8000/content/rooms/${roomId}`);
-          
+
           if (response.data.current_question_index !== roomData?.current_question_index) {
-            console.log("Nueva pregunta detectada vía polling");
             setRoomData(response.data);
+          }
+
+          if (response.data.status === 'LIVE') {
+            setRoomData(response.data); 
+            setCurrentScreen('live-room'); 
           }
 
           if (response.data.status === 'FINISHED') {
@@ -45,7 +50,7 @@ function App() {
         } catch (error) {
           console.error("Error actualizando datos de sala:", error);
         }
-      }, 2000); 
+      }, 2000);
     }
 
     return () => {
@@ -121,8 +126,9 @@ function App() {
             <NicknameEntry
               roomCode={roomCode}
               roomId={roomId}
-              onNicknameExists={(nickname) => {
+              onNicknameExists={(nickname, participantId) => {
                 setUserNickname(nickname);
+                setParticipantId(participantId);
                 setCurrentScreen('lobby');
               }}
               onBack={() => setCurrentScreen('inicio')}
@@ -143,7 +149,7 @@ function App() {
               roomCode={roomCode}
               nickname={userNickname}
               handleLiveRoom={(data) => {
-                setRoomData(data);         
+                setRoomData(data);
                 setCurrentScreen('live-room');
               }}
             />
@@ -152,9 +158,10 @@ function App() {
           {currentScreen === 'live-room' && (
             <LiveRoom
               isHost={!userNickname}
+              participantId={participantId}
               roomCode={roomCode}
               roomId={roomId}
-              roomData={roomData} 
+              roomData={roomData}
               quizId={selectedQuizId ?? undefined}
               onUpdateData={updateRoomData}
             />

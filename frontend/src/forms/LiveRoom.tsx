@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight } from 'lucide-react';
+import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check } from 'lucide-react';
 import './LiveRoom.css';
 import axios from 'axios';
 
@@ -9,10 +9,11 @@ interface LiveRoomProps {
     roomId: number;
     roomCode?: string;
     quizId?: number;
+    participantId?: number | null;
     onUpdateData: (data: any) => void;
 }
 
-const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode, quizId, onUpdateData }) => {
+const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode, quizId, participantId, onUpdateData }) => {
     const [phase, setPhase] = useState<'countdown' | 'playing'>('countdown');
     const [step, setStep] = useState<'reading' | 'answering'>('reading');
     const [count, setCount] = useState(3);
@@ -22,9 +23,35 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
     const [isSent, setIsSent] = useState(false);
 
-    if (!roomData || !roomData.options) {
-        return <div className="live-room-wrapper">Cargando...</div>;
-    }
+    useEffect(() => {
+        if (isHost) return; 
+
+        const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            
+            if (message.type === "next_question" || message.type === "room_start" || message.type === "room_update") {
+                onUpdateData(message.data);
+                setPhase('playing');
+                setStep('reading');
+                setCount(0);
+                setTimeLeft(5);
+            }
+
+            if (message.type === "room_finish") {
+                alert("¡Cuestionario finalizado!");
+                window.location.href = '/';
+            }
+        };
+
+        return () => ws.close();
+    }, [roomId, isHost, onUpdateData]);
+
+    useEffect(() => {
+        setIsSent(false);
+        setSelectedOptionId(null);
+    }, [roomData.question_id]);
 
     const handleNextQuestion = async () => {
         try {
@@ -36,23 +63,33 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
             }
             if (response.data && response.data.text) {
                 onUpdateData(response.data);
+                setStep('reading');
+                setTimeLeft(5);
             }
         } catch (error: any) {
-            if (error.response?.status === 400) {
-                alert("No hay más preguntas disponibles.");
-                window.location.href = '/';
-            } else {
-                console.error("Error al pasar de pregunta:", error);
-            }
+            console.error("Error al pasar de pregunta:", error);
         }
     };
 
-    useEffect(() => {
-        setStep('reading');
-        setTimeLeft(5);
-        setIsSent(false);
-        setSelectedOptionId(null);
-    }, [roomData.current_question_index, roomData.text]);
+    const handleSubmitAnswer = async () => {
+        if (!selectedOptionId || isSent || isHost || !participantId || !roomData?.question_id) return;
+
+        try {
+            const response = await axios.post(`http://localhost:8000/content/answers`, null, {
+                params: {
+                    participant_id: participantId,
+                    option_id: selectedOptionId,
+                    question_id: roomData.question_id
+                }
+            });
+
+            if (response.data.success || response.status === 200 || response.status === 201) {
+                setIsSent(true);
+            }
+        } catch (error: any) {
+            console.error("Error al enviar:", error.response?.data?.detail);
+        }
+    };
 
     useEffect(() => {
         const fetchQuizData = async () => {
@@ -60,9 +97,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
             try {
                 const response = await axios.get(`http://localhost:8000/content/quizzes/${quizId}/`);
                 setQuizTitle(response.data.name || response.data.title || 'Sin título');
-            } catch (error) {
-                console.error("Error buscando el título:", error);
-            }
+            } catch (error) { console.error(error); }
         };
         fetchQuizData();
     }, [quizId]);
@@ -100,9 +135,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
         return (
             <div className="live-room-wrapper countdown-bg">
                 <div className="countdown-card">
-                    <div className="countdown-number">
-                        <h1 className="countdown-number animate-pop">{count}</h1>
-                    </div>
+                    <h1 className="countdown-number animate-pop">{count}</h1>
                     <h2 className="countdown-title">¡Prepárate!</h2>
                 </div>
             </div>
@@ -112,7 +145,6 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     return (
         <div className={`live-room-wrapper ${step === 'reading' ? 'reading-mode' : 'answering-mode'}`}>
             <div className="live-content-layout">
-
                 {step === 'answering' && (
                     <header className="live-header animate-fade-in">
                         <div className="header-left-info">
@@ -128,9 +160,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                 ) : <Users size={20} className="icon-magenta" />}
                                 <div className="stat-texts">
                                     <span className="stat-label">RESPUESTAS</span>
-                                    <span className="stat-number">
-                                        {isHost ? (showAnswersCount ? 0 : "••") : 0}
-                                    </span>
+                                    <span className="stat-number">{isHost ? (showAnswersCount ? 0 : "••") : 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -150,19 +180,12 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                             style={{ width: `${step === 'reading' ? readingProgress : answeringProgress}%` }}
                         />
                     </div>
-                    {isHost && step === 'answering' && (
-                        <button className="lr-btn-finish" onClick={() => setTimeLeft(0)}>
-                            Terminar
-                        </button>
-                    )}
                 </div>
 
                 <main className="live-main">
                     <section className="question-card">
                         <div className="question-header">
-                            <div className="question-icon-box">
-                                <HelpCircle size={24} color="white" />
-                            </div>
+                            <div className="question-icon-box"><HelpCircle size={24} color="white" /></div>
                             <h2 className="question-text">{roomData.text}</h2>
                         </div>
 
@@ -185,11 +208,12 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                 {!isHost && (
                                     <div className="action-bar">
                                         <button
-                                            className={`btn-send-answer ${(!selectedOptionId || isSent) ? 'disabled' : ''}`}
-                                            onClick={() => setIsSent(true)}
+                                            className={`btn-send-answer ${!selectedOptionId ? 'not-selected' : ''} ${isSent ? 'is-sent' : ''}`}
+                                            onClick={handleSubmitAnswer}
                                             disabled={!selectedOptionId || isSent}
                                         >
-                                            <Send size={18} /> {isSent ? 'Respuesta enviada' : 'Enviar respuesta'}
+                                            {isSent ? <Check size={18} /> : <Send size={18} />}
+                                            <span>{isSent ? 'Respuesta enviada' : 'Enviar respuesta'}</span>
                                         </button>
                                     </div>
                                 )}
