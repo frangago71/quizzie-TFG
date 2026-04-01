@@ -35,10 +35,6 @@ class Room(SQLModel, table=True):
         back_populates="room",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
-    answers: List["Answer"] = Relationship(
-        back_populates="room",
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
-    )
 
 class Participant(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -60,10 +56,7 @@ class Answer(SQLModel, table=True):
     
     participant_id: int = Field(foreign_key="participant.id")
     participant: Participant = Relationship(back_populates="answers")
-    
-    room_id: int = Field(foreign_key="room.id")
-    room: Room = Relationship(back_populates="answers")
-    
+
     question_id: Optional[int] = Field(default=None, foreign_key="question.id", ondelete="SET NULL")
     question: Optional["Question"] = Relationship(back_populates="answers")
     
