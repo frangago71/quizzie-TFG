@@ -307,12 +307,13 @@ async def finish_question(room_id: int, question_id: int, db: Session = Depends(
     )
     results = db.exec(stats_query).all()
     stats_dict = {str(row.option_id): row.total for row in results}
-
+    correct_option = db.exec(select(Option).where(Option.question_id == question_id, Option.is_correct == True)).first()    
     await manager.broadcast_to_room(room_id, {
         "type": "show_results",
         "data": {
             "statistics": stats_dict,
-            "question_id": question_id
+            "question_id": question_id,
+            "correct_option_id": correct_option.id 
         }
     })
 
