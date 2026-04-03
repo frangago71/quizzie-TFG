@@ -16,17 +16,17 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
   const handleCreateAndJoin = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`http://localhost:8000/users/students?nickname=${nickname}`);
-      const newId = res.data.student_id;
+      const resStudent = await axios.post(`http://localhost:8000/users/students?nickname=${nickname}`);
+      const newStudentId = resStudent.data.student_id;
 
       alert("Estudiante registrado. Uniéndolo a la sala...");
-      
-      await axios.post(`http://localhost:8000/content/participants`, null, {
-        params: { student_id: newId, room_id: roomId }
+
+      const resParticipant = await axios.post(`http://localhost:8000/content/participants`, null, {
+        params: { student_id: newStudentId, room_id: roomId }
       });
 
-      onConfirm(nickname, res.data.participant_id);
-      
+      onConfirm(nickname, resParticipant.data.participant_id);
+
     } catch (err: any) {
       alert("Error al registrar: " + (err.response?.data?.detail || "Error desconocido"));
     } finally {
@@ -40,26 +40,26 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
         <div className="notice-icon">
           <TriangleAlert size={45} strokeWidth={2.5} />
         </div>
-        
+
         <h3>Estudiante no encontrado</h3>
-        
+
         <p className="modal-description">
-          El uvus <strong>@{nickname}</strong> no está en nuestra base de datos. 
+          El uvus <strong>@{nickname}</strong> no está en nuestra base de datos.
           ¿Deseas registrarlo?
         </p>
-        
+
         <div className="modal-actions">
-          <button 
-            className="btn-main magenta" 
-            onClick={handleCreateAndJoin} 
+          <button
+            className="btn-main magenta"
+            onClick={handleCreateAndJoin}
             disabled={loading}
           >
             {loading ? 'Creando perfil...' : 'Crear nuevo estudiante'}
           </button>
-          
-          <button 
-            className="btn-back-link" 
-            onClick={onCancel} 
+
+          <button
+            className="btn-back-link"
+            onClick={onCancel}
             disabled={loading}
           >
             Modificar uvus
