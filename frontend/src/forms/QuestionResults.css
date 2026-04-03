@@ -139,3 +139,133 @@
 .btn-continue-host:hover {
     transform: scale(1.05);
 }
+
+
+/* Contenedor gris claro de la gráfica (el cuadro grande) */
+.chart-main-container {
+    background: white;
+    padding: 60px 40px 30px;
+    border-radius: 32px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.chart-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end; /* Alinea las barras al suelo */
+    height: 300px; /* Altura de la gráfica */
+    gap: 20px;
+}
+
+.chart-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+/* Contenedor de la barra individual */
+.bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 120px;
+}
+
+.bar-count {
+    text-align: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.bar-track {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.bar-fill {
+    width: 100%;
+    border-radius: 12px 12px 4px 4px;
+    transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Texto de debajo de las barras */
+.bar-info {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.bar-option-letter {
+    display: block;
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.bar-option-text {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Ajuste de las 3 tarjetas de abajo */
+.results-summary-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #f1f5f9;
+}
+
+.summary-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+.summary-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.bg-blue-soft { background-color: rgba(59, 130, 246, 0.1); }
+.bg-green-soft { background-color: rgba(16, 185, 64, 0.1); }
+.bg-red-soft { background-color: rgba(195, 3, 6, 0.1); }
+.bg-purple-soft { background-color: rgba(168, 85, 247, 0.1); }
+.bg-gray-soft { background-color: #f5f2f6; } 
+
+.summary-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}

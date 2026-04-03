@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check } from 'lucide-react';
+import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check, XCircle, MinusCircle, Target, TrendingUp, TrendingDown } from 'lucide-react';
 import './LiveRoom.css';
 import './QuestionResults.css';
 import axios from 'axios';
@@ -23,25 +23,29 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const [showAnswersCount, setShowAnswersCount] = useState(false);
     const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
     const [isSent, setIsSent] = useState(false);
+
     const [showResults, setShowResults] = useState(false);
     const [statistics, setStatistics] = useState<Record<string, number>>({});
+    const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
 
     useEffect(() => {
         const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            
+
             if (["next_question", "room_start", "room_update"].includes(message.type)) {
                 onUpdateData(message.data);
                 setShowResults(false);
+                setCorrectOptionId(null);
                 setPhase('playing');
                 setStep('reading');
                 setCount(0);
                 setTimeLeft(5);
             }
-            
+
             if (message.type === "show_results") {
                 setStatistics(message.data.statistics);
+                setCorrectOptionId(message.data.correct_option_id);
                 setShowResults(true);
             }
 
@@ -58,19 +62,19 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
         setSelectedOptionId(null);
     }, [roomData.question_id]);
 
-    const handleNextQuestion = async () => {
-        try {
-            await axios.patch(`http://localhost:8000/content/rooms/${roomId}/next-question`);
-        } catch (error) {
-            console.error("Error al pasar de pregunta:", error);
-        }
-    };
-
     const handleShowResults = async () => {
         try {
             await axios.post(`http://localhost:8000/content/rooms/${roomId}/questions/${roomData.question_id}/finish`);
         } catch (error) {
             console.error("Error al finalizar pregunta:", error);
+        }
+    };
+
+    const handleNextQuestion = async () => {
+        try {
+            await axios.patch(`http://localhost:8000/content/rooms/${roomId}/next-question`);
+        } catch (error) {
+            console.error("Error al pasar de pregunta:", error);
         }
     };
 
@@ -102,14 +106,12 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     }, [quizId]);
 
     useEffect(() => {
-        if (phase === 'countdown') {
-            if (count > 0) {
-                const t = setTimeout(() => setCount(count - 1), 1000);
-                return () => clearTimeout(t);
-            } else {
-                setPhase('playing');
-                setTimeLeft(5);
-            }
+        if (phase === 'countdown' && count > 0) {
+            const t = setTimeout(() => setCount(count - 1), 1000);
+            return () => clearTimeout(t);
+        } else if (phase === 'countdown' && count === 0) {
+            setPhase('playing');
+            setTimeLeft(5);
         }
     }, [count, phase]);
 
@@ -143,48 +145,97 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     if (showResults) {
         const totalVotes = Object.values(statistics).reduce((a, b) => a + b, 0);
+        const maxVotes = Math.max(...Object.values(statistics), 0);
+        const winners = Object.keys(statistics).filter(id => statistics[id] === maxVotes);
+        const isTie = winners.length > 1 || totalVotes === 0;
+        const winningOptionId = winners.length === 1 ? winners[0] : null;
+        const isConsensusCorrect = !isTie && winningOptionId === correctOptionId?.toString();
+        const userIsCorrect = selectedOptionId === correctOptionId;
+
         return (
             <div className="live-room-wrapper results-mode">
                 <div className="results-container animate-fade-in">
                     <h1 className="results-title">{roomData.text}</h1>
-                    <div className="stats-grid">
-                        {roomData.options.map((opt: any, index: number) => (
-                            <div key={opt.id} className="stat-column">
-                                <span className="stat-count-big">{statistics[opt.id.toString()] || 0}</span>
-                                <div className="stat-label-box">
-                                    <span className="stat-letter-tag">Opción {String.fromCharCode(65 + index)}</span>
-                                    <span className="stat-option-text">{opt.text}</span>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="chart-main-container">
+                        <div className="chart-area">
+                            {roomData.options.map((opt: any, index: number) => {
+                                const votes = statistics[opt.id.toString()] || 0;
+                                const barHeight = maxVotes > 0 ? (votes / maxVotes) * 100 : 0;
+                                const isCorrect = opt.id === correctOptionId;
+                                const isSelected = opt.id === selectedOptionId;
+
+                                let barColor = "#e2e8f0";
+                                if (isSelected && isCorrect) barColor = "var(--color-green)";
+                                else if (isSelected && !isCorrect) barColor = "var(--color-red)";
+                                else if (!isSelected && isCorrect) barColor = "var(--color-blue)";
+
+                                return (
+                                    <div key={opt.id} className="chart-column">
+                                        <div className="bar-wrapper">
+                                            <span className="bar-count" style={{ color: barColor }}>{votes}</span>
+                                            <div className="bar-track">
+                                                <div className="bar-fill" style={{ height: `${barHeight}%`, backgroundColor: barColor }} />
+                                            </div>
+                                        </div>
+                                        <div className="bar-info">
+                                            <span className="bar-option-letter">Opción {String.fromCharCode(65 + index)}</span>
+                                            <span className="bar-option-text">{opt.text}</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                     <div className="results-summary-row">
                         <div className="summary-card">
-                            <div className="summary-icon-box bg-blue"><Users size={22} /></div>
-                            <div className="summary-info">
-                                <span className="summary-label">Votos totales</span>
-                                <span className="summary-value">{totalVotes}</span>
+                            <div className="summary-icon-box bg-blue-soft">
+                                <Users size={22} color="var(--color-blue)" />
+                            </div>
+                            <div className="summary-data">
+                                <span className="summary-label">PARTICIPACIÓN</span>
+                                <span className="summary-value">{totalVotes} alumnos</span>
                             </div>
                         </div>
+
                         <div className="summary-card">
-                            <div className="summary-icon-box bg-green"><Check size={22} /></div>
-                            <div className="summary-info">
-                                <span className="summary-label">Precisión</span>
-                                <span className="summary-value">-- %</span>
+                            <div className={`summary-icon-box ${isHost
+                                    ? (isTie ? 'bg-gray-soft' : (isConsensusCorrect ? 'bg-green-soft' : 'bg-red-soft'))
+                                    : (!selectedOptionId ? 'bg-gray-soft' : (userIsCorrect ? 'bg-green-soft' : 'bg-red-soft'))
+                                }`}>
+                                {isHost ? (
+                                    isTie ? <MinusCircle size={22} color="#94a3b8" /> : (isConsensusCorrect ? <TrendingUp size={22} color="var(--color-green)" /> : <TrendingDown size={22} color="var(--color-red)" />)
+                                ) : (
+                                    !selectedOptionId ? <MinusCircle size={22} color="#94a3b8" /> : (userIsCorrect ? <Check size={22} color="var(--color-green)" /> : <XCircle size={22} color="var(--color-red)" />)
+                                )}
+                            </div>
+                            <div className="summary-data">
+                                <span className="summary-label">{isHost ? "OPCIÓN MÁS VOTADA" : "TU RESULTADO"}</span>
+                                <span className="summary-value">
+                                    {isHost
+                                        ? (isTie ? "---" : `Opción ${String.fromCharCode(65 + roomData.options.findIndex((o: any) => o.id.toString() === winningOptionId))}`)
+                                        : (!selectedOptionId ? "Sin voto" : (userIsCorrect ? "¡Correcto!" : "Fallaste"))
+                                    }
+                                </span>
                             </div>
                         </div>
+
                         <div className="summary-card">
-                            <div className="summary-icon-box bg-purple"><Timer size={22} /></div>
-                            <div className="summary-info">
-                                <span className="summary-label">Tiempo medio</span>
-                                <span className="summary-value">-- s</span>
+                            <div className="summary-icon-box bg-purple-soft">
+                                <Target size={22} color="var(--color-purple)" />
+                            </div>
+                            <div className="summary-data">
+                                <span className="summary-label">ÉXITO GLOBAL</span>
+                                <span className="summary-value">
+                                    {totalVotes > 0 ? Math.round(((statistics[correctOptionId?.toString() || ''] || 0) / totalVotes) * 100) : 0}%
+                                </span>
                             </div>
                         </div>
                     </div>
+
                     {isHost && (
                         <div className="results-actions">
                             <button className="btn-continue-host" onClick={handleNextQuestion}>
-                                Siguiente pregunta <ChevronRight size={22} />
+                                Continuar <ChevronRight size={22} />
                             </button>
                         </div>
                     )}
@@ -211,7 +262,9 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                 ) : <Users size={20} className="icon-magenta" />}
                                 <div className="stat-texts">
                                     <span className="stat-label">RESPUESTAS</span>
-                                    <span className="stat-number">{isHost ? (showAnswersCount ? 0 : "••") : "••"}</span>
+                                    <span className="stat-number">
+                                        {isHost ? (showAnswersCount ? Object.values(statistics).reduce((a, b) => a + b, 0) : "••") : "••"}
+                                    </span>
                                 </div>
                             </div>
                         </div>
