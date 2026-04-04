@@ -178,7 +178,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                             </div>
                                         </div>
                                         <div className="bar-info">
-                                            <span className="bar-option-letter">Opción {String.fromCharCode(65 + index)}</span>
+                                            <span className="bar-option-letter"> {String.fromCharCode(65 + index)}</span>
                                             <span className="bar-option-text">{opt.text}</span>
                                         </div>
                                     </div>
