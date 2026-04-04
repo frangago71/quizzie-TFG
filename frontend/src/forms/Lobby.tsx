@@ -51,7 +51,6 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
       }
 
       if (data.type === "room_start") {
-        console.log("¡Empieza el cuestionario!", data.data);
         handleLiveRoom(data.data);
       }
     };
