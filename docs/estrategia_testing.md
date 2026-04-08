@@ -16,21 +16,28 @@ Se adopta un enfoque de "Pirámide de pruebas" para equilibrar velocidad de ejec
 
 ## 3. Alcance del plan de pruebas
 
-### 3.1. Gestión y persistencia (OBJ-01, OBJ-02, OBJ-11)
-* **Validación de Cuestionarios:** Verificación de campos obligatorios y tipos de datos en los JSON de entrada.
-* **Persistencia:** Confirmación del ciclo de vida del dato (Crear -> Guardar -> Recuperar).
-* **Acceso:** Validación de credenciales y protección de rutas.
+### 3.1. Pruebas por dominio de entidad 
+El plan de pruebas se organiza en suites independientes por dominio, diferenciando estrictamente entre la lógica de negocio y la infraestructura:
 
-### 3.2. Interacción en tiempo real (OBJ-03, OBJ-04, OBJ-05)
-* **Gestión de Salas:** Validación de generación de PIN único y control de acceso de estudiantes.
-* **Sincronización:** Actualización en tiempo real de la lista de espera y estados del juego vía Sockets.
-* **Motor de Juego:** Verificación de la emisión de preguntas y recepción masiva de respuestas.
+* **Dominio de contenido (Entidades Quiz, Question y Option):**
+    * **Unit Testing:** Validación de reglas de integridad en modelos y consistencia de valores por defecto.
+    * **Integration Testing:** Verificación de endpoints REST, validación de esquemas JSON de entrada (Pydantic) y persistencia real en base de datos.
+* **Dominio de sesiones (Entidades Room, Answer y Participant):**
+    * **Unit Testing:** Lógica de estados de sala y algoritmos de generación de PIN único.
+    * **Integration Testing:** Gestión de peticiones de creación de sala y flujo de almacenamiento de respuestas de alumnos.
+* **Dominio de usuarios (Entidades Teacher, Room y Student):**
+    * **Unit Testing:** Validación de formatos de credenciales y lógica de roles de usuario.
+    * **Integration Testing:** Ciclo de registro, login y verificación de protección de rutas mediante JWT.
 
-### 3.3. Seguridad, verificación, IA y estadísticas (OBJ-06, OBJ-07, OBJ-08, OBJ-09, OBJ-10, OBJ-12)
-* **Verificación QR:** Tests para el flujo de escaneo y validación de identidad del alumno.
-* **Detección de Fraude:** Validación de alertas ante pérdida de foco o comportamientos sospechosos.
-* **Asistente IA:** Verificación de la coherencia en la generación automática de preguntas.
-* **Analítica:** Validación de la integridad de los datos en las exportaciones (CSV/Excel).
+### 3.2. Interacción en tiempo real y sockets 
+* **Sincronización:** Pruebas de integración para la actualización en tiempo real de la lista de participantes y estados de espera.
+* **Motor de Juego:** Verificación de la emisión de preguntas y recepción masiva de eventos bajo el protocolo WebSocket.
+
+### 3.3. Seguridad, verificación, IA y estadísticas 
+* **Verificación QR:** Tests unitarios para la lógica de validación de tokens y tests de integración para el acceso autenticado mediante escaneo.
+* **Detección de Fraude:** Validación de triggers y alertas ante pérdida de foco o comportamientos sospechosos en el cliente.
+* **Asistente IA:** Verificación de la coherencia, formato y tipado de los JSON generados automáticamente por el modelo de lenguaje.
+* **Analítica:** Validación de la integridad de los cálculos estadísticos (Unitario) y de la correcta generación de archivos de exportación (CSV/Excel).
 
 ## 4. Pruebas de rendimiento y carga (Locust)
 Dada la alta densidad de requisitos de tiempo real (especialmente RF-21 y RF-32), las pruebas de carga son críticas:
