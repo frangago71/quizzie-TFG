@@ -3,7 +3,8 @@ from sqlmodel import Session, select
 from typing import List
 from database import get_session
 from models.quizzes import Quiz, Question, Option
-from schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate
+from schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate, QuizRead, QuestionRead, OptionRead
+from sqlalchemy.orm import selectinload
 
 router = APIRouter(prefix="/content", tags=["Quizzes"])
 
@@ -15,11 +16,21 @@ def get_current_teacher_id():
     # Se modificará cuando se implemente la gestión de usuarios y autenticación
     return 1
 
-@router.get("/quizzes/{quiz_id}", response_model=Quiz)
+
+@router.get("/quizzes/{quiz_id}", response_model=QuizRead) 
 def get_quiz(quiz_id: int, session: Session = Depends(get_session)):
-    quiz = session.get(Quiz, quiz_id)
+    statement = (
+        select(Quiz)
+        .where(Quiz.id == quiz_id)
+        .options(
+            selectinload(Quiz.questions).selectinload(Question.options)
+        )
+    )
+    quiz = session.exec(statement).first()
+    
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz no encontrado")
+    
     return quiz
 
 @router.post("/quizzes", status_code=201)

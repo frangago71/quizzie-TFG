@@ -1,5 +1,6 @@
 from pydantic import BaseModel, model_validator, ConfigDict
 from typing import List, Optional
+from datetime import datetime
 
 class OptionCreate(BaseModel):
     text: str
@@ -49,3 +50,23 @@ class QuizCreate(BaseModel):
         }
     )
     
+
+class OptionRead(BaseModel):
+    id: int
+    text: str
+    model_config = ConfigDict(from_attributes=True)
+
+class QuestionRead(BaseModel):
+    id: int
+    text: str
+    points: int
+    options: List[OptionRead]
+    model_config = ConfigDict(from_attributes=True)
+
+class QuizRead(BaseModel):
+    id: int
+    title: str
+    description: Optional[str]
+    questions: List[QuestionRead]
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
