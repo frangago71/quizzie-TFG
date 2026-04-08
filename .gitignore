@@ -32,3 +32,11 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Pytest and Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
