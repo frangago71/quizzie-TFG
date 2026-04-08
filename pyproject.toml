@@ -50,4 +50,7 @@ questions = [
 [dependency-groups]
 dev = [
     "commitizen>=4.13.7",
+    "httpx>=0.28.1",
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
 ]
