@@ -34,7 +34,7 @@ def get_students(session: Session = Depends(get_session)):
 @router.get("/students/verify/{nickname}")
 def verify_student(nickname: str, session: Session = Depends(get_session)):
     clean_nickname = nickname.strip()
-    student = session.query(Student).filter(func.lower(Student.name) == func.lower(clean_nickname)).first()
+    student = session.exec(select(Student).filter(func.lower(Student.name) == func.lower(clean_nickname))).first()
     if not student:
         return {
             "exists": False, 
