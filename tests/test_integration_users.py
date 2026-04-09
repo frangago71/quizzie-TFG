@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from models.users import Teacher, Student
+from models.users import Teacher, Student, Group
 
 class TestUsersIntegration:
     """
@@ -66,3 +66,37 @@ class TestUsersIntegration:
         response = client.get("/users/1/quizzes/")
         assert response.status_code == 200
         assert isinstance(response.json(), list)
+
+    def test_get_groups_and_students_lists(self, client: TestClient, session):
+        """Cobertura de listados generales de grupos y estudiantes."""
+        session.add(Teacher(id=10, username="t_groups", email="g@t.com", hashed_password="x"))
+        session.add(Group(name="Grupo Test", teacher_id=10))
+        session.commit()
+        
+        res_groups = client.get("/users/groups")
+        assert res_groups.status_code == 200
+        assert len(res_groups.json()) >= 1
+
+        res_students = client.get("/users/students")
+        assert res_students.status_code == 200
+        assert isinstance(res_students.json(), list)
+
+    def test_verify_student_not_found(self, client: TestClient, session):
+        """Cobertura de nickname no encontrado."""
+        response = client.get("/users/students/verify/inexistente1234")
+        assert response.status_code == 200
+        assert response.json()["exists"] is False
+        assert "no encontrado" in response.json()["message"]
+
+    def test_create_student_internal_error(self, client: TestClient, monkeypatch):
+        """Cobertura del bloque except (Error 500)."""
+        # Forzamos un error en la sesión para que salte al bloque 'except' 
+        from sqlmodel import Session
+        def mock_commit(self):
+            raise Exception("DB Error")
+        
+        monkeypatch.setattr(Session, "commit", mock_commit)
+
+        response = client.post("/users/students", params={"nickname": "err1234"})
+        assert response.status_code == 500
+        assert "Error interno" in response.json()["detail"]
