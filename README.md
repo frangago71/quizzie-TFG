@@ -88,5 +88,25 @@ npm run dev
 
 * **Aplicación Web:** `http://localhost:5173` (o la URL que indique la terminal)
 
+### 4. Testing y cobertura
+El proyecto incluye una suite de pruebas automatizadas para garantizar la integridad del código y la lógica de negocio.
+
+#### Ejecutar los tests
+Desde la raíz, utiliza `uv` para lanzar las pruebas:
+
+```bash
+uv run pytest
+```
+
+#### Reporte de cobertura (Coverage)
+Para generar un informe detallado sobre qué porcentaje del código está cubierto por los tests, ejecuta:
+
+```bash
+uv run pytest --cov=backend --cov-report=term-missing
+```
+
+* **`--cov=backend`:** Indica el directorio del código fuente a analizar.
+* **`--cov-report=term-missing`:** Muestra en la terminal las líneas exactas que no están cubiertas por ninguna prueba.
+
 ---
 
