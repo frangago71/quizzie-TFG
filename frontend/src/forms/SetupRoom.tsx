@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import './SetupRoom.css';
 import { Calendar, Shuffle, ListTree, Trophy, ChevronLeft, Rocket } from 'lucide-react';
 
@@ -22,7 +22,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
 
     useEffect(() => {
         if (quizId) {
-            axios.get(`http://localhost:8000/content/quizzes/${quizId}`)
+            api.get(`/content/quizzes/${quizId}`)
                 .then(res => setQuiz(res.data))
                 .catch(err => console.error("Error cargando quiz:", err));
         }
@@ -41,7 +41,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
         }
         setIsCreating(true);
         try {
-            const response = await axios.post(`http://localhost:8000/content/rooms`, null, {
+            const response = await api.post(`/content/rooms`, null, {
                 params: { quiz_id: quizId }
             });
             alert("¡Sala creada con éxito! Código de acceso: " + response.data.join_code);

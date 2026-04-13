@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check, XCircle, MinusCircle, Target, TrendingUp, TrendingDown } from 'lucide-react';
 import './LiveRoom.css';
 import './QuestionResults.css';
-import axios from 'axios';
+import api from '../api';
 
 interface LiveRoomProps {
     roomData: any;
@@ -64,7 +64,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     const handleShowResults = async () => {
         try {
-            await axios.post(`http://localhost:8000/content/rooms/${roomId}/questions/${roomData.question_id}/finish`);
+            await api.post(`/content/rooms/${roomId}/questions/${roomData.question_id}/finish`);
         } catch (error) {
             console.error("Error al finalizar pregunta:", error);
         }
@@ -72,7 +72,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     const handleNextQuestion = async () => {
         try {
-            await axios.patch(`http://localhost:8000/content/rooms/${roomId}/next-question`);
+            await api.patch(`/content/rooms/${roomId}/next-question`);
         } catch (error) {
             console.error("Error al pasar de pregunta:", error);
         }
@@ -81,7 +81,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const handleSubmitAnswer = async () => {
         if (!selectedOptionId || isSent || isHost || !participantId || !roomData?.question_id) return;
         try {
-            await axios.post(`http://localhost:8000/content/answers`, null, {
+            await api.post(`/content/answers`, null, {
                 params: {
                     participant_id: participantId,
                     option_id: selectedOptionId,
@@ -98,7 +98,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
         const fetchQuizData = async () => {
             if (!quizId) return;
             try {
-                const response = await axios.get(`http://localhost:8000/content/quizzes/${quizId}/`);
+                const response = await api.get(`/content/quizzes/${quizId}/`);
                 setQuizTitle(response.data.name || response.data.title || 'Sin título');
             } catch (error) { console.error(error); }
         };

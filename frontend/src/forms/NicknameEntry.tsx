@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import NewNickname from './NewNickname.tsx';
 import './NicknameEntry.css';
 
@@ -21,7 +21,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
   useEffect(() => {
     const fetchRoomStatus = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/content/rooms/verify/${roomCode}`);
+        const response = await api.get(`/content/rooms/verify/${roomCode}`);
         if (response.data.status) setRoomStatus(response.data.status);
       } catch (error) {
         console.error(`Error al recuperar el estado de la sala:`, error);
@@ -45,10 +45,10 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
 
     setIsProcessing(true);
     try {
-      const verifyRes = await axios.get(`http://localhost:8000/users/students/verify/${cleanNickname}`);
+      const verifyRes = await api.get(`/users/students/verify/${cleanNickname}`);
 
       if (verifyRes.data.exists) {
-        const partRes = await axios.post(`http://localhost:8000/content/participants`, null, {
+        const partRes = await api.post(`/content/participants`, null, {
           params: {
             student_id: verifyRes.data.student_id,
             room_id: roomId

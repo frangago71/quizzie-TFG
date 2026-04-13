@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Users, PlayCircle, UserCircle2 } from 'lucide-react';
 import './Lobby.css';
-import axios from 'axios';
+import api from '../api';
 
 interface LobbyProps {
   roomId: number;
@@ -17,7 +17,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
   const handleStartRoom = async () => {
     try {
-      const r = await axios.post(`http://localhost:8000/content/rooms/${roomId}/start`);
+      const r = await api.post(`/content/rooms/${roomId}/start`);
       handleLiveRoom(r.data);
       
     } catch (error) {
@@ -32,7 +32,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
     const fetchInitialParticipants = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/content/rooms/${roomId}/participants`);
+        const res = await api.get(`/content/rooms/${roomId}/participants`);
         setParticipants(res.data);
       } catch (error) {
         console.error("Error al cargar participantes iniciales:", error);

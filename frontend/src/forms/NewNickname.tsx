@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { TriangleAlert } from 'lucide-react';
 import './NewNickname.css';
 
@@ -16,12 +16,12 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
   const handleCreateAndJoin = async () => {
     setLoading(true);
     try {
-      const resStudent = await axios.post(`http://localhost:8000/users/students?nickname=${nickname}`);
+      const resStudent = await api.post(`/users/students?nickname=${nickname}`);
       const newStudentId = resStudent.data.student_id;
 
       alert("Estudiante registrado. Uniéndolo a la sala...");
 
-      const resParticipant = await axios.post(`http://localhost:8000/content/participants`, null, {
+      const resParticipant = await api.post(`/content/participants`, null, {
         params: { student_id: newStudentId, room_id: roomId }
       });
 

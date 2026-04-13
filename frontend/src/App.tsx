@@ -8,7 +8,7 @@ import NicknameEntry from './forms/NicknameEntry.tsx'
 import Lobby from './forms/Lobby.tsx'
 import './App.css'
 import LiveRoom from './forms/LiveRoom.tsx'
-import axios from 'axios'
+import api from './api.ts'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
@@ -32,7 +32,7 @@ function App() {
     if (currentScreen === 'live-room' && roomId) {
       interval = setInterval(async () => {
         try {
-          const response = await axios.get(`http://localhost:8000/content/rooms/${roomId}`);
+          const response = await api.get(`/content/rooms/${roomId}`);
 
           if (response.data.current_question_index !== roomData?.current_question_index) {
             setRoomData(response.data);

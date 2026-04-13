@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
+import api from '../api';
 import './RoomCode.css';
 
 interface RoomCodeProps {
@@ -36,7 +36,7 @@ const RoomCode: React.FC<RoomCodeProps> = ({ onJoinSuccess }) => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8000/content/rooms/verify/${fullCode}`);
+      const response = await api.get(`/content/rooms/verify/${fullCode}`);
 
       if (response.data.success) {
         alert("¡Código correcto!");

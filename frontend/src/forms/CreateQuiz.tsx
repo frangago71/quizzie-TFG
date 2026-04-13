@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import './CreateQuiz.css';
 
 interface Option { text: string; is_correct: boolean; }
@@ -154,7 +154,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel, onSuccess }) => {
       }
     }
     try {
-      await axios.post('http://localhost:8000/content/quizzes', quiz);
+      await api.post('/content/quizzes', quiz);
       alert("¡Cuestionario creado con éxito! ");
       onSuccess();
     } catch (err) {

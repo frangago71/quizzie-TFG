@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../api';
 import type { Quiz } from '../types';
 import './ListQuizzes.css';
 import CreateQuiz from '../forms/CreateQuiz.tsx'
@@ -39,7 +39,7 @@ const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
     useEffect(() => {
         const fetchQuizzes = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/users/${teacherId}/quizzes/`);
+                const response = await api.get(`/users/${teacherId}/quizzes/`);
                 setTeacherQuizzes(response.data);
             } catch (error) {
                 console.error("Error cargando los quizzes:", error);
