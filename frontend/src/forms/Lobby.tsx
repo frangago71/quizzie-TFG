@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Users, PlayCircle, UserCircle2 } from 'lucide-react';
 import './Lobby.css';
-import api from '../api';
+import api, { WS_BASE_URL } from '../api';
 
 interface LobbyProps {
   roomId: number;
@@ -41,7 +41,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
     fetchInitialParticipants();
 
-    const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
+    const ws = new WebSocket(`${WS_BASE_URL}/content/rooms/${roomId}/ws`);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);

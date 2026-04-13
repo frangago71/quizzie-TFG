@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check, XCircle, MinusCircle, Target, TrendingUp, TrendingDown } from 'lucide-react';
 import './LiveRoom.css';
 import './QuestionResults.css';
-import api from '../api';
+import api, { WS_BASE_URL } from '../api';
 
 interface LiveRoomProps {
     roomData: any;
@@ -29,7 +29,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
 
     useEffect(() => {
-        const ws = new WebSocket(`ws://localhost:8000/content/rooms/${roomId}/ws`);
+        const ws = new WebSocket(`${WS_BASE_URL}/content/rooms/${roomId}/ws`);
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
 

@@ -9,4 +9,9 @@ const api: AxiosInstance = axios.create({
   }
 });
 
+const wsProtocol = API_URL.includes("https") ? "wss" : "ws";
+const wsHost = API_URL.replace(/^https?:\/\//, "");
+const WS_BASE_URL = `${wsProtocol}://${wsHost}`;
+
 export default api;
+export { WS_BASE_URL };
