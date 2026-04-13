@@ -20,18 +20,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd backend
           uv sync
 
       - name: Run Security Audit
         run: |
-          cd backend
-          uv run pip install safety
-          uv run safety check
-
+          uvx pip-audit
       - name: Run Tests
         run: |
-          cd backend
           uv run pytest
 
   frontend-ci:
