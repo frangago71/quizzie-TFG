@@ -110,3 +110,17 @@ uv run pytest --cov=backend --cov-report=term-missing
 
 ---
 
+### 5. Despliegue
+
+Puedes acceder a las versiones en la nube a través de los siguientes enlaces:
+
+* **Frontend (Cliente Web):** [https://tu-app.vercel.app](https://tu-app.vercel.app)  
+    *Desplegado en **Vercel**.*
+* **Backend (API REST):** [https://tu-api.onrender.com](https://tu-api.onrender.com)  
+    *Desplegado en **Render**.*
+* **Documentación Interactiva (Swagger):** [https://tu-api.onrender.com/docs](https://tu-api.onrender.com/docs)
+
+
+> **Nota sobre el rendimiento:** Debido al uso del plan gratuito de Render, el servidor puede entrar en estado de "hibernación" tras un periodo de inactividad. Si es la primera vez que accedes, la carga inicial de datos puede demorar entre **30 y 50 segundos** mientras el backend se reinicia automáticamente.
+
+---
