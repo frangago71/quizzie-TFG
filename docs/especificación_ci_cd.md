@@ -12,16 +12,19 @@ El proyecto implementa un flujo de trabajo automatizado que garantiza la entrega
 ## 2. Pipeline de Integración Continua (CI)
 El flujo de CI se gestiona mediante **GitHub Actions** y constituye el motor de validación del sistema. A diferencia de un despliegue puntual, este pipeline se ejecuta de forma sistemática ante cualquier cambio detectado tanto en la rama de desarrollo (`develop`) como en la rama de producción (`main`).
 
-### A. Auditoría de seguridad y dependencias
-Como primer paso del flujo, el sistema realiza un escaneo proactivo de las librerías para mitigar riesgos de seguridad antes de la ejecución del código:
-* **Backend:** Auditoría del ecosistema Python mediante las herramientas nativas de `uv` para identificar vulnerabilidades conocidas (CVE) en las dependencias del servidor.
-* **Frontend:** Análisis del árbol de dependencias de Node.js para garantizar la integridad y seguridad de las librerías de React.
+### A. Estructura de Ejecución
+* **Ejecución Paralela:** Los procesos de Backend y Frontend se inician de forma simultánea en entornos virtuales independientes. Esto permite reducir el tiempo de *feedback* al desarrollador.
+* **Dependencia Secuencial Estricta:** Dentro de cada entorno (Job), los pasos siguen una lógica de "falla uno, fallan todos". Si la instalación de dependencias o la auditoría de seguridad fallan, el pipeline interrumpe la ejecución inmediatamente, bloqueando la fase de pruebas y notificando el error específico.
 
-### B. Ejecución de pruebas automatizadas
-Es el núcleo del control de calidad. Para garantizar que las nuevas funcionalidades no comprometan la lógica existente (regresiones), se ejecuta la suite completa de pruebas en cada iteración:
-* **Suite de pruebas:** Ejecución de 49 tests (unitarios y de integración) utilizando el framework `pytest`.
-* **Entorno de aislamiento:** Las pruebas se ejecutan en un contenedor efímero con una imagen de Ubuntu, asegurando un entorno limpio e idéntico al de ejecución real.
-* **Criterio de aceptación y control de flujo:** El pipeline está configurado bajo una política de "tolerancia cero" al fallo; si un solo test resulta fallido, el proceso se interrumpe inmediatamente, notificando el error y bloqueando cualquier fase posterior de consolidación o despliegue.
+### B. Auditoría de seguridad y dependencias
+Como primer eslabón del flujo, se realiza un escaneo proactivo para mitigar riesgos antes de la ejecución del código:
+* **Backend:** Auditoría del ecosistema Python mediante `safety` para identificar vulnerabilidades conocidas (CVE) en las dependencias.
+* **Frontend:** Validación de integridad del árbol de Node.js mediante el comando `npm ci`, asegurando un entorno de construcción idéntico al de desarrollo.
+
+### C. Ejecución de pruebas y validación de tipos
+Es el núcleo del control de calidad:
+* **Suite de pruebas (Backend):** Ejecución de 49 tests utilizando `pytest` en un contenedor efímero de Ubuntu.
+* **Validación de tipos y Build (Frontend):** Ejecución de `npm run build` para asegurar que TypeScript no presenta errores de tipado y que el empaquetado final es funcional antes de llegar a producción.
 
 ## 3. Estrategia de Despliegue Continuo (CD)
 Una vez validada la integridad del código mediante la verificación en la rama principal (`main`), el sistema automatiza la entrega hacia las plataformas de hosting de forma secuencial y coordinada:
@@ -39,8 +42,9 @@ Una vez validada la integridad del código mediante la verificación en la rama 
 ## 4. Resumen del flujo
 
 * **Push a la rama `develop` (CI):**
-    1.  **Auditoría:** Escaneo automático de seguridad en dependencias de Python y Node.js.
-    2.  **Tests:** Ejecución de la suite de pruebas con `pytest` en un entorno aislado.
+    1.  **Job Backend:** Instalación (uv) → Auditoría (Safety) → Tests (Pytest).
+    2.  **Job Frontend:** Instalación (npm ci) → Type Check & Build.
+    *(Si falla cualquier paso, el Job correspondiente se detiene inmediatamente).*
 
 * **Push a la rama `main` (CI, CD):**
     1.  **Verificación (CI):** Se repite íntegramente el flujo de auditoría y tests para asegurar la integridad tras la fusión de ramas.
