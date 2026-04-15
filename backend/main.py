@@ -6,7 +6,7 @@ from pydantic import computed_field
 from fastapi.middleware.cors import CORSMiddleware
 from database import get_session, engine
 from models import *
-from routers import users, quizzes, rooms
+from routers import users, content, rooms
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -43,6 +43,6 @@ def read_root():
     return {"message": "¡Hola desde FastAPI + SQLModel!"}
 
 app.include_router(users.router)
-app.include_router(quizzes.router)
+app.include_router(content.router)
 app.include_router(rooms.router)
 

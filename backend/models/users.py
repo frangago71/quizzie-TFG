@@ -4,7 +4,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from pydantic import computed_field
 
 if TYPE_CHECKING:
-    from .quizzes import Quiz
+    from .content import Quiz
     from .rooms import Room, Participant
 
 def get_utc_now():

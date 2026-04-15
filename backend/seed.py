@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from sqlmodel import Session, delete, SQLModel
 from database import engine
 from models.users import Teacher, Group, Student
-from models.quizzes import Quiz, Question, Option
+from models.content import Quiz, Question, Option
 from models.rooms import Room, Participant, Answer, RoomStatus
 
 def clear_database():

@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from models.rooms import RoomStatus, Room, Participant
 from models.users import Teacher, Student
-from models.quizzes import Quiz, Question, Option
+from models.content import Quiz, Question, Option
 
 class TestStageIntegration:
     """

@@ -5,7 +5,7 @@ from enum import Enum
 
 if TYPE_CHECKING:
     from .users import Teacher, Group, Student
-    from .quizzes import Quiz, Question, Option
+    from .content import Quiz, Question, Option
 
 def get_utc_now():
     return datetime.now(timezone.utc)

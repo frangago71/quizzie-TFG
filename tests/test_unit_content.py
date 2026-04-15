@@ -1,5 +1,5 @@
 import pytest
-from models.quizzes import Quiz, Question, Option
+from models.content import Quiz, Question, Option
 
 class TestQuizUnitary:
     """

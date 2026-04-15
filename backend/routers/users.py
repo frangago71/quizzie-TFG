@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from sqlalchemy import func
 from typing import List
 from database import get_session
-from routers.quizzes import Quiz
+from routers.content import Quiz
 from models.users import Teacher, Group, Student, TeacherRead
 import re
 

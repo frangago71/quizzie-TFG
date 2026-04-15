@@ -4,7 +4,7 @@ from sqlalchemy import func
 from typing import List
 from database import get_session
 from models.rooms import Room, Participant, Answer, RoomStatus
-from models.quizzes import Quiz, Question, Option  
+from models.content import Quiz, Question, Option  
 from models.users import Student
 import random
 import string

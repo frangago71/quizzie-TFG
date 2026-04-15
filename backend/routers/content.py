@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
 from database import get_session
-from models.quizzes import Quiz, Question, Option
-from schemas.quizzes import QuizCreate, QuestionCreate, OptionCreate, QuizRead, QuestionRead, OptionRead
+from models.content import Quiz, Question, Option
+from schemas.content import QuizCreate, QuestionCreate, OptionCreate, QuizRead, QuestionRead, OptionRead
 from sqlalchemy.orm import selectinload
 
-router = APIRouter(prefix="/content", tags=["Quizzes"])
+router = APIRouter(prefix="/content", tags=["Content"])
 
 @router.get("/quizzes", response_model=List[Quiz])
 def get_quizzes(session: Session = Depends(get_session)):
