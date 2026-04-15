@@ -114,11 +114,11 @@ uv run pytest --cov=backend --cov-report=term-missing
 
 Puedes acceder a las versiones en la nube a través de los siguientes enlaces:
 
-* **Frontend (Cliente Web):** [https://tu-app.vercel.app](https://tu-app.vercel.app)  
+* **Frontend (Cliente Web):** [https://quizzie-tfg.vercel.app](https://quizzie-tfg.vercel.app)  
     *Desplegado en **Vercel**.*
-* **Backend (API REST):** [https://tu-api.onrender.com](https://tu-api.onrender.com)  
+* **Backend (API REST):** [https://quizzie-tfg.onrender.com](https://quizzie-tfg.onrender.com)  
     *Desplegado en **Render**.*
-* **Documentación Interactiva (Swagger):** [https://tu-api.onrender.com/docs](https://tu-api.onrender.com/docs)
+* **Documentación Interactiva (Swagger):** [https://quizzie-tfg.onrender.com/docs](https://quizzie-tfg.onrender.com/docs)
 
 
 > **Nota sobre el rendimiento:** Debido al uso del plan gratuito de Render, el servidor puede entrar en estado de "hibernación" tras un periodo de inactividad. Si es la primera vez que accedes, la carga inicial de datos puede demorar entre **30 y 50 segundos** mientras el backend se reinicia automáticamente.
