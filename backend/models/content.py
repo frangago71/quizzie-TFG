@@ -5,7 +5,7 @@ from pydantic import field_validator
 
 if TYPE_CHECKING:
     from .users import Teacher
-    from .rooms import Room, Answer
+    from .stage import Room, Answer
 
 def get_utc_now():
     return datetime.now(timezone.utc)

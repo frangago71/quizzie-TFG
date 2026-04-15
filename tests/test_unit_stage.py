@@ -1,5 +1,5 @@
 import pytest
-from models.rooms import Room, RoomStatus, Participant, Answer
+from models.stage import Room, RoomStatus, Participant, Answer
 from datetime import datetime
 
 class TestStageUnit:

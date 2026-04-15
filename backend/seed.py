@@ -3,7 +3,7 @@ from sqlmodel import Session, delete, SQLModel
 from database import engine
 from models.users import Teacher, Group, Student
 from models.content import Quiz, Question, Option
-from models.rooms import Room, Participant, Answer, RoomStatus
+from models.stage import Room, Participant, Answer, RoomStatus
 
 def clear_database():
     with Session(engine) as session:

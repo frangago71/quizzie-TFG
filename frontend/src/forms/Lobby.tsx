@@ -17,7 +17,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
   const handleStartRoom = async () => {
     try {
-      const r = await api.post(`/content/rooms/${roomId}/start`);
+      const r = await api.post(`/stage/rooms/${roomId}/start`);
       handleLiveRoom(r.data);
       
     } catch (error) {
@@ -32,7 +32,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
     const fetchInitialParticipants = async () => {
       try {
-        const res = await api.get(`/content/rooms/${roomId}/participants`);
+        const res = await api.get(`/stage/rooms/${roomId}/participants`);
         setParticipants(res.data);
       } catch (error) {
         console.error("Error al cargar participantes iniciales:", error);
@@ -41,7 +41,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
 
     fetchInitialParticipants();
 
-    const ws = new WebSocket(`${WS_BASE_URL}/content/rooms/${roomId}/ws`);
+    const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${roomId}/ws`);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);

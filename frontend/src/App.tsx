@@ -32,7 +32,7 @@ function App() {
     if (currentScreen === 'live-room' && roomId) {
       interval = setInterval(async () => {
         try {
-          const response = await api.get(`/content/rooms/${roomId}`);
+          const response = await api.get(`/stage/rooms/${roomId}`);
 
           if (response.data.current_question_index !== roomData?.current_question_index) {
             setRoomData(response.data);

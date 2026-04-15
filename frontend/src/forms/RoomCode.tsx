@@ -36,7 +36,7 @@ const RoomCode: React.FC<RoomCodeProps> = ({ onJoinSuccess }) => {
     }
 
     try {
-      const response = await api.get(`/content/rooms/verify/${fullCode}`);
+      const response = await api.get(`/stage/rooms/verify/${fullCode}`);
 
       if (response.data.success) {
         alert("¡Código correcto!");

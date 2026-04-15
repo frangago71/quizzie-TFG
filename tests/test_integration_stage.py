@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from models.rooms import RoomStatus, Room, Participant
+from models.stage import RoomStatus, Room, Participant
 from models.users import Teacher, Student
 from models.content import Quiz, Question, Option
 
@@ -23,11 +23,11 @@ class TestStageIntegration:
         session.add(quiz)
         session.commit()
 
-        response = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        response = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         assert response.status_code == 201
         assert response.json()["join_code"] == "123456"
 
-        dup_response = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        dup_response = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         assert dup_response.status_code == 400
         assert "Ya existe una sala activa" in dup_response.json()["detail"]
 
@@ -46,9 +46,9 @@ class TestStageIntegration:
         session.add_all([q1, q2])
         session.commit()
 
-        client.post("/content/rooms", params={"quiz_id": q1.id})
+        client.post("/stage/rooms", params={"quiz_id": q1.id})
 
-        response = client.post("/content/rooms", params={"quiz_id": q2.id})
+        response = client.post("/stage/rooms", params={"quiz_id": q2.id})
         assert response.status_code == 201
         new_code = response.json()["join_code"]
         assert new_code != "123456"
@@ -67,13 +67,13 @@ class TestStageIntegration:
         session.add(quiz)
         session.commit()
         
-        client.post("/content/rooms", params={"quiz_id": quiz.id})
+        client.post("/stage/rooms", params={"quiz_id": quiz.id})
 
-        res_ok = client.get("/content/rooms/verify/123456")
+        res_ok = client.get("/stage/rooms/verify/123456")
         assert res_ok.status_code == 200
         assert res_ok.json()["success"] is True
 
-        res_404 = client.get("/content/rooms/verify/000000")
+        res_404 = client.get("/stage/rooms/verify/000000")
         assert res_404.status_code == 404
 
     def test_participant_idempotency(self, client: TestClient, session):
@@ -91,15 +91,15 @@ class TestStageIntegration:
         session.add(quiz)
         session.commit()
         
-        room_res = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         room_id = room_res.json()["id"]
 
         params = {"student_id": student.id, "room_id": room_id}
-        res1 = client.post("/content/participants", params=params)
+        res1 = client.post("/stage/participants", params=params)
         assert res1.status_code == 200
         p_id = res1.json()["participant_id"]
 
-        res2 = client.post("/content/participants", params=params)
+        res2 = client.post("/stage/participants", params=params)
         assert res2.status_code == 200
         assert res2.json()["participant_id"] == p_id
         assert "ya forma parte de la sala" in res2.json()["message"]
@@ -119,10 +119,10 @@ class TestStageIntegration:
         session.add(quiz)
         session.commit()
         
-        r_res = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        r_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         r_id = r_res.json()["id"]
         
-        p_res = client.post("/content/participants", params={"student_id": student.id, "room_id": r_id})
+        p_res = client.post("/stage/participants", params={"student_id": student.id, "room_id": r_id})
         p_id = p_res.json()["participant_id"]
 
         answer_params = {
@@ -131,9 +131,9 @@ class TestStageIntegration:
             "question_id": 1
         }
         
-        client.post("/content/answers", params=answer_params)
+        client.post("/stage/answers", params=answer_params)
         
-        res2 = client.post("/content/answers", params=answer_params)
+        res2 = client.post("/stage/answers", params=answer_params)
         assert res2.status_code == 400
         assert "Ya has respondido" in res2.json()["detail"]
 
@@ -153,25 +153,25 @@ class TestStageIntegration:
         session.add_all([q1, q2])
         session.commit()
 
-        room_res = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         room_id = room_res.json()["id"]
 
         # Error 400 si intentamos avanzar sin estar LIVE
-        bad_next = client.patch(f"/content/rooms/{room_id}/next-question")
+        bad_next = client.patch(f"/stage/rooms/{room_id}/next-question")
         assert bad_next.status_code == 400
 
         # Iniciar Quiz (WAITING -> LIVE)
-        start_res = client.post(f"/content/rooms/{room_id}/start")
+        start_res = client.post(f"/stage/rooms/{room_id}/start")
         assert start_res.status_code == 200
         assert start_res.json()["status"] == RoomStatus.LIVE
 
         # Avanzar a la segunda pregunta
-        next_res = client.patch(f"/content/rooms/{room_id}/next-question")
+        next_res = client.patch(f"/stage/rooms/{room_id}/next-question")
         assert next_res.status_code == 200
         assert next_res.json()["current_question_index"] == 2
 
         # Finalizar el quiz (Avanzar más allá de las preguntas disponibles)
-        finish_res = client.patch(f"/content/rooms/{room_id}/next-question")
+        finish_res = client.patch(f"/stage/rooms/{room_id}/next-question")
         assert finish_res.json()["status"] == "FINISHED"
 
     def test_statistics_engine(self, client: TestClient, session):
@@ -193,33 +193,32 @@ class TestStageIntegration:
         session.add(opt1)
         session.commit()
 
-        room_res = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         room_id = room_res.json()["id"]
         
         # Unir participante
-        p_res = client.post("/content/participants", params={"student_id": student.id, "room_id": room_id})
+        p_res = client.post("/stage/participants", params={"student_id": student.id, "room_id": room_id})
         p_id = p_res.json()["participant_id"]
 
         # Responder
-        client.post("/content/answers", params={
+        client.post("/stage/answers", params={
             "participant_id": p_id, 
             "question_id": q1.id, 
             "option_id": opt1.id
         })
 
         # Finalizar pregunta
-        stats_res = client.post(f"/content/rooms/{room_id}/questions/{q1.id}/finish")
+        stats_res = client.post(f"/stage/rooms/{room_id}/questions/{q1.id}/finish")
         assert stats_res.status_code == 200
         assert stats_res.json()["status"] == "success"
 
     def test_websocket_connection_and_errors(self, client: TestClient, session):
         """WebSockets y rutas inexistentes."""
         # Verificamos 404 para sala inexistente
-        assert client.get("/content/rooms/999").status_code == 404
+        assert client.get("/stage/rooms/999").status_code == 404
         
         # Intentamos comenzar una sala que no existe
-        assert client.post("/content/rooms/999/start").status_code == 400
-
+        assert client.post("/stage/rooms/999/start").status_code == 400
         # Setup para WebSocket
         teacher = Teacher(username="ws_user", email="ws@t.com", hashed_password="x")
         session.add(teacher)
@@ -228,11 +227,11 @@ class TestStageIntegration:
         session.add(quiz)
         session.commit()
         
-        room_res = client.post("/content/rooms", params={"quiz_id": quiz.id})
+        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         room_id = room_res.json()["id"]
 
         # Abrir y cerrar WebSocket para cubrir el ConnectionManager
-        with client.websocket_connect(f"/content/rooms/{room_id}/ws") as websocket:
+        with client.websocket_connect(f"/stage/rooms/{room_id}/ws") as websocket:
             # No enviamos nada, solo cerramos al salir del bloque
             pass
 
@@ -246,7 +245,7 @@ class TestStageIntegration:
         session.add(room_fin)
         session.commit()
         
-        res = client.get("/content/rooms/verify/999999")
+        res = client.get("/stage/rooms/verify/999999")
         assert res.status_code == 400
         assert "La sala ya está en finished" in res.json()["detail"]
 
@@ -259,11 +258,11 @@ class TestStageIntegration:
         session.commit()
 
         # Estudiante no existe
-        assert client.post("/content/participants", params={"student_id": 999, "room_id": room.id}).status_code == 404
+        assert client.post("/stage/participants", params={"student_id": 999, "room_id": room.id}).status_code == 404
         # Sala no existe
-        assert client.post("/content/participants", params={"student_id": student.id, "room_id": 999}).status_code == 404
+        assert client.post("/stage/participants", params={"student_id": student.id, "room_id": 999}).status_code == 404
         # Unirse a sala ya cerrada
-        res = client.post("/content/participants", params={"student_id": student.id, "room_id": room.id})
+        res = client.post("/stage/participants", params={"student_id": student.id, "room_id": room.id})
         assert res.status_code == 400
 
     def test_room_details_live_and_participants_list(self, client: TestClient, session):
@@ -289,9 +288,9 @@ class TestStageIntegration:
         session.commit()
 
         # Probar listado de nombres
-        res_names = client.get(f"/content/rooms/{room.id}/participants")
+        res_names = client.get(f"/stage/rooms/{room.id}/participants")
         assert "abc0003" in res_names.json()
 
         # Probar detalles de sala LIVE 
-        res_details = client.get(f"/content/rooms/{room.id}")
+        res_details = client.get(f"/stage/rooms/{room.id}")
         assert res_details.json()["text"] == "¿Cobertura 90%?"

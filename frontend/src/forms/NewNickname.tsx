@@ -21,7 +21,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
 
       alert("Estudiante registrado. Uniéndolo a la sala...");
 
-      const resParticipant = await api.post(`/content/participants`, null, {
+      const resParticipant = await api.post(`/stage/participants`, null, {
         params: { student_id: newStudentId, room_id: roomId }
       });
 

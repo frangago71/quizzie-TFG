@@ -5,7 +5,7 @@ from pydantic import computed_field
 
 if TYPE_CHECKING:
     from .content import Quiz
-    from .rooms import Room, Participant
+    from .stage import Room, Participant
 
 def get_utc_now():
     return datetime.now(timezone.utc)

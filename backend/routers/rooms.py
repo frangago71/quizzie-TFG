@@ -3,13 +3,13 @@ from sqlmodel import Session, select
 from sqlalchemy import func
 from typing import List
 from database import get_session
-from models.rooms import Room, Participant, Answer, RoomStatus
+from models.stage import Room, Participant, Answer, RoomStatus
 from models.content import Quiz, Question, Option  
 from models.users import Student
 import random
 import string
 
-router = APIRouter(prefix="/content", tags=["Rooms"])
+router = APIRouter(prefix="/stage", tags=["Stage"])
 
 class ConnectionManager:
     def __init__(self):

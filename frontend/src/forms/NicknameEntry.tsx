@@ -21,7 +21,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
   useEffect(() => {
     const fetchRoomStatus = async () => {
       try {
-        const response = await api.get(`/content/rooms/verify/${roomCode}`);
+        const response = await api.get(`/stage/rooms/verify/${roomCode}`);
         if (response.data.status) setRoomStatus(response.data.status);
       } catch (error) {
         console.error(`Error al recuperar el estado de la sala:`, error);
@@ -48,7 +48,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
       const verifyRes = await api.get(`/users/students/verify/${cleanNickname}`);
 
       if (verifyRes.data.exists) {
-        const partRes = await api.post(`/content/participants`, null, {
+        const partRes = await api.post(`/stage/participants`, null, {
           params: {
             student_id: verifyRes.data.student_id,
             room_id: roomId

@@ -41,7 +41,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
         }
         setIsCreating(true);
         try {
-            const response = await api.post(`/content/rooms`, null, {
+            const response = await api.post(`/stage/rooms`, null, {
                 params: { quiz_id: quizId }
             });
             alert("¡Sala creada con éxito! Código de acceso: " + response.data.join_code);

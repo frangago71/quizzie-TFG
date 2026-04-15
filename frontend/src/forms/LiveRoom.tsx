@@ -29,7 +29,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
 
     useEffect(() => {
-        const ws = new WebSocket(`${WS_BASE_URL}/content/rooms/${roomId}/ws`);
+        const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${roomId}/ws`);
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
 
@@ -64,7 +64,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     const handleShowResults = async () => {
         try {
-            await api.post(`/content/rooms/${roomId}/questions/${roomData.question_id}/finish`);
+            await api.post(`/stage/rooms/${roomId}/questions/${roomData.question_id}/finish`);
         } catch (error) {
             console.error("Error al finalizar pregunta:", error);
         }
@@ -72,7 +72,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     const handleNextQuestion = async () => {
         try {
-            await api.patch(`/content/rooms/${roomId}/next-question`);
+            await api.patch(`/stage/rooms/${roomId}/next-question`);
         } catch (error) {
             console.error("Error al pasar de pregunta:", error);
         }
@@ -81,7 +81,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const handleSubmitAnswer = async () => {
         if (!selectedOptionId || isSent || isHost || !participantId || !roomData?.question_id) return;
         try {
-            await api.post(`/content/answers`, null, {
+            await api.post(`/stage/answers`, null, {
                 params: {
                     participant_id: participantId,
                     option_id: selectedOptionId,
