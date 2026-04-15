@@ -1,7 +1,7 @@
-import api from '../api';
-import type { Quiz } from '../types';
+import api from '../api.ts';
+import type { Quiz } from '../types.ts';
 import './ListQuizzes.css';
-import CreateQuiz from '../forms/CreateQuiz.tsx'
+import CreateQuiz from './CreateQuiz.tsx'
 import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Eye, Play, Plus, Calendar } from 'lucide-react';
 
