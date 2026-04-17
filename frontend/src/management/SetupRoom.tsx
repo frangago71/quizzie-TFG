@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import api from '../api';
 import './SetupRoom.css';
 import { Calendar, Shuffle, ListTree, Trophy, ChevronLeft, Rocket } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext.tsx';
 
-interface SetupRoomProps {
-    quizId: number | null;
-    onOpenSession: (joinCode: string, roomId: number) => void;
-    onBack: () => void;
-}
 
-const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) => {
+const SetupRoom: React.FC = () => {
     const [quiz, setQuiz] = useState<any>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const { id: quizId } = useParams(); 
+    const navigate = useNavigate();
+    const { setRoomCode, setRoomId } = useRoom();
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -45,7 +45,9 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                 params: { quiz_id: quizId }
             });
             alert("¡Sala creada con éxito! Código de acceso: " + response.data.join_code);
-            onOpenSession(response.data.join_code, response.data.id);
+            setRoomCode(response.data.join_code);
+            setRoomId(response.data.id);
+            navigate(`/lobby/${response.data.id}`);
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
@@ -70,7 +72,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
     return (
         <div className="setup-wrapper">
             {!isMobile && (
-                <button className="back-nav" onClick={onBack}>
+                <button className="back-nav" onClick={() => navigate('/quizzes')}>
                     <ChevronLeft size={20} /> Volver a cuestionarios
                 </button>
             )}
@@ -156,7 +158,7 @@ const SetupRoom: React.FC<SetupRoomProps> = ({ quizId, onOpenSession, onBack }) 
                     <Rocket size={20} /> {isCreating ? 'Creando sala...' : 'Crear sala'}
                 </button>
                 {isMobile && (
-                    <button className="back-nav" onClick={onBack}>
+                    <button className="back-nav" onClick={() => navigate('/quizzes')}>
                         <ChevronLeft size={20} /> Volver a cuestionarios
                     </button>
                 )}

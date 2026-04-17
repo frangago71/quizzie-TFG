@@ -135,6 +135,7 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
             current_q_data = {
                 "text": q.text,
                 "current_question_index": room.current_question_index,
+                "question_id": q.id,
                 "options": [{"id": opt.id, "text": opt.text} for opt in q.options]
             }
 

@@ -3,18 +3,10 @@ import { Timer, Users, HelpCircle, Eye, EyeOff, Send, ChevronRight, Check, XCirc
 import './LiveRoom.css';
 import './QuestionResults.css';
 import api, { WS_BASE_URL } from '../api';
+import { useRoom } from '../context/RoomContext.tsx';
+import { useParams, useNavigate } from 'react-router-dom';
 
-interface LiveRoomProps {
-    roomData: any;
-    isHost: boolean;
-    roomId: number;
-    roomCode?: string;
-    quizId?: number;
-    participantId?: number | null;
-    onUpdateData: (data: any) => void;
-}
-
-const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode, quizId, participantId, onUpdateData }) => {
+const LiveRoom: React.FC = () => {
     const [phase, setPhase] = useState<'countdown' | 'playing'>('countdown');
     const [step, setStep] = useState<'reading' | 'answering'>('reading');
     const [count, setCount] = useState(3);
@@ -28,18 +20,53 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const [statistics, setStatistics] = useState<Record<string, number>>({});
     const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
 
+    const { id: urlRoomId } = useParams();
+    const navigate = useNavigate();
+
+    const {
+        roomId,
+        setRoomId,
+        roomCode,
+        roomData,
+        setRoomData,
+        participantId,
+        userNickname
+    } = useRoom();
+
+    const isHost = !userNickname;
+
     useEffect(() => {
-        const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${roomId}/ws`);
+        if (urlRoomId && !roomId) {
+            setRoomId(Number(urlRoomId));
+        }
+    }, [urlRoomId, roomId, setRoomId]);
+
+    useEffect(() => {
+        const idToUse = urlRoomId || roomId;
+        if (!idToUse) return;
+
+        const syncRoom = async () => {
+            try {
+                const res = await api.get(`/stage/rooms/${idToUse}`);
+                setRoomData(res.data);
+            } catch (err) {
+                console.error("Error sincronizando al entrar:", err);
+            }
+        };
+        syncRoom();
+
+        const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${idToUse}/ws`);
+
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
 
             if (["next_question", "room_start", "room_update"].includes(message.type)) {
-                onUpdateData(message.data);
+                setRoomData(message.data);
                 setShowResults(false);
                 setCorrectOptionId(null);
                 setPhase('playing');
                 setStep('reading');
-                setCount(0);
+                setCount(0); 
                 setTimeLeft(5);
             }
 
@@ -51,22 +78,29 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
             if (message.type === "room_finish") {
                 alert("¡Cuestionario finalizado!");
-                window.location.href = '/';
+                navigate('/');
             }
         };
+
         return () => ws.close();
-    }, [roomId, onUpdateData]);
+    }, [roomId, urlRoomId, setRoomData, navigate]);
 
     useEffect(() => {
         setIsSent(false);
         setSelectedOptionId(null);
-    }, [roomData.question_id]);
+    }, [roomData?.question_id]);
 
     const handleShowResults = async () => {
+        const qId = roomData?.question_id 
+        if (!qId) {
+            alert("No se encuentra el ID de la pregunta");
+            return;
+        }
         try {
-            await api.post(`/stage/rooms/${roomId}/questions/${roomData.question_id}/finish`);
+            await api.post(`/stage/rooms/${roomId}/questions/${qId}/finish`);
         } catch (error) {
-            console.error("Error al finalizar pregunta:", error);
+            console.error("Error al finalizar: Es posible que el ID enviado sea erróneo", error);
+            alert("El ID enviado no parece ser de una pregunta válida.");
         }
     };
 
@@ -96,14 +130,18 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
     useEffect(() => {
         const fetchQuizData = async () => {
-            if (!quizId) return;
+            const currentQuizId = roomData?.quiz_id;
+            if (!currentQuizId) return;
+
             try {
-                const response = await api.get(`/content/quizzes/${quizId}/`);
+                const response = await api.get(`/content/quizzes/${currentQuizId}/`);
                 setQuizTitle(response.data.name || response.data.title || 'Sin título');
-            } catch (error) { console.error(error); }
+            } catch (error) {
+                console.error(error);
+            }
         };
         fetchQuizData();
-    }, [quizId]);
+    }, [roomData?.quiz_id]);
 
     useEffect(() => {
         if (phase === 'countdown' && count > 0) {
@@ -132,6 +170,8 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
     const readingProgress = Math.min(100, ((5 - timeLeft) / 5) * 100);
     const answeringProgress = Math.min(100, ((40 - timeLeft) / 40) * 100);
 
+    if (!roomData) return <div className="setup-wrapper setup-loading">Sincronizando sala...</div>;
+
     if (phase === 'countdown') {
         return (
             <div className="live-room-wrapper countdown-bg">
@@ -158,7 +198,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                     <h1 className="results-title">{roomData.text}</h1>
                     <div className="chart-main-container">
                         <div className="chart-area">
-                            {roomData.options.map((opt: any, index: number) => {
+                            {roomData.options?.map((opt: any, index: number) => {
                                 const votes = statistics[opt.id.toString()] || 0;
                                 const barHeight = maxVotes > 0 ? (votes / maxVotes) * 100 : 0;
                                 const isCorrect = opt.id === correctOptionId;
@@ -178,7 +218,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                             </div>
                                         </div>
                                         <div className="bar-info">
-                                            <span className="bar-option-letter"> {String.fromCharCode(65 + index)}</span>
+                                            <span className="bar-option-letter">{String.fromCharCode(65 + index)}</span>
                                             <span className="bar-option-text">{opt.text}</span>
                                         </div>
                                     </div>
@@ -199,8 +239,8 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
 
                         <div className="summary-card">
                             <div className={`summary-icon-box ${isHost
-                                    ? (isTie ? 'bg-gray-soft' : (isConsensusCorrect ? 'bg-green-soft' : 'bg-red-soft'))
-                                    : (!selectedOptionId ? 'bg-gray-soft' : (userIsCorrect ? 'bg-green-soft' : 'bg-red-soft'))
+                                ? (isTie ? 'bg-gray-soft' : (isConsensusCorrect ? 'bg-green-soft' : 'bg-red-soft'))
+                                : (!selectedOptionId ? 'bg-gray-soft' : (userIsCorrect ? 'bg-green-soft' : 'bg-red-soft'))
                                 }`}>
                                 {isHost ? (
                                     isTie ? <MinusCircle size={22} color="#94a3b8" /> : (isConsensusCorrect ? <TrendingUp size={22} color="var(--color-green)" /> : <TrendingDown size={22} color="var(--color-red)" />)
@@ -212,7 +252,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                                 <span className="summary-label">{isHost ? "OPCIÓN MÁS VOTADA" : "TU RESULTADO"}</span>
                                 <span className="summary-value">
                                     {isHost
-                                        ? (isTie ? "---" : `Opción ${String.fromCharCode(65 + roomData.options.findIndex((o: any) => o.id.toString() === winningOptionId))}`)
+                                        ? (isTie ? "---" : `Opción ${String.fromCharCode(65 + roomData.options?.findIndex((o: any) => o.id.toString() === winningOptionId))}`)
                                         : (!selectedOptionId ? "Sin voto" : (userIsCorrect ? "¡Correcto!" : "Fallaste"))
                                     }
                                 </span>
@@ -304,7 +344,7 @@ const LiveRoom: React.FC<LiveRoomProps> = ({ roomData, isHost, roomId, roomCode,
                         {step === 'answering' && (
                             <div className="answering-area animate-fade-in">
                                 <div className="options-grid">
-                                    {roomData.options.map((opt: any, index: number) => (
+                                    {roomData.options?.map((opt: any, index: number) => (
                                         <button
                                             key={opt.id}
                                             disabled={isSent || isHost}

@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import api from '../api';
 import './RoomCode.css';
+import { useNavigate } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext';
 
-interface RoomCodeProps {
-  onJoinSuccess: (code: string, room_id: number) => void;
-}
-
-const RoomCode: React.FC<RoomCodeProps> = ({ onJoinSuccess }) => {
+const RoomCode: React.FC = () => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const navigate = useNavigate();
+  const { setRoomCode, setRoomId } = useRoom();
 
   const handleChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return;
@@ -39,8 +39,9 @@ const RoomCode: React.FC<RoomCodeProps> = ({ onJoinSuccess }) => {
       const response = await api.get(`/stage/rooms/verify/${fullCode}`);
 
       if (response.data.success) {
-        alert("¡Código correcto!");
-        onJoinSuccess(fullCode, response.data.room_id);
+        setRoomCode(fullCode);
+        setRoomId(response.data.room_id);
+        navigate(`/join/${fullCode}`);
       }
     } catch (error: any) {
       const errorMsg = error.response?.data?.detail || "Error al verificar el código";

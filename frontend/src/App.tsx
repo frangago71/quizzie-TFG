@@ -1,176 +1,55 @@
-import { useState, useEffect } from 'react'
-import quizzieLogo from './assets/logo-sidebar.png'
-import CreateQuiz from './management/CreateQuiz.tsx'
-import ListQuizzes from './management/ListQuizzes.tsx'
-import SetupRoom from './management/SetupRoom.tsx'
-import RoomCode from './room-access/RoomCode.tsx'
-import NicknameEntry from './room-access/NicknameEntry.tsx'
-import Lobby from './room-play/Lobby.tsx'
-import './App.css'
-import LiveRoom from './room-play/LiveRoom.tsx'
-import api from './api.ts'
+import { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+import Sidebar from './layouts/Sidebar.tsx';
+import { RoomProvider } from './context/RoomContext.tsx';
+
+import CreateQuiz from './management/CreateQuiz.tsx';
+import ListQuizzes from './management/ListQuizzes.tsx';
+import SetupRoom from './management/SetupRoom.tsx';
+import RoomCode from './room-access/RoomCode.tsx';
+import NicknameEntry from './room-access/NicknameEntry.tsx';
+import Lobby from './room-play/Lobby.tsx';
+import LiveRoom from './room-play/LiveRoom.tsx';
+
+import './App.css';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
-  const [currentScreen, setCurrentScreen] = useState('inicio');
-
-  const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
-
-  const [roomCode, setRoomCode] = useState('');
-  const [roomId, setRoomId] = useState<number>(0);
-  const [userNickname, setUserNickname] = useState<string | undefined>(undefined);
-  const [roomData, setRoomData] = useState<any>(null);
-  const [participantId, setParticipantId] = useState<number | null>(null);
-
-  const updateRoomData = (newData: any) => {
-    setRoomData(newData);
-  };
-
-  useEffect(() => {
-    let interval: number | undefined;
-
-    if (currentScreen === 'live-room' && roomId) {
-      interval = setInterval(async () => {
-        try {
-          const response = await api.get(`/stage/rooms/${roomId}`);
-
-          if (response.data.current_question_index !== roomData?.current_question_index) {
-            setRoomData(response.data);
-          }
-
-          if (response.data.status === 'LIVE') {
-            setRoomData(response.data); 
-            setCurrentScreen('live-room'); 
-          }
-
-          if (response.data.status === 'FINISHED') {
-            setRoomData(null);
-            setCurrentScreen('inicio');
-          }
-        } catch (error) {
-          console.error("Error actualizando datos de sala:", error);
-        }
-      }, 2000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [currentScreen, roomId, roomData?.current_question_index]);
 
   return (
-    <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
+    <RoomProvider>
+      <div className={`app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
+        
+        <Sidebar isOpen={sidebarOpen} toggle={() => setSidebarOpen(!sidebarOpen)} />
 
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <img src={quizzieLogo} alt="Quizzie Logo" className="sidebar-logo" />
-        </div>
-        <nav className="sidebar-nav">
-          <div
-            className={`nav-item ${['inicio', 'nickname', 'newnickname'].includes(currentScreen) ? 'active' : ''}`}
-            onClick={() => setCurrentScreen('inicio')}
-          >
-            Inicio
+        <button className="sidebar-toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? 'X' : '☰'}
+        </button>
+        
+        <div className="mobile-overlay" onClick={() => setSidebarOpen(false)}></div>
+
+        <main className="main-content">
+          <div className="content-body">
+            <Routes>
+              <Route path="/" element={<RoomCode />} />
+              
+              <Route path="/join/:code" element={<NicknameEntry />} />
+
+              <Route path="/quizzes" element={<ListQuizzes />} />
+              <Route path="/quizzes/create" element={<CreateQuiz />} />
+              <Route path="/quizzes/setup/:id" element={<SetupRoom />} />
+
+              <Route path="/lobby/:roomId" element={<Lobby />} />
+              <Route path="/live/:roomId" element={<LiveRoom />} />
+
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
           </div>
-          <div
-            className={`nav-item ${['cuestionarios', 'setup-room'].includes(currentScreen) ? 'active' : ''}`}
-            onClick={() => setCurrentScreen('cuestionarios')}
-          >
-            Listar cuestionarios
-          </div>
-          <div className="nav-item">Ajustes</div>
-          <div
-            className={`nav-item ${currentScreen === 'crear' ? 'active' : ''}`}
-            onClick={() => setCurrentScreen('crear')}
-          >
-            Crear Cuestionario
-          </div>
-        </nav>
-      </aside>
-
-      <button className="sidebar-toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-        {sidebarOpen ? 'X' : '☰'}
-      </button>
-      <div className="mobile-overlay" onClick={() => setSidebarOpen(false)}></div>
-
-      <main className="main-content">
-        <div className="content-body">
-
-          {currentScreen === 'crear' && (
-            <CreateQuiz
-              onCancel={() => setCurrentScreen('inicio')}
-              onSuccess={() => setCurrentScreen('cuestionarios')}
-            />
-          )}
-
-          {currentScreen === 'cuestionarios' && (
-            <ListQuizzes onStartRoom={(id) => {
-              setSelectedQuizId(id);
-              setCurrentScreen('setup-room');
-            }} />
-          )}
-
-          {currentScreen === 'setup-room' && (
-            <SetupRoom
-              quizId={selectedQuizId}
-              onBack={() => setCurrentScreen('cuestionarios')}
-              onOpenSession={(code, id) => {
-                setRoomCode(code);
-                setRoomId(id);
-                setCurrentScreen('lobby');
-              }}
-            />
-          )}
-
-          {currentScreen === 'nickname' && (
-            <NicknameEntry
-              roomCode={roomCode}
-              roomId={roomId}
-              onNicknameExists={(nickname, participantId) => {
-                setUserNickname(nickname);
-                setParticipantId(participantId);
-                setCurrentScreen('lobby');
-              }}
-              onBack={() => setCurrentScreen('inicio')}
-            />
-          )}
-
-          {currentScreen === 'inicio' && (
-            <RoomCode onJoinSuccess={(code, id) => {
-              setRoomCode(code);
-              setRoomId(id);
-              setCurrentScreen('nickname');
-            }} />
-          )}
-
-          {currentScreen === 'lobby' && (
-            <Lobby
-              roomId={roomId}
-              roomCode={roomCode}
-              nickname={userNickname}
-              handleLiveRoom={(data) => {
-                setRoomData(data);
-                setCurrentScreen('live-room');
-              }}
-            />
-          )}
-
-          {currentScreen === 'live-room' && (
-            <LiveRoom
-              isHost={!userNickname}
-              participantId={participantId}
-              roomCode={roomCode}
-              roomId={roomId}
-              roomData={roomData}
-              quizId={selectedQuizId ?? undefined}
-              onUpdateData={updateRoomData}
-            />
-          )}
-
-        </div>
-      </main>
-    </div>
-  )
+        </main>
+      </div>
+    </RoomProvider>
+  );
 }
 
-export default App
+export default App;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../api';
 import './CreateQuiz.css';
+import { useNavigate } from 'react-router-dom';
 
 interface Option { text: string; is_correct: boolean; }
 interface Question { text: string; points: number | string; options: Option[]; }
@@ -9,13 +10,8 @@ interface QuizData { title: string; description: string; questions: Question[]; 
 const MAX_QUESTIONS = 30;
 const MAX_OPTIONS = 8;
 
-interface CreateQuizProps {
-  onCancel: () => void;
-  onSuccess: () => void;
-}
-
-const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel, onSuccess }) => {
-  void onCancel; 
+const CreateQuiz: React.FC = () => {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quiz, setQuiz] = useState<QuizData>({
     title: '',
@@ -156,7 +152,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ onCancel, onSuccess }) => {
     try {
       await api.post('/content/quizzes', quiz);
       alert("¡Cuestionario creado con éxito! ");
-      onSuccess();
+      navigate('/quizzes');
     } catch (err) {
       alert("Error al conectar con el servidor.");
       console.error(err);

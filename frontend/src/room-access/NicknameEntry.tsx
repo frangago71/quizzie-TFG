@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 import api from '../api.ts';
 import NewNickname from './NewNickname.tsx';
 import './NicknameEntry.css';
+import { useNavigate } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext.tsx';
 
-interface NicknameEntryProps {
-  roomCode: string;
-  roomId: number;
-  onNicknameExists: (nickname: string, participantId: number) => void;
-  onBack: () => void;
-}
-
-const NicknameEntry: React.FC<NicknameEntryProps> = ({
-  roomCode, roomId, onNicknameExists, onBack
-}) => {
+const NicknameEntry: React.FC = () => {
   const [nickname, setNickname] = useState('');
   const [roomStatus, setRoomStatus] = useState<string>('waiting');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const { roomCode, roomId, setUserNickname, setParticipantId } = useRoom();
 
+  if (!roomId) {
+    navigate('/');
+    return null; 
+  }
+  
   useEffect(() => {
     const fetchRoomStatus = async () => {
       try {
@@ -55,7 +55,9 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
           }
         });
         
-        onNicknameExists(cleanNickname, partRes.data.participant_id);
+        setUserNickname(cleanNickname);
+        setParticipantId(partRes.data.participant_id);
+        navigate(`/lobby/${roomId}`);
         
       } else {
         setShowModal(true);
@@ -102,7 +104,7 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
           >
             {isProcessing ? 'Procesando...' : 'Siguiente'}
           </button>
-          <button className="btn-back-link" onClick={onBack} disabled={isProcessing}>
+          <button className="btn-back-link" onClick={() => navigate('/')} disabled={isProcessing}>
             Volver atrás
           </button>
         </div>
@@ -120,7 +122,9 @@ const NicknameEntry: React.FC<NicknameEntryProps> = ({
           roomId={roomId}
           onConfirm={(name, participantId) => {
             setShowModal(false);
-            onNicknameExists(name, participantId);
+            setUserNickname(name);
+            setParticipantId(participantId);
+            navigate(`/lobby/${roomId}`);
           }}
           onCancel={() => setShowModal(false)}
         />

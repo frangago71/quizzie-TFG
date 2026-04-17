@@ -1,20 +1,18 @@
 import api from '../api.ts';
 import type { Quiz } from '../types.ts';
 import './ListQuizzes.css';
-import CreateQuiz from './CreateQuiz.tsx'
 import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Eye, Play, Plus, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext.tsx';
 
-interface ListQuizzesProps {
-  onStartRoom: (id: number) => void;
-}
-
-const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
+const ListQuizzes: React.FC = () => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     void loading;
-    const [showCreateForm, setShowCreateForm] = useState(false);
     const teacherId = 1;
+    const navigate = useNavigate();
+    const { setRoomId } = useRoom();
 
     const useIsMobile = () => {
         const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -50,10 +48,7 @@ const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
         fetchQuizzes();
     }, []);
 
-    if (showCreateForm) {
-        return <CreateQuiz onCancel={() => setShowCreateForm(false)} onSuccess={() => { setShowCreateForm(false); window.location.reload(); }} />;
-    }
-
+    
     return (
         <div className='list-quizzes-page'>
             <header className="list-header">
@@ -119,7 +114,10 @@ const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
                                             <Calendar size={14} color="#94a3b8" />
                                             <span>{parseDate(quiz.created_at ?? "")}</span>
                                         </div>
-                                        <button className="btn-main small magenta" onClick={() => onStartRoom(quiz.id)}>
+                                        <button className="btn-main small magenta" onClick={() => {
+                                            setRoomId(quiz.id);
+                                            navigate(`/quizzes/setup/${quiz.id}`);
+                                        }}>
                                             <Play size={16} fill="white" />
                                             Crear sala
                                         </button>
@@ -148,7 +146,10 @@ const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
                                                 <span>{parseDate(quiz.created_at ?? "")}</span>
                                             </div>
                                         </div>
-                                        <button className="btn-main small magenta" onClick ={() => onStartRoom(quiz.id)}>
+                                        <button className="btn-main small magenta" onClick={() => {
+                                            setRoomId(quiz.id);
+                                            navigate(`/quizzes/setup/${quiz.id}`);
+                                        }}>
                                             <Play size={16} fill="white" />
                                             Crear sala
                                         </button>
@@ -159,7 +160,7 @@ const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
                     </div>
                 ))}
 
-                <div className="create-new-dashed" onClick={() => setShowCreateForm(true)}>
+                <div className="create-new-dashed" onClick={() => navigate('/quizzes/create')}>
                     <div className="dashed-content">
                         <div className="plus-icon-container">
                             <Plus size={28} color="#64748b" />
@@ -169,7 +170,7 @@ const ListQuizzes: React.FC<ListQuizzesProps> = ({ onStartRoom }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

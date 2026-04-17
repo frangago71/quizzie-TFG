@@ -1,77 +1,61 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRoom } from '../context/RoomContext.tsx';
+import api from '../api.ts';
 import { Users, PlayCircle, UserCircle2 } from 'lucide-react';
 import './Lobby.css';
-import api, { WS_BASE_URL } from '../api';
 
-interface LobbyProps {
-  roomId: number;
-  nickname?: string;
-  roomCode?: string;
-  handleLiveRoom: (data: any) => void;
-}
+const Lobby: React.FC = () => {
+  const { roomId: urlRoomId } = useParams();
+  const navigate = useNavigate();
+  const { roomId, roomCode, userNickname, roomData, setRoomData } = useRoom();
+  const [isMobile] = useState(window.innerWidth <= 768);
 
-const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoom }) => {
-  const [participants, setParticipants] = useState<string[]>([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const isHost = !nickname;
+  useEffect(() => {
+    const idToUse = urlRoomId || roomId;
+    if (!idToUse) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.get(`/stage/rooms/${idToUse}`);
+        setRoomData(res.data);
+      } catch (err) { console.error(err); }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [roomId, urlRoomId, setRoomData]);
+
+  useEffect(() => {
+    if (roomData?.status?.toUpperCase() === 'LIVE') {
+      const idToUse = urlRoomId || roomId;
+      navigate(`/live/${idToUse}`);
+    }
+  }, [roomData?.status, navigate, urlRoomId, roomId]);
 
   const handleStartRoom = async () => {
     try {
-      const r = await api.post(`/stage/rooms/${roomId}/start`);
-      handleLiveRoom(r.data);
-      
-    } catch (error) {
-      console.error("Error al iniciar el quiz:", error);
-      alert("No se pudo iniciar el cuestionario. Revisa la consola.");
+      await api.post(`/stage/rooms/${roomId}/start`);
+    } catch (err) {
+      alert("Error al iniciar");
     }
   };
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
+  const isHost = !userNickname;
+  const nickname = userNickname;
+  const participants = roomData?.participants || [];
 
-    const fetchInitialParticipants = async () => {
-      try {
-        const res = await api.get(`/stage/rooms/${roomId}/participants`);
-        setParticipants(res.data);
-      } catch (error) {
-        console.error("Error al cargar participantes iniciales:", error);
-      }
-    };
-
-    fetchInitialParticipants();
-
-    const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${roomId}/ws`);
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      if (data.type === "participants_update") {
-        setParticipants(data.list); 
-      }
-
-      if (data.type === "room_start") {
-        handleLiveRoom(data.data);
-      }
-    };
-
-    return () => {
-      ws.close();
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [roomId, handleLiveRoom]);
-
-  const maxVisible = isMobile ? 12 : 15;
-  const hasOverflow = participants.length > maxVisible;
-  const overflowCount = hasOverflow ? (participants.length - (maxVisible - 1)) : 0;
-  const displayedNames = hasOverflow ? participants.slice(-(maxVisible - 1)) : participants; 
+  const maxDisplay = isMobile ? 12 : 15;
+  const displayedParticipants = [...participants].reverse();
+  const displayedNames = displayedParticipants.slice(0, maxDisplay).map(p => p.student?.nickname || 'Anónimo');
+  const hasOverflow = participants.length > maxDisplay;
+  const overflowCount = participants.length - maxDisplay;
 
   return (
     <div className={`lobby-wrapper ${isHost ? 'is-host' : 'is-student'}`}>
       <header className="lobby-header">
         <div className="header-info">
           <h1>
-            {isHost ? `Sala de Espera - ${roomCode}` : 
+            {isHost ? `Sala de Espera - ${roomCode}` :
               <>¡Estás dentro, <span className="accent-text">{nickname}!</span></>
             }
           </h1>
@@ -115,12 +99,12 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, nickname, roomCode, handleLiveRoo
             </div>
           )}
 
-          {displayedNames.map((p, index) => (
+          {displayedNames.map((pName, index) => (
             <div key={index} className="participant-avatar-item">
               <div className="avatar-icon-wrapper">
                 <UserCircle2 size={38} strokeWidth={1.5} />
               </div>
-              <span className="participant-name">{p}</span>
+              <span className="participant-name">{pName}</span>
             </div>
           ))}
 
