@@ -177,7 +177,7 @@
 .btn-main {
   padding: 0 25px;
   height: 48px; 
-  min-width: 160px;
+  width: 160px;
   border-radius: 10px; 
   background-color: var(--bg-dark);
   color: var(--color-white);
@@ -203,8 +203,18 @@
 .btn-main.small {
   height: 40px;
   padding: 0 18px;
-  min-width: 120px;
+  min-width: 100px;
+  max-width: 110px;
   font-size: 1rem;
+}
+
+.btn-main.max {
+  width: 100%;
+  max-width: none;
+}
+
+.btn-main.big {
+  width: 205px;
 }
 
 .btn-main.magenta {

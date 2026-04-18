@@ -146,7 +146,7 @@ const ListQuizzes: React.FC = () => {
                                                 <span>{parseDate(quiz.created_at ?? "")}</span>
                                             </div>
                                         </div>
-                                        <button className="btn-main small magenta" onClick={() => {
+                                        <button className="btn-main big magenta" onClick={() => {
                                             setRoomId(quiz.id);
                                             navigate(`/quizzes/setup/${quiz.id}`);
                                         }}>

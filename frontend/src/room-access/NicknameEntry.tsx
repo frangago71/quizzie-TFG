@@ -98,7 +98,7 @@ const NicknameEntry: React.FC = () => {
 
         <div className="action-buttons">
           <button
-            className="btn-main magenta full-width"
+            className="btn-main max magenta"
             onClick={handleVerifyNickname}
             disabled={!nickname.trim() || isProcessing}
           >

@@ -26,7 +26,8 @@ const CreateQuiz: React.FC = () => {
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
+  
+  const isMobile = window.innerWidth < 768;
   const minSwipeDistance = 50;
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -231,7 +232,8 @@ const CreateQuiz: React.FC = () => {
               value={quiz.title}
               onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
             />
-            <button type="button" className="btn-main magenta btn-header-action" onClick={handleSubmit}>
+            
+            <button type="button" className={`btn-main ${isMobile ? 'small' : 'big'} magenta btn-header-action`} onClick={handleSubmit}>
               <span className="text-desktop">Crear cuestionario</span>
               <span className="text-mobile">Crear</span>
             </button>

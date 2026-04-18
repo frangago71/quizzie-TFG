@@ -151,7 +151,7 @@ const SetupRoom: React.FC = () => {
             </div>
             <div className="setup-external-actions">
                 <button
-                    className={`btn-main magenta ${isCreating ? 'disabled' : ''}`}
+                    className={`btn-main big magenta ${isCreating ? 'disabled' : ''}`}
                     onClick={handleOpenSession}
                     disabled={isCreating}
                 >

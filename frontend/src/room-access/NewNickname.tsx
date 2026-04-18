@@ -50,7 +50,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
 
         <div className="modal-actions">
           <button
-            className="btn-main magenta"
+            className="btn-main max magenta"
             onClick={handleCreateAndJoin}
             disabled={loading}
           >
