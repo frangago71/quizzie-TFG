@@ -13,7 +13,7 @@ def get_utc_now():
 class Quiz(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str
-    description: Optional[str] = None
+    description: str = Field(nullable=False)
     image_url: Optional[str] = None
     tags: Optional[str] = None
     created_at: datetime = Field(default_factory=get_utc_now)
