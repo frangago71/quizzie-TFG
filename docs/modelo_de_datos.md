@@ -34,7 +34,7 @@ A continuación se describen los campos, tipos de datos y propósitos de cada en
 | :--- | :--- | :--- | :--- |
 | **Quiz** | id | int (PK) | Identificador único del cuestionario. |
 | | title | str | Título descriptivo del test. |
-| | description | Optional[str] | Explicación extendida del contenido. |
+| | description | str | Explicación extendida del contenido. |
 | | image_url | Optional[str] | URL de la imagen de portada del test. |
 | | tags | Optional[str] | Etiquetas o palabras clave del cuestionario. |
 | | created_at | datetime | Fecha y hora de creación (UTC). |
