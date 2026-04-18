@@ -19,7 +19,7 @@ class TestStageIntegration:
         session.add(teacher)
         session.commit()
         
-        quiz = Quiz(title="Quiz Test", teacher_id=teacher.id)
+        quiz = Quiz(title="Quiz Test", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
 
@@ -41,8 +41,8 @@ class TestStageIntegration:
         session.add(teacher)
         session.commit()
 
-        q1 = Quiz(title="Quiz 1", teacher_id=teacher.id)
-        q2 = Quiz(title="Quiz 2", teacher_id=teacher.id)
+        q1 = Quiz(title="Quiz 1", teacher_id=teacher.id, description="Description 1")
+        q2 = Quiz(title="Quiz 2", teacher_id=teacher.id, description="Description 2")
         session.add_all([q1, q2])
         session.commit()
 
@@ -63,7 +63,7 @@ class TestStageIntegration:
         )
         session.add(teacher)
         session.commit()
-        quiz = Quiz(title="Quiz 1", teacher_id=teacher.id)
+        quiz = Quiz(title="Quiz 1", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         
@@ -87,7 +87,7 @@ class TestStageIntegration:
         session.add_all([teacher, student])
         session.commit()
         
-        quiz = Quiz(title="Quiz Idem", teacher_id=teacher.id)
+        quiz = Quiz(title="Quiz Idem", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         
@@ -115,7 +115,7 @@ class TestStageIntegration:
         session.add_all([teacher, student])
         session.commit()
         
-        quiz = Quiz(title="Quiz Ans", teacher_id=teacher.id)
+        quiz = Quiz(title="Quiz Ans", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         
@@ -144,7 +144,7 @@ class TestStageIntegration:
         session.commit()
         
         # Creamos Quiz con 2 preguntas para probar el avance
-        quiz = Quiz(title="Lifecycle", teacher_id=teacher.id)
+        quiz = Quiz(title="Lifecycle", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         
@@ -181,7 +181,7 @@ class TestStageIntegration:
         session.add_all([teacher, student])
         session.commit()
         
-        quiz = Quiz(title="Stats", teacher_id=teacher.id)
+        quiz = Quiz(title="Stats", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         
@@ -223,7 +223,7 @@ class TestStageIntegration:
         teacher = Teacher(username="ws_user", email="ws@t.com", hashed_password="x")
         session.add(teacher)
         session.commit()
-        quiz = Quiz(title="WS", teacher_id=teacher.id)
+        quiz = Quiz(title="WS", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         
@@ -272,7 +272,7 @@ class TestStageIntegration:
         session.add_all([teacher, student])
         session.commit()
         
-        quiz = Quiz(title="Live Quiz", teacher_id=teacher.id)
+        quiz = Quiz(title="Live Quiz", teacher_id=teacher.id, description="Description")
         session.add(quiz)
         session.commit()
         session.add(Question(text="¿Cobertura 90%?", quiz_id=quiz.id))
