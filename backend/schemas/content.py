@@ -6,6 +6,15 @@ class OptionCreate(BaseModel):
     text: str
     is_correct: bool
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "text": "20",
+                "is_correct": False
+            }
+        }
+    )
+
 class QuestionCreate(BaseModel):
     text: str
     points: int = 1
@@ -18,14 +27,25 @@ class QuestionCreate(BaseModel):
 
         if correct_count != 1:
             raise ValueError("Cada pregunta debe tener exactamente una opción correcta.")
-        
         if total_options < 2:
             raise ValueError("Cada pregunta debe tener al menos dos opciones en total.")
-        
         if (total_options - correct_count) < 1:
             raise ValueError("Cada pregunta debe tener al menos una opción falsa.")
-
         return self
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "text": "¿Cuánto es 2 + 2?",
+                "points": 1,
+                "options": [
+                    {"text": "4", "is_correct": True},
+                    {"text": "5", "is_correct": False},
+                    {"text": "3", "is_correct": False}
+                ]
+            }
+        }
+    )
 
 class QuizCreate(BaseModel):
     title: str

@@ -42,7 +42,8 @@ app.add_middleware(
 def read_root():
     return {"message": "¡Hola desde FastAPI + SQLModel!"}
 
-app.include_router(users.router)
 app.include_router(content.router)
 app.include_router(stage.router)
+app.include_router(users.router)
+
 

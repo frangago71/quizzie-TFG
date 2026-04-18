@@ -24,8 +24,8 @@ class Room(SQLModel, table=True):
     
     teacher_id: int = Field(foreign_key="teacher.id")
     teacher: "Teacher" = Relationship(back_populates="rooms")
-    
-    quiz_id: int = Field(foreign_key="quiz.id")
+
+    quiz_id: Optional[int] = Field(default=None, foreign_key="quiz.id", nullable=True)
     quiz: "Quiz" = Relationship(back_populates="rooms")
     
     group_id: Optional[int] = Field(default=None, foreign_key="group.id")

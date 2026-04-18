@@ -9,7 +9,7 @@ classDiagram
 
     Teacher o-- Quiz 
     Teacher o-- Group 
-    Room o-- Quiz 
+    Room --o Quiz 
 
     Teacher "1" -- "*" Room 
 
