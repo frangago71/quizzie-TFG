@@ -23,37 +23,37 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 
 | ID | Issue | Nombre | Descripción | Prioridad | Objetivo | Fase |
 | :--- | :---: | :--- | :--- | :---: | :---: | :--- |
-| **RF-01** | # | Gestión de registro | Registro de nuevos profesores con validación de email y hash de contraseña. | Alta | OBJ-01 | Core |
-| **RF-02** | # | Inicio de sesión | Autenticación mediante email y contraseña cifrada (JWT). | Alta | OBJ-01 | Core |
-| **RF-03** | # | Baja de usuarios | Eliminación de cuenta y datos asociados de forma permanente. | Alta | OBJ-01 | Core |
-| **RF-04** | # | Recuperación contraseña | Solicitud de reseteo de contraseña vía email. | Baja | OBJ-01 | Core |
-| **RF-05** | # | Edición perfil | Modificación de nombre visible y contraseña. | Media | OBJ-01 | Core |
-| **RF-06** | # | Cierre de sesión | Invalidación del token y redirección al login. | Alta | OBJ-01 | Core |
+| **RF-01** | # | Gestión de registro | Registro de nuevos profesores con validación de email y hash de contraseña. | Alta | OBJ-01 |  |
+| **RF-02** | #37 | Inicio de sesión | Autenticación mediante email y contraseña cifrada (JWT). | Alta | OBJ-01 | Core |
+| **RF-03** | # | Baja de usuarios | Eliminación de cuenta y datos asociados de forma permanente. | Alta | OBJ-01 |  |
+| **RF-04** | # | Recuperación contraseña | Solicitud de reseteo de contraseña vía email. | Baja | OBJ-01 |  |
+| **RF-05** | # | Edición perfil | Modificación de nombre visible y contraseña. | Media | OBJ-01 |  |
+| **RF-06** | #38 | Cierre de sesión | Invalidación del token y redirección al login. | Alta | OBJ-01 | Core |
 | **RF-07** | #1 | Crear cuestionario | Creación de cuestionarios de preguntas sin límite de cantidad. | Alta | OBJ-02 | MVP |
 | **RF-08** | #2 | Listar cuestionarios | Visualización de cuestionarios ordenados por fecha. | Alta | OBJ-02 | MVP |
-| **RF-09** | # | Mostrar ranking | Ranking de alumnos después de cada pregunta y al final. | Baja | OBJ-08 | |
+| **RF-09** | #39 | Mostrar ranking | Ranking de alumnos después de cada pregunta y al final. | Media | OBJ-08 | Core |
 | **RF-10** | # | Aleatoriedad | Opción para cambiar el orden de preguntas y respuestas. | Media | OBJ-02 | |
-| **RF-11** | # | Configurar tiempo | Definición del tiempo de respuesta al crear la sala. | Media | OBJ-03 | Core |
+| **RF-11** | # | Configurar tiempo | Definición del tiempo de respuesta al crear la sala. | Media | OBJ-03 |  |
 | **RF-12** | # | Importación | Carga de preguntas y respuestas desde archivos .txt o .csv. | Media | OBJ-12 | |
 | **RF-13** | # | Duplicar cuestionario o preguntas | Clonación de cuestionarios o preguntas existentes. | Media | OBJ-02 | |
-| **RF-14** | # | Eliminación de datos | Borrado lógico de cuestionarios o preguntas. | Alta | OBJ-02 | Core |
+| **RF-14** | #40 | Eliminación de datos | Borrado lógico de cuestionarios o preguntas. | Media | OBJ-02 | Core |
 | **RF-15** | #3 | Crear sala | Instanciación de una sesión con PIN único basada en un cuestionario. | Alta | OBJ-03 | MVP |
 | **RF-16** | #4 | Validar PIN | Verificación de que el PIN corresponde a una sala activa. | Alta | OBJ-04 | MVP |
 | **RF-17** | #5 | Validar Nickname | Control de duplicados, formato y palabras prohibidas. | Alta | OBJ-04 | MVP |
 | **RF-18** | #6 | Sala de espera | Mantenimiento de alumnos en espera hasta el inicio. | Alta | OBJ-03 | MVP |
-| **RF-19** | # | Cerrar sala | Finalización de sala, ver resultados y desconexión automática. | Media | OBJ-03 | Core |
+| **RF-19** | #41 | Cerrar sala | Finalización de sala, ver resultados y desconexión automática. | Media | OBJ-03 | Core |
 | **RF-20** | #7 | Comenzar sala | Cuenta atrás y comienzo de la sucesión de preguntas. | Alta | OBJ-05 | MVP |
 | **RF-21** | #8 | Distribución | Envío de la secuencia de preguntas a los alumnos conectados. | Alta | OBJ-05 | MVP |
 | **RF-22** | #9 | Temporizador servidor | Control del tiempo de respuesta en el backend. | Alta | OBJ-03 | Core |
-| **RF-23** | #10 | Recepción respuestas | Captura de la opción y el timestamp de respuesta. | Alta | OBJ-05 | MVP |
+| **RF-23** | #10 | Recepción respuestas | Captura de la opción respondida. | Alta | OBJ-05 | MVP |
 | **RF-24** | #11 | Feedback inmediato | Indicación de acierto/fallo sin mostrar nota final aún. | Alta | OBJ-05 | MVP |
-| **RF-25** | # | Registro provisional | Registro con estado "No Verificado" y generación de Token único. | Alta | OBJ-07 | Core |
-| **RF-26** | # | Generación QR | QR en el dispositivo del alumno con Nickname y Token. | Alta | OBJ-06 | Core |
-| **RF-27** | # | Activación cámara | Solicitud de permisos en el profesor para escanear. | Alta | OBJ-10 | Core |
-| **RF-28** | # | Lectura de QR | Lectura y extracción de datos Usuario + Token. | Alta | OBJ-10 | Core |
-| **RF-29** | # | Validación Token | Comparación del Token escaneado con el del servidor. | Alta | OBJ-06 | Core |
-| **RF-30** | # | Control de estado | Impedimento de validar nota si ya consta como "Verificado". | Alta | OBJ-07 | Core |
-| **RF-31** | # | Check verificación | Actualización a estado verificado y oficialización de nota. | Alta | OBJ-07 | Core |
+| **RF-25** | #42 | Registro provisional | Registro de resultado de alumno "No Verificado" y generación de Token único. | Alta | OBJ-07 | Core |
+| **RF-26** | #43 | Generación QR | QR en el dispositivo del alumno con Nickname y Token. | Alta | OBJ-06 | Core |
+| **RF-27** | #44 | Activación cámara | Solicitud de permisos en el profesor para escanear. | Alta | OBJ-10 | Core |
+| **RF-28** | #45 | Lectura de QR | Lectura y extracción de datos Usuario + Token. | Alta | OBJ-10 | Core |
+| **RF-29** | #46 | Validación Token | Comparación del Token escaneado con el del servidor. | Alta | OBJ-06 | Core |
+| **RF-30** | #47 | Control de estado | Impedimento de validar nota si ya consta como "Verificado". | Alta | OBJ-07 | Core |
+| **RF-31** | #48 | Check verificación | Actualización a estado verificado y oficialización de nota. | Alta | OBJ-07 | Core |
 | **RF-32** | # | Listado en vivo | Actualización en tiempo real de alumnos verificados en pantalla. | Media | OBJ-08 | |
 | **RF-33** | # | Estadísticas | Porcentaje de aciertos por pregunta para detectar temas difíciles. | Media | OBJ-08 | |
 | **RF-34** | # | Generación preguntas | Procesamiento de tema o texto para generar preguntas vía IA. | Media | OBJ-09 | |
@@ -62,8 +62,8 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 | **RF-37** | # | Revisión post IA | Presentación de contenido generado por IA para validación manual. | Media | OBJ-09 | |
 | **RF-38** | # | Crear clase | Agrupación de alumnos o resultados bajo etiqueta de clase. | Baja | OBJ-11 | |
 | **RF-39** | # | Exportación CSV | Generación de archivo descargable con los resultados. | Baja | OBJ-12 | |
-| **RF-40** | # | Gestión de desconexiones y reconexiones | Manejo de unirse tarde, desconexiones y borrado al abandonar. | Media | OBJ-05 | Core |
-| **RF-41** | # | Filtros listar | Filtrado por activos, con sala, nuevos o todos. | Media | OBJ-02 | Core |
+| **RF-40** | #49 | Gestión de desconexiones y reconexiones | Manejo de unirse tarde, desconexiones y borrado al abandonar. | Media | OBJ-05 | Core |
+| **RF-41** | #50 | Filtros en listar cuestionarios | Filtrado por activos, con sala, nuevos o todos. | Media | OBJ-02 | Core |
 
 ## 3. Requisitos No Funcionales (RNF)
 Definen los atributos de calidad y restricciones técnicas del sistema.
