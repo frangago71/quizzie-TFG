@@ -5,10 +5,30 @@ from typing import List
 from database import get_session
 from routers.content import Quiz
 from models.users import Teacher, Group, Student, TeacherRead
+from schemas.users import LoginRequest
 import re
-
+from auth import verify_password, create_access_token
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+@router.post("/login")
+async def login(
+    login_data: LoginRequest, 
+    session: Session = Depends(get_session) 
+):
+    statement = select(Teacher).where(Teacher.email == login_data.email)
+    teacher = session.exec(statement).first()
+    if not teacher or not verify_password(login_data.password, teacher.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Email o contraseña incorrectos",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = create_access_token(data={"sub": teacher.email})
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
 @router.get("/teachers", response_model=List[TeacherRead])
 def get_teachers(session: Session = Depends(get_session)):

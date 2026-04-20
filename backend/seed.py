@@ -3,6 +3,7 @@ from database import engine
 from models.users import Teacher, Group, Student
 from models.content import Quiz, Question, Option
 from models.stage import Room, Participant, Answer, RoomStatus
+from auth import get_password_hash
 
 def clear_database():
     with Session(engine) as session:
@@ -15,11 +16,12 @@ def create_seed_data():
     SQLModel.metadata.create_all(engine)
     
     with Session(engine) as session:
+        password = get_password_hash("123456")
         # --- 1. PROFESORES ---
-        t1 = Teacher(username="Miguel de Cervantes", email="cervantes@quizzie.com", hashed_password="fake")
-        t2 = Teacher(username="Santiago Ramon y Cajal", email="ramonycajal@quizzie.com", hashed_password="fake")
-        t3 = Teacher(username="Andres Iniesta", email="iniesta@quizzie.com", hashed_password="fake")
-        t4 = Teacher(username="Chema Alonso", email="alonso@quizzie.com", hashed_password="fake")
+        t1 = Teacher(username="Miguel de Cervantes", email="cervantes@quizzie.com", hashed_password=password)
+        t2 = Teacher(username="Santiago Ramon y Cajal", email="ramonycajal@quizzie.com", hashed_password=password)
+        t3 = Teacher(username="Andres Iniesta", email="iniesta@quizzie.com", hashed_password= password)
+        t4 = Teacher(username="Chema Alonso", email="alonso@quizzie.com", hashed_password=password)
         session.add_all([t1, t2, t3, t4])
         session.commit()
         for t in [t1, t2, t3, t4]: session.refresh(t)
