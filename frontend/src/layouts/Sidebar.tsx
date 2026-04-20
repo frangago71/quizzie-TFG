@@ -1,6 +1,6 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import quizzieLogo from '../assets/logo-sidebar.png';
-import { Menu, ChevronLeft } from 'lucide-react'; // Quitamos LogOut si no lo quieres
+import { Menu, ChevronLeft } from 'lucide-react'; 
 import { authService } from '../auth/authService';
 
 interface SidebarProps {
@@ -9,8 +9,6 @@ interface SidebarProps {
 }
 
 function Sidebar({ isOpen, toggle }: SidebarProps) {
-  const navigate = useNavigate();
-
   const handleLinkClick = () => {
     if (window.innerWidth <= 768) {
       toggle();
@@ -19,7 +17,8 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
 
   const handleLogout = () => {
     authService.logout();
-    navigate('/login');
+    localStorage.clear(); 
+    window.location.href = '/';
     if (window.innerWidth <= 768) toggle();
   };
 

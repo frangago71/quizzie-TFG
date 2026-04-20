@@ -21,14 +21,15 @@ export const Login: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
     setError(null);
     setLoading(true);
     try {
       await authService.login(credentials);
-      navigate('/quizzes');
+      window.location.href = '/quizzes'; 
+      
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error al iniciar sesión");
     } finally {
       setLoading(false);
     }
