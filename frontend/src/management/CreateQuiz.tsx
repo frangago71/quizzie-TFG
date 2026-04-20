@@ -12,7 +12,7 @@ const MAX_OPTIONS = 8;
 
 const CreateQuiz: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
-  const questionInputRef = useRef<HTMLInputElement>(null); // Ref para el foco automático
+  const questionInputRef = useRef<HTMLInputElement>(null); 
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quiz, setQuiz] = useState<QuizData>({
@@ -31,17 +31,12 @@ const CreateQuiz: React.FC = () => {
   const isMobile = window.innerWidth < 768;
   const minSwipeDistance = 50;
 
-  // --- EFECTOS ---
-  
-  // 1. Foco automático al cambiar de pregunta para que funcionen las flechas y el TAB
   useEffect(() => {
     questionInputRef.current?.focus();
   }, [currentIndex]);
 
-  // 2. Manejador de flechas del teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Si estamos en un input, solo navegamos si no estamos bloqueando el cursor
       if (e.key === 'ArrowRight') {
         handleNext();
       } else if (e.key === 'ArrowLeft') {
@@ -53,7 +48,6 @@ const CreateQuiz: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, quiz.questions.length, isCurrentQuestionBlank]);
 
-  // --- LÓGICA DE NAVEGACIÓN ---
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -94,8 +88,6 @@ const CreateQuiz: React.FC = () => {
       setCurrentIndex(Math.max(0, currentIndex - 1));
     }
   };
-
-  // --- LÓGICA DE EDICIÓN ---
 
   const addOption = (qIndex: number) => {
     if (quiz.questions[qIndex].options.length >= MAX_OPTIONS) return;
@@ -157,12 +149,10 @@ const CreateQuiz: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Validaciones básicas de negocio
     if (!quiz.title.trim() || !quiz.description.trim()) {
         alert("Título y descripción son obligatorios.");
         return;
     }
-    // (Resto de tus validaciones de bucle...)
     try {
       await api.post('/content/quizzes', quiz);
       alert("¡Cuestionario creado con éxito!");

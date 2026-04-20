@@ -7,7 +7,7 @@ from routers.content import Quiz
 from models.users import Teacher, Group, Student, TeacherRead
 from schemas.users import LoginRequest
 import re
-from auth import verify_password, create_access_token
+from auth import verify_password, create_access_token, get_current_teacher_id
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -24,7 +24,8 @@ async def login(
             detail="Email o contraseña incorrectos",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": teacher.email})
+    teacher_id_str = str(teacher.id) 
+    access_token = create_access_token(data={"sub": teacher_id_str})
     return {
         "access_token": access_token,
         "token_type": "bearer"
@@ -35,12 +36,11 @@ def get_teachers(session: Session = Depends(get_session)):
     """Devuelve los profesores con la contraseña censurada."""
     return session.exec(select(Teacher)).all()
 
-def get_current_teacher_id():
-    # Se modificará cuando se implemente la gestión de usuarios y autenticación
-    return 1
-
-@router.get("/{teacher_id}/quizzes/", response_model=List[Quiz])
-def get_teacher_quizzes(teacher_id: int = Depends(get_current_teacher_id), session: Session = Depends(get_session)):
+@router.get("/my-quizzes", response_model=List[Quiz])
+def get_teacher_quizzes(
+    teacher_id: int = Depends(get_current_teacher_id), 
+    session: Session = Depends(get_session)
+):
     return session.exec(select(Quiz).where(Quiz.teacher_id == teacher_id)).all()
 
 @router.get("/groups", response_model=List[Group])

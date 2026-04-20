@@ -10,7 +10,6 @@ const ListQuizzes: React.FC = () => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     void loading;
-    const teacherId = 1;
     const navigate = useNavigate();
     const { setRoomId } = useRoom();
 
@@ -37,7 +36,7 @@ const ListQuizzes: React.FC = () => {
     useEffect(() => {
         const fetchQuizzes = async () => {
             try {
-                const response = await api.get(`/users/${teacherId}/quizzes/`);
+                const response = await api.get(`/users/my-quizzes`);
                 setTeacherQuizzes(response.data);
             } catch (error) {
                 console.error("Error cargando los quizzes:", error);

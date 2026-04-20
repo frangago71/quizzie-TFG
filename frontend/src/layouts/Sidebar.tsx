@@ -28,10 +28,10 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
           
           <nav className="sidebar-nav">
             <NavLink 
-              to="/" 
+              to="/dashboard" 
               className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
               onClick={handleLinkClick}
-              style={{ textDecoration: 'none', color: 'inherit' }} // Limpieza rápida inline
+              style={{ textDecoration: 'none', color: 'inherit' }} 
             >
               Inicio
             </NavLink>

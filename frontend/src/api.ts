@@ -9,9 +9,23 @@ const api: AxiosInstance = axios.create({
   }
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const wsProtocol = API_URL.includes("https") ? "wss" : "ws";
 const wsHost = API_URL.replace(/^https?:\/\//, "");
 const WS_BASE_URL = `${wsProtocol}://${wsHost}`;
 
 export default api;
 export { WS_BASE_URL };
+

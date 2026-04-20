@@ -78,7 +78,11 @@ const LiveRoom: React.FC = () => {
 
             if (message.type === "room_finish") {
                 alert("¡Cuestionario finalizado!");
-                navigate('/');
+                if (isHost) { navigate('/dashboard');
+                    navigate('/dashboard');
+                } else {
+                    navigate('/');
+                }
             }
         };
 

@@ -6,17 +6,13 @@ from models.content import Quiz, Question, Option
 from models.stage import RoomStatus, Room
 from schemas.content import QuizCreate, QuestionCreate, OptionCreate, QuizRead, QuestionRead, OptionRead
 from sqlalchemy.orm import selectinload
+from auth import get_current_teacher_id
 
 router = APIRouter(prefix="/content", tags=["Content"])
 
 @router.get("/quizzes", response_model=List[Quiz])
 def get_quizzes(session: Session = Depends(get_session)):
     return session.exec(select(Quiz)).all()
-
-def get_current_teacher_id():
-    # Se modificará cuando se implemente la gestión de usuarios y autenticación
-    return 1
-
 
 @router.get("/quizzes/{quiz_id}", response_model=QuizRead) 
 def get_quiz(quiz_id: int, session: Session = Depends(get_session)):

@@ -3,6 +3,11 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from pwdlib import PasswordHash
+from fastapi import Header, HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 load_dotenv()
 
@@ -25,3 +30,26 @@ def create_access_token(data: dict):
     
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+security = HTTPBearer()
+
+def get_current_teacher_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> int:
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        raw_sub = payload.get("sub")
+        
+        if raw_sub is None:
+            raise HTTPException(status_code=401, detail="Token sin campo 'sub'")
+            
+        return int(raw_sub)
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="El token ha expirado")
+    except jwt.PyJWTError as e:
+        raise HTTPException(
+            status_code=401, 
+            detail="Token inválido. Por favor, inicia sesión de nuevo."
+        )
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="No autorizado")
