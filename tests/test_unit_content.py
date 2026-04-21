@@ -1,7 +1,7 @@
 import pytest
 from models.content import Quiz, Question, Option
 
-class TestQuizUnitary:
+class TestContentUnitary:
     """
     Pruebas Unitarias del modelo Quiz, Question y Option para validar las reglas de negocio y restricciones.
     """

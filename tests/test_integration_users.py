@@ -1,6 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from models.users import Teacher, Student, Group
+from auth import create_access_token
 
 class TestUsersIntegration:
     """
@@ -58,12 +59,14 @@ class TestUsersIntegration:
         assert "secret_hash_123" not in str(response.content)
 
     def test_get_teacher_quizzes_default(self, client: TestClient, session):
-        """Verificar la obtención de quizzes para el profesor por defecto (ID 1)."""
-        teacher = Teacher(id=1, username="admin", email="admin@test.com", hashed_password="x")
+        teacher_id = 1
+        teacher = Teacher(id=teacher_id, username="admin", email="admin@test.com", hashed_password="x")
         session.add(teacher)
         session.commit()
+        token = create_access_token(data={"sub": str(teacher_id)})
+        headers = {"Authorization": f"Bearer {token}"}
+        response = client.get("/users/my-quizzes", headers=headers)
         
-        response = client.get("/users/1/quizzes/")
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 
