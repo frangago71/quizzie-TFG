@@ -16,7 +16,6 @@
   --color-purple: #a855f7;
 
   --line-gray: #e4e0e0;
-
   --btn-black: #222121;
   --btn-gray: #94a3b8;
 
@@ -28,6 +27,7 @@
   --bg-light: #ffffff;
   --bg-dark: #242424;
   --bg-gray: #f5f2f6;
+
   --border-input: #dddddd;
   --border-dashed: #dcdcdc;
 
@@ -43,8 +43,8 @@
 }
 
 body {
+  background-color: var(--bg-light);
   margin: 0;
-  background-color: var(--bg-light); 
 }
 
 .app-container {
@@ -66,12 +66,10 @@ body {
   overflow: hidden;
   white-space: nowrap;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0;
 }
 
 .menu-open .sidebar {
   width: var(--sidebar-width);
-  opacity: 1;
   padding: 20px 0;
 }
 
@@ -82,7 +80,6 @@ body {
   margin-bottom: 30px;
   min-height: 40px;
   padding: 0 20px;
-  width: 100%;
 }
 
 .sidebar-logo {
@@ -97,24 +94,20 @@ body {
   flex-direction: column;
 }
 
-.sidebar-nav a.nav-item {
-  text-decoration: none;
-  color: white; 
-  display: block; 
-}
-
-.sidebar-nav a.nav-item:visited {
-  color: white;
-}
-
 .nav-item {
   width: 100%;
   padding: 15px 25px;
   cursor: pointer;
-  border-radius: 0;
-  transition: all 0.2s;
-  box-sizing: border-box;
+  background: none;
+  border: none;
   border-left: 4px solid transparent;
+  color: white;
+  text-decoration: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  display: block;
+  transition: all 0.2s;
 }
 
 .nav-item:hover,

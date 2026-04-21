@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import quizzieLogo from '../assets/logo-sidebar.png';
 import { Menu, ChevronLeft } from 'lucide-react'; 
 import { authService } from '../auth/authService';
+import LogoutModal from '../auth/LogoutModal';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,6 +11,8 @@ interface SidebarProps {
 }
 
 function Sidebar({ isOpen, toggle }: SidebarProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleLinkClick = () => {
     if (window.innerWidth <= 768) {
       toggle();
@@ -19,7 +23,6 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
     authService.logout();
     localStorage.clear(); 
     window.location.href = '/';
-    if (window.innerWidth <= 768) toggle();
   };
 
   return (
@@ -35,46 +38,53 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
           </div>
 
           <nav className="sidebar-nav">
-            <NavLink
-              to="/dashboard"
-              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-              onClick={handleLinkClick}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Inicio
-            </NavLink>
+            <div className="nav-menu-top">
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                onClick={handleLinkClick}
+              >
+                Inicio
+              </NavLink>
 
-            <NavLink
-              to="/quizzes"
-              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-              onClick={handleLinkClick}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Listar cuestionarios
-            </NavLink>
+              <NavLink
+                to="/quizzes"
+                end
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                onClick={handleLinkClick}
+              >
+                Listar cuestionarios
+              </NavLink>
 
-            <NavLink
-              to="/quizzes/create"
-              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-              onClick={handleLinkClick}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Crear cuestionario
-            </NavLink>
-            <NavLink
-              to="/" 
-              className="nav-item"
-              onClick={(e) => {
-                e.preventDefault(); 
-                handleLogout();    
-              }}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              Cerrar sesión
-            </NavLink>
+              <NavLink
+                to="/quizzes/create"
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                onClick={handleLinkClick}
+              >
+                Crear cuestionario
+              </NavLink>
+            </div>
+
+            <div className="nav-menu-bottom">
+              <button
+                className="nav-item logout-btn"
+                onClick={(e) => {
+                  e.preventDefault(); 
+                  setIsModalOpen(true);    
+                }}
+              >
+                Cerrar sesión
+              </button>
+            </div>
           </nav>
         </aside>
       </div>
+
+      <LogoutModal 
+        isOpen={isModalOpen} 
+        onConfirm={handleLogout} 
+        onCancel={() => setIsModalOpen(false)} 
+      />
     </>
   );
 }
