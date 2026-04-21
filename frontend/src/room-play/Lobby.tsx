@@ -15,14 +15,41 @@ const Lobby: React.FC = () => {
     const idToUse = urlRoomId || roomId;
     if (!idToUse) return;
 
-    const interval = setInterval(async () => {
+    const fetchInitialData = async () => {
       try {
-        const res = await api.get(`/stage/rooms/${idToUse}`);
+        const res = await api.get(`/stage/rooms/${idToUse}/participants`);
         setRoomData(res.data);
-      } catch (err) { console.error(err); }
-    }, 2000);
+      } catch (err) {
+        console.error("Error en carga inicial:", err);
+      }
+    };
+    fetchInitialData();
 
-    return () => clearInterval(interval);
+    const ws = new WebSocket(`ws://localhost:8000/stage/rooms/${idToUse}/ws`);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Mensaje WS recibido:", data);
+
+      if (data.type === 'participants_update') {
+        setRoomData(data.list);
+      } 
+      else if (data.data && data.type) {
+        setRoomData((prev: any) => {
+          if (typeof prev !== 'object' || Array.isArray(prev)) {
+            return { ...data.data, type: data.type };
+          }
+          return { ...prev, ...data.data, type: data.type };
+        });
+      }
+    };
+
+    ws.onclose = () => console.log("WebSocket desconectado");
+    ws.onerror = (err) => console.error("Error en WebSocket:", err);
+
+    return () => {
+      ws.close();
+    };
   }, [roomId, urlRoomId, setRoomData]);
 
   useEffect(() => {
@@ -42,11 +69,10 @@ const Lobby: React.FC = () => {
 
   const isHost = !userNickname;
   const nickname = userNickname;
-  const participants = roomData?.participants || [];
+  const participants = Array.isArray(roomData) ? roomData : [];
 
-  const maxDisplay = isMobile ? 12 : 15;
-  const displayedParticipants = [...participants].reverse();
-  const displayedNames = displayedParticipants.slice(0, maxDisplay).map(p => p.student?.nickname || 'Anónimo');
+  const maxDisplay = isMobile ? 8 : 14;
+  const displayedNames = [...participants].reverse().slice(0, maxDisplay);
   const hasOverflow = participants.length > maxDisplay;
   const overflowCount = participants.length - maxDisplay;
 
