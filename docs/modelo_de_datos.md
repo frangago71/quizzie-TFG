@@ -89,6 +89,7 @@ classDiagram
 | | group_id | Optional[int] (FK) | Grupo vinculado a la sala. |
 | **Participant** | id | int (PK) | Identificador único de participación. |
 | | joined_at | datetime | Momento exacto de unión a la sala. |
+| | score | int | Puntuación acumulada de las preguntas acertadas. |
 | | student_id | int (FK) | Alumno que participa. |
 | | room_id | int (FK) | Sala a la que pertenece el registro. |
 | **Answer** | id | int (PK) | Identificador único de la respuesta. |

@@ -203,17 +203,17 @@ def create_seed_data():
 
         # --- 8. PARTICIPANTES ---
         for i in range(0, 40):
-            session.add(Participant(student_id=all_students[i].id, room_id=r_waiting1.id))
+            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_waiting1.id))
         
         for i in range(40, 45):
-            session.add(Participant(student_id=all_students[i].id, room_id=r_waiting2.id))
+            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_waiting2.id))
             
         for i in range(50, 55):
-            session.add(Participant(student_id=all_students[i].id, room_id=r_live.id))
+            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_live.id))
             
         fin_parts = []
         for i in range(60, 70):
-            p = Participant(student_id=all_students[i].id, room_id=r_finished.id)
+            p = Participant(student_id=all_students[i].id, score=i%10, room_id=r_finished.id)
             session.add(p); fin_parts.append(p)
         
         session.commit()
