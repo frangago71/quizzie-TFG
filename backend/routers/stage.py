@@ -283,6 +283,14 @@ def submit_answer(participant_id: int, option_id: int, question_id: int, session
     ).first()
     if existing:
         raise HTTPException(status_code=400, detail="Ya has respondido a esta pregunta.")
+    option = session.get(Option, option_id)
+    question = session.get(Question, question_id)
+
+    if option.is_correct:
+        participant = session.get(Participant, participant_id)
+        if participant:
+            participant.score += question.points
+            session.add(participant)
     new_answer = Answer(
         participant_id=participant_id,
         option_id=option_id,
@@ -292,6 +300,17 @@ def submit_answer(participant_id: int, option_id: int, question_id: int, session
     session.commit()
     return {"success": True}
 
+@router.get("/rooms/{room_id}/leaderboard")
+def get_leaderboard(room_id: int, session: Session = Depends(get_session)):
+    statement = (
+        select(Student.name, Participant.score)
+        .join(Participant, Participant.student_id == Student.id)
+        .where(Participant.room_id == room_id)
+        .order_by(Participant.score.desc()) 
+        .limit(3)
+    )
+    results = session.exec(statement).all()
+    return [{"name": r[0], "score": r[1]} for r in results]
 
 @router.post("/rooms/{room_id}/questions/{question_id}/finish")
 async def finish_question(room_id: int, question_id: int, db: Session = Depends(get_session)):
