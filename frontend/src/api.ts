@@ -22,6 +22,17 @@ api.interceptors.request.use(
   }
 );
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 const wsProtocol = API_URL.includes("https") ? "wss" : "ws";
 const wsHost = API_URL.replace(/^https?:\/\//, "");
 const WS_BASE_URL = `${wsProtocol}://${wsHost}`;
