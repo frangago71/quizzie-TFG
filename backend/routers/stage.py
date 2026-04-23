@@ -312,6 +312,11 @@ def get_leaderboard(room_id: int, session: Session = Depends(get_session)):
     results = session.exec(statement).all()
     return [{"name": r[0], "score": r[1]} for r in results]
 
+@router.post("/rooms/{room_id}/leaderboard/show")
+async def show_leaderboard(room_id: int):
+    await manager.broadcast_to_room(room_id, {"type": "show_leaderboard"})
+    return {"status": "success"}
+
 @router.post("/rooms/{room_id}/questions/{question_id}/finish")
 async def finish_question(room_id: int, question_id: int, db: Session = Depends(get_session)):
     room = db.get(Room, room_id)
