@@ -1,5 +1,5 @@
 
-.setup-wrapper {
+.live-setup-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,6 +18,7 @@
   overflow: hidden;
   text-align: left;
 }
+
 @media (max-width: 768px) {
   .live-room-wrapper {
     margin: -1rem 0 0 0;

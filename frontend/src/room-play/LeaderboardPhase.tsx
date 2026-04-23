@@ -6,9 +6,10 @@ interface Props {
   data: { name: string; score: number }[];
   isHost?: boolean;
   handleNextQuestion?: () => void;
+  isLastQuestion?: boolean;
 }
 
-const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion }) => {
+const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion, isLastQuestion }) => {
   const first = data[0] || null;
   const second = data[1] || null;
   const third = data[2] || null;
@@ -72,8 +73,8 @@ const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion })
 
       {isHost && handleNextQuestion && (
         <div className="podium-actions">
-          <button className="btn-main magenta" onClick={handleNextQuestion}>
-            Siguiente pregunta <ArrowRight size={20} />
+          <button className={`btn-main ${isLastQuestion ? 'cyan' : 'magenta'}`} onClick={handleNextQuestion}>
+            {isLastQuestion ? 'Finalizar cuestionario' : 'Siguiente pregunta'} <ArrowRight size={20} />
           </button>
         </div>
       )}

@@ -121,6 +121,9 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
     room = session.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
+    
+    total_questions = session.exec(select(func.count(Question.id)).where(Question.quiz_id == room.quiz_id)).one()
+
     current_q_data = None
     if room.status == RoomStatus.LIVE and room.current_question_index > 0:
         statement = (
@@ -144,6 +147,7 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
         "status": room.status,
         "join_code": room.join_code,
         "current_question_index": room.current_question_index,
+        "total_questions": total_questions,
         **(current_q_data or {"text": "Sala inactiva", "options": []})
     }
 
@@ -154,7 +158,8 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=400, detail="No se puede iniciar la sala.")
 
     statement = select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
-    first_question = session.exec(statement).first()
+    questions = session.exec(statement).all()
+    first_question = questions[0]
 
     room.status = RoomStatus.LIVE
     room.current_question_index = 1
@@ -163,6 +168,7 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     data = {
         "status": room.status,
         "current_question_index": 1,
+        "total_questions": len(questions),
         "question_id": first_question.id,
         "text": first_question.text,
         "options": [{"id": opt.id, "text": opt.text} for opt in first_question.options]
@@ -187,6 +193,7 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
 
         data = {
             "current_question_index": next_index,
+            "total_questions": len(questions),
             "question_id": next_q.id,
             "text": next_q.text,
             "options": [{"id": opt.id, "text": opt.text} for opt in next_q.options]
@@ -197,7 +204,7 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
         room.status = RoomStatus.FINISHED
         room.join_code = None
         db.commit()
-        await manager.broadcast_to_room(room_id, {"type": "room_finish", "data": {"status": "FINISHED"}})
+        await manager.broadcast_to_room(room_id, {"type": "room_finish", "data": {"status": "FINISHED", "total_questions": len(questions)}})
         return {"status": "FINISHED"}
 
 @router.get("/participants", response_model=List[Participant])
@@ -341,5 +348,27 @@ async def finish_question(room_id: int, question_id: int, db: Session = Depends(
             "correct_option_id": correct_option.id 
         }
     })
-
     return {"status": "success", "question_id": question_id}
+
+@router.get("/rooms/{room_id}/participants/{participant_id}/stats")
+def get_participant_stats(room_id: int, participant_id: int, session: Session = Depends(get_session)):
+    participant = session.get(Participant, participant_id)
+    if not participant or participant.room_id != room_id:
+        raise HTTPException(status_code=404, detail="Participante no encontrado en esta sala.")
+        
+    room = session.get(Room, room_id)
+    total_questions = session.exec(select(func.count(Question.id)).where(Question.quiz_id == room.quiz_id)).one()
+    
+    statement = (
+        select(func.count(Answer.id))
+        .join(Option, Answer.option_id == Option.id)
+        .where(Answer.participant_id == participant_id)
+        .where(Option.is_correct == True)
+    )
+    correct_answers = session.exec(statement).one()
+    
+    return {
+        "score": participant.score,
+        "correct_answers": correct_answers,
+        "total_questions": total_questions
+    }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AnsweringPhase from './AnsweringPhase';
 import ResultsPhase from './ResultsPhase';
 import LeaderboardPhase from './LeaderboardPhase';
+import FinalScreen from './FinalScreen';
 import './LiveRoom.css';
 import api, { WS_BASE_URL } from '../api';
 import { useRoom } from '../context/RoomContext.tsx';
@@ -90,11 +91,11 @@ const LiveRoom: React.FC = () => {
             }
 
             if (message.type === "room_finish") {
-                alert("¡Cuestionario finalizado!");
-                if (isHost) { navigate('/dashboard');
-                    navigate('/dashboard');
-                } else {
-                    navigate('/');
+                setRoomData((prev: any) => prev ? { ...prev, status: 'FINISHED' } : null);
+                if (isHost) {
+                    api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
+                        setLeaderboardData(res.data);
+                    }).catch(err => console.error(err));
                 }
             }
         };
@@ -195,14 +196,20 @@ const LiveRoom: React.FC = () => {
     const readingProgress = Math.min(100, ((5 - timeLeft) / 5) * 100);
     const answeringProgress = Math.min(100, ((40 - timeLeft) / 40) * 100);
 
-    if (!roomData) return <div className="setup-wrapper setup-loading">Sincronizando sala...</div>;
+    if (roomData?.status === 'FINISHED') {
+        return <FinalScreen isHost={isHost} data={leaderboardData} />;
+    }
+
+    if (!roomData) return <div className="live-setup-wrapper setup-loading">Sincronizando sala...</div>;
 
     if (showLeaderboard) {
+        const isLastQuestion = roomData.current_question_index === roomData.total_questions;
         return (
             <LeaderboardPhase
                 data={leaderboardData}
                 isHost={isHost}
                 handleNextQuestion={handleNextQuestion}
+                isLastQuestion={isLastQuestion}
             />
         );
     }
