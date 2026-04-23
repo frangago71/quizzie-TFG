@@ -7,6 +7,7 @@ import Sidebar from './layouts/Sidebar.tsx';
 import { RoomProvider } from './context/RoomContext.tsx';
 
 import CreateQuiz from './management/CreateQuiz.tsx';
+import EditQuiz from './management/EditQuiz.tsx';
 import ListQuizzes from './management/ListQuizzes.tsx';
 import SetupRoom from './management/SetupRoom.tsx';
 import RoomCode from './room-access/RoomCode.tsx';
@@ -59,6 +60,7 @@ function App() {
               <Route path="/dashboard" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
               <Route path="/quizzes" element={<ProtectedRoute><ListQuizzes /></ProtectedRoute>} />
               <Route path="/quizzes/create" element={<ProtectedRoute><CreateQuiz /></ProtectedRoute>} />
+              <Route path="/quizzes/edit/:id" element={<ProtectedRoute><EditQuiz /></ProtectedRoute>} />
               <Route path="/quizzes/setup/:id" element={<ProtectedRoute><SetupRoom /></ProtectedRoute>} />
 
               <Route path="/lobby/:roomId" element={<Lobby />} />

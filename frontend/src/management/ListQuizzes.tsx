@@ -4,11 +4,13 @@ import './ListQuizzes.css';
 import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Eye, Play, Plus, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DeleteQuizModal from './DeleteQuizModal.tsx';
 import { useRoom } from '../context/RoomContext.tsx';
 
 const ListQuizzes: React.FC = () => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
+    const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
     void loading;
     const navigate = useNavigate();
     const { setRoomId } = useRoom();
@@ -46,6 +48,22 @@ const ListQuizzes: React.FC = () => {
         };
         fetchQuizzes();
     }, []);
+
+    const handleDeleteConfirm = async (hard: boolean) => {
+        if (!quizToDelete) return;
+        try {
+            const endpoint = hard 
+                ? `/content/quizzes/${quizToDelete.id}/hard` 
+                : `/content/quizzes/${quizToDelete.id}`;
+            await api.delete(endpoint);
+            setTeacherQuizzes(teacherQuizzes.filter(q => q.id !== quizToDelete.id));
+        } catch (error: any) {
+            console.error("Error al borrar el cuestionario:", error);
+            alert(error.response?.data?.detail || "Error al borrar el cuestionario");
+        } finally {
+            setQuizToDelete(null);
+        }
+    };
 
     
     return (
@@ -122,8 +140,8 @@ const ListQuizzes: React.FC = () => {
                                         </button>
                                     </div>
                                     <div className="action-icons">
-                                        <button className="icon-btn" title="Editar"><Pencil size={18} /></button>
-                                        <button className="icon-btn" title="Eliminar"><Trash2 size={18} /></button>
+                                        <button className="icon-btn" title="Editar" onClick={() => navigate(`/quizzes/edit/${quiz.id}`)}><Pencil size={18} /></button>
+                                        <button className="icon-btn" title="Eliminar" onClick={() => setQuizToDelete(quiz)}><Trash2 size={18} /></button>
                                         <button className="icon-btn" title="Ver"><Eye size={18} /></button>
                                     </div>
                                 </>
@@ -132,8 +150,8 @@ const ListQuizzes: React.FC = () => {
                                     <div className="info-top">
                                         <h3>{quiz.title}</h3>
                                         <div className="action-icons">
-                                            <button className="icon-btn" title="Editar"><Pencil size={18} /></button>
-                                            <button className="icon-btn" title="Eliminar"><Trash2 size={18} /></button>
+                                            <button className="icon-btn" title="Editar" onClick={() => navigate(`/quizzes/edit/${quiz.id}`)}><Pencil size={18} /></button>
+                                            <button className="icon-btn" title="Eliminar" onClick={() => setQuizToDelete(quiz)}><Trash2 size={18} /></button>
                                             <button className="icon-btn" title="Ver"><Eye size={18} /></button>
                                         </div>
                                     </div>
@@ -169,6 +187,12 @@ const ListQuizzes: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <DeleteQuizModal 
+                isOpen={!!quizToDelete} 
+                onConfirm={handleDeleteConfirm} 
+                onCancel={() => setQuizToDelete(null)} 
+            />
         </div >
     );
 };
