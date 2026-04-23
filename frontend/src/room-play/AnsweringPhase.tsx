@@ -1,0 +1,152 @@
+import React from 'react';
+import { Timer, Users, HelpCircle, Eye, EyeOff, Send, Check } from 'lucide-react';
+import './AnsweringPhase.css';
+
+interface AnsweringPhaseProps {
+    phase: 'countdown' | 'playing';
+    step: 'reading' | 'answering';
+    count: number;
+    roomCode: string;
+    quizTitle: string;
+    showAnswersCount: boolean;
+    setShowAnswersCount: (val: boolean) => void;
+    isHost: boolean;
+    statistics: Record<string, number>;
+    timeLeft: number;
+    readingProgress: number;
+    answeringProgress: number;
+    setTimeLeft: (val: number | ((prev: number) => number)) => void;
+    handleShowResults: () => void;
+    roomData: any;
+    selectedOptionId: number | null;
+    setSelectedOptionId: (id: number | null) => void;
+    isSent: boolean;
+    handleSubmitAnswer: () => void;
+}
+
+const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
+    phase,
+    step,
+    count,
+    roomCode,
+    quizTitle,
+    showAnswersCount,
+    setShowAnswersCount,
+    isHost,
+    statistics,
+    timeLeft,
+    readingProgress,
+    answeringProgress,
+    setTimeLeft,
+    handleShowResults,
+    roomData,
+    selectedOptionId,
+    setSelectedOptionId,
+    isSent,
+    handleSubmitAnswer
+}) => {
+    if (phase === 'countdown') {
+        return (
+            <div className="live-room-wrapper countdown-bg">
+                <div className="countdown-card">
+                    <h1 className="countdown-number animate-pop">{count}</h1>
+                    <h2 className="countdown-title">¡Prepárate!</h2>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className={`live-room-wrapper ${step === 'reading' ? 'reading-mode' : 'answering-mode'}`}>
+            <div className="live-content-layout">
+                {step === 'answering' && (
+                    <header className="live-header animate-fade-in">
+                        <div className="header-left-info">
+                            <span className="header-pin-badge">PIN DE SALA: {roomCode}</span>
+                            <h1 className="header-quiz-title">{quizTitle || "Responda a las preguntas"}</h1>
+                        </div>
+                        <div className="header-right-stats">
+                            <div className="live-stat-badge">
+                                {isHost ? (
+                                    <button className="eye-toggle-btn" onClick={() => setShowAnswersCount(!showAnswersCount)}>
+                                        {showAnswersCount ? <Eye size={20} /> : <EyeOff size={20} />}
+                                    </button>
+                                ) : <Users size={20} className="icon-magenta" />}
+                                <div className="stat-texts">
+                                    <span className="stat-label">RESPUESTAS</span>
+                                    <span className="stat-number">
+                                        {isHost ? (showAnswersCount ? Object.values(statistics).reduce((a, b) => a + b, 0) : "••") : "••"}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                )}
+
+                <div className="top-time-system animate-fade-in">
+                    {step !== 'reading' && (
+                        <div className="time-display-badge">
+                            <Timer size={20} className="icon-magenta" />
+                            <span className="time-text-large">{timeLeft}s</span>
+                        </div>
+                    )}
+                    <div className="time-progress-container">
+                        <div className="time-progress-bar" style={{ width: `${step === 'reading' ? readingProgress : answeringProgress}%` }} />
+                    </div>
+
+                    {isHost && step === 'answering' && (
+                        <div className="host-timer-controls">
+                            {timeLeft > 0 ? (
+                                <button className="lr-btn-finish" onClick={() => setTimeLeft(0)}>Terminar tiempo</button>
+                            ) : (
+                                <button className="lr-btn-finish" onClick={handleShowResults}>
+                                    <Eye size={18} /> Ver estadísticas
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <main className="live-main">
+                    <section className="question-card">
+                        <div className="question-header">
+                            <div className="question-icon-box"><HelpCircle size={24} color="white" /></div>
+                            <h2 className="question-text">{roomData?.text}</h2>
+                        </div>
+                        {step === 'answering' && (
+                            <div className="answering-area animate-fade-in">
+                                <div className="options-grid">
+                                    {roomData?.options?.map((opt: any, index: number) => (
+                                        <button
+                                            key={opt.id}
+                                            disabled={isSent || isHost}
+                                            className={`lr-option-item ${selectedOptionId === opt.id ? 'active' : ''}`}
+                                            onClick={() => setSelectedOptionId(opt.id)}
+                                        >
+                                            <div className="option-letter-box">{String.fromCharCode(65 + index)}</div>
+                                            <span className="option-text">{opt.text}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                                {!isHost && (
+                                    <div className="action-bar">
+                                        <button
+                                            className={`btn-send-answer ${!selectedOptionId ? 'not-selected' : ''} ${isSent ? 'is-sent' : ''}`}
+                                            onClick={handleSubmitAnswer}
+                                            disabled={!selectedOptionId || isSent}
+                                        >
+                                            {isSent ? <Check size={18} /> : <Send size={18} />}
+                                            <span>{isSent ? 'Respuesta enviada' : 'Enviar respuesta'}</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </section>
+                </main>
+            </div>
+        </div>
+    );
+};
+
+export default AnsweringPhase;

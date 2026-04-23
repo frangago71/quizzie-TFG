@@ -1,0 +1,118 @@
+.podium-screen-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    color: var(--text-dark);
+    padding: 60px 20px;
+    position: relative;
+}
+
+.podium-titles {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.podium-main-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--btn-black);
+    margin-bottom: 10px;
+}
+
+.podium-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-gray-light);
+    font-weight: 400;
+}
+
+.podium-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.podium-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 200px;
+}
+
+.p-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+.name-gold {
+    font-size: 1.3rem;
+}
+
+.p-score {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.score-gold {
+    color: var(--primary-magenta);
+}
+
+.score-silver, .score-bronze {
+    color: var(--color-green);
+}
+
+.p-bar {
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 25px;
+    box-shadow: 0 -4px 15px var(--shadow-soft);
+}
+
+.bar-gold {
+    height: 320px;
+    background-color: var(--color-gold);
+}
+
+.bar-silver {
+    height: 220px;
+    background-color: var(--color-silver);
+}
+
+.bar-bronze {
+    height: 160px;
+    background-color: var(--color-bronze);
+}
+
+.p-medal {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.bar-silver .p-medal, .bar-bronze .p-medal {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.podium-actions {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+}
