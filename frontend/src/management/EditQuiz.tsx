@@ -1,13 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import api from '../api';
 import './CreateQuiz.css';
+import '../auth/Modal.css';
 import { useNavigate, useParams } from 'react-router-dom';
 
-interface Option { id?: number; text: string; is_correct: boolean; }
-interface Question { id?: number; text: string; points: number | string; options: Option[]; }
+interface Option { id?: number; text: string; is_correct: boolean; _deleted?: boolean; }
+interface Question { id?: number; text: string; points: number | string; options: Option[]; _deleted?: boolean; }
 interface QuizData { id?: number; title: string; description: string; questions: Question[]; }
-
-
 
 const EditQuiz: React.FC = () => {
   const { id } = useParams();
@@ -16,6 +15,7 @@ const EditQuiz: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setQuiz] = useState<QuizData>({
     title: '',
     description: '',
@@ -37,9 +37,8 @@ const EditQuiz: React.FC = () => {
     if (id) fetchQuiz();
   }, [id, navigate]);
 
-  const isCurrentQuestionBlank =
-    quiz.questions[currentIndex]?.text.trim() === "" &&
-    quiz.questions[currentIndex]?.options.every(opt => opt.text.trim() === "");
+  const currentQ = quiz.questions[currentIndex];
+  const isCurrentQuestionBlank = currentQ && currentQ.text.trim() === "" && currentQ.options.every(opt => opt.text.trim() === "");
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -53,26 +52,21 @@ const EditQuiz: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        handleNext();
-      } else if (e.key === 'ArrowLeft') {
-        handlePrev();
-      }
+      if (isModalOpen) return;
+      if (e.key === 'ArrowRight') handleNext();
+      else if (e.key === 'ArrowLeft') handlePrev();
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, quiz.questions.length, isCurrentQuestionBlank]);
+  }, [currentIndex, quiz.questions?.length, isCurrentQuestionBlank, isModalOpen]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
-
   const onTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
   };
-
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
@@ -90,48 +84,98 @@ const EditQuiz: React.FC = () => {
     setCurrentIndex(Math.max(0, currentIndex - 1));
   };
 
-  const removeOption = async (qIndex: number, oIndex: number) => {
-    const o = quiz.questions[qIndex].options[oIndex];
-    if (o.id) {
-        try {
-            await api.delete(`/content/options/${o.id}`);
-            const newQuestions = [...quiz.questions];
-            if (newQuestions[qIndex].options.length > 2) {
-              const wasCorrect = newQuestions[qIndex].options[oIndex].is_correct;
-              newQuestions[qIndex].options = newQuestions[qIndex].options.filter((_, i) => i !== oIndex);
-              if (wasCorrect) newQuestions[qIndex].options[0].is_correct = true;
-              setQuiz({ ...quiz, questions: newQuestions });
-            }
-        } catch (error: any) {
-            alert(error.response?.data?.detail || "Error al borrar opción");
+  const toggleOptionDeleted = (qIndex: number, oIndex: number) => {
+    const newQuestions = [...quiz.questions];
+    const isDeleted = newQuestions[qIndex].options[oIndex]._deleted;
+    
+    if (!isDeleted) {
+        const activeOptions = newQuestions[qIndex].options.filter(o => !o._deleted);
+        if (activeOptions.length <= 2) {
+            alert("No puedes borrar esta opción. Cada pregunta debe tener al menos dos opciones.");
+            return;
+        }
+        if (newQuestions[qIndex].options[oIndex].is_correct) {
+             alert("No puedes borrar la opción correcta. Selecciona otra como correcta primero.");
+             return;
         }
     }
+    
+    newQuestions[qIndex].options[oIndex]._deleted = !isDeleted;
+    setQuiz({ ...quiz, questions: newQuestions });
   };
 
-  const removeQuestion = async (index: number) => {
-    const q = quiz.questions[index];
-    if (q.id) {
-        try {
-            await api.delete(`/content/questions/${q.id}`);
-            if (quiz.questions.length > 1) {
-              const newQuestions = quiz.questions.filter((_, i) => i !== index);
-              setCurrentIndex(prev => (prev >= newQuestions.length ? newQuestions.length - 1 : prev));
-              setQuiz({ ...quiz, questions: newQuestions });
-            }
-        } catch (error: any) {
-            alert(error.response?.data?.detail || "Error al borrar pregunta");
+  const toggleQuestionDeleted = (index: number) => {
+    const newQuestions = [...quiz.questions];
+    const isDeleted = newQuestions[index]._deleted;
+    if (!isDeleted) {
+        const activeQuestions = newQuestions.filter(q => !q._deleted);
+        if (activeQuestions.length <= 1) {
+            alert("No puedes borrar la última pregunta. El cuestionario debe tener al menos una.");
+            return;
         }
     }
+    newQuestions[index]._deleted = !isDeleted;
+    setQuiz({ ...quiz, questions: newQuestions });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/quizzes');
+    setIsModalOpen(true);
+  };
+
+  const confirmSubmit = async () => {
+    try {
+        const payload = {
+            title: quiz.title,
+            description: quiz.description,
+            questions: quiz.questions.filter(q => !q._deleted).map(q => ({
+                id: q.id,
+                text: q.text,
+                points: Number(q.points),
+                options: q.options.filter(o => !o._deleted).map(o => ({
+                    id: o.id,
+                    text: o.text,
+                    is_correct: o.is_correct
+                }))
+            }))
+        };
+        await api.put(`/content/quizzes/${id}`, payload);
+        setIsModalOpen(false);
+        navigate('/quizzes');
+    } catch (error: any) {
+        alert(error.response?.data?.detail || "Error al actualizar cuestionario");
+        setIsModalOpen(false);
+    }
   };
 
   const handleDotClick = (targetIndex: number) => {
     if (targetIndex === currentIndex) return;
     setCurrentIndex(targetIndex);
+  };
+
+  const handleQuizChange = (field: keyof QuizData, value: string) => {
+    setQuiz({ ...quiz, [field]: value });
+  };
+
+  const handleQuestionChange = (index: number, field: keyof Question, value: string | number) => {
+    const newQuestions = [...quiz.questions];
+    newQuestions[index] = { ...newQuestions[index], [field]: value };
+    setQuiz({ ...quiz, questions: newQuestions });
+  };
+
+  const handleOptionChange = (qIndex: number, oIndex: number, text: string) => {
+    const newQuestions = [...quiz.questions];
+    newQuestions[qIndex].options[oIndex].text = text;
+    setQuiz({ ...quiz, questions: newQuestions });
+  };
+
+  const handleCorrectOptionChange = (qIndex: number, oIndex: number) => {
+    const newQuestions = [...quiz.questions];
+    newQuestions[qIndex].options = newQuestions[qIndex].options.map((opt, i) => ({
+      ...opt,
+      is_correct: i === oIndex,
+    }));
+    setQuiz({ ...quiz, questions: newQuestions });
   };
 
   if (loading) return <div style={{padding: 40}}>Cargando...</div>;
@@ -140,6 +184,7 @@ const EditQuiz: React.FC = () => {
   const isNextDisabled = isCurrentQuestionBlank || (currentIndex === quiz.questions.length - 1);
 
   return (
+    <>
     <form ref={formRef} className="create-quiz-container" onSubmit={handleSubmit}>
       <header className="fixed-header-section">
         <div className="header-text-group">
@@ -150,16 +195,16 @@ const EditQuiz: React.FC = () => {
               placeholder="Título"
               tabIndex={1}
               value={quiz.title}
-              readOnly
+              onChange={(e) => handleQuizChange('title', e.target.value)}
               required
             />
             <button 
               type="submit" 
-              className={`btn-main ${isMobile ? 'small' : 'big'} magenta btn-header-action`}
+              className={`btn-main ${isMobile ? 'small' : 'big'} cyan btn-header-action`}
               tabIndex={100}
             >
-              <span className="text-desktop">Volver</span>
-              <span className="text-mobile">Volver</span>
+              <span className="text-desktop">Confirmar</span>
+              <span className="text-mobile">Confirmar</span>
             </button>
           </div>
           <textarea
@@ -167,22 +212,22 @@ const EditQuiz: React.FC = () => {
             placeholder="Añade una descripción aquí..."
             tabIndex={2}
             value={quiz.description}
-            readOnly
+            onChange={(e) => handleQuizChange('description', e.target.value)}
             required
           />
         </div>
       </header>
 
       <div className="nav-dots pc-dots">
-        {quiz.questions.map((_, i) => (
-          <div key={i} className={`dot ${i === currentIndex ? 'active' : ''}`} onClick={() => handleDotClick(i)} />
+        {quiz.questions.map((q, i) => (
+          <div key={i} className={`dot ${i === currentIndex ? 'active' : ''} ${q._deleted ? 'deleted-dot' : ''}`} onClick={() => handleDotClick(i)} style={{ opacity: q._deleted ? 0.3 : 1 }} />
         ))}
       </div>
 
       <div className="quiz-top-nav-mobile">
         <div className="nav-dots">
-          {quiz.questions.map((_, i) => (
-            <div key={i} className={`dot ${i === currentIndex ? 'active' : ''}`} onClick={() => handleDotClick(i)} />
+          {quiz.questions.map((q, i) => (
+            <div key={i} className={`dot ${i === currentIndex ? 'active' : ''}`} onClick={() => handleDotClick(i)} style={{ opacity: q._deleted ? 0.3 : 1 }} />
           ))}
         </div>
       </div>
@@ -190,9 +235,11 @@ const EditQuiz: React.FC = () => {
       <div className="quiz-main-layout">
         <button type="button" className="quiz-slider-btn btn-pc-nav" onClick={handlePrev} disabled={currentIndex === 0}>‹</button>
 
-        <div className="question-card" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+        <div className="question-card" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd} style={{ opacity: currentQ._deleted ? 0.6 : 1, backgroundColor: currentQ._deleted ? '#f0f0f0' : 'var(--card-bg)' }}>
           {quiz.questions.length > 1 && (
-            <button type="button" className="btn-remove-question-fixed" onClick={() => removeQuestion(currentIndex)} tabIndex={-1}>✕</button>
+            <button type="button" className="btn-remove-question-fixed" onClick={() => toggleQuestionDeleted(currentIndex)} tabIndex={-1}>
+                {currentQ._deleted ? '↶' : '✕'}
+            </button>
           )}
 
           <div className="question-card-header">
@@ -204,8 +251,9 @@ const EditQuiz: React.FC = () => {
                 className="input-base points-input"
                 min="1" max="100"
                 tabIndex={3}
-                value={quiz.questions[currentIndex].points || ''}
-                readOnly
+                value={currentQ.points || ''}
+                onChange={(e) => handleQuestionChange(currentIndex, 'points', e.target.value)}
+                disabled={currentQ._deleted}
               />
             </div>
           </div>
@@ -216,19 +264,21 @@ const EditQuiz: React.FC = () => {
             type="text"
             placeholder="Escribe el enunciado"
             tabIndex={4}
-            value={quiz.questions[currentIndex].text}
-            readOnly
+            value={currentQ.text}
+            onChange={(e) => handleQuestionChange(currentIndex, 'text', e.target.value)}
+            disabled={currentQ._deleted}
           />
 
           <div className="options-wrapper">
-            {quiz.questions[currentIndex].options.map((o, oIndex) => (
-              <div key={oIndex} className="option-item">
+            {currentQ.options.map((o, oIndex) => (
+              <div key={oIndex} className="option-item" style={{ opacity: o._deleted ? 0.5 : 1, backgroundColor: o._deleted ? '#e0e0e0' : 'transparent' }}>
                 <input
                   type="radio"
                   name={`correct-${currentIndex}`}
                   checked={o.is_correct}
+                  onChange={() => handleCorrectOptionChange(currentIndex, oIndex)}
                   tabIndex={-1}
-                  readOnly
+                  disabled={currentQ._deleted || o._deleted}
                 />
                 <input
                   className="input-base"
@@ -236,10 +286,13 @@ const EditQuiz: React.FC = () => {
                   placeholder={`Opción ${oIndex + 1}`}
                   tabIndex={5 + oIndex}
                   value={o.text}
-                  readOnly
+                  onChange={(e) => handleOptionChange(currentIndex, oIndex, e.target.value)}
+                  disabled={currentQ._deleted || o._deleted}
                 />
-                {quiz.questions[currentIndex].options.length > 2 && (
-                  <button type="button" className="btn-remove" tabIndex={-1} onClick={() => removeOption(currentIndex, oIndex)}>✕</button>
+                {currentQ.options.length > 2 && !currentQ._deleted && (
+                  <button type="button" className="btn-remove" tabIndex={-1} onClick={() => toggleOptionDeleted(currentIndex, oIndex)}>
+                    {o._deleted ? '↶' : '✕'}
+                  </button>
                 )}
               </div>
             ))}
@@ -254,6 +307,26 @@ const EditQuiz: React.FC = () => {
         <button type="button" className="quiz-slider-btn btn-pc-nav" onClick={handleNext} disabled={isNextDisabled}>›</button>
       </div>
     </form>
+    
+    {isModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+            <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Confirmar Cambios</h2>
+                    <p>¿Estás seguro de que quieres guardar los cambios? Esto actualizará el cuestionario y aplicará los borrados.</p>
+                </div>
+                <div className="modal-actions" style={{ flexDirection: 'column', gap: '10px' }}>
+                    <button className="btn-modal-primary cyan" onClick={confirmSubmit} style={{ width: '100%' }}>
+                        Guardar cambios
+                    </button>
+                    <button className="btn-modal-secondary" onClick={() => setIsModalOpen(false)} style={{ width: '100%' }}>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    )}
+    </>
   );
 };
 

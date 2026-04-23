@@ -4,7 +4,7 @@ from typing import List
 from database import get_session
 from models.content import Quiz, Question, Option
 from models.stage import RoomStatus, Room
-from schemas.content import QuizCreate, QuestionCreate, OptionCreate, QuizRead, QuestionRead, OptionRead
+from schemas.content import QuizCreate, QuestionCreate, OptionCreate, QuizRead, QuestionRead, OptionRead, QuizUpdate
 from sqlalchemy.orm import selectinload
 from auth import get_current_teacher_id
 
@@ -54,6 +54,66 @@ def post_quiz(quiz_data: QuizCreate,  session: Session = Depends(get_session),
     session.commit()
     session.refresh(db_quiz)
     return {"message": "Quiz creado con éxito", "quiz_id": db_quiz.id}
+
+@router.put("/quizzes/{quiz_id}")
+def update_quiz(
+    quiz_id: int,
+    quiz_data: QuizUpdate,
+    session: Session = Depends(get_session),
+    teacher_id: int = Depends(get_current_teacher_id)
+):
+    if len(quiz_data.questions) == 0:
+        raise HTTPException(status_code=400, detail="El cuestionario debe tener al menos una pregunta.")
+        
+    statement = select(Quiz).where(Quiz.id == quiz_id).options(
+        selectinload(Quiz.questions).selectinload(Question.options)
+    )
+    db_quiz = session.exec(statement).first()
+    if not db_quiz:
+        raise HTTPException(status_code=404, detail="Quiz no encontrado")
+    if db_quiz.teacher_id != teacher_id:
+        raise HTTPException(status_code=403, detail="No tienes permiso")
+        
+    db_quiz.title = quiz_data.title
+    if quiz_data.description is not None:
+        db_quiz.description = quiz_data.description
+    
+    incoming_q_ids = [q.id for q in quiz_data.questions if q.id is not None]
+    
+    questions_to_delete = [q for q in db_quiz.questions if q.id not in incoming_q_ids]
+    for q in questions_to_delete:
+        session.delete(q)
+        
+    for q_data in quiz_data.questions:
+        if q_data.id:
+            db_question = next((q for q in db_quiz.questions if q.id == q_data.id), None)
+            if db_question:
+                db_question.text = q_data.text
+                db_question.points = q_data.points
+                
+                incoming_o_ids = [o.id for o in q_data.options if o.id is not None]
+                options_to_delete = [o for o in db_question.options if o.id not in incoming_o_ids]
+                for o in options_to_delete:
+                    session.delete(o)
+                
+                for o_data in q_data.options:
+                    if o_data.id:
+                        db_option = next((o for o in db_question.options if o.id == o_data.id), None)
+                        if db_option:
+                            db_option.text = o_data.text
+                            db_option.is_correct = o_data.is_correct
+                    else:
+                        new_option = Option(text=o_data.text, is_correct=o_data.is_correct, question=db_question)
+                        session.add(new_option)
+        else:
+            new_question = Question(text=q_data.text, points=q_data.points, quiz=db_quiz)
+            session.add(new_question)
+            for o_data in q_data.options:
+                new_option = Option(text=o_data.text, is_correct=o_data.is_correct, question=new_question)
+                session.add(new_option)
+
+    session.commit()
+    return {"message": "Quiz actualizado con éxito"}
 
 @router.delete("/quizzes/{quiz_id}")
 def delete_quiz(

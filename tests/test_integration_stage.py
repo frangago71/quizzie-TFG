@@ -119,6 +119,14 @@ class TestStageIntegration:
         session.add(quiz)
         session.commit()
         
+        q1 = Question(text="Q1", quiz_id=quiz.id)
+        session.add(q1)
+        session.commit()
+        
+        opt1 = Option(text="Correct", is_correct=True, question_id=q1.id)
+        session.add(opt1)
+        session.commit()
+        
         r_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
         r_id = r_res.json()["id"]
         
@@ -127,8 +135,8 @@ class TestStageIntegration:
 
         answer_params = {
             "participant_id": p_id,
-            "option_id": 1,
-            "question_id": 1
+            "option_id": opt1.id,
+            "question_id": q1.id
         }
         
         client.post("/stage/answers", params=answer_params)

@@ -69,11 +69,40 @@ class QuizCreate(BaseModel):
             }
         }
     )
+class OptionUpdate(BaseModel):
+    id: Optional[int] = None
+    text: str
+    is_correct: bool
+
+class QuestionUpdate(BaseModel):
+    id: Optional[int] = None
+    text: str
+    points: int = 1
+    options: List[OptionUpdate]
+
+    @model_validator(mode='after')
+    def validate_options_logic(self) -> 'QuestionUpdate':
+        correct_count = sum(1 for o in self.options if o.is_correct)
+        total_options = len(self.options)
+
+        if correct_count != 1:
+            raise ValueError("Cada pregunta debe tener exactamente una opción correcta.")
+        if total_options < 2:
+            raise ValueError("Cada pregunta debe tener al menos dos opciones en total.")
+        if (total_options - correct_count) < 1:
+            raise ValueError("Cada pregunta debe tener al menos una opción falsa.")
+        return self
+
+class QuizUpdate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    questions: List[QuestionUpdate]
     
 
 class OptionRead(BaseModel):
     id: int
     text: str
+    is_correct: bool
     model_config = ConfigDict(from_attributes=True)
 
 class QuestionRead(BaseModel):

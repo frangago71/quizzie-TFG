@@ -35,7 +35,7 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 | **RF-10** | # | Aleatoriedad | Opción para cambiar el orden de preguntas y respuestas. | Media | OBJ-02 | |
 | **RF-11** | # | Configurar tiempo | Definición del tiempo de respuesta al crear la sala. | Media | OBJ-03 |  |
 | **RF-12** | # | Importación | Carga de preguntas y respuestas desde archivos .txt o .csv. | Media | OBJ-12 | |
-| **RF-13** | # | Edición de cuestionarios y preguntas | Permitir editar el título, descripción, preguntas y opciones. | Media | OBJ-02 | |
+| **RF-13** | #51 | Edición de cuestionarios y preguntas | Permitir editar el título, descripción, preguntas y opciones. | Media | OBJ-02 |Core |
 | **RF-14** | #40 | Eliminación de datos | Borrado lógico de cuestionarios o preguntas. | Media | OBJ-02 | Core |
 | **RF-15** | #3 | Crear sala | Instanciación de una sesión con PIN único basada en un cuestionario. | Alta | OBJ-03 | MVP |
 | **RF-16** | #4 | Validar PIN | Verificación de que el PIN corresponde a una sala activa. | Alta | OBJ-04 | MVP |
