@@ -11,7 +11,7 @@ const ListQuizzes: React.FC = () => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
-    void loading;
+    const [quizRooms, setQuizRooms] = useState<any[]>([]); 
     const navigate = useNavigate();
     const { setRoomId } = useRoom();
 
@@ -41,13 +41,27 @@ const ListQuizzes: React.FC = () => {
                 const response = await api.get(`/users/my-quizzes`);
                 setTeacherQuizzes(response.data);
             } catch (error) {
-                console.error("Error cargando los quizzes:", error);
+                console.error("Error cargando los quizzes:", loading, error);
             } finally {
                 setLoading(false);
             }
         };
         fetchQuizzes();
     }, []);
+
+    const handlePrepareDelete = async (quiz: Quiz) => {
+        try {
+            const response = await api.get(`/content/quizzes/${quiz.id}/rooms`);
+            setQuizRooms(response.data);
+            setQuizToDelete(quiz);
+        } catch (error) {
+            console.error("Error al obtener las salas del cuestionario:", error);
+            setQuizRooms([]); 
+            setQuizToDelete(quiz);
+        }
+    };
+
+    
 
     const handleDeleteConfirm = async (hard: boolean) => {
         if (!quizToDelete) return;
@@ -62,6 +76,7 @@ const ListQuizzes: React.FC = () => {
             alert(error.response?.data?.detail || "Error al borrar el cuestionario");
         } finally {
             setQuizToDelete(null);
+            setQuizRooms([]);
         }
     };
 
@@ -94,24 +109,17 @@ const ListQuizzes: React.FC = () => {
                                     {(() => {
                                         const allTags = quiz.tags.split(',');
                                         const total = allTags.length;
-
                                         if (total <= 3) {
                                             return allTags.map((tag, index) => (
-                                                <span key={index} className="category-tag">
-                                                    {tag.trim()}
-                                                </span>
+                                                <span key={index} className="category-tag">{tag.trim()}</span>
                                             ));
                                         } else {
                                             return (
                                                 <>
                                                     {allTags.slice(0, 2).map((tag, index) => (
-                                                        <span key={index} className="category-tag">
-                                                            {tag.trim()}
-                                                        </span>
+                                                        <span key={index} className="category-tag">{tag.trim()}</span>
                                                     ))}
-                                                    <span className="category-tag">
-                                                        +{total - 2}
-                                                    </span>
+                                                    <span className="category-tag">+{total - 2}</span>
                                                 </>
                                             );
                                         }
@@ -141,7 +149,7 @@ const ListQuizzes: React.FC = () => {
                                     </div>
                                     <div className="action-icons">
                                         <button className="icon-btn" title="Editar" onClick={() => navigate(`/quizzes/edit/${quiz.id}`)}><Pencil size={18} /></button>
-                                        <button className="icon-btn" title="Eliminar" onClick={() => setQuizToDelete(quiz)}><Trash2 size={18} /></button>
+                                        <button className="icon-btn" title="Eliminar" onClick={() => handlePrepareDelete(quiz)}><Trash2 size={18} /></button>
                                         <button className="icon-btn" title="Ver"><Eye size={18} /></button>
                                     </div>
                                 </>
@@ -151,7 +159,7 @@ const ListQuizzes: React.FC = () => {
                                         <h3>{quiz.title}</h3>
                                         <div className="action-icons">
                                             <button className="icon-btn" title="Editar" onClick={() => navigate(`/quizzes/edit/${quiz.id}`)}><Pencil size={18} /></button>
-                                            <button className="icon-btn" title="Eliminar" onClick={() => setQuizToDelete(quiz)}><Trash2 size={18} /></button>
+                                            <button className="icon-btn" title="Eliminar" onClick={() => handlePrepareDelete(quiz)}><Trash2 size={18} /></button>
                                             <button className="icon-btn" title="Ver"><Eye size={18} /></button>
                                         </div>
                                     </div>
@@ -191,9 +199,13 @@ const ListQuizzes: React.FC = () => {
             <DeleteQuizModal 
                 isOpen={!!quizToDelete} 
                 onConfirm={handleDeleteConfirm} 
-                onCancel={() => setQuizToDelete(null)} 
+                onCancel={() => {
+                    setQuizToDelete(null);
+                    setQuizRooms([]);
+                }}
+                rooms={quizRooms}
             />
-        </div >
+        </div>
     );
 };
 

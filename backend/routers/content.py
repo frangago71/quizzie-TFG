@@ -104,6 +104,13 @@ def delete_quiz_and_rooms(
     session.commit()
     return {"ok": True, "message": "Cuestionario y sus salas eliminados correctamente."}
 
+@router.get("/quizzes/{quiz_id}/rooms", response_model=List[Room])
+def get_quiz_rooms(quiz_id: int, session: Session = Depends(get_session)):
+    quiz = session.get(Quiz, quiz_id)
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Cuestionario no encontrado")
+    return quiz.rooms
+
 @router.get("/questions", response_model=List[Question])
 def get_questions(session: Session = Depends(get_session)):
     return session.exec(select(Question)).all()
