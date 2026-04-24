@@ -24,6 +24,7 @@ const LiveRoom: React.FC = () => {
     const [statistics, setStatistics] = useState<Record<string, number>>({});
     const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [isConnected, setIsConnected] = useState(true);
 
     const { id: urlRoomId } = useParams();
     const navigate = useNavigate();
@@ -53,14 +54,40 @@ const LiveRoom: React.FC = () => {
         const syncRoom = async () => {
             try {
                 const res = await api.get(`/stage/rooms/${idToUse}`);
-                setRoomData(res.data);
+                const data = res.data;
+                setRoomData(data);
+                
+                if (data.status === 'LIVE') {
+                    setPhase('playing');
+                    if (data.phase === 'reading' || data.phase === 'answering') {
+                        setStep(data.phase);
+                        setTimeLeft(data.time_left);
+                    } else {
+                        setStep('answering');
+                        setTimeLeft(0);
+                    }
+                } else if (data.status === 'VERIFYING' || data.status === 'FINISHED') {
+                    api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
+                        setLeaderboardData(res.data);
+                    }).catch(err => console.error(err));
+                }
             } catch (err) {
                 console.error("Error sincronizando al entrar:", err);
             }
         };
         syncRoom();
-
+        
         const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${idToUse}/ws`);
+        
+        ws.onopen = () => {
+            console.log("WebSocket conectado");
+            setIsConnected(true);
+        };
+
+        ws.onclose = () => {
+            console.log("WebSocket desconectado");
+            setIsConnected(false);
+        };
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -242,7 +269,16 @@ const LiveRoom: React.FC = () => {
     }
 
     return (
-        <AnsweringPhase
+        <>
+            {!isConnected && (
+                <div className="reconnecting-overlay">
+                    <div className="reconnecting-content">
+                        <div className="spinner-small"></div>
+                        <span>Reconectando...</span>
+                    </div>
+                </div>
+            )}
+            <AnsweringPhase
             phase={phase}
             step={step}
             count={count}
@@ -263,6 +299,7 @@ const LiveRoom: React.FC = () => {
             isSent={isSent}
             handleSubmitAnswer={handleSubmitAnswer}
         />
+      </>
     );
 };
 
