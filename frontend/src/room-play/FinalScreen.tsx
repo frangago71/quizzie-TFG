@@ -198,12 +198,13 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
                   if (window.confirm("¿Seguro que quieres cerrar la fase de verificación? Los alumnos ya no podrán validar sus notas.")) {
                     try {
                       await api.post(`/stage/rooms/${roomId}/finish`);
+                      navigate('/dashboard');
                     } catch (err) {
                       console.error(err);
                     }
                   }
                 }}>
-                  Finalizar Verificación
+                  Finalizar verificación
                 </button>
               </div>
             ) : (
@@ -217,24 +218,27 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
             <ScannerModal 
               onClose={() => setShowScanner(false)}
               onScan={async (decodedText) => {
+                let qrData: any = null;
                 try {
-                  const data = JSON.parse(decodedText);
-                  if (data.roomId !== roomId) {
+                  qrData = JSON.parse(decodedText);
+                  if (qrData.roomId !== roomId) {
                     alert("Este código QR pertenece a otra sala.");
                     return;
                   }
                   const res = await api.post(`/stage/rooms/${roomId}/verify-participant`, {
-                    nickname: data.nickname,
-                    token: data.token
+                    nickname: qrData.nickname,
+                    token: qrData.token
                   });
                   if (res.data.status === 'success') {
-                    alert(`¡${data.nickname} verificado con éxito!`);
-                  } else if (res.data.status === 'already_verified') {
-                    alert(`${data.nickname} ya estaba verificado.`);
+                    alert(`¡${qrData.nickname} verificado con éxito!`);
                   }
-                } catch (err) {
+                } catch (err: any) {
                   console.error(err);
-                  alert("Error al validar el código. Asegúrate de que sea un QR de Quizzie válido.");
+                  if (err.response && err.response.status === 409) {
+                    alert(`El resultado de ${qrData?.nickname || 'este alumno'} ya ha sido verificado anteriormente.`);
+                  } else {
+                    alert("Error al validar el código. Asegúrate de que sea un QR de Quizzie válido.");
+                  }
                 } finally {
                   setShowScanner(false);
                 }
