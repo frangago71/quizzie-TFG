@@ -13,6 +13,7 @@ def get_utc_now():
 class RoomStatus(str, Enum):
     WAITING = "waiting"
     LIVE = "live"
+    VERIFYING = "verifying"
     FINISHED = "finished"
     
 class Room(SQLModel, table=True):
@@ -40,6 +41,8 @@ class Participant(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     joined_at: datetime = Field(default_factory=get_utc_now)
     score: int = Field(default=0)
+    is_verified: bool = Field(default=False)
+    verification_token: Optional[str] = Field(default=None)
      
     student_id: int = Field(foreign_key="student.id")
     student: "Student" = Relationship(back_populates="participations")

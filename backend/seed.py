@@ -54,8 +54,8 @@ def create_seed_data():
             s = Student(name=f"alo{str(i).zfill(4)}", group_id=None)
             session.add(s)
             all_students.append(s)
-        # Resto: 10 alumnos (abc0001 a abc0010)
-        for i in range(1, 11):
+        # Resto: 12 alumnos (abc0001 a abc0012)
+        for i in range(1, 13):
             s = Student(name=f"abc{str(i).zfill(4)}", group_id=None)
             session.add(s)
             all_students.append(s)
@@ -191,30 +191,35 @@ def create_seed_data():
 
 
         # --- 7. SALAS ---
-        # 2 Salas WAITING, 1 LIVE y 1 FINISHED
+        # 2 Salas WAITING, 1 LIVE, 1 VERIFYING y 1 FINISHED
         r_waiting1 = Room(join_code="111111", status=RoomStatus.WAITING, teacher_id=t1.id, quiz_id=quiz_lengua.id, group_id=g_cervantes.id)
         r_waiting2 = Room(join_code="222222", status=RoomStatus.WAITING, teacher_id=t2.id, quiz_id=quiz_ciencias.id, group_id=g_cajal.id)
         r_live = Room(join_code="333333", status=RoomStatus.LIVE, teacher_id=t3.id, quiz_id=quiz_deporte.id, current_question_index=1)
         r_finished = Room(join_code="444444", status=RoomStatus.FINISHED, teacher_id=t1.id, quiz_id=quiz_lengua.id)
+        r_verifying = Room(join_code="555555", status=RoomStatus.VERIFYING, teacher_id=t4.id, quiz_id=quiz_informatica.id)   
         
-        session.add_all([r_waiting1, r_waiting2, r_live, r_finished])
+        session.add_all([r_waiting1, r_waiting2, r_live, r_finished, r_verifying])
         session.commit()
-        for r in [r_waiting1, r_waiting2, r_live, r_finished]: session.refresh(r)
+        for r in [r_waiting1, r_waiting2, r_live, r_finished, r_verifying]: session.refresh(r)
 
         # --- 8. PARTICIPANTES ---
         for i in range(0, 40):
-            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_waiting1.id))
+            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_waiting1.id, is_verified=False))
         
         for i in range(40, 45):
-            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_waiting2.id))
+            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_waiting2.id, is_verified=False))
             
         for i in range(50, 55):
-            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_live.id))
-            
+            session.add(Participant(student_id=all_students[i].id, score=i%10, room_id=r_live.id, is_verified=False))
+        
         fin_parts = []
         for i in range(60, 70):
-            p = Participant(student_id=all_students[i].id, score=i%10, room_id=r_finished.id)
+            p = Participant(student_id=all_students[i].id, score=i%10, room_id=r_finished.id, is_verified=True )
             session.add(p); fin_parts.append(p)
+
+        session.add(Participant(student_id=all_students[71].id, score=i%10, room_id=r_verifying.id, is_verified=False))
+        session.add(Participant(student_id=all_students[72].id, score=i%10, room_id=r_verifying.id, is_verified=True))
+
         
         session.commit()
         for p in fin_parts: session.refresh(p)
