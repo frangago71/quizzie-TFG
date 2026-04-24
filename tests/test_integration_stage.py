@@ -178,14 +178,14 @@ class TestStageIntegration:
         assert next_res.status_code == 200
         assert next_res.json()["current_question_index"] == 2
 
-        # Finalizar el quiz (Avanzar más allá de las preguntas disponibles)
-        finish_res = client.patch(f"/stage/rooms/{room_id}/next-question")
-        assert finish_res.json()["status"] == "FINISHED"
+        # Pasar a fase de verificación
+        verify_res = client.patch(f"/stage/rooms/{room_id}/next-question")
+        assert verify_res.json()["status"] == "VERIFYING"
 
     def test_statistics_engine(self, client: TestClient, session):
         """Verificación de estadísticas por pregunta."""
         teacher = Teacher(username="stat_prof", email="s@t.com", hashed_password="x")
-        student = Student(name="abc1234") # Usamos formato UVUS válido
+        student = Student(name="abc1234") 
         session.add_all([teacher, student])
         session.commit()
         
