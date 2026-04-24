@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from sqlalchemy import func
 from typing import List
 from database import get_session
-from models.stage import Room, Participant, Answer, RoomStatus
+from models.stage import Room, Participant, Answer, RoomStatus, get_utc_now
 from models.content import Quiz, Question, Option  
 from models.users import Student
 import random
@@ -235,9 +235,14 @@ async def verify_participant(room_id: int, req: VerificationRequest, db: Session
         raise HTTPException(status_code=400, detail="Token de verificación inválido")
 
     if participant.is_verified:
-        return {"status": "already_verified", "nickname": req.nickname}
+        raise HTTPException(status_code=409, detail="Este resultado ya ha sido verificado anteriormente.")
+
+    actual_score = sum(a.points_earned for a in participant.answers)
+    if participant.score != actual_score:
+        participant.score = actual_score
 
     participant.is_verified = True
+    participant.verified_at = get_utc_now()
     db.add(participant)
     db.commit()
     
@@ -355,7 +360,9 @@ def submit_answer(participant_id: int, option_id: int, question_id: int, session
     new_answer = Answer(
         participant_id=participant_id,
         option_id=option_id,
-        question_id=question_id
+        question_id=question_id,
+        was_correct=option.is_correct,
+        points_earned=question.points if option.is_correct else 0
     )
     session.add(new_answer)
     session.commit()
