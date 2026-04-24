@@ -116,3 +116,43 @@
     bottom: 40px;
     right: 40px;
 }
+
+@media (max-width: 768px) {
+    .podium-screen-container {
+        padding: 40px 15px;
+    }
+    .podium-titles {
+        margin-bottom: 40px;
+    }
+    .podium-main-title {
+        font-size: 1.8rem;
+    }
+    .podium-wrapper {
+        gap: 10px;
+    }
+    .p-name {
+        font-size: 0.9rem;
+    }
+    .name-gold {
+        font-size: 1.1rem;
+    }
+    .p-score {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+    }
+    .p-bar {
+        padding-top: 15px;
+    }
+    .bar-gold { height: 180px; }
+    .bar-silver { height: 130px; }
+    .bar-bronze { height: 100px; }
+    
+    .p-medal {
+        width: 32px;
+        height: 32px;
+    }
+    .p-medal svg {
+        width: 16px;
+        height: 16px;
+    }
+}

@@ -86,3 +86,26 @@
   width: 100%;
   max-width: 300px;
 }
+
+@media (max-width: 768px) {
+  .final-screen-title {
+    font-size: 1.8rem;
+  }
+  .final-screen-subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  .final-score {
+    font-size: 2rem;
+  }
+  .final-score-text {
+    font-size: 1rem;
+  }
+  .final-stats-card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .final-info-card-faded {
+    margin-bottom: 20px;
+  }
+}

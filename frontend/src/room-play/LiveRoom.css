@@ -12,18 +12,17 @@
 .live-room-wrapper {
   margin: -4rem -2rem -2rem -2rem; 
   width: calc(100% + 4rem); 
-  min-height: 100vh;
+  min-height: calc(100vh - 0px); 
   display: flex;
   background-color: var(--bg-gray);
-  overflow: hidden;
   text-align: left;
 }
 
 @media (max-width: 768px) {
   .live-room-wrapper {
-    margin: -1rem 0 0 0;
-    width: 100%;
-    min-height: 100vh;
+    margin: -5rem -1rem -2rem -1rem;
+    width: calc(100% + 2rem);
+    min-height: calc(100vh - 0px);
     display: flex;
     flex-direction: column;
     background-color: var(--bg-gray);

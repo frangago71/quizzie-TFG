@@ -59,6 +59,16 @@ body {
   position: relative;
 }
 
+.public-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-gray);
+  position: relative;
+}
+
 .sidebar {
   width: 0;
   height: 100%;
@@ -164,6 +174,15 @@ body {
   flex-direction: column;
   height: 100%;
   color: var(--text-dark); 
+  background: var(--bg-gray);
+}
+
+.full-width-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
   background: var(--bg-gray);
 }
 
