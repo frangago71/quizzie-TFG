@@ -15,6 +15,12 @@ class RoomStatus(str, Enum):
     LIVE = "live"
     VERIFYING = "verifying"
     FINISHED = "finished"
+
+class RoomPhase(str, Enum):
+    READING = "reading"
+    ANSWERING = "answering"
+    RESULTS = "results"
+    LEADERBOARD = "leaderboard"
     
 class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -22,6 +28,8 @@ class Room(SQLModel, table=True):
     status: RoomStatus = Field(default=RoomStatus.WAITING)  
     created_at: datetime = Field(default_factory=get_utc_now)
     current_question_index: int = Field(default=0)
+    phase: Optional[RoomPhase] = Field(default=None) 
+    phase_start_time: Optional[datetime] = Field(default=None)
     
     teacher_id: int = Field(foreign_key="teacher.id")
     teacher: "Teacher" = Relationship(back_populates="rooms")
