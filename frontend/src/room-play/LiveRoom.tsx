@@ -23,6 +23,7 @@ const LiveRoom: React.FC = () => {
     const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
     const [statistics, setStatistics] = useState<Record<string, number>>({});
     const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const { id: urlRoomId } = useParams();
     const navigate = useNavigate();
@@ -106,6 +107,10 @@ const LiveRoom: React.FC = () => {
                         setLeaderboardData(res.data);
                     }).catch(err => console.error(err));
                 }
+            }
+
+            if (message.type === "participant_verified") {
+                setRefreshTrigger(prev => prev + 1);
             }
         };
 
@@ -206,7 +211,7 @@ const LiveRoom: React.FC = () => {
     const answeringProgress = Math.min(100, ((40 - timeLeft) / 40) * 100);
 
     if (roomData?.status === 'FINISHED' || roomData?.status === 'VERIFYING') {
-        return <FinalScreen isHost={isHost} data={leaderboardData} status={roomData.status} />;
+        return <FinalScreen isHost={isHost} data={leaderboardData} status={roomData.status} refreshTrigger={refreshTrigger} />;
     }
 
     if (!roomData) return <div className="live-setup-wrapper setup-loading">Sincronizando sala...</div>;

@@ -207,3 +207,61 @@
 .btn-main.gray:hover {
   color: var(--btn-gray);
 }
+
+/* Scanner Styles */
+.scanner-modal {
+  max-width: 500px !important;
+  padding: 20px !important;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.modal-close:hover {
+  background-color: rgba(0,0,0,0.05);
+  color: var(--primary-magenta);
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+.scanner-hint {
+  margin-top: 20px;
+  color: var(--text-gray-light);
+  font-size: 0.9rem;
+}
+
+/* Estilos específicos para html5-qrcode */
+#reader__dashboard_section_csr button {
+  padding: 8px 16px;
+  background-color: var(--primary-cyan);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+#reader__dashboard_section_csr button:hover {
+  background-color: var(--secondary-cyan);
+}
+
+#reader__scan_region {
+  border: none !important;
+}

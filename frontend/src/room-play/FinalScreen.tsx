@@ -1,9 +1,10 @@
-import { Star, Medal, Users, CheckCircle, AlertTriangle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Star, Medal, Users, CheckCircle, AlertTriangle, Camera } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import api from '../api';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
 import { useRoom } from '../context/RoomContext.tsx';
+import ScannerModal from './ScannerModal';
 import './LeaderboardPhase.css';
 import './FinalScreen.css';
 
@@ -11,9 +12,10 @@ interface Props {
   isHost: boolean;
   data?: { name: string; score: number }[];
   status?: string;
+  refreshTrigger?: number;
 }
 
-const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED' }) => {
+const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', refreshTrigger = 0 }) => {
   const navigate = useNavigate();
   const { roomId, participantId, userNickname } = useRoom();
   const [stats, setStats] = useState<{ 
@@ -24,6 +26,7 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED' }
     is_verified?: boolean
   } | null>(null);
   const [showExitModal, setShowExitModal] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
     if (isHost || !roomId || !participantId) return;
@@ -36,7 +39,7 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED' }
       }
     };
     fetchStats();
-  }, [isHost, roomId, participantId]);
+  }, [isHost, roomId, participantId, refreshTrigger]);
 
   const first = data[0] || null;
   const second = data[1] || null;
@@ -68,7 +71,7 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED' }
 
           {status === 'VERIFYING' && stats?.verification_token ? (
             <div className="final-info-card qr-card animate-scale-in">
-              <h3 className="final-info-title">Tu Código de Verificación</h3>
+              <h3 className="final-info-title">Tu código de verificación</h3>
               <div className="qr-wrapper">
                 <QRCodeSVG 
                   value={JSON.stringify({ 
@@ -185,23 +188,59 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED' }
             </div>
             
             {status === 'VERIFYING' ? (
-              <button className="btn-main magenta big" onClick={async () => {
-                if (window.confirm("¿Seguro que quieres cerrar la fase de verificación? Los alumnos ya no podrán validar sus notas.")) {
-                  try {
-                    await api.post(`/stage/rooms/${roomId}/finish`);
-                  } catch (err) {
-                    console.error(err);
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', alignItems: 'center' }}>
+                <button className="btn-main cyan big" onClick={() => setShowScanner(true)}>
+                  <Camera size={20} />
+                  Escanear QR
+                </button>
+                
+                <button className="btn-main magenta big" onClick={async () => {
+                  if (window.confirm("¿Seguro que quieres cerrar la fase de verificación? Los alumnos ya no podrán validar sus notas.")) {
+                    try {
+                      await api.post(`/stage/rooms/${roomId}/finish`);
+                    } catch (err) {
+                      console.error(err);
+                    }
                   }
-                }
-              }}>
-                Finalizar Verificación
-              </button>
+                }}>
+                  Finalizar Verificación
+                </button>
+              </div>
             ) : (
               <button className="btn-main cyan big" onClick={() => navigate('/dashboard')}>
                 Volver al panel
               </button>
             )}
           </div>
+
+          {showScanner && (
+            <ScannerModal 
+              onClose={() => setShowScanner(false)}
+              onScan={async (decodedText) => {
+                try {
+                  const data = JSON.parse(decodedText);
+                  if (data.roomId !== roomId) {
+                    alert("Este código QR pertenece a otra sala.");
+                    return;
+                  }
+                  const res = await api.post(`/stage/rooms/${roomId}/verify-participant`, {
+                    nickname: data.nickname,
+                    token: data.token
+                  });
+                  if (res.data.status === 'success') {
+                    alert(`¡${data.nickname} verificado con éxito!`);
+                  } else if (res.data.status === 'already_verified') {
+                    alert(`${data.nickname} ya estaba verificado.`);
+                  }
+                } catch (err) {
+                  console.error(err);
+                  alert("Error al validar el código. Asegúrate de que sea un QR de Quizzie válido.");
+                } finally {
+                  setShowScanner(false);
+                }
+              }}
+            />
+          )}
         </>
       )}
     </div>
