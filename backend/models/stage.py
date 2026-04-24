@@ -42,6 +42,7 @@ class Participant(SQLModel, table=True):
     joined_at: datetime = Field(default_factory=get_utc_now)
     score: int = Field(default=0)
     is_verified: bool = Field(default=False)
+    verified_at: Optional[datetime] = Field(default=None)
     verification_token: Optional[str] = Field(default=None)
      
     student_id: int = Field(foreign_key="student.id")

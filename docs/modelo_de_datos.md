@@ -91,7 +91,8 @@ classDiagram
 | | joined_at | datetime | Momento exacto de unión a la sala. |
 | | score | int | Puntuación acumulada de las preguntas acertadas. |
 | | is_verified | bool | Indica si se ha verificado la participación y la nota. |
-| | verification_token | Optional[str] | Token único para verificar la participación y la nota    . |
+| | verified_at | Optional[datetime]     | Momento en el que se verificó la participación y la nota. |
+| | verification_token | Optional[str] | Token único para verificar la participación y la nota. |
 | | student_id | int (FK) | Alumno que participa. |
 | | room_id | int (FK) | Sala a la que pertenece el registro. |
 | **Answer** | id | int (PK) | Identificador único de la respuesta. |
@@ -121,6 +122,7 @@ classDiagram
         +datetime joined_at
         +int score
         +bool is_verified
+        +datetime? verified_at  
         +str? verification_token
         +int student_id (FK)
         +int room_id (FK)
