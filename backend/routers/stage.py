@@ -3,13 +3,14 @@ from sqlmodel import Session, select
 from sqlalchemy import func
 from typing import List
 from database import get_session
-from models.stage import Room, Participant, Answer, RoomStatus, get_utc_now
+from models.stage import Room, Participant, Answer, RoomStatus, RoomPhase, get_utc_now
 from models.content import Quiz, Question, Option  
 from models.users import Student
 import random
 import string
 import secrets
 from pydantic import BaseModel
+from datetime import timezone as tz
 
 router = APIRouter(prefix="/stage", tags=["Stage"])
 
@@ -58,11 +59,9 @@ def create_room(quiz_id: int, session: Session = Depends(get_session)):
         Room.quiz_id == quiz_id, 
         Room.status != RoomStatus.FINISHED
     )
-    if session.exec(active_room_statement).first():
-        raise HTTPException(
-            status_code=400, 
-            detail="Ya existe una sala activa para este cuestionario."
-        )
+    active_room = session.exec(active_room_statement).first()
+    if active_room:
+        return active_room
     unique_join_code = False
     new_join_code = "123456"
     while not unique_join_code:
@@ -127,6 +126,9 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
     total_questions = session.exec(select(func.count(Question.id)).where(Question.quiz_id == room.quiz_id)).one()
 
     current_q_data = None
+    time_left = 0
+    calculated_phase = room.phase or "waiting"
+
     if room.status == RoomStatus.LIVE and room.current_question_index > 0:
         statement = (
             select(Question)
@@ -144,12 +146,29 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
                 "options": [{"id": opt.id, "text": opt.text} for opt in q.options]
             }
 
+            if room.phase_start_time:
+                phase_start = room.phase_start_time
+                if phase_start.tzinfo is None:
+                    phase_start = phase_start.replace(tzinfo=tz.utc)
+                elapsed = (get_utc_now() - phase_start).total_seconds()
+                if elapsed < 5:
+                    calculated_phase = RoomPhase.READING
+                    time_left = max(0, 5 - int(elapsed))
+                elif elapsed < 45:
+                    calculated_phase = RoomPhase.ANSWERING
+                    time_left = max(0, 45 - int(elapsed))
+                else:
+                    calculated_phase = RoomPhase.ANSWERING
+                    time_left = 0
+
     return {
         "id": room.id,
         "status": room.status,
         "join_code": room.join_code,
         "current_question_index": room.current_question_index,
         "total_questions": total_questions,
+        "phase": calculated_phase,
+        "time_left": time_left,
         **(current_q_data or {"text": "Sala inactiva", "options": []})
     }
 
@@ -165,6 +184,8 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
 
     room.status = RoomStatus.LIVE
     room.current_question_index = 1
+    room.phase = RoomPhase.READING
+    room.phase_start_time = get_utc_now()
     session.commit()
 
     data = {
@@ -191,6 +212,8 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
     if next_index <= len(questions):
         next_q = questions[next_index - 1]
         room.current_question_index = next_index
+        room.phase = RoomPhase.READING
+        room.phase_start_time = get_utc_now()
         db.commit()
 
         data = {
@@ -258,6 +281,21 @@ async def finish_room(room_id: int, db: Session = Depends(get_session)):
     room = db.get(Room, room_id)
     if not room or room.status != RoomStatus.VERIFYING:
         raise HTTPException(status_code=400, detail="La sala no está en fase de verificación o ya ha finalizado")
+    
+    room.status = RoomStatus.FINISHED
+    room.join_code = None
+    db.commit()
+    
+    await manager.broadcast_to_room(room_id, {"type": "room_finish", "data": {"status": "FINISHED"}})
+    return {"status": "FINISHED"}
+
+@router.post("/rooms/{room_id}/force-finish")
+async def force_finish_room(room_id: int, db: Session = Depends(get_session)):
+    room = db.get(Room, room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+    if room.status == RoomStatus.FINISHED:
+        raise HTTPException(status_code=400, detail="La sala ya está finalizada")
     
     room.status = RoomStatus.FINISHED
     room.join_code = None
@@ -381,7 +419,12 @@ def get_leaderboard(room_id: int, session: Session = Depends(get_session)):
     return [{"name": r[0], "score": r[1]} for r in results]
 
 @router.post("/rooms/{room_id}/leaderboard/show")
-async def show_leaderboard(room_id: int):
+async def show_leaderboard(room_id: int, db: Session = Depends(get_session)):
+    room = db.get(Room, room_id)
+    if room:
+        room.phase = "leaderboard"
+        room.phase_start_time = get_utc_now()
+        db.commit()
     await manager.broadcast_to_room(room_id, {"type": "show_leaderboard"})
     return {"status": "success"}
 
@@ -401,6 +444,11 @@ async def finish_question(room_id: int, question_id: int, db: Session = Depends(
     results = db.exec(stats_query).all()
     stats_dict = {str(row.option_id): row.total for row in results}
     correct_option = db.exec(select(Option).where(Option.question_id == question_id, Option.is_correct == True)).first()    
+    
+    room.phase = "results"
+    room.phase_start_time = get_utc_now()
+    db.commit()
+
     await manager.broadcast_to_room(room_id, {
         "type": "show_results",
         "data": {
