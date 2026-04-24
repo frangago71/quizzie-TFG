@@ -98,6 +98,15 @@ const LiveRoom: React.FC = () => {
                     }).catch(err => console.error(err));
                 }
             }
+
+            if (message.type === "room_verifying") {
+                setRoomData((prev: any) => prev ? { ...prev, status: 'VERIFYING' } : null);
+                if (isHost) {
+                    api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
+                        setLeaderboardData(res.data);
+                    }).catch(err => console.error(err));
+                }
+            }
         };
 
         return () => ws.close();
@@ -196,8 +205,8 @@ const LiveRoom: React.FC = () => {
     const readingProgress = Math.min(100, ((5 - timeLeft) / 5) * 100);
     const answeringProgress = Math.min(100, ((40 - timeLeft) / 40) * 100);
 
-    if (roomData?.status === 'FINISHED') {
-        return <FinalScreen isHost={isHost} data={leaderboardData} />;
+    if (roomData?.status === 'FINISHED' || roomData?.status === 'VERIFYING') {
+        return <FinalScreen isHost={isHost} data={leaderboardData} status={roomData.status} />;
     }
 
     if (!roomData) return <div className="live-setup-wrapper setup-loading">Sincronizando sala...</div>;
