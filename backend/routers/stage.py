@@ -9,6 +9,7 @@ from models.users import Student
 import random
 import string
 import secrets
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/stage", tags=["Stage"])
 
@@ -213,6 +214,39 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
         db.commit()
         await manager.broadcast_to_room(room_id, {"type": "room_verifying", "data": {"status": "VERIFYING", "total_questions": len(questions)}})
         return {"status": "VERIFYING"}
+
+class VerificationRequest(BaseModel):
+    nickname: str
+    token: str
+
+@router.post("/rooms/{room_id}/verify-participant")
+async def verify_participant(room_id: int, req: VerificationRequest, db: Session = Depends(get_session)):
+    statement = (
+        select(Participant)
+        .join(Student)
+        .where(Student.name == req.nickname, Participant.room_id == room_id)
+    )
+    participant = db.exec(statement).first()
+    
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participante no encontrado")
+    
+    if participant.verification_token != req.token:
+        raise HTTPException(status_code=400, detail="Token de verificación inválido")
+
+    if participant.is_verified:
+        return {"status": "already_verified", "nickname": req.nickname}
+
+    participant.is_verified = True
+    db.add(participant)
+    db.commit()
+    
+    await manager.broadcast_to_room(room_id, {
+        "type": "participant_verified", 
+        "data": {"nickname": req.nickname, "participant_id": participant.id}
+    })
+    
+    return {"status": "success", "nickname": req.nickname}
 
 @router.post("/rooms/{room_id}/finish")
 async def finish_room(room_id: int, db: Session = Depends(get_session)):
