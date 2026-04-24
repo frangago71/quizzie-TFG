@@ -16,20 +16,20 @@
 
 .header-titles h1 {
   font-size: 2.2rem;
-  color: var(--dark-blue);
+  color: var(--text-dark);
   margin: 0;
   text-align: left;
 }
 
 .header-titles p {
-  color: var(--gray-text);
+  color: var(--text-gray-light);
   margin-top: 5px;
   text-align: left;
 }
 
 .filter-tabs {
   display: flex;
-  background: #fff;
+  background: var(--color-white);
   border: 2px solid var(--primary-cyan); 
   border-radius: 12px;
   overflow: hidden;
@@ -58,7 +58,7 @@
 
 .filter-tabs .tab.active {
   background: var(--primary-cyan);
-  color: var(--bg-gray);
+  color: var(--color-white);
 }
 
 .filter-tabs .tab:not(.active):hover {
@@ -77,7 +77,7 @@
   background: var(--color-white);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px var(--shadow-soft);
   height: 170px;
   transition: transform 0.2s;
 }
@@ -88,10 +88,9 @@
 
 .quiz-image-container {
   position: relative;
-  width: 240px; 
-  min-width: 240px;
-  height: 100%; 
-  overflow: hidden;
+  width: 280px;
+  min-width: 280px;
+  align-self: stretch;
 }
 
 .quiz-image-container img {
@@ -99,13 +98,6 @@
   height: 100%;
   object-fit: cover; 
   display: block;
-}
-
-.quiz-image-container {
-  position: relative;
-  width: 280px;
-  min-width: 280px;
-  height: 100%;
 }
 
 .tags-container {
@@ -121,12 +113,12 @@
 .category-tag {
   position: static; 
   background-color: var(--primary-cyan);
-  color: white;
+  color: var(--color-white);
   padding: 4px 10px;
   border-radius: 8px;
   font-size: 0.7rem;
   font-weight: 700;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--shadow-soft);
   white-space: nowrap;
 }
 
@@ -147,11 +139,51 @@
 .info-top h3 {
   font-size: 1.4rem;
   margin: 0;
-  color: var(--dark-blue);
+  color: var(--text-dark);
+}
+
+.title-with-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.waiting {
+  background-color: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde047;
+}
+
+.status-badge.live {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+  animation: pulse-green 2s infinite;
+}
+
+.status-badge.verifying {
+  background-color: #e0f2fe;
+  color: #075985;
+  border: 1px solid #7dd3fc;
+}
+
+@keyframes pulse-green {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 
 .quiz-description {
-  color: var(--gray-text);
+  color: var(--text-gray-light);
   font-size: 0.95rem;
   margin: 10px 0;
   line-height: 1.4;
@@ -180,7 +212,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.85rem;
-  color: var(--gray-text);
+  color: var(--text-gray-light);
 }
 
 .create-new-dashed {
@@ -277,7 +309,7 @@
     order: 2;
     font-size: 1.1rem;
     line-height: 1.5;
-    color: #475569;
+    color: var(--text-gray);
     margin: 15px 0;
   }
 
@@ -288,14 +320,14 @@
     align-items: center;
     margin: 10px 0 15px 0;
     padding-bottom: 15px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--line-gray);
   }
 
   .meta-date {
     display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--gray-text);
+    color: var(--text-gray-light);
   }
 
   .meta-date span {
@@ -309,7 +341,7 @@
     justify-content: space-around;
     margin: 0;
     padding: 12px;
-    background: #f8fafc;
+    background: var(--bg-gray);
     border-radius: 12px;
   }
 

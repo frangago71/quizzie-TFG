@@ -257,6 +257,45 @@ body {
   background-color: var(--color-white);
 }
 
+.btn-main.danger {
+  background-color: var(--color-soft-red);
+}
+.btn-main.danger:hover {
+  border: 2px solid var(--color-red);
+  color: var(--color-red);
+  background-color: var(--color-white);
+  box-shadow: 0 6px 20px rgba(195, 3, 6, 0.2);
+}
+
+.btn-main:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-group .btn-main {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  width: 99px;
+}
+
+.btn-group .btn-main.small {
+  width: 78px;
+  min-width: 0;
+  max-width: 78px;
+  padding: 0 6px;
+  font-size: 0.77rem;
+  gap: 4px;
+}
+
 .icon-btn {
   background: none;
   border: none;

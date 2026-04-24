@@ -11,9 +11,11 @@ const ListQuizzes: React.FC = () => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
-    const [quizRooms, setQuizRooms] = useState<any[]>([]); 
+    const [quizRooms, setQuizRooms] = useState<any[]>([]);
     const navigate = useNavigate();
     const { setRoomId } = useRoom();
+
+    const hasActiveRoom = teacherQuizzes.some(q => q.active_room_status != null);
 
     const useIsMobile = () => {
         const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -56,18 +58,29 @@ const ListQuizzes: React.FC = () => {
             setQuizToDelete(quiz);
         } catch (error) {
             console.error("Error al obtener las salas del cuestionario:", error);
-            setQuizRooms([]); 
+            setQuizRooms([]);
             setQuizToDelete(quiz);
         }
     };
 
-    
+    const handleForceFinish = async (roomId: number | null) => {
+        if (!roomId) return;
+        if (!confirm('¿Seguro que quieres finalizar esta sala? Los alumnos serán desconectados.')) return;
+        try {
+            await api.post(`/stage/rooms/${roomId}/force-finish`);
+            // Recargar la lista para reflejar el cambio
+            const response = await api.get(`/users/my-quizzes`);
+            setTeacherQuizzes(response.data);
+        } catch (error: any) {
+            alert(error.response?.data?.detail || 'Error al finalizar la sala');
+        }
+    };
 
     const handleDeleteConfirm = async (hard: boolean) => {
         if (!quizToDelete) return;
         try {
-            const endpoint = hard 
-                ? `/content/quizzes/${quizToDelete.id}/hard` 
+            const endpoint = hard
+                ? `/content/quizzes/${quizToDelete.id}/hard`
                 : `/content/quizzes/${quizToDelete.id}`;
             await api.delete(endpoint);
             setTeacherQuizzes(teacherQuizzes.filter(q => q.id !== quizToDelete.id));
@@ -80,7 +93,7 @@ const ListQuizzes: React.FC = () => {
         }
     };
 
-    
+
     return (
         <div className='list-quizzes-page'>
             <header className="list-header">
@@ -139,13 +152,31 @@ const ListQuizzes: React.FC = () => {
                                             <Calendar size={14} color="#94a3b8" />
                                             <span>{parseDate(quiz.created_at ?? "")}</span>
                                         </div>
-                                        <button className="btn-main small magenta" onClick={() => {
-                                            setRoomId(quiz.id);
-                                            navigate(`/quizzes/setup/${quiz.id}`);
-                                        }}>
-                                            <Play size={16} fill="white" />
-                                            Crear sala
-                                        </button>
+                                        {quiz.active_room_status ? (
+                                            <div className="btn-group">
+                                                <button className="btn-main small cyan" onClick={() => {
+                                                    setRoomId(quiz.active_room_id || null);
+                                                    const status = quiz.active_room_status?.toLowerCase();
+                                                    const destination = status === 'waiting' ? `/lobby/${quiz.active_room_id}` : `/live/${quiz.active_room_id}`;
+                                                    navigate(destination);
+                                                }}>
+                                                    Reconectar
+                                                </button>
+                                                <button className="btn-main small danger" onClick={() => handleForceFinish(quiz.active_room_id ?? null)}>
+                                                    Finalizar
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                className="btn-main small magenta"
+                                                disabled={hasActiveRoom}
+                                                title={hasActiveRoom ? 'Ya tienes una sala activa' : ''}
+                                                onClick={() => { setRoomId(quiz.id); navigate(`/quizzes/setup/${quiz.id}`); }}
+                                            >
+                                                <Play size={16} fill="white" />
+                                                Crear sala
+                                            </button>
+                                        )}
                                     </div>
                                     <div className="action-icons">
                                         <button className="icon-btn" title="Editar" onClick={() => navigate(`/quizzes/edit/${quiz.id}`)}><Pencil size={18} /></button>
@@ -156,7 +187,16 @@ const ListQuizzes: React.FC = () => {
                             ) : (
                                 <>
                                     <div className="info-top">
-                                        <h3>{quiz.title}</h3>
+                                        <div className="title-with-status">
+                                            <h3>{quiz.title}</h3>
+                                            {quiz.active_room_status && (
+                                                <span className={`status-badge ${quiz.active_room_status.toLowerCase()}`}>
+                                                    {quiz.active_room_status.toLowerCase() === 'waiting' ? 'En Lobby' :
+                                                        quiz.active_room_status.toLowerCase() === 'live' ? 'En vivo' :
+                                                            quiz.active_room_status.toLowerCase() === 'verifying' ? 'Verificando' : quiz.active_room_status}
+                                                </span>
+                                            )}
+                                        </div>
                                         <div className="action-icons">
                                             <button className="icon-btn" title="Editar" onClick={() => navigate(`/quizzes/edit/${quiz.id}`)}><Pencil size={18} /></button>
                                             <button className="icon-btn" title="Eliminar" onClick={() => handlePrepareDelete(quiz)}><Trash2 size={18} /></button>
@@ -171,13 +211,31 @@ const ListQuizzes: React.FC = () => {
                                                 <span>{parseDate(quiz.created_at ?? "")}</span>
                                             </div>
                                         </div>
-                                        <button className="btn-main big magenta" onClick={() => {
-                                            setRoomId(quiz.id);
-                                            navigate(`/quizzes/setup/${quiz.id}`);
-                                        }}>
-                                            <Play size={16} fill="white" />
-                                            Crear sala
-                                        </button>
+                                        {quiz.active_room_status ? (
+                                            <div className="btn-group">
+                                                <button className="btn-main cyan" onClick={() => {
+                                                    setRoomId(quiz.active_room_id || null);
+                                                    const status = quiz.active_room_status?.toLowerCase();
+                                                    const destination = status === 'waiting' ? `/lobby/${quiz.active_room_id}` : `/live/${quiz.active_room_id}`;
+                                                    navigate(destination);
+                                                }}>
+                                                    Reconectar
+                                                </button>
+                                                <button className="btn-main danger" onClick={() => handleForceFinish(quiz.active_room_id ?? null)}>
+                                                    Finalizar
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                className="btn-main big magenta"
+                                                disabled={hasActiveRoom}
+                                                title={hasActiveRoom ? 'Ya tienes una sala activa' : ''}
+                                                onClick={() => { setRoomId(quiz.id); navigate(`/quizzes/setup/${quiz.id}`); }}
+                                            >
+                                                <Play size={16} fill="white" />
+                                                Crear sala
+                                            </button>
+                                        )}
                                     </div>
                                 </>
                             )}
@@ -196,9 +254,9 @@ const ListQuizzes: React.FC = () => {
                 </div>
             </div>
 
-            <DeleteQuizModal 
-                isOpen={!!quizToDelete} 
-                onConfirm={handleDeleteConfirm} 
+            <DeleteQuizModal
+                isOpen={!!quizToDelete}
+                onConfirm={handleDeleteConfirm}
                 onCancel={() => {
                     setQuizToDelete(null);
                     setQuizRooms([]);

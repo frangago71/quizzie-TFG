@@ -57,7 +57,9 @@ const NicknameEntry: React.FC = () => {
         
         setUserNickname(cleanNickname);
         setParticipantId(partRes.data.participant_id);
-        navigate(`/lobby/${roomId}`);
+        
+        const destination = roomStatus === 'live' ? `/live/${roomId}` : `/lobby/${roomId}`;
+        navigate(destination);
         
       } else {
         setShowModal(true);
@@ -124,7 +126,8 @@ const NicknameEntry: React.FC = () => {
             setShowModal(false);
             setUserNickname(name);
             setParticipantId(participantId);
-            navigate(`/lobby/${roomId}`);
+            const destination = roomStatus === 'live' ? `/live/${roomId}` : `/lobby/${roomId}`;
+            navigate(destination);
           }}
           onCancel={() => setShowModal(false)}
         />

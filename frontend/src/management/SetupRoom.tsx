@@ -44,10 +44,15 @@ const SetupRoom: React.FC = () => {
             const response = await api.post(`/stage/rooms`, null, {
                 params: { quiz_id: quizId }
             });
-            alert("¡Sala creada con éxito! Código de acceso: " + response.data.join_code);
-            setRoomCode(response.data.join_code);
-            setRoomId(response.data.id);
-            navigate(`/lobby/${response.data.id}`);
+            const room = response.data;
+            setRoomCode(room.join_code);
+            setRoomId(room.id);
+            
+            if (room.status === 'waiting' || room.status?.toLowerCase() === 'waiting') {
+                navigate(`/lobby/${room.id}`);
+            } else {
+                navigate(`/live/${room.id}`);
+            }
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
