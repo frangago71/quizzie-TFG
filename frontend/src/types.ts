@@ -6,6 +6,8 @@ export interface Quiz {
   tags?: string; 
   image_url?: string;
   created_at?: string;  
+  active_room_id?: number;
+  active_room_status?: string;
 }
 
 export interface LoginRequest {

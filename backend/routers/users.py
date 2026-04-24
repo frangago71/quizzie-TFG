@@ -8,6 +8,9 @@ from models.users import Teacher, Group, Student, TeacherRead
 from schemas.users import LoginRequest
 import re
 from auth import verify_password, create_access_token, get_current_teacher_id
+from schemas.content import QuizListRead
+from models.stage import RoomStatus
+from sqlalchemy.orm import selectinload
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -36,12 +39,26 @@ def get_teachers(session: Session = Depends(get_session)):
     """Devuelve los profesores con la contraseña censurada."""
     return session.exec(select(Teacher)).all()
 
-@router.get("/my-quizzes", response_model=List[Quiz])
+@router.get("/my-quizzes", response_model=List[QuizListRead])
 def get_teacher_quizzes(
     teacher_id: int = Depends(get_current_teacher_id), 
     session: Session = Depends(get_session)
 ):
-    return session.exec(select(Quiz).where(Quiz.teacher_id == teacher_id)).all()
+    statement = select(Quiz).where(Quiz.teacher_id == teacher_id).options(selectinload(Quiz.rooms))
+    quizzes = session.exec(statement).all()
+    results = []
+    for quiz in quizzes:
+        active_room = next((r for r in quiz.rooms if r.status != RoomStatus.FINISHED), None)
+        results.append(QuizListRead(
+            id=quiz.id,
+            title=quiz.title,
+            description=quiz.description,
+            created_at=quiz.created_at,
+            active_room_id=active_room.id if active_room else None,
+            active_room_status=active_room.status if active_room else None
+        ))
+    
+    return results
 
 @router.get("/groups", response_model=List[Group])
 def get_groups(session: Session = Depends(get_session)):
