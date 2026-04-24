@@ -16,19 +16,19 @@ export const authService = {
       throw new Error(errorData.detail || "Error de autenticación");
     }
     const data: LoginResponse = await response.json();
-    localStorage.setItem("token", data.access_token);    
+    sessionStorage.setItem("token", data.access_token);    
     return data;
   },
 
   logout(): void {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
   },
 
   getToken(): string | null {
-    return localStorage.getItem("token");
+    return sessionStorage.getItem("token");
   },
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem("token");
+    return !!sessionStorage.getItem("token");
   }
 };
