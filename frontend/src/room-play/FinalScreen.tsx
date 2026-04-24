@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Star, Medal, Users } from 'lucide-react';
+import { Star, Medal, Users, CheckCircle, AlertTriangle } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import api from '../api';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { useRoom } from '../context/RoomContext.tsx';
 import './LeaderboardPhase.css';
 import './FinalScreen.css';
@@ -9,12 +10,20 @@ import './FinalScreen.css';
 interface Props {
   isHost: boolean;
   data?: { name: string; score: number }[];
+  status?: string;
 }
 
-const FinalScreen: React.FC<Props> = ({ isHost, data = [] }) => {
+const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED' }) => {
   const navigate = useNavigate();
-  const { roomId, participantId } = useRoom();
-  const [stats, setStats] = useState<{ score: number, correct_answers: number, total_questions: number } | null>(null);
+  const { roomId, participantId, userNickname } = useRoom();
+  const [stats, setStats] = useState<{ 
+    score: number, 
+    correct_answers: number, 
+    total_questions: number,
+    verification_token?: string,
+    is_verified?: boolean
+  } | null>(null);
+  const [showExitModal, setShowExitModal] = useState(false);
 
   useEffect(() => {
     if (isHost || !roomId || !participantId) return;
@@ -57,16 +66,70 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [] }) => {
             <div style={{ padding: '40px' }}>Cargando resultados...</div>
           )}
 
-          <div className="final-info-card final-info-card-faded">
-            <h3 className="final-info-title">Verificación QR</h3>
-            <p className="final-info-text">
-              Próximamente se mostrará aquí tu código QR para verificar tu nota con el profesor.
-            </p>
-          </div>
+          {status === 'VERIFYING' && stats?.verification_token ? (
+            <div className="final-info-card qr-card animate-scale-in">
+              <h3 className="final-info-title">Tu Código de Verificación</h3>
+              <div className="qr-wrapper">
+                <QRCodeSVG 
+                  value={JSON.stringify({ 
+                    nickname: userNickname, 
+                    token: stats.verification_token,
+                    roomId: roomId,
+                    score: stats.score
+                  })} 
+                  size={180}
+                  level="H"
+                  includeMargin={true}
+                />
+              </div>
+              {stats.is_verified ? (
+                <div className="verification-badge success">
+                  <CheckCircle size={20} />
+                  <span>Verificado</span>
+                </div>
+              ) : (
+                <p className="final-info-text highlight">
+                  Muestra este código a tu profesor para validar tu nota.
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="final-info-card final-info-card-faded">
+              <h3 className="final-info-title">Verificación QR</h3>
+              <p className="final-info-text">
+                {status === 'FINISHED' 
+                  ? "La fase de verificación ha terminado." 
+                  : "Próximamente se mostrará aquí tu código QR para verificar tu nota con el profesor."}
+              </p>
+            </div>
+          )}
 
-          <button className="btn-main magenta final-button" onClick={() => navigate('/')}>
+          <button 
+            className="btn-main magenta final-button" 
+            onClick={() => {
+              if (status === 'VERIFYING' && !stats?.is_verified) {
+                setShowExitModal(true);
+              } else {
+                navigate('/');
+              }
+            }}
+          >
             Salir
           </button>
+
+          {showExitModal && (
+            <div className="modal-overlay">
+              <div className="modal-content warning-modal">
+                <AlertTriangle size={48} className="warning-icon" />
+                <h2>¿Estás seguro de que quieres salir?</h2>
+                <p>Tu nota aún no ha sido verificada por el profesor. Si sales ahora, es posible que no se guarde correctamente.</p>
+                <div className="modal-actions">
+                  <button className="btn-main cyan" onClick={() => setShowExitModal(false)}>Permanecer</button>
+                  <button className="btn-main magenta" onClick={() => navigate('/')}>Salir de todos modos</button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -111,14 +174,33 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [] }) => {
           <div className="final-actions">
             <div className="final-info-card">
               <Users size={32} style={{ color: 'var(--text-light)', marginBottom: '10px' }} />
-              <h3 className="final-info-title">Esperando fase de verificación</h3>
+              <h3 className="final-info-title">
+                {status === 'VERIFYING' ? 'Fase de Verificación Activa' : 'Fase de verificación finalizada'}
+              </h3>
               <p className="final-info-text">
-                Los alumnos verificados aparecerán aquí próximamente.
+                {status === 'VERIFYING' 
+                  ? 'Escanea los códigos QR de tus alumnos para validar sus resultados.' 
+                  : 'Todos los resultados han sido procesados.'}
               </p>
             </div>
-            <button className="btn-main cyan big" onClick={() => navigate('/dashboard')}>
-              Volver al panel
-            </button>
+            
+            {status === 'VERIFYING' ? (
+              <button className="btn-main magenta big" onClick={async () => {
+                if (window.confirm("¿Seguro que quieres cerrar la fase de verificación? Los alumnos ya no podrán validar sus notas.")) {
+                  try {
+                    await api.post(`/stage/rooms/${roomId}/finish`);
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }
+              }}>
+                Finalizar Verificación
+              </button>
+            ) : (
+              <button className="btn-main cyan big" onClick={() => navigate('/dashboard')}>
+                Volver al panel
+              </button>
+            )}
           </div>
         </>
       )}
