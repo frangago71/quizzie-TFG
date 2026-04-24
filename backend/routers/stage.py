@@ -8,6 +8,7 @@ from models.content import Quiz, Question, Option
 from models.users import Student
 import random
 import string
+import secrets
 
 router = APIRouter(prefix="/stage", tags=["Stage"])
 
@@ -201,11 +202,30 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
         await manager.broadcast_to_room(room_id, {"type": "next_question", "data": data})
         return data
     else:
-        room.status = RoomStatus.FINISHED
-        room.join_code = None
+        room.status = RoomStatus.VERIFYING
+        
+        statement = select(Participant).where(Participant.room_id == room_id)
+        participants = db.exec(statement).all()
+        for p in participants:
+            p.verification_token = secrets.token_hex(8)
+            db.add(p)
+            
         db.commit()
-        await manager.broadcast_to_room(room_id, {"type": "room_finish", "data": {"status": "FINISHED", "total_questions": len(questions)}})
-        return {"status": "FINISHED"}
+        await manager.broadcast_to_room(room_id, {"type": "room_verifying", "data": {"status": "VERIFYING", "total_questions": len(questions)}})
+        return {"status": "VERIFYING"}
+
+@router.post("/rooms/{room_id}/finish")
+async def finish_room(room_id: int, db: Session = Depends(get_session)):
+    room = db.get(Room, room_id)
+    if not room or room.status != RoomStatus.VERIFYING:
+        raise HTTPException(status_code=400, detail="La sala no está en fase de verificación o ya ha finalizado")
+    
+    room.status = RoomStatus.FINISHED
+    room.join_code = None
+    db.commit()
+    
+    await manager.broadcast_to_room(room_id, {"type": "room_finish", "data": {"status": "FINISHED"}})
+    return {"status": "FINISHED"}
 
 @router.get("/participants", response_model=List[Participant])
 def get_participants(session: Session = Depends(get_session)):
@@ -370,5 +390,7 @@ def get_participant_stats(room_id: int, participant_id: int, session: Session = 
     return {
         "score": participant.score,
         "correct_answers": correct_answers,
-        "total_questions": total_questions
+        "total_questions": total_questions,
+        "verification_token": participant.verification_token,
+        "is_verified": participant.is_verified
     }
