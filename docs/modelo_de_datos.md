@@ -84,6 +84,8 @@ classDiagram
 | | status | RoomStatus (Enum) | Estado actual: waiting, live o finished. |
 | | created_at | datetime | Fecha y hora de creación de la sala (UTC). |
 | | current_question_index | int | Índice de la pregunta activa en la sesión. |
+| | phase | RoomPhase (Enum) | Fase actual: reading, answering, results, leaderboard. |
+| | phase_start_time | datetime | Momento en el que se inició la fase actual. |
 | | teacher_id | int (FK) | Profesor que administra la sala. |
 | | quiz_id | int (FK) | Cuestionario asociado a la sesión. |
 | | group_id | Optional[int] (FK) | Grupo vinculado a la sala. |
@@ -112,6 +114,8 @@ classDiagram
             +RoomStatus status (Enum)
             +datetime created_at
             +int current_question_index
+            +RoomPhase phase (Enum)
+            +datetime? phase_start_time
             +int teacher_id (FK)
             +int quiz_id (FK)
             +int? group_id (FK)
