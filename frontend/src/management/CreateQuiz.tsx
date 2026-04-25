@@ -155,6 +155,21 @@ const CreateQuiz: React.FC = () => {
         toast.warning("Título y descripción son obligatorios.");
         return;
     }
+    for (let qi = 0; qi < quiz.questions.length; qi++) {
+      const q = quiz.questions[qi];
+      if (!q.text.trim()) {
+        toast.warning(`La pregunta ${qi + 1} no tiene enunciado.`);
+        setCurrentIndex(qi);
+        return;
+      }
+      for (let oi = 0; oi < q.options.length; oi++) {
+        if (!q.options[oi].text.trim()) {
+          toast.warning(`La opción ${oi + 1} de la pregunta ${qi + 1} está en blanco.`);
+          setCurrentIndex(qi);
+          return;
+        }
+      }
+    }
     try {
       await api.post('/content/quizzes', quiz);
       toast.success("¡Cuestionario creado con éxito!");
@@ -163,6 +178,7 @@ const CreateQuiz: React.FC = () => {
       toast.error("Error al conectar con el servidor.");
     }
   };
+
 
   const handleDotClick = (targetIndex: number) => {
     if (targetIndex === currentIndex) return;

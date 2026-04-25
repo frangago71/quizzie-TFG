@@ -126,6 +126,28 @@ const EditQuiz: React.FC = () => {
   };
 
   const confirmSubmit = async () => {
+    const activeQuestions = quiz.questions
+      .map((q, idx) => ({ q, idx }))
+      .filter(({ q }) => !q._deleted);
+
+    for (const { q, idx } of activeQuestions) {
+      if (!q.text.trim()) {
+        toast.warning(`La pregunta ${idx + 1} no tiene enunciado.`);
+        setCurrentIndex(idx);
+        setIsModalOpen(false);
+        return;
+      }
+      const activeOptions = q.options.filter(o => !o._deleted);
+      for (let oi = 0; oi < activeOptions.length; oi++) {
+        if (!activeOptions[oi].text.trim()) {
+          toast.warning(`La opción ${oi + 1} de la pregunta ${idx + 1} está en blanco.`);
+          setCurrentIndex(idx);
+          setIsModalOpen(false);
+          return;
+        }
+      }
+    }
+
     try {
         const payload = {
             title: quiz.title,
@@ -150,6 +172,7 @@ const EditQuiz: React.FC = () => {
         setIsModalOpen(false);
     }
   };
+
 
   const handleDotClick = (targetIndex: number) => {
     if (targetIndex === currentIndex) return;
