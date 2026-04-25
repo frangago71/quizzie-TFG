@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import api from '../api';
 import { TriangleAlert } from 'lucide-react';
 import './NewNickname.css';
+import { useToast } from '../context/ToastContext';
 
 interface NewNicknameProps {
   nickname: string;
@@ -12,6 +13,7 @@ interface NewNicknameProps {
 
 const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, onCancel }) => {
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleCreateAndJoin = async () => {
     setLoading(true);
@@ -19,7 +21,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
       const resStudent = await api.post(`/users/students?nickname=${nickname}`);
       const newStudentId = resStudent.data.student_id;
 
-      alert("Estudiante registrado. Uniéndolo a la sala...");
+      toast.success("Estudiante registrado. Uniéndolo a la sala...");
 
       const resParticipant = await api.post(`/stage/participants`, null, {
         params: { student_id: newStudentId, room_id: roomId }
@@ -28,7 +30,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
       onConfirm(nickname, resParticipant.data.participant_id);
 
     } catch (err: any) {
-      alert("Error al registrar: " + (err.response?.data?.detail || "Error desconocido"));
+      toast.error("Error al registrar: " + (err.response?.data?.detail || "Error desconocido"));
     } finally {
       setLoading(false);
     }

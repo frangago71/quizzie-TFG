@@ -3,12 +3,14 @@ import api from '../api';
 import './RoomCode.css';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../context/RoomContext';
+import { useToast } from '../context/ToastContext';
 
 const RoomCode: React.FC = () => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const { setRoomCode, setRoomId } = useRoom();
+  const { toast } = useToast();
 
   const handleChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return;
@@ -31,7 +33,7 @@ const RoomCode: React.FC = () => {
   const handleVerifyCode = async () => {
     const fullCode = code.join('');
     if (fullCode.length < 6) {
-      alert("Introduce los 6 dígitos.");
+      toast.warning("Introduce los 6 dígitos.");
       return;
     }
 
@@ -45,7 +47,7 @@ const RoomCode: React.FC = () => {
       }
     } catch (error: any) {
       const errorMsg = error.response?.data?.detail || "Error al verificar el código";
-      alert(errorMsg);
+      toast.error(errorMsg);
     }
   };
 

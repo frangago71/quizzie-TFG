@@ -4,6 +4,7 @@ import './SetupRoom.css';
 import { Calendar, Shuffle, ListTree, Trophy, ChevronLeft, Rocket } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRoom } from '../context/RoomContext.tsx';
+import { useToast } from '../context/ToastContext';
 
 
 const SetupRoom: React.FC = () => {
@@ -13,6 +14,7 @@ const SetupRoom: React.FC = () => {
     const { id: quizId } = useParams(); 
     const navigate = useNavigate();
     const { setRoomCode, setRoomId } = useRoom();
+    const { toast } = useToast();
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -36,7 +38,7 @@ const SetupRoom: React.FC = () => {
 
     const handleOpenSession = async () => {
         if (!quizId) {
-            alert("ID de cuestionario no válido.");
+            toast.error("ID de cuestionario no válido.");
             return;
         }
         setIsCreating(true);
@@ -58,14 +60,14 @@ const SetupRoom: React.FC = () => {
                 const status = error.response.status;
                 const detail = error.response.data?.detail;
                 if (status === 400) {
-                    alert(detail || "No se puede crear la sala. Verifica si ya tienes una sala activa para este cuestionario.");
+                    toast.error(detail || "No se puede crear la sala. Verifica si ya tienes una sala activa para este cuestionario.");
                 } else if (status === 404) {
-                    alert("El cuestionario seleccionado no existe.");
+                    toast.error("El cuestionario seleccionado no existe.");
                 } else {
-                    alert(`Error ${status}: ${detail || "Error inesperado"}`);
+                    toast.error(`Error ${status}: ${detail || "Error inesperado"}`);
                 }
             } else {
-                alert("No hay respuesta del servidor.?");
+                toast.error("No hay respuesta del servidor.");
             }
         } finally {
             setIsCreating(false);

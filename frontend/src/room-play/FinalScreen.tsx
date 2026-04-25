@@ -7,6 +7,7 @@ import { useRoom } from '../context/RoomContext.tsx';
 import ScannerModal from './ScannerModal';
 import './LeaderboardPhase.css';
 import './FinalScreen.css';
+import { useToast } from '../context/ToastContext';
 
 interface Props {
   isHost: boolean;
@@ -18,6 +19,7 @@ interface Props {
 const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', refreshTrigger = 0 }) => {
   const navigate = useNavigate();
   const { roomId, participantId, userNickname } = useRoom();
+  const { toast } = useToast();
   const [stats, setStats] = useState<{ 
     score: number, 
     correct_answers: number, 
@@ -198,9 +200,11 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
                   if (window.confirm("¿Seguro que quieres cerrar la fase de verificación? Los alumnos ya no podrán validar sus notas.")) {
                     try {
                       await api.post(`/stage/rooms/${roomId}/finish`);
-                      navigate('/dashboard');
+                      toast.success('Fase de verificación cerrada.');
+                      navigate('/quizzes');
                     } catch (err) {
                       console.error(err);
+                      toast.error('Error al cerrar la verificación.');
                     }
                   }
                 }}>
@@ -222,7 +226,7 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
                 try {
                   qrData = JSON.parse(decodedText);
                   if (qrData.roomId !== roomId) {
-                    alert("Este código QR pertenece a otra sala.");
+                    toast.warning("Este código QR pertenece a otra sala.");
                     return;
                   }
                   const res = await api.post(`/stage/rooms/${roomId}/verify-participant`, {
@@ -230,14 +234,14 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
                     token: qrData.token
                   });
                   if (res.data.status === 'success') {
-                    alert(`¡${qrData.nickname} verificado con éxito!`);
+                    toast.success(`¡${qrData.nickname} verificado con éxito!`);
                   }
                 } catch (err: any) {
                   console.error(err);
                   if (err.response && err.response.status === 409) {
-                    alert(`El resultado de ${qrData?.nickname || 'este alumno'} ya ha sido verificado anteriormente.`);
+                    toast.warning(`El resultado de ${qrData?.nickname || 'este alumno'} ya ha sido verificado anteriormente.`);
                   } else {
-                    alert("Error al validar el código. Asegúrate de que sea un QR de Quizzie válido.");
+                    toast.error("Error al validar el código. Asegúrate de que sea un QR de Quizzie válido.");
                   }
                 } finally {
                   setShowScanner(false);

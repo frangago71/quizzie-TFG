@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import api from '../api';
 import './CreateQuiz.css';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 interface Option { text: string; is_correct: boolean; }
 interface Question { text: string; points: number | string; options: Option[]; }
@@ -14,6 +15,7 @@ const CreateQuiz: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const questionInputRef = useRef<HTMLInputElement>(null); 
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quiz, setQuiz] = useState<QuizData>({
     title: '',
@@ -150,15 +152,15 @@ const CreateQuiz: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!quiz.title.trim() || !quiz.description.trim()) {
-        alert("Título y descripción son obligatorios.");
+        toast.warning("Título y descripción son obligatorios.");
         return;
     }
     try {
       await api.post('/content/quizzes', quiz);
-      alert("¡Cuestionario creado con éxito!");
+      toast.success("¡Cuestionario creado con éxito!");
       navigate('/quizzes');
     } catch (err) {
-      alert("Error al conectar con el servidor.");
+      toast.error("Error al conectar con el servidor.");
     }
   };
 

@@ -3,6 +3,7 @@ import api from '../api';
 import './CreateQuiz.css';
 import '../auth/Modal.css';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 interface Option { id?: number; text: string; is_correct: boolean; _deleted?: boolean; }
 interface Question { id?: number; text: string; points: number | string; options: Option[]; _deleted?: boolean; }
@@ -13,6 +14,7 @@ const EditQuiz: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const questionInputRef = useRef<HTMLInputElement>(null); 
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +30,7 @@ const EditQuiz: React.FC = () => {
         const res = await api.get(`/content/quizzes/${id}`);
         setQuiz(res.data);
       } catch (err) {
-        alert("Error cargando el cuestionario.");
+        toast.error("Error cargando el cuestionario.");
         navigate('/quizzes');
       } finally {
         setLoading(false);
@@ -91,11 +93,11 @@ const EditQuiz: React.FC = () => {
     if (!isDeleted) {
         const activeOptions = newQuestions[qIndex].options.filter(o => !o._deleted);
         if (activeOptions.length <= 2) {
-            alert("No puedes borrar esta opción. Cada pregunta debe tener al menos dos opciones.");
+            toast.warning("No puedes borrar esta opción. Cada pregunta debe tener al menos dos opciones.");
             return;
         }
         if (newQuestions[qIndex].options[oIndex].is_correct) {
-             alert("No puedes borrar la opción correcta. Selecciona otra como correcta primero.");
+             toast.warning("No puedes borrar la opción correcta. Selecciona otra como correcta primero.");
              return;
         }
     }
@@ -110,7 +112,7 @@ const EditQuiz: React.FC = () => {
     if (!isDeleted) {
         const activeQuestions = newQuestions.filter(q => !q._deleted);
         if (activeQuestions.length <= 1) {
-            alert("No puedes borrar la última pregunta. El cuestionario debe tener al menos una.");
+            toast.warning("No puedes borrar la última pregunta. El cuestionario debe tener al menos una.");
             return;
         }
     }
@@ -141,9 +143,10 @@ const EditQuiz: React.FC = () => {
         };
         await api.put(`/content/quizzes/${id}`, payload);
         setIsModalOpen(false);
+        toast.success('Cuestionario actualizado con éxito.');
         navigate('/quizzes');
     } catch (error: any) {
-        alert(error.response?.data?.detail || "Error al actualizar cuestionario");
+        toast.error(error.response?.data?.detail || "Error al actualizar cuestionario");
         setIsModalOpen(false);
     }
   };

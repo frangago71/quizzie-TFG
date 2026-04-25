@@ -7,6 +7,7 @@ import './LiveRoom.css';
 import api, { WS_BASE_URL } from '../api';
 import { useRoom } from '../context/RoomContext.tsx';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 const LiveRoom: React.FC = () => {
     const [phase, setPhase] = useState<'countdown' | 'playing'>('countdown');
@@ -40,6 +41,7 @@ const LiveRoom: React.FC = () => {
     } = useRoom();
 
     const isHost = !userNickname;
+    const { toast } = useToast();
 
     useEffect(() => {
         if (urlRoomId && !roomId) {
@@ -152,14 +154,14 @@ const LiveRoom: React.FC = () => {
     const handleShowResults = async () => {
         const qId = roomData?.question_id 
         if (!qId) {
-            alert("No se encuentra el ID de la pregunta");
+            toast.error("No se encuentra el ID de la pregunta");
             return;
         }
         try {
             await api.post(`/stage/rooms/${roomId}/questions/${qId}/finish`);
         } catch (error) {
             console.error("Error al finalizar: Es posible que el ID enviado sea erróneo", error);
-            alert("El ID enviado no parece ser de una pregunta válida.");
+            toast.error("El ID enviado no parece ser de una pregunta válida.");
         }
     };
 

@@ -4,6 +4,7 @@ import NewNickname from './NewNickname.tsx';
 import './NicknameEntry.css';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../context/RoomContext.tsx';
+import { useToast } from '../context/ToastContext';
 
 const NicknameEntry: React.FC = () => {
   const [nickname, setNickname] = useState('');
@@ -12,6 +13,7 @@ const NicknameEntry: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const { roomCode, roomId, setUserNickname, setParticipantId } = useRoom();
+  const { toast } = useToast();
 
   if (!roomId) {
     navigate('/');
@@ -39,7 +41,7 @@ const NicknameEntry: React.FC = () => {
     const isValid = patternA.test(cleanNickname) || patternB.test(cleanNickname);
 
     if (!isValid) {
-      alert("Formato de uvus inválido.");
+      toast.warning("Formato de uvus inválido.");
       return; 
     }
 
@@ -66,7 +68,7 @@ const NicknameEntry: React.FC = () => {
       }
 
     } catch (error: any) {
-      alert("Error en el proceso: " + (error.response?.data?.detail || error.message));
+      toast.error("Error en el proceso: " + (error.response?.data?.detail || error.message));
     } finally {
       setIsProcessing(false);
     }

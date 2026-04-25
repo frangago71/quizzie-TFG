@@ -6,6 +6,7 @@ import { Pencil, Trash2, Eye, Play, Plus, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DeleteQuizModal from './DeleteQuizModal.tsx';
 import { useRoom } from '../context/RoomContext.tsx';
+import { useToast } from '../context/ToastContext.tsx';
 
 type FilterTab = 'todos' | 'nuevos' | 'inactivos';
 
@@ -17,6 +18,7 @@ const ListQuizzes: React.FC = () => {
     const [activeTab, setActiveTab] = useState<FilterTab>('todos');
     const navigate = useNavigate();
     const { setRoomId } = useRoom();
+    const { toast } = useToast();
 
     const hasActiveRoom = teacherQuizzes.some(q => q.active_room_status != null);
 
@@ -90,8 +92,9 @@ const ListQuizzes: React.FC = () => {
             // Recargar la lista para reflejar el cambio
             const response = await api.get(`/users/my-quizzes`);
             setTeacherQuizzes(response.data);
+            toast.success('Sala finalizada correctamente.');
         } catch (error: any) {
-            alert(error.response?.data?.detail || 'Error al finalizar la sala');
+            toast.error(error.response?.data?.detail || 'Error al finalizar la sala');
         }
     };
 
@@ -103,9 +106,10 @@ const ListQuizzes: React.FC = () => {
                 : `/content/quizzes/${quizToDelete.id}`;
             await api.delete(endpoint);
             setTeacherQuizzes(teacherQuizzes.filter(q => q.id !== quizToDelete.id));
+            toast.success('Cuestionario eliminado correctamente.');
         } catch (error: any) {
             console.error("Error al borrar el cuestionario:", error);
-            alert(error.response?.data?.detail || "Error al borrar el cuestionario");
+            toast.error(error.response?.data?.detail || "Error al borrar el cuestionario");
         } finally {
             setQuizToDelete(null);
             setQuizRooms([]);

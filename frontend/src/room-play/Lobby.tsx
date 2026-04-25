@@ -4,12 +4,14 @@ import { useRoom } from '../context/RoomContext.tsx';
 import api from '../api.ts';
 import { Users, PlayCircle, UserCircle2 } from 'lucide-react';
 import './Lobby.css';
+import { useToast } from '../context/ToastContext';
 
 const Lobby: React.FC = () => {
   const { roomId: urlRoomId } = useParams();
   const navigate = useNavigate();
   const { roomId, roomCode, userNickname, roomData, setRoomData } = useRoom();
   const [isMobile] = useState(window.innerWidth <= 768);
+  const { toast } = useToast();
 
   useEffect(() => {
     const idToUse = urlRoomId || roomId;
@@ -63,7 +65,7 @@ const Lobby: React.FC = () => {
     try {
       await api.post(`/stage/rooms/${roomId}/start`);
     } catch (err) {
-      alert("Error al iniciar");
+      toast.error("Error al iniciar la sala");
     }
   };
 

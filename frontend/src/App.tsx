@@ -4,7 +4,9 @@ import { authService } from './auth/authService';
 import { Login } from './auth/Login.tsx';
 
 import Sidebar from './layouts/Sidebar.tsx';
+import ToastContainer from './layouts/ToastContainer.tsx';
 import { RoomProvider } from './context/RoomContext.tsx';
+import { ToastProvider } from './context/ToastContext.tsx';
 
 import CreateQuiz from './management/CreateQuiz.tsx';
 import EditQuiz from './management/EditQuiz.tsx';
@@ -36,6 +38,8 @@ function App() {
   };
 
   return (
+    <ToastProvider>
+      <ToastContainer />
     <RoomProvider>
       <div className={!isLoggedIn ? 'public-layout' : `app-container ${sidebarOpen ? 'menu-open' : 'menu-closed'}`}>
         
@@ -72,6 +76,7 @@ function App() {
         </main>
       </div>
     </RoomProvider>
+    </ToastProvider>
   );
 }
 
