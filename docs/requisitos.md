@@ -63,7 +63,7 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 | **RF-38** | # | Crear clase | Agrupación de alumnos o resultados bajo etiqueta de clase. | Baja | OBJ-11 | |
 | **RF-39** | # | Exportación CSV | Generación de archivo descargable con los resultados. | Baja | OBJ-12 | |
 | **RF-40** | #49 | Gestión de desconexiones y reconexiones | Manejo de unirse tarde, desconexiones y borrado al abandonar. | Media | OBJ-05 | Core |
-| **RF-41** | #50 | Filtros en listar cuestionarios | Filtrado por activos, con sala, nuevos o todos. | Media | OBJ-02 | Core |
+| **RF-41** | #50 | Filtros en listar cuestionarios | Filtrado por inactivos, nuevos o todos. | Media | OBJ-02 | Core |
 
 ## 3. Requisitos No Funcionales (RNF)
 Definen los atributos de calidad y restricciones técnicas del sistema.

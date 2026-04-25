@@ -7,15 +7,34 @@ import { useNavigate } from 'react-router-dom';
 import DeleteQuizModal from './DeleteQuizModal.tsx';
 import { useRoom } from '../context/RoomContext.tsx';
 
+type FilterTab = 'todos' | 'nuevos' | 'inactivos';
+
 const ListQuizzes: React.FC = () => {
     const [teacherQuizzes, setTeacherQuizzes] = useState<Quiz[]>([]);
     const [loading, setLoading] = useState(true);
     const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
     const [quizRooms, setQuizRooms] = useState<any[]>([]);
+    const [activeTab, setActiveTab] = useState<FilterTab>('todos');
     const navigate = useNavigate();
     const { setRoomId } = useRoom();
 
     const hasActiveRoom = teacherQuizzes.some(q => q.active_room_status != null);
+
+    const NEW_DAYS_THRESHOLD = 7;
+
+    const filteredQuizzes = teacherQuizzes.filter((quiz) => {
+        if (activeTab === 'todos') return true;
+        if (activeTab === 'inactivos') return quiz.active_room_status == null;
+        if (activeTab === 'nuevos') {
+            if (!quiz.created_at) return false;
+            const created = new Date(quiz.created_at);
+            const now = new Date();
+            const diffMs = now.getTime() - created.getTime();
+            const diffDays = diffMs / (1000 * 60 * 60 * 24);
+            return diffDays <= NEW_DAYS_THRESHOLD;
+        }
+        return true;
+    });
 
     const useIsMobile = () => {
         const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -102,14 +121,44 @@ const ListQuizzes: React.FC = () => {
                     <p>Gestiona y lanza tus sesiones en tiempo real.</p>
                 </div>
                 <div className="filter-tabs">
-                    <button className="tab active">Todos</button>
-                    <button className="tab">Recientes</button>
-                    <button className="tab">Borradores</button>
+                    <button
+                        className={`tab${activeTab === 'todos' ? ' active' : ''}`}
+                        onClick={() => setActiveTab('todos')}
+                    >
+                        Todos
+                    </button>
+                    <button
+                        className={`tab${activeTab === 'nuevos' ? ' active' : ''}`}
+                        onClick={() => setActiveTab('nuevos')}
+                    >
+                        Nuevos
+                    </button>
+                    <button
+                        className={`tab${activeTab === 'inactivos' ? ' active' : ''}`}
+                        onClick={() => setActiveTab('inactivos')}
+                    >
+                        Inactivos
+                    </button>
                 </div>
             </header>
 
             <div className="quizzes-list-container">
-                {teacherQuizzes.map((quiz) => (
+                {filteredQuizzes.length === 0 && (
+                    <div className="empty-filter-state">
+                        <span className="empty-filter-icon">🔍</span>
+                        <h3>
+                            {activeTab === 'nuevos'
+                                ? 'No hay cuestionarios nuevos'
+                                : 'No hay cuestionarios inactivos'}
+                        </h3>
+                        <p>
+                            {activeTab === 'nuevos'
+                                ? `No has creado ningún cuestionario en los últimos ${NEW_DAYS_THRESHOLD} días.`
+                                : 'Todos tus cuestionarios tienen una sala activa en este momento.'}
+                        </p>
+                    </div>
+                )}
+                {filteredQuizzes.map((quiz) => (
                     <div key={quiz.id} className="quiz-horizontal-card">
                         <div className="quiz-image-container">
                             <img
