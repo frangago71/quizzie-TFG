@@ -11,7 +11,6 @@ import { useToast } from '../context/ToastContext';
 
 const LiveRoom: React.FC = () => {
     const [phase, setPhase] = useState<'countdown' | 'playing'>('countdown');
-    const [step, setStep] = useState<'reading' | 'answering'>('reading');
     const [count, setCount] = useState(3);
     const [timeLeft, setTimeLeft] = useState(5);
     const [quizTitle, setQuizTitle] = useState('');
@@ -61,13 +60,7 @@ const LiveRoom: React.FC = () => {
                 
                 if (data.status === 'LIVE') {
                     setPhase('playing');
-                    if (data.phase === 'reading' || data.phase === 'answering') {
-                        setStep(data.phase);
-                        setTimeLeft(data.time_left);
-                    } else {
-                        setStep('answering');
-                        setTimeLeft(0);
-                    }
+                    setTimeLeft(data.time_left);
                 } else if (data.status === 'VERIFYING' || data.status === 'FINISHED') {
                     api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
                         setLeaderboardData(res.data);
@@ -100,9 +93,8 @@ const LiveRoom: React.FC = () => {
                 setShowLeaderboard(false);
                 setCorrectOptionId(null);
                 setPhase('playing');
-                setStep('reading');
                 setCount(0); 
-                setTimeLeft(5);
+                setTimeLeft(message.data.answer_time || 45);
             }
 
             if (message.type === "show_results") {
@@ -218,7 +210,7 @@ const LiveRoom: React.FC = () => {
             return () => clearTimeout(t);
         } else if (phase === 'countdown' && count === 0) {
             setPhase('playing');
-            setTimeLeft(5);
+            setTimeLeft(roomData?.answer_time || 45);
         }
     }, [count, phase]);
 
@@ -227,17 +219,14 @@ const LiveRoom: React.FC = () => {
             const timerInterval = setInterval(() => {
                 if (timeLeft > 0) {
                     setTimeLeft(prev => prev - 1);
-                } else if (timeLeft === 0 && step === 'reading') {
-                    setStep('answering');
-                    setTimeLeft(40);
                 }
             }, 1000);
             return () => clearInterval(timerInterval);
         }
-    }, [phase, timeLeft, step]);
+    }, [phase, timeLeft]);
 
-    const readingProgress = Math.min(100, ((5 - timeLeft) / 5) * 100);
-    const answeringProgress = Math.min(100, ((40 - timeLeft) / 40) * 100);
+    const totalTime = roomData?.answer_time || 45;
+    const answeringProgress = Math.min(100, ((totalTime - timeLeft) / totalTime) * 100);
 
     if (roomData?.status === 'FINISHED' || roomData?.status === 'VERIFYING') {
         return <FinalScreen isHost={isHost} data={leaderboardData} status={roomData.status} refreshTrigger={refreshTrigger} />;
@@ -282,7 +271,6 @@ const LiveRoom: React.FC = () => {
             )}
             <AnsweringPhase
             phase={phase}
-            step={step}
             count={count}
             roomCode={roomCode}
             quizTitle={quizTitle}
@@ -291,7 +279,6 @@ const LiveRoom: React.FC = () => {
             isHost={isHost}
             statistics={statistics}
             timeLeft={timeLeft}
-            readingProgress={readingProgress}
             answeringProgress={answeringProgress}
             setTimeLeft={setTimeLeft}
             handleShowResults={handleShowResults}
