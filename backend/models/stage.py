@@ -30,6 +30,7 @@ class Room(SQLModel, table=True):
     current_question_index: int = Field(default=0)
     phase: Optional[RoomPhase] = Field(default=None) 
     phase_start_time: Optional[datetime] = Field(default=None)
+    answer_time: int = Field(default=45)
     
     teacher_id: int = Field(foreign_key="teacher.id")
     teacher: "Teacher" = Relationship(back_populates="rooms")

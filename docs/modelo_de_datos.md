@@ -86,6 +86,7 @@ classDiagram
 | | current_question_index | int | Índice de la pregunta activa en la sesión. |
 | | phase | RoomPhase (Enum) | Fase actual: reading, answering, results, leaderboard. |
 | | phase_start_time | datetime | Momento en el que se inició la fase actual. |
+| | answer_time | int | Tiempo asignado para responder cada pregunta (default 45s). |
 | | teacher_id | int (FK) | Profesor que administra la sala. |
 | | quiz_id | int (FK) | Cuestionario asociado a la sesión. |
 | | group_id | Optional[int] (FK) | Grupo vinculado a la sala. |
@@ -116,6 +117,7 @@ classDiagram
             +int current_question_index
             +RoomPhase phase (Enum)
             +datetime? phase_start_time
+            +int answer_time
             +int teacher_id (FK)
             +int quiz_id (FK)
             +int? group_id (FK)

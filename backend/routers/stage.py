@@ -51,7 +51,7 @@ def get_rooms(session: Session = Depends(get_session)):
     return session.exec(select(Room)).all()
 
 @router.post("/rooms", status_code=201)
-def create_room(quiz_id: int, session: Session = Depends(get_session)):
+def create_room(quiz_id: int, answer_time: int = 45, session: Session = Depends(get_session)):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz no encontrado")
@@ -74,9 +74,9 @@ def create_room(quiz_id: int, session: Session = Depends(get_session)):
         quiz_id=quiz_id,
         join_code=new_join_code,
         status=RoomStatus.WAITING,
-        teacher_id=quiz.teacher_id
+        teacher_id=quiz.teacher_id,
+        answer_time=answer_time
     )
-    
     session.add(new_room)
     session.commit()
     session.refresh(new_room)
@@ -151,12 +151,9 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
                 if phase_start.tzinfo is None:
                     phase_start = phase_start.replace(tzinfo=tz.utc)
                 elapsed = (get_utc_now() - phase_start).total_seconds()
-                if elapsed < 5:
-                    calculated_phase = RoomPhase.READING
-                    time_left = max(0, 5 - int(elapsed))
-                elif elapsed < 45:
+                if elapsed < room.answer_time:
                     calculated_phase = RoomPhase.ANSWERING
-                    time_left = max(0, 45 - int(elapsed))
+                    time_left = max(0, room.answer_time - int(elapsed))
                 else:
                     calculated_phase = RoomPhase.ANSWERING
                     time_left = 0
@@ -184,7 +181,7 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
 
     room.status = RoomStatus.LIVE
     room.current_question_index = 1
-    room.phase = RoomPhase.READING
+    room.phase = RoomPhase.ANSWERING
     room.phase_start_time = get_utc_now()
     session.commit()
 
@@ -212,7 +209,7 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
     if next_index <= len(questions):
         next_q = questions[next_index - 1]
         room.current_question_index = next_index
-        room.phase = RoomPhase.READING
+        room.phase = RoomPhase.ANSWERING
         room.phase_start_time = get_utc_now()
         db.commit()
 
