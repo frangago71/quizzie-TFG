@@ -238,5 +238,4 @@ def create_seed_data():
         print("Base de datos poblada correctamente.")
 
 if __name__ == "__main__":
-    clear_database()
     create_seed_data()
