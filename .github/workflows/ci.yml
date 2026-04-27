@@ -12,7 +12,7 @@ jobs:
     env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         ALGORITHM: ${{ secrets.ALGORITHM }}
-        ACCESS_TOKEN_EXPIRE_MINUTES= 30
+        ACCESS_TOKEN_EXPIRE_MINUTES: 30
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
