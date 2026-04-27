@@ -12,6 +12,9 @@ engine = create_engine(
     poolclass=StaticPool,
 )
 
+import database
+database.engine = engine
+
 @pytest.fixture(name="session")
 def session_fixture():
     SQLModel.metadata.create_all(engine)

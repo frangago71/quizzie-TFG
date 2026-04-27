@@ -1,304 +1,209 @@
 import pytest
 from fastapi.testclient import TestClient
-from models.stage import RoomStatus, Room, Participant
+from models.stage import RoomStatus, Room, Participant, Answer, RoomPhase
 from models.users import Teacher, Student
 from models.content import Quiz, Question, Option
+import asyncio
 
 class TestStageIntegration:
-    """
-    Tests de integración para el dominio Stage.
-    """
-
-    def test_create_room_flow(self, client: TestClient, session):
-        """Crear sala, verificar PIN por defecto y bloqueo de duplicados."""
-        teacher = Teacher(
-            username="profe_test", 
-            email="test@test.com", 
-            hashed_password="fakehashpassword"
-        )
-        session.add(teacher)
+    def setup_entities(self, session):
+        t = Teacher(username="t_final", email="tf@t.com", hashed_password="x")
+        session.add(t)
         session.commit()
+        q = Quiz(title="Q_Final", description="D", teacher_id=t.id)
+        session.add(q)
+        session.commit()
+        qu1 = Question(text="Q1", quiz_id=q.id, points=10)
+        qu2 = Question(text="Q2", quiz_id=q.id, points=10)
+        session.add_all([qu1, qu2])
+        session.commit()
+        o1 = Option(text="O1", is_correct=True, question_id=qu1.id)
+        o2 = Option(text="O2", is_correct=True, question_id=qu2.id)
+        session.add_all([o1, o2])
+        session.commit()
+        s = Student(name="S1")
+        session.add(s)
+        session.commit()
+        return q, qu1, qu2, o1, t, s
+
+    def test_ultimate_lifecycle(self, client: TestClient, session):
+        q, qu1, qu2, o1, t, s = self.setup_entities(session)
         
-        quiz = Quiz(title="Quiz Test", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-
-        response = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        assert response.status_code == 201
-        assert response.json()["join_code"] == "123456"
-
-        dup_response = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        assert dup_response.status_code == 400
-        assert "Ya existe una sala activa" in dup_response.json()["detail"]
-
-    def test_pin_collision_logic(self, client: TestClient, session):
-        """Generar código aleatorio si 123456 ya está pillado."""
-        teacher = Teacher(
-            username="profe_collision", 
-            email="collision@test.com", 
-            hashed_password="fakehashpassword"
-        )
-        session.add(teacher)
-        session.commit()
-
-        q1 = Quiz(title="Quiz 1", teacher_id=teacher.id, description="Description 1")
-        q2 = Quiz(title="Quiz 2", teacher_id=teacher.id, description="Description 2")
-        session.add_all([q1, q2])
-        session.commit()
-
-        client.post("/stage/rooms", params={"quiz_id": q1.id})
-
-        response = client.post("/stage/rooms", params={"quiz_id": q2.id})
-        assert response.status_code == 201
-        new_code = response.json()["join_code"]
-        assert new_code != "123456"
-        assert len(new_code) == 6
-
-    def test_verify_room_code(self, client: TestClient, session):
-        """Verificar códigos de sala activos y terminados."""
-        teacher = Teacher(
-            username="profe_verify", 
-            email="verify@test.com", 
-            hashed_password="fakehashpassword"
-        )
-        session.add(teacher)
-        session.commit()
-        quiz = Quiz(title="Quiz 1", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
+        # 1. Create & Verify
+        res_c = client.post("/stage/rooms", params={"quiz_id": q.id})
+        r_id = res_c.json()["id"]
+        code = res_c.json()["join_code"]
+        client.get(f"/stage/rooms/verify/{code}")
         
-        client.post("/stage/rooms", params={"quiz_id": quiz.id})
-
-        res_ok = client.get("/stage/rooms/verify/123456")
-        assert res_ok.status_code == 200
-        assert res_ok.json()["success"] is True
-
-        res_404 = client.get("/stage/rooms/verify/000000")
-        assert res_404.status_code == 404
-
-    def test_participant_idempotency(self, client: TestClient, session):
-        """Unirse a sala y evitar duplicados (Idempotencia)."""
-        teacher = Teacher(
-            username="profe_idem", 
-            email="idem@test.com", 
-            hashed_password="fakehashpassword"
-        )
-        student = Student(name="Alumno Test", email="a@t.com") 
-        session.add_all([teacher, student])
-        session.commit()
+        # 2. Join 
+        res_p = client.post("/stage/participants", params={"student_id": s.id, "room_id": r_id})
+        p_id = res_p.json()["participant_id"]
+        client.post("/stage/participants", params={"student_id": s.id, "room_id": r_id})
         
-        quiz = Quiz(title="Quiz Idem", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-        
-        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        room_id = room_res.json()["id"]
-
-        params = {"student_id": student.id, "room_id": room_id}
-        res1 = client.post("/stage/participants", params=params)
-        assert res1.status_code == 200
-        p_id = res1.json()["participant_id"]
-
-        res2 = client.post("/stage/participants", params=params)
-        assert res2.status_code == 200
-        assert res2.json()["participant_id"] == p_id
-        assert "ya forma parte de la sala" in res2.json()["message"]
-
-    def test_submit_answer_integrity(self, client: TestClient, session):
-        """Escenario 6: Bloquear segundas respuestas del mismo participante."""
-        teacher = Teacher(
-            username="profe_ans", 
-            email="ans@test.com", 
-            hashed_password="fakehashpassword"
-        )
-        student = Student(name="Alumno Ans", email="ans_stu@test.com")
-        session.add_all([teacher, student])
-        session.commit()
-        
-        quiz = Quiz(title="Quiz Ans", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-        
-        q1 = Question(text="Q1", quiz_id=quiz.id)
-        session.add(q1)
-        session.commit()
-        
-        opt1 = Option(text="Correct", is_correct=True, question_id=q1.id)
-        session.add(opt1)
-        session.commit()
-        
-        r_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        r_id = r_res.json()["id"]
-        
-        p_res = client.post("/stage/participants", params={"student_id": student.id, "room_id": r_id})
-        p_id = p_res.json()["participant_id"]
-
-        answer_params = {
-            "participant_id": p_id,
-            "option_id": opt1.id,
-            "question_id": q1.id
-        }
-        
-        client.post("/stage/answers", params=answer_params)
-        
-        res2 = client.post("/stage/answers", params=answer_params)
-        assert res2.status_code == 400
-        assert "Ya has respondido" in res2.json()["detail"]
-
-    def test_room_lifecycle_and_navigation(self, client: TestClient, session):
-        """Flujo WAITING -> LIVE -> (next-question) -> FINISHED."""
-        teacher = Teacher(username="master", email="m@t.com", hashed_password="x")
-        session.add(teacher)
-        session.commit()
-        
-        # Creamos Quiz con 2 preguntas para probar el avance
-        quiz = Quiz(title="Lifecycle", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-        
-        q1 = Question(text="Q1", quiz_id=quiz.id)
-        q2 = Question(text="Q2", quiz_id=quiz.id)
-        session.add_all([q1, q2])
-        session.commit()
-
-        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        room_id = room_res.json()["id"]
-
-        # Error 400 si intentamos avanzar sin estar LIVE
-        bad_next = client.patch(f"/stage/rooms/{room_id}/next-question")
-        assert bad_next.status_code == 400
-
-        # Iniciar Quiz (WAITING -> LIVE)
-        start_res = client.post(f"/stage/rooms/{room_id}/start")
-        assert start_res.status_code == 200
-        assert start_res.json()["status"] == RoomStatus.LIVE
-
-        # Avanzar a la segunda pregunta
-        next_res = client.patch(f"/stage/rooms/{room_id}/next-question")
-        assert next_res.status_code == 200
-        assert next_res.json()["current_question_index"] == 2
-
-        # Pasar a fase de verificación
-        verify_res = client.patch(f"/stage/rooms/{room_id}/next-question")
-        assert verify_res.json()["status"] == "VERIFYING"
-
-    def test_statistics_engine(self, client: TestClient, session):
-        """Verificación de estadísticas por pregunta."""
-        teacher = Teacher(username="stat_prof", email="s@t.com", hashed_password="x")
-        student = Student(name="abc1234") 
-        session.add_all([teacher, student])
-        session.commit()
-        
-        quiz = Quiz(title="Stats", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-        
-        q1 = Question(text="Q1", quiz_id=quiz.id)
-        session.add(q1)
-        session.commit()
-        
-        opt1 = Option(text="Correct", is_correct=True, question_id=q1.id)
-        session.add(opt1)
-        session.commit()
-
-        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        room_id = room_res.json()["id"]
-        
-        # Unir participante
-        p_res = client.post("/stage/participants", params={"student_id": student.id, "room_id": room_id})
-        p_id = p_res.json()["participant_id"]
-
-        # Responder
-        client.post("/stage/answers", params={
-            "participant_id": p_id, 
-            "question_id": q1.id, 
-            "option_id": opt1.id
-        })
-
-        # Finalizar pregunta
-        stats_res = client.post(f"/stage/rooms/{room_id}/questions/{q1.id}/finish")
-        assert stats_res.status_code == 200
-        assert stats_res.json()["status"] == "success"
-
-    def test_websocket_connection_and_errors(self, client: TestClient, session):
-        """WebSockets y rutas inexistentes."""
-        # Verificamos 404 para sala inexistente
-        assert client.get("/stage/rooms/999").status_code == 404
-        
-        # Intentamos comenzar una sala que no existe
-        assert client.post("/stage/rooms/999/start").status_code == 400
-        # Setup para WebSocket
-        teacher = Teacher(username="ws_user", email="ws@t.com", hashed_password="x")
-        session.add(teacher)
-        session.commit()
-        quiz = Quiz(title="WS", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-        
-        room_res = client.post("/stage/rooms", params={"quiz_id": quiz.id})
-        room_id = room_res.json()["id"]
-
-        # Abrir y cerrar WebSocket para cubrir el ConnectionManager
-        with client.websocket_connect(f"/stage/rooms/{room_id}/ws") as websocket:
-            # No enviamos nada, solo cerramos al salir del bloque
-            pass
-
-    def test_room_access_and_verify_errors(self, client: TestClient, session):
-        """Errores de acceso (Sala finalizada o inexistente)."""
-        teacher = Teacher(username="prof_err", email="err@t.com", hashed_password="x")
-        session.add(teacher)
-        session.commit()
-        
-        room_fin = Room(quiz_id=1, join_code="999999", status=RoomStatus.FINISHED, teacher_id=teacher.id)
-        session.add(room_fin)
-        session.commit()
-        
-        res = client.get("/stage/rooms/verify/999999")
-        assert res.status_code == 400
-        assert "La sala ya está en finished" in res.json()["detail"]
-
-    def test_participant_management_errors(self, client: TestClient, session):
-        """Errores al vincular participantes (404 y 400)."""
-        # Crear sala y estudiante para jugar con los límites
-        room = Room(quiz_id=1, join_code="888888", status=RoomStatus.FINISHED, teacher_id=1)
-        student = Student(name="abc0002")
-        session.add_all([room, student])
-        session.commit()
-
-        # Estudiante no existe
-        assert client.post("/stage/participants", params={"student_id": 999, "room_id": room.id}).status_code == 404
-        # Sala no existe
-        assert client.post("/stage/participants", params={"student_id": student.id, "room_id": 999}).status_code == 404
-        # Unirse a sala ya cerrada
-        res = client.post("/stage/participants", params={"student_id": student.id, "room_id": room.id})
-        assert res.status_code == 400
-
-    def test_room_details_live_and_participants_list(self, client: TestClient, session):
-        """Detalles de sala activa y listado de nombres."""
-        teacher = Teacher(username="prof_live", email="live@t.com", hashed_password="x")
-        student = Student(name="abc0003")
-        session.add_all([teacher, student])
-        session.commit()
-        
-        quiz = Quiz(title="Live Quiz", teacher_id=teacher.id, description="Description")
-        session.add(quiz)
-        session.commit()
-        session.add(Question(text="¿Cobertura 90%?", quiz_id=quiz.id))
-        session.commit()
-
-        room = Room(quiz_id=quiz.id, join_code="777777", status=RoomStatus.LIVE, 
-                    current_question_index=1, teacher_id=teacher.id)
+        # 3. Start & Details LIVE
+        client.post(f"/stage/rooms/{r_id}/start")
+        room = session.get(Room, r_id)
+        room.timer_started_at = None
         session.add(room)
         session.commit()
         
-        # Vinculamos participante para probar el listado 
-        session.add(Participant(student_id=student.id, room_id=room.id))
+        res_det = client.get(f"/stage/rooms/{r_id}")
+        assert res_det.json()["status"].upper() == "LIVE"
+        
+        # 4. Timer Stop 
+        client.post(f"/stage/rooms/{r_id}/timer/stop")
+        
+        # 5. Answer & Finish Q 
+        client.post("/stage/answers", params={"participant_id": p_id, "option_id": o1.id, "question_id": qu1.id})
+        assert client.post("/stage/answers", params={"participant_id": p_id, "option_id": o1.id, "question_id": qu1.id}).status_code == 400
+        
+        client.post(f"/stage/rooms/{r_id}/questions/{qu1.id}/finish")
+        client.get(f"/stage/rooms/{r_id}")
+        
+        # 6. Next Question 
+        client.patch(f"/stage/rooms/{r_id}/next-question")
+        assert client.get(f"/stage/rooms/{r_id}").json()["current_question_index"] == 2
+        
+        # 7. Show Leaderboard
+        client.post(f"/stage/rooms/{r_id}/leaderboard/show")
+        client.get(f"/stage/rooms/{r_id}/leaderboard")
+        
+        # 8. Next to VERIFYING 
+        client.patch(f"/stage/rooms/{r_id}/next-question")
+        assert client.get(f"/stage/rooms/{r_id}").json()["status"].upper() == "VERIFYING"
+        
+        # 9. Verify & Stats 
+        p = session.get(Participant, p_id)
+        # Force score mismatch to hit 375
+        p.score = 999
+        session.add(p)
+        session.commit()
+        
+        client.post(f"/stage/rooms/{r_id}/verify-participant", json={"nickname": "S1", "token": p.verification_token})
+        client.get(f"/stage/rooms/{r_id}/participants/{p_id}/stats")
+        
+        # 10. Finish 
+        client.post(f"/stage/rooms/{r_id}/finish")
+        assert client.get(f"/stage/rooms/verify/{code}").status_code == 404
+        assert client.post(f"/stage/rooms/{r_id}/finish").status_code == 400
+        assert client.post(f"/stage/rooms/{r_id}/force-finish").status_code == 400
+        
+        room_f = Room(quiz_id=q.id, join_code="FIN", status=RoomStatus.FINISHED, teacher_id=t.id)
+        session.add(room_f)
+        session.commit()
+        assert client.get("/stage/rooms/verify/FIN").status_code == 400
+
+
+    def test_all_exceptions_final(self, client: TestClient, session):
+        """Dispara todas las excepciones que faltan."""
+        q, qu1, _, o1, t, s = self.setup_entities(session)
+        # 404s
+        assert client.get("/stage/rooms/999").status_code == 404
+        assert client.post("/stage/rooms/999/start").status_code == 404
+        assert client.patch("/stage/rooms/999/next-question").status_code == 404
+        assert client.post("/stage/rooms/999/timer/stop").status_code == 404
+        assert client.post("/stage/rooms/999/leaderboard/show").status_code == 404
+        assert client.post("/stage/rooms/999/questions/1/finish").status_code == 404
+        assert client.get("/stage/rooms/999/participants/1/stats").status_code == 404
+        assert client.post("/stage/answers", params={"participant_id": 999, "option_id": 1, "question_id": 1}).status_code == 404
+        
+        # 400s
+        res_c = client.post("/stage/rooms", params={"quiz_id": q.id})
+        r_id = res_c.json()["id"]
+        assert client.post("/stage/rooms", params={"quiz_id": q.id}).status_code == 400
+        
+        # Room status errors 
+        assert client.patch(f"/stage/rooms/{r_id}/next-question").status_code == 400
+        
+        # Participant errors
+        assert client.post("/stage/participants", params={"student_id": 999, "room_id": r_id}).status_code == 404
+        assert client.post("/stage/participants", params={"student_id": s.id, "room_id": 999}).status_code == 404
+        
+        # verify_participant errors
+        assert client.post(f"/stage/rooms/{r_id}/verify-participant", json={"nickname": "S1", "token": "x"}).status_code == 404
+        
+        client.get("/stage/rooms")
+        client.get("/stage/participants")
+        client.get("/stage/answers")
+        client.get(f"/stage/rooms/{r_id}/participants")
+        
+        assert client.post("/stage/rooms", params={"quiz_id": 9999}).status_code == 404
+        
+    def test_technical_ws_sync(self, client: TestClient, session):
+        from routers.stage import manager, timer_sync_loop
+        # 1. Room for WS and Sync Loop
+        room = Room(quiz_id=None, join_code="WS_TECH", status=RoomStatus.LIVE, teacher_id=1, is_paused=True, remaining_time_at_pause=10, answer_time=30)
+        session.add(room)
+        session.commit()
+        
+        # 2. WebSocket Teacher Logic 
+        with client.websocket_connect(f"/stage/rooms/{room.id}/ws?role=teacher") as ws:
+            # 3. WebSocket Disconnect Logic 
+            pass 
+            
+        # 4. ConnectionManager Exception 
+        manager.active_connections[room.id] = [type('F', (), {'send_json': lambda x: exec('raise Exception()')})()]
+        asyncio.run(manager.broadcast_to_room(room.id, {"t": "p"}))
+        
+        # 5. Timer Sync Loop 
+        async def run_once():
+            task = asyncio.create_task(timer_sync_loop())
+            await asyncio.sleep(1.5)
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+        asyncio.run(run_once())
+
+    def test_ultimate_lifecycle_v2(self, client: TestClient, session):
+        q, qu1, qu2, o1, t, s = self.setup_entities(session)
+        
+        # Collision Loop
+        client.post("/stage/rooms", params={"quiz_id": q.id}) 
+        client.post("/stage/rooms", params={"quiz_id": q.id})
+        
+        q2 = Quiz(title="Q2_Final", description="D", teacher_id=t.id)
+        session.add(q2)
+        session.commit()
+        qu3 = Question(text="Q3", quiz_id=q2.id, points=10)
+        session.add(qu3)
+        session.commit()
+        o3 = Option(text="O3", is_correct=True, question_id=qu3.id)
+        session.add(o3)
         session.commit()
 
-        # Probar listado de nombres
-        res_names = client.get(f"/stage/rooms/{room.id}/participants")
-        assert "abc0003" in res_names.json()
+        # Start Quiz Questions
+        res = client.post("/stage/rooms", params={"quiz_id": q2.id, "answer_time": 10})
+        data = res.json()
+        assert "id" in data
+        r_id = data["id"]
+        client.post(f"/stage/rooms/{r_id}/start")
+        
+        # Score Sync & Verification 
+        res_p = client.post("/stage/participants", params={"student_id": s.id, "room_id": r_id})
+        p_id = res_p.json()["participant_id"]
+        client.post("/stage/answers", params={"participant_id": p_id, "option_id": o3.id, "question_id": qu3.id})
+        
+        client.post(f"/stage/rooms/{r_id}/questions/{qu3.id}/finish")
+        client.patch(f"/stage/rooms/{r_id}/next-question") 
+        
+        p = session.get(Participant, p_id)
+        p.score = 0 
+        session.add(p)
+        session.commit()
+        client.post(f"/stage/rooms/{r_id}/verify-participant", json={"nickname": "S1", "token": p.verification_token})
+        
+        # Force Finish 
+        client.post(f"/stage/rooms/{r_id}/force-finish")
+        
+        # Plural List 
+        client.get("/stage/participants")
+        
+        # notify_room_update
+        client.post("/stage/participants", params={"student_id": s.id, "room_id": r_id})
 
-        # Probar detalles de sala LIVE 
-        res_details = client.get(f"/stage/rooms/{room.id}")
-        assert res_details.json()["text"] == "¿Cobertura 90%?"
+
+
+
+

@@ -37,7 +37,7 @@ class ConnectionManager:
                 try:
                     await connection.send_json(message)
                 except Exception:
-                    pass
+                    self.active_connections[room_id].remove(connection)
 
 manager = ConnectionManager()
 
@@ -265,7 +265,9 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
 @router.post("/rooms/{room_id}/start")
 async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     room = session.get(Room, room_id)
-    if not room or room.status != RoomStatus.WAITING:
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+    if room.status != RoomStatus.WAITING:
         raise HTTPException(status_code=400, detail="No se puede iniciar la sala.")
 
     statement = select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
@@ -296,7 +298,9 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
 @router.patch("/rooms/{room_id}/next-question")
 async def next_question(room_id: int, db: Session = Depends(get_session)):
     room = db.get(Room, room_id)
-    if not room or room.status != RoomStatus.LIVE:
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+    if room.status != RoomStatus.LIVE:
         raise HTTPException(status_code=400, detail="Sala no disponible")
 
     questions = db.exec(select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)).all()
@@ -337,15 +341,17 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
 @router.post("/rooms/{room_id}/timer/stop")
 async def stop_timer(room_id: int, db: Session = Depends(get_session)):
     room = db.get(Room, room_id)
-    if room:
-        room.remaining_time_at_pause = 0
-        room.is_paused = True
-        db.add(room)
-        db.commit()
-        await manager.broadcast_to_room(room_id, {
-            "type": "timer_update",
-            "data": {"time_left": 0, "is_paused": True}
-        })
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+    
+    room.remaining_time_at_pause = 0
+    room.is_paused = True
+    db.add(room)
+    db.commit()
+    await manager.broadcast_to_room(room_id, {
+        "type": "timer_update",
+        "data": {"time_left": 0, "is_paused": True}
+    })
     return {"status": "success"}
 
 class VerificationRequest(BaseModel):
@@ -537,10 +543,12 @@ def get_leaderboard(room_id: int, session: Session = Depends(get_session)):
 @router.post("/rooms/{room_id}/leaderboard/show")
 async def show_leaderboard(room_id: int, db: Session = Depends(get_session)):
     room = db.get(Room, room_id)
-    if room:
-        room.phase = "leaderboard"
-        room.phase_start_time = get_utc_now()
-        db.commit()
+    if not room:
+        raise HTTPException(status_code=404, detail="Sala no encontrada")
+    
+    room.phase = "leaderboard"
+    room.phase_start_time = get_utc_now()
+    db.commit()
     
     lb_statement = (
         select(Student.name, Participant.score)
