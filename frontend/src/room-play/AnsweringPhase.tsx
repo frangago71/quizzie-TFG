@@ -35,10 +35,10 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
     isHost,
     statistics,
     timeLeft,
-    totalTime,
+    totalTime: _totalTime,
     isPaused,
     answeringProgress,
-    setTimeLeft,
+    setTimeLeft: _setTimeLeft,
     handleShowResults,
     roomData,
     selectedOptionId,
@@ -47,7 +47,6 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
     handleSubmitAnswer,
     handleStopTimer
 }) => {
-    console.log("AnsweringPhase props loaded:", { totalTime, setTimeLeft });
     if (phase === 'countdown') {
         return (
             <div className="live-room-wrapper countdown-bg">
