@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+import asyncio
 from contextlib import asynccontextmanager
 from sqlmodel import Session, select, SQLModel
 from typing import List
@@ -15,6 +16,7 @@ def create_db_and_tables():
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     print("Base de datos iniciada correctamente y tablas verificadas")
+    asyncio.create_task(stage.timer_sync_loop())
     yield
 
 app = FastAPI(

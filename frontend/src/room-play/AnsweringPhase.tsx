@@ -12,6 +12,8 @@ interface AnsweringPhaseProps {
     isHost: boolean;
     statistics: Record<string, number>;
     timeLeft: number;
+    totalTime: number;
+    isPaused: boolean;
     answeringProgress: number;
     setTimeLeft: (val: number | ((prev: number) => number)) => void;
     handleShowResults: () => void;
@@ -20,6 +22,7 @@ interface AnsweringPhaseProps {
     setSelectedOptionId: (id: number | null) => void;
     isSent: boolean;
     handleSubmitAnswer: () => void;
+    handleStopTimer: () => void;
 }
 
 const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
@@ -32,6 +35,8 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
     isHost,
     statistics,
     timeLeft,
+    totalTime,
+    isPaused,
     answeringProgress,
     setTimeLeft,
     handleShowResults,
@@ -39,8 +44,10 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
     selectedOptionId,
     setSelectedOptionId,
     isSent,
-    handleSubmitAnswer
+    handleSubmitAnswer,
+    handleStopTimer
 }) => {
+    console.log("AnsweringPhase props loaded:", { totalTime, setTimeLeft });
     if (phase === 'countdown') {
         return (
             <div className="live-room-wrapper countdown-bg">
@@ -79,8 +86,8 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
 
                 <div className="top-time-system animate-fade-in">
                     <div className="time-display-badge">
-                        <Timer size={20} className="icon-magenta" />
-                        <span className="time-text-large">{timeLeft}s</span>
+                        <Timer size={20} className={(isPaused && timeLeft > 0) ? "icon-orange" : "icon-magenta"} />
+                        <span className="time-text-large">{(isPaused && timeLeft > 0) ? "Pausa" : `${timeLeft}s`}</span>
                     </div>
                     <div className="time-progress-container">
                         <div className="time-progress-bar" style={{ width: `${answeringProgress}%` }} />
@@ -89,7 +96,7 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                     {isHost && (
                         <div className="host-timer-controls">
                             {timeLeft > 0 ? (
-                                <button className="lr-btn-finish" onClick={() => setTimeLeft(0)}>Terminar tiempo</button>
+                                <button className="lr-btn-finish" onClick={handleStopTimer}>Terminar tiempo</button>
                             ) : (
                                 <button className="lr-btn-finish" onClick={handleShowResults}>
                                     <Eye size={18} /> Ver estadísticas
@@ -110,7 +117,7 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                                 {roomData?.options?.map((opt: any, index: number) => (
                                     <button
                                         key={opt.id}
-                                        disabled={isSent || isHost}
+                                        disabled={isSent || isHost || isPaused || timeLeft === 0}
                                         className={`lr-option-item ${selectedOptionId === opt.id ? 'active' : ''}`}
                                         onClick={() => setSelectedOptionId(opt.id)}
                                     >
@@ -122,9 +129,9 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                             {!isHost && (
                                 <div className="action-bar">
                                     <button
-                                        className={`btn-send-answer ${!selectedOptionId ? 'not-selected' : ''} ${isSent ? 'is-sent' : ''}`}
+                                        className={`btn-send-answer ${(!selectedOptionId || isPaused || timeLeft === 0) ? 'not-selected' : ''} ${isSent ? 'is-sent' : ''}`}
                                         onClick={handleSubmitAnswer}
-                                        disabled={!selectedOptionId || isSent}
+                                        disabled={!selectedOptionId || isSent || isPaused || timeLeft === 0}
                                     >
                                         {isSent ? <Check size={18} /> : <Send size={18} />}
                                         <span>{isSent ? 'Respuesta enviada' : 'Enviar respuesta'}</span>

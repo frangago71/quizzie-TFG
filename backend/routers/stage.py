@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from sqlmodel import Session, select
 from sqlalchemy import func
-from typing import List
+from typing import List, Dict
+import asyncio
 from database import get_session
 from models.stage import Room, Participant, Answer, RoomStatus, RoomPhase, get_utc_now
 from models.content import Quiz, Question, Option  
@@ -11,6 +12,7 @@ import string
 import secrets
 from pydantic import BaseModel
 from datetime import timezone as tz
+from datetime import timedelta
 
 router = APIRouter(prefix="/stage", tags=["Stage"])
 
@@ -32,18 +34,93 @@ class ConnectionManager:
     async def broadcast_to_room(self, room_id: int, message: dict):
         if room_id in self.active_connections:
             for connection in self.active_connections[room_id]:
-                await connection.send_json(message)
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    pass
 
 manager = ConnectionManager()
 
+def get_calculated_time_left(room: Room) -> int:
+    if room.is_paused:
+        return room.remaining_time_at_pause
+    if not room.timer_started_at:
+        return room.remaining_time_at_pause
+    
+    now = get_utc_now()
+    started_at = room.timer_started_at
+    if started_at.tzinfo is None:
+        from datetime import timezone as tz
+        started_at = started_at.replace(tzinfo=tz.utc)
+    
+    elapsed = (now - started_at).total_seconds()
+    calculated_time = room.remaining_time_at_pause - int(elapsed)
+    return max(0, min(room.answer_time, calculated_time))
+
+async def timer_sync_loop():
+    from database import engine
+    while True:
+        await asyncio.sleep(1)
+        with Session(engine) as session:
+            statement = select(Room).where(Room.status == RoomStatus.LIVE)
+            rooms = session.exec(statement).all()
+            for room in rooms:
+                time_left = get_calculated_time_left(room)
+                await manager.broadcast_to_room(room.id, {
+                    "type": "timer_update",
+                    "data": {
+                        "time_left": time_left,
+                        "is_paused": room.is_paused
+                    }
+                })
+
 @router.websocket("/rooms/{room_id}/ws")
-async def websocket_endpoint(websocket: WebSocket, room_id: int):
+async def websocket_endpoint(websocket: WebSocket, room_id: int, role: str = "student"):
+    from database import engine
     await manager.connect(websocket, room_id)
+    
+    if role == "teacher":
+        with Session(engine) as session:
+            room = session.get(Room, room_id)
+            if room and room.status == RoomStatus.LIVE and room.is_paused:
+                started_at = room.timer_started_at
+                if started_at and started_at.tzinfo is None:
+                    started_at = started_at.replace(tzinfo=tz.utc)
+
+                if not (started_at and started_at > get_utc_now()):
+                    room.timer_started_at = get_utc_now()
+                
+                room.is_paused = False
+                session.add(room)
+                session.commit()
+                await manager.broadcast_to_room(room_id, {
+                    "type": "timer_update", 
+                    "data": {
+                        "time_left": get_calculated_time_left(room), 
+                        "is_paused": False
+                    }
+                })
+
     try:
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket, room_id)
+        if role == "teacher":
+            with Session(engine) as session:
+                room = session.get(Room, room_id)
+                if room and room.status == RoomStatus.LIVE:
+                    room.remaining_time_at_pause = get_calculated_time_left(room)
+                    room.is_paused = True
+                    session.add(room)
+                    session.commit()
+                    await manager.broadcast_to_room(room_id, {
+                        "type": "timer_update", 
+                        "data": {
+                            "time_left": room.remaining_time_at_pause, 
+                            "is_paused": True
+                        }
+                    })
 
 
 @router.get("/rooms", response_model=List[Room])
@@ -146,17 +223,30 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
                 "options": [{"id": opt.id, "text": opt.text} for opt in q.options]
             }
 
-            if room.phase_start_time:
-                phase_start = room.phase_start_time
-                if phase_start.tzinfo is None:
-                    phase_start = phase_start.replace(tzinfo=tz.utc)
-                elapsed = (get_utc_now() - phase_start).total_seconds()
-                if elapsed < room.answer_time:
-                    calculated_phase = RoomPhase.ANSWERING
-                    time_left = max(0, room.answer_time - int(elapsed))
-                else:
-                    calculated_phase = RoomPhase.ANSWERING
-                    time_left = 0
+            time_left = get_calculated_time_left(room)
+            calculated_phase = room.phase or RoomPhase.ANSWERING
+
+    extra_data = {}
+    if calculated_phase == RoomPhase.RESULTS:
+        stats_dict = {}
+        for opt in room.quiz.questions[room.current_question_index-1].options:
+            count = session.exec(select(func.count(Answer.id)).where(Answer.option_id == opt.id)).one()
+            stats_dict[str(opt.id)] = count
+        
+        correct_option = next((opt for opt in room.quiz.questions[room.current_question_index-1].options if opt.is_correct), None)
+        extra_data["statistics"] = stats_dict
+        extra_data["correct_option_id"] = correct_option.id if correct_option else None
+    
+    if calculated_phase == RoomPhase.LEADERBOARD or room.status in [RoomStatus.VERIFYING, RoomStatus.FINISHED]:
+        lb_statement = (
+            select(Student.name, Participant.score)
+            .join(Student, Participant.student_id == Student.id)
+            .where(Participant.room_id == room.id)
+            .order_by(Participant.score.desc())
+            .limit(10)
+        )
+        lb_results = session.exec(lb_statement).all()
+        extra_data["leaderboard"] = [{"name": r[0], "score": r[1]} for r in lb_results]
 
     return {
         "id": room.id,
@@ -166,6 +256,9 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
         "total_questions": total_questions,
         "phase": calculated_phase,
         "time_left": time_left,
+        "answer_time": room.answer_time,
+        "is_paused": room.is_paused,
+        **extra_data,
         **(current_q_data or {"text": "Sala inactiva", "options": []})
     }
 
@@ -183,6 +276,9 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
     room.current_question_index = 1
     room.phase = RoomPhase.ANSWERING
     room.phase_start_time = get_utc_now()
+    room.remaining_time_at_pause = room.answer_time
+    room.timer_started_at = get_utc_now() + timedelta(seconds=3)
+    room.is_paused = False
     session.commit()
 
     data = {
@@ -211,6 +307,9 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
         room.current_question_index = next_index
         room.phase = RoomPhase.ANSWERING
         room.phase_start_time = get_utc_now()
+        room.remaining_time_at_pause = room.answer_time
+        room.timer_started_at = get_utc_now()
+        room.is_paused = False
         db.commit()
 
         data = {
@@ -234,6 +333,20 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
         db.commit()
         await manager.broadcast_to_room(room_id, {"type": "room_verifying", "data": {"status": "VERIFYING", "total_questions": len(questions)}})
         return {"status": "VERIFYING"}
+    
+@router.post("/rooms/{room_id}/timer/stop")
+async def stop_timer(room_id: int, db: Session = Depends(get_session)):
+    room = db.get(Room, room_id)
+    if room:
+        room.remaining_time_at_pause = 0
+        room.is_paused = True
+        db.add(room)
+        db.commit()
+        await manager.broadcast_to_room(room_id, {
+            "type": "timer_update",
+            "data": {"time_left": 0, "is_paused": True}
+        })
+    return {"status": "success"}
 
 class VerificationRequest(BaseModel):
     nickname: str
@@ -422,7 +535,23 @@ async def show_leaderboard(room_id: int, db: Session = Depends(get_session)):
         room.phase = "leaderboard"
         room.phase_start_time = get_utc_now()
         db.commit()
-    await manager.broadcast_to_room(room_id, {"type": "show_leaderboard"})
+    
+    lb_statement = (
+        select(Student.name, Participant.score)
+        .join(Student, Participant.student_id == Student.id)
+        .where(Participant.room_id == room_id)
+        .order_by(Participant.score.desc())
+        .limit(10)
+    )
+    lb_results = db.exec(lb_statement).all()
+    leaderboard = [{"name": r[0], "score": r[1]} for r in lb_results]
+
+    await manager.broadcast_to_room(room_id, {
+        "type": "show_leaderboard",
+        "data": {
+            "leaderboard": leaderboard
+        }
+    })
     return {"status": "success"}
 
 @router.post("/rooms/{room_id}/questions/{question_id}/finish")

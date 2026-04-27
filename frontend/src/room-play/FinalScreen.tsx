@@ -16,13 +16,13 @@ interface Props {
   refreshTrigger?: number;
 }
 
-const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', refreshTrigger = 0 }) => {
+const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'finished', refreshTrigger = 0 }) => {
   const navigate = useNavigate();
   const { roomId, participantId, userNickname } = useRoom();
   const { toast } = useToast();
-  const [stats, setStats] = useState<{ 
-    score: number, 
-    correct_answers: number, 
+  const [stats, setStats] = useState<{
+    score: number,
+    correct_answers: number,
     total_questions: number,
     verification_token?: string,
     is_verified?: boolean
@@ -52,8 +52,8 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
       <div className="podium-titles">
         <h1 className="podium-main-title final-screen-title">¡Cuestionario finalizado!</h1>
         <h2 className="podium-subtitle final-screen-subtitle">
-          {isHost 
-            ? "Más adelante podrás escanear los QR de los alumnos desde el historial de salas." 
+          {isHost
+            ? "Más adelante podrás escanear los QR de los alumnos desde el historial de salas."
             : "¡Buen trabajo! Estos son tus resultados:"}
         </h2>
       </div>
@@ -71,17 +71,17 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
             <div style={{ padding: '40px' }}>Cargando resultados...</div>
           )}
 
-          {status === 'VERIFYING' && stats?.verification_token ? (
+          {status === 'verifying' && stats?.verification_token ? (
             <div className="final-info-card qr-card animate-scale-in">
               <h3 className="final-info-title">Tu código de verificación</h3>
               <div className="qr-wrapper">
-                <QRCodeSVG 
-                  value={JSON.stringify({ 
-                    nickname: userNickname, 
+                <QRCodeSVG
+                  value={JSON.stringify({
+                    nickname: userNickname,
                     token: stats.verification_token,
                     roomId: roomId,
                     score: stats.score
-                  })} 
+                  })}
                   size={180}
                   level="H"
                   includeMargin={true}
@@ -102,17 +102,17 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
             <div className="final-info-card final-info-card-faded">
               <h3 className="final-info-title">Verificación QR</h3>
               <p className="final-info-text">
-                {status === 'FINISHED' 
-                  ? "La fase de verificación ha terminado." 
+                {status === 'finished'
+                  ? "La fase de verificación ha terminado."
                   : "Próximamente se mostrará aquí tu código QR para verificar tu nota con el profesor."}
               </p>
             </div>
           )}
 
-          <button 
-            className="btn-main magenta final-button" 
+          <button
+            className="btn-main magenta final-button"
             onClick={() => {
-              if (status === 'VERIFYING' && !stats?.is_verified) {
+              if (status === 'verifying' && !stats?.is_verified) {
                 setShowExitModal(true);
               } else {
                 navigate('/');
@@ -180,22 +180,22 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
             <div className="final-info-card">
               <Users size={32} style={{ color: 'var(--text-light)', marginBottom: '10px' }} />
               <h3 className="final-info-title">
-                {status === 'VERIFYING' ? 'Fase de Verificación Activa' : 'Fase de verificación finalizada'}
+                {status === 'verifying' ? 'Fase de Verificación Activa' : 'Fase de verificación finalizada'}
               </h3>
               <p className="final-info-text">
-                {status === 'VERIFYING' 
-                  ? 'Escanea los códigos QR de tus alumnos para validar sus resultados.' 
+                {status === 'verifying'
+                  ? 'Escanea los códigos QR de tus alumnos para validar sus resultados.'
                   : 'Todos los resultados han sido procesados.'}
               </p>
             </div>
-            
-            {status === 'VERIFYING' ? (
+
+            {status === 'verifying' ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', alignItems: 'center' }}>
                 <button className="btn-main cyan big" onClick={() => setShowScanner(true)}>
                   <Camera size={20} />
                   Escanear QR
                 </button>
-                
+
                 <button className="btn-main magenta big" onClick={async () => {
                   if (window.confirm("¿Seguro que quieres cerrar la fase de verificación? Los alumnos ya no podrán validar sus notas.")) {
                     try {
@@ -219,7 +219,7 @@ const FinalScreen: React.FC<Props> = ({ isHost, data = [], status = 'FINISHED', 
           </div>
 
           {showScanner && (
-            <ScannerModal 
+            <ScannerModal
               onClose={() => setShowScanner(false)}
               onScan={async (decodedText) => {
                 let qrData: any = null;

@@ -87,6 +87,9 @@ classDiagram
 | | phase | RoomPhase (Enum) | Fase actual: reading, answering, results, leaderboard. |
 | | phase_start_time | datetime | Momento en el que se inició la fase actual. |
 | | answer_time | int | Tiempo asignado para responder cada pregunta (default 45s). |
+| | remaining_time_at_pause | int | Segundos restantes cuando el temporizador se pausó. |
+| | timer_started_at | datetime | Momento en el que se inició/reanudó el temporizador. |
+| | is_paused | bool | Indica si el temporizador está pausado (el profesor no está). |
 | | teacher_id | int (FK) | Profesor que administra la sala. |
 | | quiz_id | int (FK) | Cuestionario asociado a la sesión. |
 | | group_id | Optional[int] (FK) | Grupo vinculado a la sala. |
@@ -118,6 +121,9 @@ classDiagram
             +RoomPhase phase (Enum)
             +datetime? phase_start_time
             +int answer_time
+            +int remaining_time_at_pause
+            +datetime? timer_started_at
+            +bool is_paused
             +int teacher_id (FK)
             +int quiz_id (FK)
             +int? group_id (FK)

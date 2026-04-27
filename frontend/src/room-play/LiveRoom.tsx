@@ -18,13 +18,12 @@ const LiveRoom: React.FC = () => {
     const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
     const [isSent, setIsSent] = useState(false);
 
-    const [showResults, setShowResults] = useState(false);
-    const [showLeaderboard, setShowLeaderboard] = useState(false);
-    const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
     const [statistics, setStatistics] = useState<Record<string, number>>({});
     const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
+    const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [isConnected, setIsConnected] = useState(true);
+    const [isPaused, setIsPaused] = useState(false);
 
     const { id: urlRoomId } = useParams();
     const navigate = useNavigate();
@@ -57,14 +56,25 @@ const LiveRoom: React.FC = () => {
                 const res = await api.get(`/stage/rooms/${idToUse}`);
                 const data = res.data;
                 setRoomData(data);
+                setIsPaused(data.is_paused);
                 
-                if (data.status === 'LIVE') {
-                    setPhase('playing');
+                if (data.status === 'live') {
+                    const isFirstQuestionStart = data.current_question_index === 1 && data.time_left >= (data.answer_time - 1);
+                    if (isFirstQuestionStart) {
+                        setPhase('countdown');
+                        setCount(3);
+                    } else {
+                        setPhase('playing');
+                        setCount(0);
+                    }
+                    
+                    if (data.statistics) setStatistics(data.statistics);
+                    if (data.correct_option_id) setCorrectOptionId(data.correct_option_id);
+                    if (data.leaderboard) setLeaderboardData(data.leaderboard);
+
                     setTimeLeft(data.time_left);
-                } else if (data.status === 'VERIFYING' || data.status === 'FINISHED') {
-                    api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
-                        setLeaderboardData(res.data);
-                    }).catch(err => console.error(err));
+                } else if (data.status === 'verifying' || data.status === 'finished') {
+                    if (data.leaderboard) setLeaderboardData(data.leaderboard);
                 }
             } catch (err) {
                 console.error("Error sincronizando al entrar:", err);
@@ -72,7 +82,7 @@ const LiveRoom: React.FC = () => {
         };
         syncRoom();
         
-        const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${idToUse}/ws`);
+        const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${idToUse}/ws?role=${isHost ? 'teacher' : 'student'}`);
         
         ws.onopen = () => {
             console.log("WebSocket conectado");
@@ -86,52 +96,56 @@ const LiveRoom: React.FC = () => {
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
+            const data = message.data;
 
             if (["next_question", "room_start", "room_update"].includes(message.type)) {
-                setRoomData(message.data);
-                setShowResults(false);
-                setShowLeaderboard(false);
-                setCorrectOptionId(null);
-                setPhase('playing');
-                setCount(0); 
-                setTimeLeft(message.data.answer_time || 45);
+                setRoomData(data);
+                if (data.status === 'live') {
+                    const isFirstQuestionStart = data.current_question_index === 1 && data.time_left >= (data.answer_time - 1);
+                    if (isFirstQuestionStart) {
+                        setPhase('countdown');
+                        setCount(3);
+                    } else {
+                        setPhase('playing');
+                        setCount(0);
+                    }
+                    
+                    if (data.statistics) setStatistics(data.statistics);
+                    if (data.correct_option_id) setCorrectOptionId(data.correct_option_id);
+                    if (data.leaderboard) setLeaderboardData(data.leaderboard);
+
+                    setTimeLeft(data.time_left);
+                } else if (data.status === 'verifying' || data.status === 'finished') {
+                    if (data.leaderboard) setLeaderboardData(data.leaderboard);
+                }
             }
 
             if (message.type === "show_results") {
                 setStatistics(message.data.statistics);
                 setCorrectOptionId(message.data.correct_option_id);
-                setShowResults(true);
-                setShowLeaderboard(false);
+                setRoomData((prev: any) => (prev ? { ...prev, phase: 'results' } : prev));
             }
 
             if (message.type === "show_leaderboard") {
-                setShowResults(false);
-                setShowLeaderboard(true);
-                api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
-                    setLeaderboardData(res.data);
-                }).catch(err => console.error(err));
+                setLeaderboardData(message.data.leaderboard);
+                setRoomData((prev: any) => (prev ? { ...prev, phase: 'leaderboard' } : prev));
             }
 
             if (message.type === "room_finish") {
-                setRoomData((prev: any) => prev ? { ...prev, status: 'FINISHED' } : null);
-                if (isHost) {
-                    api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
-                        setLeaderboardData(res.data);
-                    }).catch(err => console.error(err));
-                }
+                setRoomData((prev: any) => prev ? { ...prev, status: 'finished' } : null);
             }
 
             if (message.type === "room_verifying") {
-                setRoomData((prev: any) => prev ? { ...prev, status: 'VERIFYING' } : null);
-                if (isHost) {
-                    api.get(`/stage/rooms/${idToUse}/leaderboard`).then(res => {
-                        setLeaderboardData(res.data);
-                    }).catch(err => console.error(err));
-                }
+                setRoomData((prev: any) => prev ? { ...prev, status: 'verifying' } : null);
             }
 
             if (message.type === "participant_verified") {
                 setRefreshTrigger(prev => prev + 1);
+            }
+
+            if (message.type === "timer_update") {
+                setTimeLeft(message.data.time_left);
+                setIsPaused(message.data.is_paused);
             }
         };
 
@@ -150,7 +164,7 @@ const LiveRoom: React.FC = () => {
             return;
         }
         try {
-            await api.post(`/stage/rooms/${roomId}/questions/${qId}/finish`);
+            await api.post(`/stage/rooms/${roomId || urlRoomId}/questions/${qId}/finish`);
         } catch (error) {
             console.error("Error al finalizar: Es posible que el ID enviado sea erróneo", error);
             toast.error("El ID enviado no parece ser de una pregunta válida.");
@@ -159,7 +173,7 @@ const LiveRoom: React.FC = () => {
 
     const handleShowLeaderboard = async () => {
         try {
-            await api.post(`/stage/rooms/${roomId}/leaderboard/show`);
+            await api.post(`/stage/rooms/${roomId || urlRoomId}/leaderboard/show`);
         } catch (error) {
             console.error("Error al mostrar ranking:", error);
         }
@@ -170,6 +184,14 @@ const LiveRoom: React.FC = () => {
             await api.patch(`/stage/rooms/${roomId}/next-question`);
         } catch (error) {
             console.error("Error al pasar de pregunta:", error);
+        }
+    };
+
+    const handleStopTimer = async () => {
+        try {
+            await api.post(`/stage/rooms/${roomId}/timer/stop`);
+        } catch (error) {
+            console.error("Error al detener el tiempo:", error);
         }
     };
 
@@ -214,50 +236,11 @@ const LiveRoom: React.FC = () => {
         }
     }, [count, phase]);
 
-    useEffect(() => {
-        if (phase === 'playing' && timeLeft >= 0) {
-            const timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    setTimeLeft(prev => prev - 1);
-                }
-            }, 1000);
-            return () => clearInterval(timerInterval);
-        }
-    }, [phase, timeLeft]);
 
     const totalTime = roomData?.answer_time || 45;
     const answeringProgress = Math.min(100, ((totalTime - timeLeft) / totalTime) * 100);
 
-    if (roomData?.status === 'FINISHED' || roomData?.status === 'VERIFYING') {
-        return <FinalScreen isHost={isHost} data={leaderboardData} status={roomData.status} refreshTrigger={refreshTrigger} />;
-    }
-
     if (!roomData) return <div className="live-setup-wrapper setup-loading">Sincronizando sala...</div>;
-
-    if (showLeaderboard) {
-        const isLastQuestion = roomData.current_question_index === roomData.total_questions;
-        return (
-            <LeaderboardPhase
-                data={leaderboardData}
-                isHost={isHost}
-                handleNextQuestion={handleNextQuestion}
-                isLastQuestion={isLastQuestion}
-            />
-        );
-    }
-
-    if (showResults) {
-        return (
-            <ResultsPhase
-                roomData={roomData}
-                statistics={statistics}
-                correctOptionId={correctOptionId}
-                selectedOptionId={selectedOptionId}
-                isHost={isHost}
-                handleShowLeaderboard={handleShowLeaderboard}
-            />
-        );
-    }
 
     return (
         <>
@@ -269,25 +252,53 @@ const LiveRoom: React.FC = () => {
                     </div>
                 </div>
             )}
-            <AnsweringPhase
-            phase={phase}
-            count={count}
-            roomCode={roomCode}
-            quizTitle={quizTitle}
-            showAnswersCount={showAnswersCount}
-            setShowAnswersCount={setShowAnswersCount}
-            isHost={isHost}
-            statistics={statistics}
-            timeLeft={timeLeft}
-            answeringProgress={answeringProgress}
-            setTimeLeft={setTimeLeft}
-            handleShowResults={handleShowResults}
-            roomData={roomData}
-            selectedOptionId={selectedOptionId}
-            setSelectedOptionId={setSelectedOptionId}
-            isSent={isSent}
-            handleSubmitAnswer={handleSubmitAnswer}
-        />
+            {roomData?.status === 'verifying' || roomData?.status === 'finished' ? (
+                <FinalScreen 
+                    isHost={isHost} 
+                    data={leaderboardData} 
+                    status={roomData.status} 
+                    refreshTrigger={refreshTrigger} 
+                />
+            ) : roomData?.phase === 'results' ? (
+                <ResultsPhase
+                    roomData={roomData}
+                    statistics={statistics}
+                    correctOptionId={correctOptionId}
+                    selectedOptionId={selectedOptionId}
+                    isHost={isHost}
+                    handleShowLeaderboard={handleShowLeaderboard}
+                />
+            ) : roomData?.phase === 'leaderboard' ? (
+                <LeaderboardPhase
+                    data={leaderboardData}
+                    isHost={isHost}
+                    handleNextQuestion={handleNextQuestion}
+                    isLastQuestion={roomData.current_question_index === roomData.total_questions}
+                />
+            ) : (
+                <AnsweringPhase
+                    phase={phase}
+                    count={count}
+                    roomCode={roomCode}
+                    quizTitle={quizTitle}
+                    showAnswersCount={showAnswersCount}
+                    setShowAnswersCount={setShowAnswersCount}
+                    isHost={isHost}
+                    statistics={statistics}
+                    timeLeft={timeLeft}
+                    totalTime={totalTime}
+                    answeringProgress={answeringProgress}
+                    isPaused={isPaused}
+                    setTimeLeft={setTimeLeft}
+                    handleShowResults={handleShowResults}
+                    roomData={roomData}
+                    selectedOptionId={selectedOptionId}
+                    setSelectedOptionId={setSelectedOptionId}
+                    isSent={isSent}
+                    handleSubmitAnswer={handleSubmitAnswer}
+                    handleStopTimer={handleStopTimer}
+                />
+            )}
       </>
     );
 };
