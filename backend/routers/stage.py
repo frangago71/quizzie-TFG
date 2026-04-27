@@ -138,7 +138,7 @@ def create_room(quiz_id: int, answer_time: int = 45, session: Session = Depends(
     )
     active_room = session.exec(active_room_statement).first()
     if active_room:
-        return active_room
+        raise HTTPException(status_code=400, detail="Ya existe una sala activa para este quiz")
     unique_join_code = False
     new_join_code = "123456"
     while not unique_join_code:
