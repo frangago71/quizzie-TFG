@@ -71,6 +71,7 @@ class Answer(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     points_earned: int = Field(default=0)
     was_correct: bool = Field(default=False)
+    remaining_time: int = Field(default=0)
     created_at: datetime = Field(default_factory=get_utc_now)
     
     participant_id: int = Field(foreign_key="participant.id")

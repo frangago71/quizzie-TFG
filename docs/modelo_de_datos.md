@@ -104,6 +104,7 @@ classDiagram
 | **Answer** | id | int (PK) | Identificador único de la respuesta. |
 | | points_earned | int | Puntos obtenidos por la respuesta (default 0). |
 | | was_correct | bool | Indica si la respuesta fue acertada. |
+| | remaining_time | int | Segundos restantes del temporizador al responder. |
 | | created_at | datetime | Momento en el que se emitió la respuesta. |
 | | participant_id | int (FK) | Alumno que emite la respuesta. |
 | | question_id | Optional[int] (FK) | Pregunta respondida (nulo si se borra la pregunta pero queremos persistir el resultado). |
@@ -144,6 +145,7 @@ classDiagram
         +int id (PK)
         +int points_earned
         +bool was_correct
+        +int remaining_time
         +datetime created_at
         +int participant_id (FK)
         +int? question_id (FK)

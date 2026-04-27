@@ -499,18 +499,24 @@ def submit_answer(participant_id: int, option_id: int, question_id: int, session
         raise HTTPException(status_code=400, detail="Ya has respondido a esta pregunta.")
     option = session.get(Option, option_id)
     question = session.get(Question, question_id)
+    participant = session.get(Participant, participant_id)
+
+    if not participant:
+        raise HTTPException(status_code=404, detail="Participante no encontrado")
+
+    time_left = get_calculated_time_left(participant.room)
 
     if option.is_correct:
-        participant = session.get(Participant, participant_id)
-        if participant:
-            participant.score += question.points
-            session.add(participant)
+        participant.score += question.points
+        session.add(participant)
+
     new_answer = Answer(
         participant_id=participant_id,
         option_id=option_id,
         question_id=question_id,
         was_correct=option.is_correct,
-        points_earned=question.points if option.is_correct else 0
+        points_earned=question.points if option.is_correct else 0,
+        remaining_time=time_left
     )
     session.add(new_answer)
     session.commit()
