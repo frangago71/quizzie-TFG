@@ -18,16 +18,16 @@ Se adopta un enfoque de "Pirámide de pruebas" para equilibrar velocidad de ejec
 ## 3. Alcance del plan de pruebas
 
 ### 3.1. Pruebas por dominio de entidad 
-El plan de pruebas se organiza en suites independientes por dominio, diferenciando estrictamente entre la lógica de negocio y la infraestructura:
+El plan de pruebas se organiza en suites independientes por **entidad** (en lugar de por módulos generales), lo que garantiza un aislamiento superior y una trazabilidad directa con los requisitos funcionales. En el backend, esto se traduce en archivos de integración específicos para cada entidad principal:
 
-* **Dominio de contenido (Entidades Quiz, Question y Option):**
-    * **Backend:** Validación de reglas de integridad en modelos y persistencia en DB.
-    * **Frontend:** Pruebas de componentes para la renderización de preguntas y opciones.
-* **Dominio de sesiones (Entidades Room, Answer y Participant):**
-    * **Backend:** Lógica de estados de sala y algoritmos de generación de PIN único.
-    * **Frontend:** Sincronización del estado de la sala y visualización del contador de tiempo.
-* **Dominio de usuarios (Entidades Teacher y Student):**
-    * **Unit/Integration:** Ciclo de registro, login y protección de rutas mediante JWT.
+* **Dominio de contenido (Entidades `Quiz`, `Question` y `Option`):**
+    * **Integración:** Validación de reglas de integridad en modelos y persistencia en DB.
+    * **Frontend:** Pruebas de componentes para la gestión y renderización de preguntas.
+* **Dominio de sesiones (Entidades `Room`, `Participant` y `Answer`):**
+    * **Integración:** Archivos de prueba separados por entidad (`test_integration_room.py`, `test_integration_participant.py`, `test_integration_answer.py`) para cubrir el ciclo de vida, estados y validaciones de forma aislada.
+    * **Backend:** Lógica de estados de sala, algoritmos de generación de PIN único y sincronización.
+* **Dominio de usuarios (Entidades `Teacher` y `Student`):**
+    * **Integración:** Ciclo de registro, login y protección de rutas mediante JWT.
     * **Seguridad:** Validación de formatos de credenciales y lógica de roles.
 
 ### 3.2. Interacción en tiempo real y sockets 
