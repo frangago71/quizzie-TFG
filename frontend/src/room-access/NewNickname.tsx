@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import api from '../api';
-import { TriangleAlert } from 'lucide-react';
-import './NewNickname.css';
-import { useToast } from '../context/ToastContext';
+import React, { useState } from "react";
+import api from "../api";
+import { TriangleAlert } from "lucide-react";
+import "./NewNickname.css";
+import { useToast } from "../context/ToastContext";
 
 interface NewNicknameProps {
   nickname: string;
@@ -11,7 +11,12 @@ interface NewNicknameProps {
   onCancel: () => void;
 }
 
-const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, onCancel }) => {
+const NewNickname: React.FC<NewNicknameProps> = ({
+  nickname,
+  roomId,
+  onConfirm,
+  onCancel,
+}) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -24,13 +29,16 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
       toast.success("Estudiante registrado. Uniéndolo a la sala...");
 
       const resParticipant = await api.post(`/stage/participants`, null, {
-        params: { student_id: newStudentId, room_id: roomId }
+        params: { student_id: newStudentId, room_id: roomId },
       });
 
       onConfirm(nickname, resParticipant.data.participant_id);
-
-    } catch (err: any) {
-      toast.error("Error al registrar: " + (err.response?.data?.detail || "Error desconocido"));
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { detail?: string } } };
+      toast.error(
+        "Error al registrar: " +
+          (err.response?.data?.detail || "Error desconocido"),
+      );
     } finally {
       setLoading(false);
     }
@@ -56,7 +64,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({ nickname, roomId, onConfirm, 
             onClick={handleCreateAndJoin}
             disabled={loading}
           >
-            {loading ? 'Creando perfil...' : 'Crear nuevo estudiante'}
+            {loading ? "Creando perfil..." : "Crear nuevo estudiante"}
           </button>
 
           <button

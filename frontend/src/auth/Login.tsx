@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authService } from './authService';
-import { type LoginRequest } from '../types';
-import './Login.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { authService } from "./authService";
+import { type LoginRequest } from "../types";
+import "./Login.css";
 
 export const Login: React.FC = () => {
-  const [credentials, setCredentials] = useState<LoginRequest>({ email: '', password: '' });
+  const [credentials, setCredentials] = useState<LoginRequest>({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (authService.isLoggedIn()) {
-      navigate('/quizzes', { replace: true });
+      navigate("/quizzes", { replace: true });
     }
   }, [navigate]);
 
@@ -21,15 +24,15 @@ export const Login: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
     setError(null);
     setLoading(true);
     try {
       await authService.login(credentials);
-      window.location.href = '/quizzes'; 
-      
-    } catch (err: any) {
-      setError(err.message || "Error al iniciar sesión");
+      window.location.href = "/quizzes";
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setError(error.message || "Error al iniciar sesión");
     } finally {
       setLoading(false);
     }
@@ -73,12 +76,15 @@ export const Login: React.FC = () => {
           {error && <p className="error-text">{error}</p>}
 
           <button type="submit" className="btn-main cyan" disabled={loading}>
-            <span className="play-icon">{loading ? '...' : '▶'}</span>
-            {loading ? ' Entrando' : ' Entrar'}
+            <span className="play-icon">{loading ? "..." : "▶"}</span>
+            {loading ? " Entrando" : " Entrar"}
           </button>
         </form>
         <div className="login-footer-action">
-          <button onClick={() => window.history.back()} className="back-link-text">
+          <button
+            onClick={() => window.history.back()}
+            className="back-link-text"
+          >
             Ir a zona de alumnos
           </button>
         </div>

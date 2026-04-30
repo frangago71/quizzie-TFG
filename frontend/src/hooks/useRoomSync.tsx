@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import api from '../api';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import api from "../api";
+import type { RoomData } from "../types.ts";
+import { useNavigate } from "react-router-dom";
 
 export function useRoomSync(roomId: number | null) {
-  const [roomData, setRoomData] = useState<any>(null);
+  const [roomData, setRoomData] = useState<RoomData | string[] | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,10 +17,10 @@ export function useRoomSync(roomId: number | null) {
 
         setRoomData(data);
 
-        if (data.status === 'LIVE') {
+        if (data.status === "LIVE") {
           navigate(`/live/${roomId}`);
-        } else if (data.status === 'FINISHED') {
-          navigate('/');
+        } else if (data.status === "FINISHED") {
+          navigate("/");
         }
       } catch (error) {
         console.error("Error en el polling de sala:", error);

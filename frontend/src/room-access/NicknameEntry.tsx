@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import api from '../api.ts';
-import NewNickname from './NewNickname.tsx';
-import './NicknameEntry.css';
-import { useNavigate } from 'react-router-dom';
-import { useRoom } from '../context/RoomContext.tsx';
-import { useToast } from '../context/ToastContext';
+import React, { useState, useEffect } from "react";
+import api from "../api.ts";
+import NewNickname from "./NewNickname.tsx";
+import "./NicknameEntry.css";
+import { useNavigate } from "react-router-dom";
+import { useRoom } from "../context/RoomContext.tsx";
+import { useToast } from "../context/ToastContext";
 
 const NicknameEntry: React.FC = () => {
-  const [nickname, setNickname] = useState('');
-  const [roomStatus, setRoomStatus] = useState<string>('waiting');
+  const [nickname, setNickname] = useState("");
+  const [roomStatus, setRoomStatus] = useState<string>("waiting");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const { roomCode, roomId, setUserNickname, setParticipantId } = useRoom();
   const { toast } = useToast();
 
-  if (!roomId) {
-    navigate('/');
-    return null; 
-  }
-  
   useEffect(() => {
+    if (!roomCode) return;
     const fetchRoomStatus = async () => {
       try {
         const response = await api.get(`/stage/rooms/verify/${roomCode}`);
@@ -32,51 +28,66 @@ const NicknameEntry: React.FC = () => {
     fetchRoomStatus();
   }, [roomCode]);
 
+  if (!roomId) {
+    navigate("/");
+    return null;
+  }
+
   const handleVerifyNickname = async () => {
     const cleanNickname = nickname.trim();
     if (!cleanNickname || isProcessing) return;
-    
+
     const patternA = /^[a-zA-Z]{3}\d{4}$/;
     const patternB = /^[a-zA-Z]{9,12}\d{0,2}$/;
-    const isValid = patternA.test(cleanNickname) || patternB.test(cleanNickname);
+    const isValid =
+      patternA.test(cleanNickname) || patternB.test(cleanNickname);
 
     if (!isValid) {
       toast.warning("Formato de uvus inválido.");
-      return; 
+      return;
     }
 
     setIsProcessing(true);
     try {
-      const verifyRes = await api.get(`/users/students/verify/${cleanNickname}`);
+      const verifyRes = await api.get(
+        `/users/students/verify/${cleanNickname}`,
+      );
 
       if (verifyRes.data.exists) {
         const partRes = await api.post(`/stage/participants`, null, {
           params: {
             student_id: verifyRes.data.student_id,
-            room_id: roomId
-          }
+            room_id: roomId,
+          },
         });
-        
+
         setUserNickname(cleanNickname);
         setParticipantId(partRes.data.participant_id);
-        
-        const destination = roomStatus === 'live' ? `/live/${roomId}` : `/lobby/${roomId}`;
+
+        const destination =
+          roomStatus === "live" ? `/live/${roomId}` : `/lobby/${roomId}`;
         navigate(destination);
-        
       } else {
         setShowModal(true);
       }
-
-    } catch (error: any) {
-      toast.error("Error en el proceso: " + (error.response?.data?.detail || error.message));
+    } catch (error: unknown) {
+      const err = error as {
+        response?: { data?: { detail?: string } };
+        message?: string;
+      };
+      toast.error(
+        "Error en el proceso: " +
+          (err.response?.data?.detail || err.message || "Error desconocido"),
+      );
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const statusInfo = roomStatus === 'live'
-    ? { text: 'En curso', class: 'status-live' }
-    : { text: 'En espera', class: 'status-waiting' };
+  const statusInfo =
+    roomStatus === "live"
+      ? { text: "En curso", class: "status-live" }
+      : { text: "En espera", class: "status-waiting" };
 
   return (
     <div className="join-container">
@@ -106,9 +117,13 @@ const NicknameEntry: React.FC = () => {
             onClick={handleVerifyNickname}
             disabled={!nickname.trim() || isProcessing}
           >
-            {isProcessing ? 'Procesando...' : 'Siguiente'}
+            {isProcessing ? "Procesando..." : "Siguiente"}
           </button>
-          <button className="btn-back-link" onClick={() => navigate('/')} disabled={isProcessing}>
+          <button
+            className="btn-back-link"
+            onClick={() => navigate("/")}
+            disabled={isProcessing}
+          >
             Volver atrás
           </button>
         </div>
@@ -128,7 +143,8 @@ const NicknameEntry: React.FC = () => {
             setShowModal(false);
             setUserNickname(name);
             setParticipantId(participantId);
-            const destination = roomStatus === 'live' ? `/live/${roomId}` : `/lobby/${roomId}`;
+            const destination =
+              roomStatus === "live" ? `/live/${roomId}` : `/lobby/${roomId}`;
             navigate(destination);
           }}
           onCancel={() => setShowModal(false)}

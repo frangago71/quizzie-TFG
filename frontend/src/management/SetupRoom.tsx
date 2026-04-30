@@ -1,178 +1,215 @@
-import React, { useEffect, useState } from 'react';
-import api from '../api';
-import './SetupRoom.css';
-import { Calendar, Shuffle, ListTree, Trophy, ChevronLeft, Rocket } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRoom } from '../context/RoomContext.tsx';
-import { useToast } from '../context/ToastContext';
+import React, { useEffect, useState } from "react";
+import api from "../api";
+import type { Quiz } from "../types.ts";
 
+import "./SetupRoom.css";
+import {
+  Calendar,
+  Shuffle,
+  ListTree,
+  Trophy,
+  ChevronLeft,
+  Rocket,
+} from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useRoom } from "../context/RoomContext.tsx";
+import { useToast } from "../context/ToastContext";
 
 const SetupRoom: React.FC = () => {
-    const [quiz, setQuiz] = useState<any>(null);
-    const [isCreating, setIsCreating] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-    const { id: quizId } = useParams(); 
-    const navigate = useNavigate();
-    const { setRoomCode, setRoomId } = useRoom();
-    const { toast } = useToast();
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
 
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const { id: quizId } = useParams();
+  const navigate = useNavigate();
+  const { setRoomCode, setRoomId } = useRoom();
+  const { toast } = useToast();
 
-    useEffect(() => {
-        if (quizId) {
-            api.get(`/content/quizzes/${quizId}`)
-                .then(res => setQuiz(res.data))
-                .catch(err => console.error("Error cargando quiz:", err));
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (quizId) {
+      api
+        .get(`/content/quizzes/${quizId}`)
+        .then((res) => setQuiz(res.data))
+        .catch((err) => console.error("Error cargando quiz:", err));
+    }
+  }, [quizId]);
+
+  const parseDate = (dateStr: string | undefined) => {
+    if (!dateStr) return "Sin fecha";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString();
+  };
+
+  const handleOpenSession = async () => {
+    if (!quizId) {
+      toast.error("ID de cuestionario no válido.");
+      return;
+    }
+    setIsCreating(true);
+    try {
+      const response = await api.post(`/stage/rooms`, null, {
+        params: { quiz_id: quizId },
+      });
+      const room = response.data;
+      setRoomCode(room.join_code);
+      setRoomId(room.id);
+
+      if (
+        room.status === "waiting" ||
+        room.status?.toLowerCase() === "waiting"
+      ) {
+        navigate(`/lobby/${room.id}`);
+      } else {
+        navigate(`/live/${room.id}`);
+      }
+    } catch (error: unknown) {
+      const err = error as {
+        response?: { status: number; data?: { detail?: string } };
+      };
+      if (err.response) {
+        const status = err.response.status;
+        const detail = err.response.data?.detail;
+        if (status === 400) {
+          toast.error(
+            detail ||
+              "No se puede crear la sala. Verifica si ya tienes una sala activa para este cuestionario.",
+          );
+        } else if (status === 404) {
+          toast.error("El cuestionario seleccionado no existe.");
+        } else {
+          toast.error(`Error ${status}: ${detail || "Error inesperado"}`);
         }
-    }, [quizId]);
+      } else {
+        toast.error("No hay respuesta del servidor.");
+      }
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
-    const parseDate = (dateStr: string) => {
-        if (!dateStr) return "Sin fecha";
-        const date = new Date(dateStr);
-        return date.toLocaleDateString();
-    };
-
-    const handleOpenSession = async () => {
-        if (!quizId) {
-            toast.error("ID de cuestionario no válido.");
-            return;
-        }
-        setIsCreating(true);
-        try {
-            const response = await api.post(`/stage/rooms`, null, {
-                params: { quiz_id: quizId }
-            });
-            const room = response.data;
-            setRoomCode(room.join_code);
-            setRoomId(room.id);
-            
-            if (room.status === 'waiting' || room.status?.toLowerCase() === 'waiting') {
-                navigate(`/lobby/${room.id}`);
-            } else {
-                navigate(`/live/${room.id}`);
-            }
-        } catch (error: any) {
-            if (error.response) {
-                const status = error.response.status;
-                const detail = error.response.data?.detail;
-                if (status === 400) {
-                    toast.error(detail || "No se puede crear la sala. Verifica si ya tienes una sala activa para este cuestionario.");
-                } else if (status === 404) {
-                    toast.error("El cuestionario seleccionado no existe.");
-                } else {
-                    toast.error(`Error ${status}: ${detail || "Error inesperado"}`);
-                }
-            } else {
-                toast.error("No hay respuesta del servidor.");
-            }
-        } finally {
-            setIsCreating(false);
-        }
-    };
-
-    if (!quiz) return <div className="setup-wrapper setup-loading">Cargando detalles...</div>;
-
+  if (!quiz)
     return (
-        <div className="setup-wrapper">
-            {!isMobile && (
-                <button className="back-nav" onClick={() => navigate('/quizzes')}>
-                    <ChevronLeft size={20} /> Volver a cuestionarios
-                </button>
-            )}
-            <div className="setup-main-container">
-                <div className="quiz-horizontal-card setup-header-card full-width">
-                    <div className="quiz-image-container">
-                        <img
-                            src={`https://picsum.photos/seed/quiz-${quiz.id}/400/300`}
-                            alt={quiz.title}
-                            className="quiz-card-img"
-                        />
-                        {quiz.tags && (
-                            <div className="tags-container">
-                                {quiz.tags.split(',').slice(0, 3).map((tag: string, index: number) => (
-                                    <span key={index} className="category-tag">{tag.trim()}</span>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    <div className="quiz-info-content">
-                        <h3>{quiz.title}</h3>
-                        <p className="quiz-description">{quiz.description}</p>
-
-                        <div className="info-bottom">
-                            <div className="meta-item">
-                                <Calendar size={14} color="#94a3b8" />
-                                <span>{parseDate(quiz.created_at)}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="setup-narrow-content">
-                    <section className="settings-container">
-                        <h3 className="settings-section-title">Configuración de la partida</h3>
-
-                        <div className="setting-control locked">
-                            <div className="setting-left">
-                                <div className="setting-icon-wrapper">
-                                    <Shuffle size={20} color="var(--primary-magenta)" />
-                                </div>
-                                <div className="setting-info-text">
-                                    <span className="setting-title">Preguntas aleatorias</span>
-                                    <span className="setting-desc">Cambia el orden de las preguntas para cada alumno</span>
-                                </div>
-                            </div>
-                            <div className="switch-mock off"></div>
-                        </div>
-
-                        <div className="setting-control locked">
-                            <div className="setting-left">
-                                <div className="setting-icon-wrapper">
-                                    <ListTree size={20} color="var(--primary-magenta)" />
-                                </div>
-                                <div className="setting-info-text">
-                                    <span className="setting-title">Opciones aleatorias</span>
-                                    <span className="setting-desc">Desordena las respuestas (A, B, C, D)</span>
-                                </div>
-                            </div>
-                            <div className="switch-mock off"></div>
-                        </div>
-
-                        <div className="setting-control locked">
-                            <div className="setting-left">
-                                <div className="setting-icon-wrapper">
-                                    <Trophy size={20} color="var(--primary-magenta)" />
-                                </div>
-                                <div className="setting-info-text">
-                                    <span className="setting-title">Mostrar leaderboard</span>
-                                    <span className="setting-desc">Ranking de alumnos tras cada pregunta</span>
-                                </div>
-                            </div>
-                            <div className="switch-mock off"></div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-            <div className="setup-external-actions">
-                <button
-                    className={`btn-main big magenta ${isCreating ? 'disabled' : ''}`}
-                    onClick={handleOpenSession}
-                    disabled={isCreating}
-                >
-                    <Rocket size={20} /> {isCreating ? 'Creando sala...' : 'Crear sala'}
-                </button>
-                {isMobile && (
-                    <button className="back-nav" onClick={() => navigate('/quizzes')}>
-                        <ChevronLeft size={20} /> Volver a cuestionarios
-                    </button>
-                )}
-                <p className="action-hint">Se generará un código de acceso una vez creada la sala.</p>
-            </div>
-        </div>
+      <div className="setup-wrapper setup-loading">Cargando detalles...</div>
     );
+
+  return (
+    <div className="setup-wrapper">
+      {!isMobile && (
+        <button className="back-nav" onClick={() => navigate("/quizzes")}>
+          <ChevronLeft size={20} /> Volver a cuestionarios
+        </button>
+      )}
+      <div className="setup-main-container">
+        <div className="quiz-horizontal-card setup-header-card full-width">
+          <div className="quiz-image-container">
+            <img
+              src={`https://picsum.photos/seed/quiz-${quiz.id}/400/300`}
+              alt={quiz.title}
+              className="quiz-card-img"
+            />
+            {quiz.tags && (
+              <div className="tags-container">
+                {quiz.tags
+                  .split(",")
+                  .slice(0, 3)
+                  .map((tag: string, index: number) => (
+                    <span key={index} className="category-tag">
+                      {tag.trim()}
+                    </span>
+                  ))}
+              </div>
+            )}
+          </div>
+          <div className="quiz-info-content">
+            <h3>{quiz.title}</h3>
+            <p className="quiz-description">{quiz.description}</p>
+
+            <div className="info-bottom">
+              <div className="meta-item">
+                <Calendar size={14} color="#94a3b8" />
+                <span>{parseDate(quiz.created_at)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="setup-narrow-content">
+          <section className="settings-container">
+            <h3 className="settings-section-title">
+              Configuración de la partida
+            </h3>
+
+            <div className="setting-control locked">
+              <div className="setting-left">
+                <div className="setting-icon-wrapper">
+                  <Shuffle size={20} color="var(--primary-magenta)" />
+                </div>
+                <div className="setting-info-text">
+                  <span className="setting-title">Preguntas aleatorias</span>
+                  <span className="setting-desc">
+                    Cambia el orden de las preguntas para cada alumno
+                  </span>
+                </div>
+              </div>
+              <div className="switch-mock off"></div>
+            </div>
+
+            <div className="setting-control locked">
+              <div className="setting-left">
+                <div className="setting-icon-wrapper">
+                  <ListTree size={20} color="var(--primary-magenta)" />
+                </div>
+                <div className="setting-info-text">
+                  <span className="setting-title">Opciones aleatorias</span>
+                  <span className="setting-desc">
+                    Desordena las respuestas (A, B, C, D)
+                  </span>
+                </div>
+              </div>
+              <div className="switch-mock off"></div>
+            </div>
+
+            <div className="setting-control locked">
+              <div className="setting-left">
+                <div className="setting-icon-wrapper">
+                  <Trophy size={20} color="var(--primary-magenta)" />
+                </div>
+                <div className="setting-info-text">
+                  <span className="setting-title">Mostrar leaderboard</span>
+                  <span className="setting-desc">
+                    Ranking de alumnos tras cada pregunta
+                  </span>
+                </div>
+              </div>
+              <div className="switch-mock off"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div className="setup-external-actions">
+        <button
+          className={`btn-main big magenta ${isCreating ? "disabled" : ""}`}
+          onClick={handleOpenSession}
+          disabled={isCreating}
+        >
+          <Rocket size={20} /> {isCreating ? "Creando sala..." : "Crear sala"}
+        </button>
+        {isMobile && (
+          <button className="back-nav" onClick={() => navigate("/quizzes")}>
+            <ChevronLeft size={20} /> Volver a cuestionarios
+          </button>
+        )}
+        <p className="action-hint">
+          Se generará un código de acceso una vez creada la sala.
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default SetupRoom;

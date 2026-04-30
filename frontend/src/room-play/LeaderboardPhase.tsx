@@ -1,6 +1,6 @@
-import React from 'react';
-import { Star, Medal, ArrowRight } from 'lucide-react';
-import './LeaderboardPhase.css';
+import React from "react";
+import { Star, Medal, ArrowRight } from "lucide-react";
+import "./LeaderboardPhase.css";
 
 interface Props {
   data: { name: string; score: number }[];
@@ -9,7 +9,12 @@ interface Props {
   isLastQuestion?: boolean;
 }
 
-const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion, isLastQuestion }) => {
+const LeaderboardPhase: React.FC<Props> = ({
+  data,
+  isHost,
+  handleNextQuestion,
+  isLastQuestion,
+}) => {
   const first = data[0] || null;
   const second = data[1] || null;
   const third = data[2] || null;
@@ -18,11 +23,16 @@ const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion, i
     <div className="live-room-wrapper podium-screen-container animate-fade-in">
       <div className="podium-titles">
         <h1 className="podium-main-title">Top 3</h1>
-        <h2 className="podium-subtitle">¡Enhorabuena a los 3 con mayor puntuación!</h2>
+        <h2 className="podium-subtitle">
+          ¡Enhorabuena a los 3 con mayor puntuación!
+        </h2>
       </div>
 
       <div className="podium-wrapper">
-        <div className="podium-column animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div
+          className="podium-column animate-slide-up"
+          style={{ animationDelay: "0.2s" }}
+        >
           {second && (
             <>
               <span className="p-name">{second.name}</span>
@@ -54,7 +64,10 @@ const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion, i
           </div>
         </div>
 
-        <div className="podium-column animate-slide-up" style={{ animationDelay: '0.4s' }}>
+        <div
+          className="podium-column animate-slide-up"
+          style={{ animationDelay: "0.4s" }}
+        >
           {third && (
             <>
               <span className="p-name">{third.name}</span>
@@ -73,8 +86,12 @@ const LeaderboardPhase: React.FC<Props> = ({ data, isHost, handleNextQuestion, i
 
       {isHost && handleNextQuestion && (
         <div className="podium-actions">
-          <button className={`btn-main ${isLastQuestion ? 'cyan' : 'magenta'}`} onClick={handleNextQuestion}>
-            {isLastQuestion ? 'Finalizar cuestionario' : 'Siguiente pregunta'} <ArrowRight size={20} />
+          <button
+            className={`btn-main ${isLastQuestion ? "cyan" : "magenta"}`}
+            onClick={handleNextQuestion}
+          >
+            {isLastQuestion ? "Finalizar cuestionario" : "Siguiente pregunta"}{" "}
+            <ArrowRight size={20} />
           </button>
         </div>
       )}

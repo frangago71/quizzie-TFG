@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRoom } from '../context/RoomContext.tsx';
-import api from '../api.ts';
-import { Users, PlayCircle, UserCircle2 } from 'lucide-react';
-import './Lobby.css';
-import { useToast } from '../context/ToastContext';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useRoom } from "../context/RoomContext.tsx";
+import api from "../api.ts";
+import type { RoomData } from "../types.ts";
+
+import { Users, PlayCircle, UserCircle2 } from "lucide-react";
+import "./Lobby.css";
+import { useToast } from "../context/ToastContext";
 
 const Lobby: React.FC = () => {
   const { roomId: urlRoomId } = useParams();
@@ -33,15 +35,18 @@ const Lobby: React.FC = () => {
       const data = JSON.parse(event.data);
       console.log("Mensaje WS recibido:", data);
 
-      if (data.type === 'participants_update') {
+      if (data.type === "participants_update") {
         setRoomData(data.list);
-      } 
-      else if (data.data && data.type) {
-        setRoomData((prev: any) => {
-          if (typeof prev !== 'object' || Array.isArray(prev)) {
-            return { ...data.data, type: data.type };
+      } else if (data.data && data.type) {
+        setRoomData((prev) => {
+          if (
+            typeof prev !== "object" ||
+            prev === null ||
+            Array.isArray(prev)
+          ) {
+            return { ...data.data, type: data.type } as RoomData;
           }
-          return { ...prev, ...data.data, type: data.type };
+          return { ...prev, ...data.data, type: data.type } as RoomData;
         });
       }
     };
@@ -54,17 +59,19 @@ const Lobby: React.FC = () => {
     };
   }, [roomId, urlRoomId, setRoomData]);
 
+  const room = roomData && !Array.isArray(roomData) ? roomData : null;
+
   useEffect(() => {
-    if (roomData?.status?.toUpperCase() === 'LIVE') {
+    if (room?.status?.toUpperCase() === "LIVE") {
       const idToUse = urlRoomId || roomId;
       navigate(`/live/${idToUse}`);
     }
-  }, [roomData?.status, navigate, urlRoomId, roomId]);
+  }, [room?.status, navigate, urlRoomId, roomId]);
 
   const handleStartRoom = async () => {
     try {
       await api.post(`/stage/rooms/${roomId}/start`);
-    } catch (err) {
+    } catch {
       toast.error("Error al iniciar la sala");
     }
   };
@@ -79,25 +86,33 @@ const Lobby: React.FC = () => {
   const overflowCount = participants.length - maxDisplay;
 
   return (
-    <div className={`lobby-wrapper ${isHost ? 'is-host' : 'is-student'}`}>
+    <div className={`lobby-wrapper ${isHost ? "is-host" : "is-student"}`}>
       <header className="lobby-header">
         <div className="header-info">
           <h1>
-            {isHost ? `Sala de Espera - ${roomCode}` :
-              <>¡Estás dentro, <span className="accent-text">{nickname}!</span></>
-            }
+            {isHost ? (
+              `Sala de Espera - ${roomCode}`
+            ) : (
+              <>
+                ¡Estás dentro, <span className="accent-text">{nickname}!</span>
+              </>
+            )}
           </h1>
           <div className="lobby-status">
             <span className="dot"></span>
             <span className="status-text">
-              {isHost ? "Esperando participantes..." : "Esperando a que comience el cuestionario..."}
+              {isHost
+                ? "Esperando participantes..."
+                : "Esperando a que comience el cuestionario..."}
             </span>
           </div>
         </div>
 
         <div className="header-actions">
           <div className="stat-badge">
-            <div className="stat-icon-box"><Users size={20} /></div>
+            <div className="stat-icon-box">
+              <Users size={20} />
+            </div>
             <div className="stat-content">
               <span className="stat-label">USUARIOS EN LA SALA</span>
               <span className="stat-number">{participants.length}</span>

@@ -1,12 +1,12 @@
-import React, { useState, useRef } from 'react';
-import api from '../api';
-import './RoomCode.css';
-import { useNavigate } from 'react-router-dom';
-import { useRoom } from '../context/RoomContext';
-import { useToast } from '../context/ToastContext';
+import React, { useState, useRef } from "react";
+import api from "../api";
+import "./RoomCode.css";
+import { useNavigate } from "react-router-dom";
+import { useRoom } from "../context/RoomContext";
+import { useToast } from "../context/ToastContext";
 
 const RoomCode: React.FC = () => {
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const { setRoomCode, setRoomId } = useRoom();
@@ -25,13 +25,13 @@ const RoomCode: React.FC = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (e.key === 'Backspace' && !code[index] && index > 0) {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
   };
 
   const handleVerifyCode = async () => {
-    const fullCode = code.join('');
+    const fullCode = code.join("");
     if (fullCode.length < 6) {
       toast.warning("Introduce los 6 dígitos.");
       return;
@@ -45,12 +45,13 @@ const RoomCode: React.FC = () => {
         setRoomId(response.data.room_id);
         navigate(`/join/${fullCode}`);
       }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || "Error al verificar el código";
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { detail?: string } } };
+      const errorMsg =
+        err.response?.data?.detail || "Error al verificar el código";
       toast.error(errorMsg);
     }
   };
-
 
   return (
     <div className="join-container">
@@ -82,14 +83,13 @@ const RoomCode: React.FC = () => {
         <button
           className="btn-main max magenta"
           onClick={handleVerifyCode}
-          disabled={code.some(d => d === '')}
+          disabled={code.some((d) => d === "")}
         >
           <span className="play-icon">▶ Entrar</span>
         </button>
       </div>
     </div>
   );
-
 };
 
 export default RoomCode;

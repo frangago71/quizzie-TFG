@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import quizzieLogo from '../assets/logo-sidebar.png';
-import { Menu, ChevronLeft } from 'lucide-react'; 
-import { authService } from '../auth/authService';
-import LogoutModal from '../auth/LogoutModal';
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import quizzieLogo from "../assets/logo-sidebar.png";
+import { Menu, ChevronLeft } from "lucide-react";
+import { authService } from "../auth/authService";
+import LogoutModal from "../auth/LogoutModal";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,8 +21,8 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
 
   const handleLogout = () => {
     authService.logout();
-    localStorage.clear(); 
-    window.location.href = '/';
+    localStorage.clear();
+    window.location.href = "/";
   };
 
   return (
@@ -31,17 +31,23 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
         {isOpen ? <ChevronLeft size={18} /> : <Menu size={20} />}
       </button>
 
-      <div className={isOpen ? 'menu-open' : ''}>
+      <div className={isOpen ? "menu-open" : ""}>
         <aside className="sidebar">
           <div className="sidebar-header">
-            <img src={quizzieLogo} alt="Quizzie Logo" className="sidebar-logo" />
+            <img
+              src={quizzieLogo}
+              alt="Quizzie Logo"
+              className="sidebar-logo"
+            />
           </div>
 
           <nav className="sidebar-nav">
             <div className="nav-menu-top">
               <NavLink
                 to="/dashboard"
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
                 onClick={handleLinkClick}
               >
                 Inicio
@@ -50,7 +56,9 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
               <NavLink
                 to="/quizzes"
                 end
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
                 onClick={handleLinkClick}
               >
                 Listar cuestionarios
@@ -58,7 +66,9 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
 
               <NavLink
                 to="/quizzes/create"
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
                 onClick={handleLinkClick}
               >
                 Crear cuestionario
@@ -69,8 +79,8 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
               <button
                 className="nav-item logout-btn"
                 onClick={(e) => {
-                  e.preventDefault(); 
-                  setIsModalOpen(true);    
+                  e.preventDefault();
+                  setIsModalOpen(true);
                 }}
               >
                 Cerrar sesión
@@ -80,10 +90,10 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
         </aside>
       </div>
 
-      <LogoutModal 
-        isOpen={isModalOpen} 
-        onConfirm={handleLogout} 
-        onCancel={() => setIsModalOpen(false)} 
+      <LogoutModal
+        isOpen={isModalOpen}
+        onConfirm={handleLogout}
+        onCancel={() => setIsModalOpen(false)}
       />
     </>
   );
