@@ -1,27 +1,23 @@
-from pydantic import BaseModel, model_validator, ConfigDict
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict, model_validator
+
 
 class OptionCreate(BaseModel):
     text: str
     is_correct: bool
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "text": "20",
-                "is_correct": False
-            }
-        }
-    )
+    model_config = ConfigDict(json_schema_extra={"example": {"text": "20", "is_correct": False}})
+
 
 class QuestionCreate(BaseModel):
     text: str
     points: int = 1
     options: List[OptionCreate]
 
-    @model_validator(mode='after')
-    def validate_options_logic(self) -> 'QuestionCreate':
+    @model_validator(mode="after")
+    def validate_options_logic(self) -> "QuestionCreate":
         correct_count = sum(1 for o in self.options if o.is_correct)
         total_options = len(self.options)
 
@@ -41,11 +37,12 @@ class QuestionCreate(BaseModel):
                 "options": [
                     {"text": "4", "is_correct": True},
                     {"text": "5", "is_correct": False},
-                    {"text": "3", "is_correct": False}
-                ]
+                    {"text": "3", "is_correct": False},
+                ],
             }
         }
     )
+
 
 class QuizCreate(BaseModel):
     title: str
@@ -62,17 +59,20 @@ class QuizCreate(BaseModel):
                         "points": 1,
                         "options": [
                             {"text": "4", "is_correct": True},
-                            {"text": "5", "is_correct": False}
-                        ]
+                            {"text": "5", "is_correct": False},
+                        ],
                     }
-                ]
+                ],
             }
         }
     )
+
+
 class OptionUpdate(BaseModel):
     id: Optional[int] = None
     text: str
     is_correct: bool
+
 
 class QuestionUpdate(BaseModel):
     id: Optional[int] = None
@@ -80,8 +80,8 @@ class QuestionUpdate(BaseModel):
     points: int = 1
     options: List[OptionUpdate]
 
-    @model_validator(mode='after')
-    def validate_options_logic(self) -> 'QuestionUpdate':
+    @model_validator(mode="after")
+    def validate_options_logic(self) -> "QuestionUpdate":
         correct_count = sum(1 for o in self.options if o.is_correct)
         total_options = len(self.options)
 
@@ -93,17 +93,19 @@ class QuestionUpdate(BaseModel):
             raise ValueError("Cada pregunta debe tener al menos una opción falsa.")
         return self
 
+
 class QuizUpdate(BaseModel):
     title: str
     description: Optional[str] = None
     questions: List[QuestionUpdate]
-    
+
 
 class OptionRead(BaseModel):
     id: int
     text: str
     is_correct: bool
     model_config = ConfigDict(from_attributes=True)
+
 
 class QuestionRead(BaseModel):
     id: int
@@ -112,6 +114,7 @@ class QuestionRead(BaseModel):
     options: List[OptionRead]
     model_config = ConfigDict(from_attributes=True)
 
+
 class QuizRead(BaseModel):
     id: int
     title: str
@@ -119,6 +122,7 @@ class QuizRead(BaseModel):
     questions: List[QuestionRead]
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
+
 
 class QuizListRead(BaseModel):
     id: int

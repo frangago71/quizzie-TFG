@@ -1,3 +1,10 @@
-from .users import TeacherRead, Teacher, Group, Student
-from .content import Quiz, Question, Option
-from .stage import Room, Participant, Answer
+from .content import Option as Option
+from .content import Question as Question
+from .content import Quiz as Quiz
+from .stage import Answer as Answer
+from .stage import Participant as Participant
+from .stage import Room as Room
+from .users import Group as Group
+from .users import Student as Student
+from .users import Teacher as Teacher
+from .users import TeacherRead as TeacherRead

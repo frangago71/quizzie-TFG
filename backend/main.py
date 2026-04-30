@@ -1,16 +1,17 @@
-from fastapi import FastAPI, Depends
 import asyncio
 from contextlib import asynccontextmanager
-from sqlmodel import Session, select, SQLModel
-from typing import List
-from pydantic import computed_field
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import get_session, engine
-from models import *
-from routers import users, content, stage
+from sqlmodel import SQLModel
+
+from database import engine
+from routers import content, stage, users
+
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,17 +20,18 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(stage.timer_sync_loop())
     yield
 
+
 app = FastAPI(
     title="Quizzie API",
     description="Aplicación para gestión de Quizzes en tiempo real",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 origins = [
-    "http://localhost:5173", 
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://quizzie-tfg.onrender.com",
-    "https://quizzie-tfg.vercel.app"
+    "https://quizzie-tfg.vercel.app",
 ]
 
 app.add_middleware(
@@ -40,12 +42,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/", tags=["Home"])
 def read_root():
     return {"message": "¡Hola desde FastAPI + SQLModel!"}
 
+
 app.include_router(content.router)
 app.include_router(stage.router)
 app.include_router(users.router)
-
-
