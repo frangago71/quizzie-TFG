@@ -27,7 +27,7 @@ class TestUsersUnit:
             hashed_password="password_muy_seguro"
         )
         assert teacher.username == "lucia_user"
-        assert teacher.id is None 
+        assert teacher.id is None
 
     def test_student_creation(self):
         """Verifica que un estudiante se crea con los valores básicos."""
@@ -45,7 +45,7 @@ class TestUsersUnit:
         """Valida que los Regex de tu router aceptan formatos correctos."""
         pattern_a = r"^[a-zA-Z]{3}\d{4}$"
         pattern_b = r"^[a-zA-Z]{9,12}\d{0,2}$"
-        
+
         is_valid = re.match(pattern_a, uvus) or re.match(pattern_b, uvus)
         assert is_valid is not None
 
@@ -59,7 +59,7 @@ class TestUsersUnit:
         """Valida que los Regex rechazan formatos incorrectos."""
         pattern_a = r"^[a-zA-Z]{3}\d{4}$"
         pattern_b = r"^[a-zA-Z]{9,12}\d{0,2}$"
-        
+
         is_valid = re.match(pattern_a, invalid_uvus) or re.match(pattern_b, invalid_uvus)
         assert is_valid is None
 

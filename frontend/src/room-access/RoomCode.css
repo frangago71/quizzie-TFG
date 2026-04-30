@@ -1,7 +1,7 @@
 .join-container {
   display: flex;
-  flex-direction: column; 
-  align-items: center;   
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 60px 20px;
   width: 100%;
@@ -24,7 +24,7 @@
   font-size: 1.1rem;
   color: var(--text-gray);
   max-width: 450px;
-  margin: 0 auto; 
+  margin: 0 auto;
   line-height: 1.5;
 }
 
@@ -56,8 +56,8 @@
 .code-box {
   width: 50px;
   height: 65px;
-  background-color: var(--color-white); 
-  color: var(--text-dark);            
+  background-color: var(--color-white);
+  color: var(--text-dark);
   border: 1px solid var(--border-input);
   border-radius: 10px;
   text-align: center;
@@ -85,8 +85,8 @@
   .join-container {
     padding: 30px 15px;
     width: 100%;
-    box-sizing: border-box; 
-    overflow-x: hidden; 
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .join-header-text h2 {
@@ -100,15 +100,15 @@
   }
 
   .join-card {
-    padding: 25px 15px 20px 15px; 
-    width: 92%; 
+    padding: 25px 15px 20px 15px;
+    width: 92%;
     margin: 0 auto;
     box-sizing: border-box;
   }
 
   .code-inputs-group {
     gap: calc(100% / 50);
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
     width: 100%;
     justify-content: center;
   }
@@ -121,7 +121,7 @@
   }
 
   .btn-main.max {
-    margin-top: 5px; 
+    margin-top: 5px;
     width: 100%;
     height: 50px;
   }

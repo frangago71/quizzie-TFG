@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
-*.db            
+*.db
 *.db-journal
 
 # Frontend

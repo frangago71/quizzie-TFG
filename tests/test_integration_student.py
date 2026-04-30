@@ -14,12 +14,12 @@ class TestStudentIntegration:
         res_c = client.post("/users/students", params={"nickname": nickname})
         assert res_c.status_code == 200
         assert res_c.json()["nickname"] == nickname
-        
+
         # 2. Verificar existencia
         res_v = client.get(f"/users/students/verify/{nickname}")
         assert res_v.status_code == 200
         assert res_v.json()["exists"] is True
-        
+
         # 3. Listar todos
         res_l = client.get("/users/students")
         assert res_l.status_code == 200
@@ -31,11 +31,11 @@ class TestStudentIntegration:
         """
         # Formato inválido
         assert client.post("/users/students", params={"nickname": "pepe"}).status_code == 400
-        
+
         # Duplicado
         client.post("/users/students", params={"nickname": "xyz1234"})
         assert client.post("/users/students", params={"nickname": "xyz1234"}).status_code == 400
-        
+
         # No encontrado
         res = client.get("/users/students/verify/inexistente9999")
         assert res.json()["exists"] is False

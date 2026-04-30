@@ -9,14 +9,14 @@ class TestContentUnitary:
     def test_quiz_max_questions_validator(self):
         """Validar que un cuestionario no supere el límite de 30 preguntas."""
         fake_questions = [Question(text=f"Q{i}") for i in range(31)]
-        
+
         with pytest.raises(ValueError, match="A quiz cannot have more than 30 questions"):
             Quiz.check_max_questions(fake_questions)
 
     def test_question_max_options_validator(self):
         """Validar que una pregunta no supere el límite de 8 opciones."""
         fake_options = [Option(text=f"O{i}") for i in range(9)]
-        
+
         with pytest.raises(ValueError, match="A question cannot have more than 8 options"):
             Question.check_max_options(fake_options)
 

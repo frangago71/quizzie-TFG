@@ -35,14 +35,14 @@ class TestAnswerIntegration:
         r_id = res_c.json()["id"]
         res_p = client.post("/stage/participants", params={"student_id": s.id, "room_id": r_id})
         p_id = res_p.json()["participant_id"]
-        
+
         # 1. Iniciar Sala (Solo se permite responder si la sala está LIVE)
         client.post(f"/stage/rooms/{r_id}/start")
-        
+
         # 2. Enviar Respuesta
         res_a = client.post("/stage/answers", params={"participant_id": p_id, "option_id": o1.id, "question_id": qu1.id})
         assert res_a.status_code == 201
-        
+
         # 3. Error al enviar respuesta duplicada
         res_a2 = client.post("/stage/answers", params={"participant_id": p_id, "option_id": o1.id, "question_id": qu1.id})
         assert res_a2.status_code == 400

@@ -10,7 +10,7 @@ class TestStageUnit:
     def test_new_room_initial_state(self):
         """Una sala nueva debe empezar en WAITING y con índice de pregunta 0."""
         room = Room(quiz_id=1, teacher_id=1, join_code="123456")
-        
+
         assert room.status == RoomStatus.WAITING
         assert room.current_question_index == 0
         assert room.join_code == "123456"
@@ -18,7 +18,7 @@ class TestStageUnit:
     def test_participant_linkage(self):
         """Verificar que un participante se crea correctamente vinculado a una sala."""
         participant = Participant(student_id=5, room_id=10)
-        
+
         assert participant.student_id == 5
         assert participant.room_id == 10
         assert isinstance(participant.joined_at, datetime)
@@ -26,7 +26,7 @@ class TestStageUnit:
     def test_answer_default_values(self):
         """Verificar que una respuesta nueva no tiene puntos por defecto."""
         answer = Answer(participant_id=1, question_id=1, option_id=1)
-        
+
         assert answer.points_earned == 0
         assert answer.was_correct is False
 

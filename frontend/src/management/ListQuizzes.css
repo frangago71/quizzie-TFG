@@ -1,6 +1,6 @@
 .list-quizzes-page {
   padding: 0px 20px;
-  max-width: 100%;   
+  max-width: 100%;
   margin: 0;
   min-height: 100vh;
   display: flex;
@@ -30,7 +30,7 @@
 .filter-tabs {
   display: flex;
   background: var(--color-white);
-  border: 2px solid var(--primary-cyan); 
+  border: 2px solid var(--primary-cyan);
   border-radius: 12px;
   overflow: hidden;
   padding: 0;
@@ -46,7 +46,7 @@
   font-size: 1rem;
   flex: 1;
   transition: all 0.2s ease;
-  border-right: 2px solid var(--primary-cyan); 
+  border-right: 2px solid var(--primary-cyan);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,7 +96,7 @@
 .quiz-image-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover; 
+  object-fit: cover;
   display: block;
 }
 
@@ -105,13 +105,13 @@
   top: 12px;
   left: 12px;
   display: flex;
-  gap: 6px; 
+  gap: 6px;
   flex-wrap: wrap;
   z-index: 10;
 }
 
 .category-tag {
-  position: static; 
+  position: static;
   background-color: var(--primary-cyan);
   color: var(--color-white);
   padding: 4px 10px;
@@ -127,7 +127,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  text-align: left; 
+  text-align: left;
 }
 
 .info-top {
@@ -221,7 +221,7 @@
   padding: 40px;
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -250,10 +250,10 @@
 
 .action-icons {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
-  gap: 12px;           
-  margin-left: 20px;   
+  gap: 12px;
+  margin-left: 20px;
 }
 
 @media (max-width: 768px) {

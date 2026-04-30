@@ -12,7 +12,7 @@ class TestGroupIntegration:
         session.commit()
         session.add(Group(name="Grupo A", teacher_id=50))
         session.commit()
-        
+
         res = client.get("/users/groups")
         assert res.status_code == 200
         assert len(res.json()) >= 1

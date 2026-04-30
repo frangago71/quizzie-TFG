@@ -7,11 +7,11 @@ El siguiente diagrama describe las relaciones lógicas entre las entidades del s
 classDiagram
     direction LR
 
-    Teacher o-- Quiz 
-    Teacher o-- Group 
-    Room --o Quiz 
+    Teacher o-- Quiz
+    Teacher o-- Group
+    Room --o Quiz
 
-    Teacher "1" -- "*" Room 
+    Teacher "1" -- "*" Room
 
     Quiz *-- Question
     Question *-- Option
@@ -135,7 +135,7 @@ classDiagram
         +datetime joined_at
         +int score
         +bool is_verified
-        +datetime? verified_at  
+        +datetime? verified_at
         +str? verification_token
         +int student_id (FK)
         +int room_id (FK)

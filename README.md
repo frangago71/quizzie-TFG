@@ -69,17 +69,17 @@ npm install
 ### 3. Ejecutar el proyecto
 El proyecto funciona con dos servidores simultáneos (Backend y Frontend). Se recomienda abrir **dos terminales** en tu entorno de desarrollo.
 
-#### Terminal 1: Backend 
+#### Terminal 1: Backend
 
 ~~~bash
 cd backend
-uv run fastapi dev 
+uv run fastapi dev
 ~~~
 
 * **API Docs (Swagger):** `http://127.0.0.1:8000/docs`
 * **Servidor:** `http://127.0.0.1:8000`
 
-#### Terminal 2: Frontend 
+#### Terminal 2: Frontend
 
 ~~~bash
 cd frontend
@@ -114,9 +114,9 @@ uv run pytest --cov=backend --cov-report=term-missing
 
 Puedes acceder a las versiones en la nube a través de los siguientes enlaces:
 
-* **Frontend (Cliente Web):** [https://quizzie-tfg.vercel.app](https://quizzie-tfg.vercel.app)  
+* **Frontend (Cliente Web):** [https://quizzie-tfg.vercel.app](https://quizzie-tfg.vercel.app)
     *Desplegado en **Vercel**.*
-* **Backend (API REST):** [https://quizzie-tfg.onrender.com](https://quizzie-tfg.onrender.com)  
+* **Backend (API REST):** [https://quizzie-tfg.onrender.com](https://quizzie-tfg.onrender.com)
     *Desplegado en **Render**.*
 * **Documentación Interactiva (Swagger):** [https://quizzie-tfg.onrender.com/docs](https://quizzie-tfg.onrender.com/docs)
 

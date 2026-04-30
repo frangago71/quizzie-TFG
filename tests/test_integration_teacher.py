@@ -17,7 +17,7 @@ class TestTeacherIntegration:
         teacher = Teacher(username="prof_login", email="login@test.com", hashed_password=hashed)
         session.add(teacher)
         session.commit()
-        
+
         payload = {"email": "login@test.com", "password": pwd}
         response = client.post("/users/login", json=payload)
         assert response.status_code == 200
@@ -31,7 +31,7 @@ class TestTeacherIntegration:
         """
         # Usuario no existe
         assert client.post("/users/login", json={"email": "no@existo.com", "password": "x"}).status_code == 401
-        
+
         # Contraseña incorrecta
         teacher = Teacher(username="prof_fail", email="fail@test.com", hashed_password=get_password_hash("real"))
         session.add(teacher)
@@ -45,7 +45,7 @@ class TestTeacherIntegration:
         teacher = Teacher(username="masked", email="m@t.com", hashed_password="secret_hash")
         session.add(teacher)
         session.commit()
-        
+
         res = client.get("/users/teachers")
         assert res.status_code == 200
         data = res.json()
@@ -63,16 +63,16 @@ class TestTeacherIntegration:
         session.commit()
         token = create_access_token(data={"sub": str(teacher.id)})
         headers = {"Authorization": f"Bearer {token}"}
-        
+
         quiz = Quiz(title="Quiz Activo", description="D", teacher_id=teacher.id)
         session.add(quiz)
         session.commit()
-        
+
         # Sala activa
         room = Room(quiz_id=quiz.id, teacher_id=teacher.id, status=RoomStatus.LIVE, join_code="LIVE1")
         session.add(room)
         session.commit()
-        
+
         response = client.get("/users/my-quizzes", headers=headers)
         assert response.status_code == 200
         data = response.json()

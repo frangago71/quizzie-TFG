@@ -48,9 +48,9 @@
     to { transform: rotate(360deg); }
 }
 .live-room-wrapper {
-  margin: -4rem -2rem -2rem -2rem; 
-  width: calc(100% + 4rem); 
-  min-height: calc(100vh - 0px); 
+  margin: -4rem -2rem -2rem -2rem;
+  width: calc(100% + 4rem);
+  min-height: calc(100vh - 0px);
   display: flex;
   background-color: var(--bg-gray);
   text-align: left;

@@ -5,12 +5,12 @@
   --primary-cyan: #55ccaa;
   --primary-magenta: #a946ab;
   --secondary-cyan: #007976;
-  --secondary-magenta: #661465; 
+  --secondary-magenta: #661465;
 
   --color-white: #ffffff;
   --color-soft-red: #f43e41;
   --color-red: #c30306;
-  --color-orange: #f59e0b; 
+  --color-orange: #f59e0b;
   --color-green: #10b940;
   --color-blue: #3b82f6;
   --color-purple: #a855f7;
@@ -137,7 +137,7 @@ body {
   width: 40px;
   height: 40px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: var(--primary-cyan); 
+  background-color: var(--primary-cyan);
   color: var(--color-white);
   cursor: pointer;
   display: flex;
@@ -173,7 +173,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  color: var(--text-dark); 
+  color: var(--text-dark);
   background: var(--bg-gray);
 }
 
@@ -196,9 +196,9 @@ body {
 
 .btn-main {
   padding: 0 25px;
-  height: 48px; 
+  height: 48px;
   width: 160px;
-  border-radius: 10px; 
+  border-radius: 10px;
   background-color: var(--bg-dark);
   color: var(--color-white);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -299,7 +299,7 @@ body {
 .icon-btn {
   background: none;
   border: none;
-  color: var(--btn-gray); 
+  color: var(--btn-gray);
   cursor: pointer;
   padding: 5px;
   display: flex;
@@ -309,12 +309,12 @@ body {
 }
 
 .icon-btn:hover {
-  color: var(--btn-black); 
-  transform: scale(1.1); 
+  color: var(--btn-black);
+  transform: scale(1.1);
 }
 
 @media (max-width: 768px) {
-  
+
   .sidebar {
     position: fixed;
     z-index: 1000;
@@ -334,7 +334,7 @@ body {
   .sidebar-toggle-btn {
     top: 15px;
     left: 15px;
-    background-color: var(--primary-cyan); 
+    background-color: var(--primary-cyan);
   }
 
   .menu-open .sidebar-toggle-btn {
@@ -362,10 +362,10 @@ body {
   }
 
   .content-body {
-    padding: 5rem 1rem 2rem 1rem; 
-    
+    padding: 5rem 1rem 2rem 1rem;
+
     width: 100%;
-    overflow-wrap: break-word; 
+    overflow-wrap: break-word;
   }
 
   h1 {

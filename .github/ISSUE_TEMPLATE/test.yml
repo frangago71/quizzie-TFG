@@ -10,6 +10,7 @@ body:
         - label: Integration testing
         - label: E2E testing
         - label: Manual QA
+        - label: Performance testing
         - label: Other
   - type: input
     id: references
