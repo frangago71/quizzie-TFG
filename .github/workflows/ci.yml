@@ -30,10 +30,12 @@ jobs:
         run: uv sync
 
       - name: Backend Lint Check (Ruff)
-        run: uv run ruff check .
+        run: uvx ruff check .
+
 
       - name: Backend Format Check (Ruff)
-        run: uv run ruff format . --check
+        run: uvx ruff format . --check
+
 
       - name: Run Security Audit
         run: uvx pip-audit
