@@ -49,7 +49,7 @@ Dada la alta densidad de requisitos de tiempo real (especialmente RF-21 y RF-32)
 Se utilizará **`pytest-cov`** para cuantificar la calidad del código:
 * **Objetivos de cobertura:**
     * Mínimo del **90% en las rutas** (API endpoints).
-    * Mínimo del **80% del total del código backend**.
+    * Mínimo del **80% del total del código backend** (excluyendo scripts de desarrollo como `seed.py`).
 * **Control de regresión:** Cada nueva funcionalidad debe incluir sus propios tests para no bajar la métrica global.
 
 ## 6. Automatización y CI/CD (GitHub Actions)

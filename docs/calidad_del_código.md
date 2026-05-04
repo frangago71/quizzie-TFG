@@ -82,6 +82,13 @@ Para asegurar la excelencia del código, se han definido los siguientes umbrales
 | **Security** | Calificación A | Cero vulnerabilidades detectadas. |
 | **Maintainability** | Calificación A | Deuda técnica mínima y código limpio. |
 
+### Exclusiones técnicas
+Para que las métricas de SonarCloud sean representativas de la calidad del producto final, se han aplicado las siguientes configuraciones de calibración:
+
+- **Exclusión de script de datos (`seed.py`):** El archivo `backend/seed.py` se ha excluido tanto del análisis de duplicación como del cálculo de cobertura. Al ser un script de generación de datos masivos con estructuras repetitivas, su inclusión distorsionaba el porcentaje de duplicación del proyecto y bajaba artificialmente la media de cobertura.
+- **Mapeo de cobertura:** Se utiliza la propiedad `sonar.python.coverage.reportPaths=coverage.xml` en el archivo de configuración para asegurar que los resultados de `pytest-cov` se integren correctamente en el panel de SonarCloud.
+- **Entorno de análisis:** El job de CI para SonarQube se ejecuta en un entorno Linux (`ubuntu-latest`) para garantizar la consistencia en el mapeo de rutas de archivos entre el informe de cobertura y el código fuente.
+
 
 
 ## 5. Protección de ramas
@@ -107,7 +114,7 @@ Para garantizar la estabilidad de la rama principal, se han implementado reglas 
 Ejecuta estos comandos solo cuando la validación de estilo sea correcta:
 - **Seguridad Backend:** `uvx pip-audit` (detecta vulnerabilidades en librerías).
 - **Seguridad Frontend:** `npm audit` (revisa el árbol de dependencias de Node).
-- **Pruebas unitarias:** `uv run pytest --cov=backend` (asegura que nada se ha roto y revisa la cobertura).
+- **Pruebas unitarias y Cobertura:** `uv run pytest --cov=backend --cov-report=xml` (genera el informe necesario para SonarCloud).
 
 ### 3. Integración final
 Antes de dar la tarea por concluida, asegúrate de la consistencia global:

@@ -29,7 +29,7 @@ Se utiliza el gestor de paquetes **uv** para una instalación ultra-rápida y re
 * **Build:** Compilación del proyecto (`npm run build`) para asegurar que no hay errores de tipado antes del despliegue.
 
 ### D. Análisis estático (SonarCloud)
-Como capa final, se ejecuta un análisis profundo en un runner de **Windows-latest** (siguiendo la recomendación oficial de SonarSource):
+Como capa final, se ejecuta un análisis profundo en un runner de **ubuntu-latest** (para garantizar la consistencia de rutas con el reporte de cobertura):
 * **Integración de cobertura:** Se descarga el artefacto `coverage.xml` del backend para que Sonar pueda mostrar métricas de cobertura real.
 * **Detección de deuda técnica:** Identificación de bugs, vulnerabilidades y code smells.
 
