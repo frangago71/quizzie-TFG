@@ -62,6 +62,48 @@ def post_quiz(
     return {"message": "Quiz creado con éxito", "quiz_id": db_quiz.id}
 
 
+def _sync_options(session: Session, db_question: Question, incoming_options: List[OptionCreate]):
+    incoming_o_ids = [o.id for o in incoming_options if o.id is not None]
+    options_to_delete = [o for o in db_question.options if o.id not in incoming_o_ids]
+    for o in options_to_delete:
+        session.delete(o)
+
+    for o_data in incoming_options:
+        if o_data.id:
+            db_option = next((o for o in db_question.options if o.id == o_data.id), None)
+            if db_option:
+                db_option.text = o_data.text
+                db_option.is_correct = o_data.is_correct
+        else:
+            new_option = Option(
+                text=o_data.text, is_correct=o_data.is_correct, question=db_question
+            )
+            session.add(new_option)
+
+
+def _sync_questions(session: Session, db_quiz: Quiz, incoming_questions: List[QuestionCreate]):
+    incoming_q_ids = [q.id for q in incoming_questions if q.id is not None]
+    questions_to_delete = [q for q in db_quiz.questions if q.id not in incoming_q_ids]
+    for q in questions_to_delete:
+        session.delete(q)
+
+    for q_data in incoming_questions:
+        if q_data.id:
+            db_question = next((q for q in db_quiz.questions if q.id == q_data.id), None)
+            if db_question:
+                db_question.text = q_data.text
+                db_question.points = q_data.points
+                _sync_options(session, db_question, q_data.options)
+        else:
+            new_question = Question(text=q_data.text, points=q_data.points, quiz=db_quiz)
+            session.add(new_question)
+            for o_data in q_data.options:
+                new_option = Option(
+                    text=o_data.text, is_correct=o_data.is_correct, question=new_question
+                )
+                session.add(new_option)
+
+
 @router.put(
     "/quizzes/{quiz_id}",
     responses={
@@ -96,45 +138,7 @@ def update_quiz(
     if quiz_data.description is not None:
         db_quiz.description = quiz_data.description
 
-    incoming_q_ids = [q.id for q in quiz_data.questions if q.id is not None]
-
-    questions_to_delete = [q for q in db_quiz.questions if q.id not in incoming_q_ids]
-    for q in questions_to_delete:
-        session.delete(q)
-
-    for q_data in quiz_data.questions:
-        if q_data.id:
-            db_question = next((q for q in db_quiz.questions if q.id == q_data.id), None)
-            if db_question:
-                db_question.text = q_data.text
-                db_question.points = q_data.points
-
-                incoming_o_ids = [o.id for o in q_data.options if o.id is not None]
-                options_to_delete = [o for o in db_question.options if o.id not in incoming_o_ids]
-                for o in options_to_delete:
-                    session.delete(o)
-
-                for o_data in q_data.options:
-                    if o_data.id:
-                        db_option = next(
-                            (o for o in db_question.options if o.id == o_data.id), None
-                        )
-                        if db_option:
-                            db_option.text = o_data.text
-                            db_option.is_correct = o_data.is_correct
-                    else:
-                        new_option = Option(
-                            text=o_data.text, is_correct=o_data.is_correct, question=db_question
-                        )
-                        session.add(new_option)
-        else:
-            new_question = Question(text=q_data.text, points=q_data.points, quiz=db_quiz)
-            session.add(new_question)
-            for o_data in q_data.options:
-                new_option = Option(
-                    text=o_data.text, is_correct=o_data.is_correct, question=new_question
-                )
-                session.add(new_option)
+    _sync_questions(session, db_quiz, quiz_data.questions)
 
     session.commit()
     return {"message": "Quiz actualizado con éxito"}
