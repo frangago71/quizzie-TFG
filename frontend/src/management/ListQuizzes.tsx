@@ -59,6 +59,86 @@ interface QuizCardProps {
   onForceFinish: (roomId: number | null) => void;
 }
 
+interface QuizActionButtonsProps {
+  quiz: Quiz;
+  onNavigate: (path: string) => void;
+  onPrepareDelete: (quiz: Quiz) => void;
+}
+
+const QuizActionButtons: React.FC<QuizActionButtonsProps> = ({
+  quiz,
+  onNavigate,
+  onPrepareDelete,
+}) => (
+  <div className="action-icons">
+    <button
+      className="icon-btn"
+      title="Editar"
+      onClick={() => onNavigate(`/quizzes/edit/${quiz.id}`)}
+    >
+      <Pencil size={18} />
+    </button>
+    <button
+      className="icon-btn"
+      title="Eliminar"
+      onClick={() => onPrepareDelete(quiz)}
+    >
+      <Trash2 size={18} />
+    </button>
+    <button className="icon-btn" title="Ver">
+      <Eye size={18} />
+    </button>
+  </div>
+);
+
+interface QuizRoomControlsProps {
+  quiz: Quiz;
+  isSmall?: boolean;
+  hasActiveRoom: boolean;
+  onReconnect: () => void;
+  onCreateRoom: () => void;
+  onForceFinish: (roomId: number | null) => void;
+}
+
+const QuizRoomControls: React.FC<QuizRoomControlsProps> = ({
+  quiz,
+  isSmall,
+  hasActiveRoom,
+  onReconnect,
+  onCreateRoom,
+  onForceFinish,
+}) => {
+  const btnClass = `btn-main${isSmall ? " small" : ""}`;
+
+  if (quiz.active_room_status) {
+    return (
+      <div className="btn-group">
+        <button className={`${btnClass} cyan`} onClick={onReconnect}>
+          Reconectar
+        </button>
+        <button
+          className={`${btnClass} danger`}
+          onClick={() => onForceFinish(quiz.active_room_id ?? null)}
+        >
+          Finalizar
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      className={`${btnClass} ${isSmall ? "" : "big"} magenta`}
+      disabled={hasActiveRoom}
+      title={hasActiveRoom ? "Ya tienes una sala activa" : ""}
+      onClick={onCreateRoom}
+    >
+      <Play size={16} fill="white" />
+      Crear sala
+    </button>
+  );
+};
+
 const QuizCard: React.FC<QuizCardProps> = ({
   quiz,
   isMobile,
@@ -111,52 +191,20 @@ const QuizCard: React.FC<QuizCardProps> = ({
                 <Calendar size={14} color="#94a3b8" />
                 <span>{parseDate(quiz.created_at ?? "")}</span>
               </div>
-              {quiz.active_room_status ? (
-                <div className="btn-group">
-                  <button
-                    className="btn-main small cyan"
-                    onClick={handleReconnect}
-                  >
-                    Reconectar
-                  </button>
-                  <button
-                    className="btn-main small danger"
-                    onClick={() => onForceFinish(quiz.active_room_id ?? null)}
-                  >
-                    Finalizar
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="btn-main small magenta"
-                  disabled={hasActiveRoom}
-                  title={hasActiveRoom ? "Ya tienes una sala activa" : ""}
-                  onClick={handleCreateRoom}
-                >
-                  <Play size={16} fill="white" />
-                  Crear sala
-                </button>
-              )}
+              <QuizRoomControls
+                quiz={quiz}
+                isSmall
+                hasActiveRoom={hasActiveRoom}
+                onReconnect={handleReconnect}
+                onCreateRoom={handleCreateRoom}
+                onForceFinish={onForceFinish}
+              />
             </div>
-            <div className="action-icons">
-              <button
-                className="icon-btn"
-                title="Editar"
-                onClick={() => onNavigate(`/quizzes/edit/${quiz.id}`)}
-              >
-                <Pencil size={18} />
-              </button>
-              <button
-                className="icon-btn"
-                title="Eliminar"
-                onClick={() => onPrepareDelete(quiz)}
-              >
-                <Trash2 size={18} />
-              </button>
-              <button className="icon-btn" title="Ver">
-                <Eye size={18} />
-              </button>
-            </div>
+            <QuizActionButtons
+              quiz={quiz}
+              onNavigate={onNavigate}
+              onPrepareDelete={onPrepareDelete}
+            />
           </>
         ) : (
           <>
@@ -177,25 +225,11 @@ const QuizCard: React.FC<QuizCardProps> = ({
                   </span>
                 )}
               </div>
-              <div className="action-icons">
-                <button
-                  className="icon-btn"
-                  title="Editar"
-                  onClick={() => onNavigate(`/quizzes/edit/${quiz.id}`)}
-                >
-                  <Pencil size={18} />
-                </button>
-                <button
-                  className="icon-btn"
-                  title="Eliminar"
-                  onClick={() => onPrepareDelete(quiz)}
-                >
-                  <Trash2 size={18} />
-                </button>
-                <button className="icon-btn" title="Ver">
-                  <Eye size={18} />
-                </button>
-              </div>
+              <QuizActionButtons
+                quiz={quiz}
+                onNavigate={onNavigate}
+                onPrepareDelete={onPrepareDelete}
+              />
             </div>
             <p className="quiz-description">{quiz.description}</p>
             <div className="info-bottom">
@@ -205,29 +239,13 @@ const QuizCard: React.FC<QuizCardProps> = ({
                   <span>{parseDate(quiz.created_at ?? "")}</span>
                 </div>
               </div>
-              {quiz.active_room_status ? (
-                <div className="btn-group">
-                  <button className="btn-main cyan" onClick={handleReconnect}>
-                    Reconectar
-                  </button>
-                  <button
-                    className="btn-main danger"
-                    onClick={() => onForceFinish(quiz.active_room_id ?? null)}
-                  >
-                    Finalizar
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="btn-main big magenta"
-                  disabled={hasActiveRoom}
-                  title={hasActiveRoom ? "Ya tienes una sala activa" : ""}
-                  onClick={handleCreateRoom}
-                >
-                  <Play size={16} fill="white" />
-                  Crear sala
-                </button>
-              )}
+              <QuizRoomControls
+                quiz={quiz}
+                hasActiveRoom={hasActiveRoom}
+                onReconnect={handleReconnect}
+                onCreateRoom={handleCreateRoom}
+                onForceFinish={onForceFinish}
+              />
             </div>
           </>
         )}
