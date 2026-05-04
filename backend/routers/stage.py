@@ -83,6 +83,46 @@ async def timer_sync_loop():
                 )
 
 
+async def _handle_teacher_connect(room_id: int, engine):
+    with Session(engine) as session:
+        room = session.get(Room, room_id)
+        if room and room.status == RoomStatus.LIVE and room.is_paused:
+            started_at = room.timer_started_at
+            if started_at and started_at.tzinfo is None:
+                started_at = started_at.replace(tzinfo=tz.utc)
+
+            if not (started_at and started_at > get_utc_now()):
+                room.timer_started_at = get_utc_now()
+
+            room.is_paused = False
+            session.add(room)
+            session.commit()
+            await manager.broadcast_to_room(
+                room_id,
+                {
+                    "type": "timer_update",
+                    "data": {"time_left": get_calculated_time_left(room), "is_paused": False},
+                },
+            )
+
+
+async def _handle_teacher_disconnect(room_id: int, engine):
+    with Session(engine) as session:
+        room = session.get(Room, room_id)
+        if room and room.status == RoomStatus.LIVE:
+            room.remaining_time_at_pause = get_calculated_time_left(room)
+            room.is_paused = True
+            session.add(room)
+            session.commit()
+            await manager.broadcast_to_room(
+                room_id,
+                {
+                    "type": "timer_update",
+                    "data": {"time_left": room.remaining_time_at_pause, "is_paused": True},
+                },
+            )
+
+
 @router.websocket("/rooms/{room_id}/ws")
 async def websocket_endpoint(websocket: WebSocket, room_id: int, role: str = "student"):
     from database import engine
@@ -90,26 +130,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int, role: str = "st
     await manager.connect(websocket, room_id)
 
     if role == "teacher":
-        with Session(engine) as session:
-            room = session.get(Room, room_id)
-            if room and room.status == RoomStatus.LIVE and room.is_paused:
-                started_at = room.timer_started_at
-                if started_at and started_at.tzinfo is None:
-                    started_at = started_at.replace(tzinfo=tz.utc)
-
-                if not (started_at and started_at > get_utc_now()):
-                    room.timer_started_at = get_utc_now()
-
-                room.is_paused = False
-                session.add(room)
-                session.commit()
-                await manager.broadcast_to_room(
-                    room_id,
-                    {
-                        "type": "timer_update",
-                        "data": {"time_left": get_calculated_time_left(room), "is_paused": False},
-                    },
-                )
+        await _handle_teacher_connect(room_id, engine)
 
     try:
         while True:
@@ -117,20 +138,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int, role: str = "st
     except WebSocketDisconnect:
         manager.disconnect(websocket, room_id)
         if role == "teacher":
-            with Session(engine) as session:
-                room = session.get(Room, room_id)
-                if room and room.status == RoomStatus.LIVE:
-                    room.remaining_time_at_pause = get_calculated_time_left(room)
-                    room.is_paused = True
-                    session.add(room)
-                    session.commit()
-                    await manager.broadcast_to_room(
-                        room_id,
-                        {
-                            "type": "timer_update",
-                            "data": {"time_left": room.remaining_time_at_pause, "is_paused": True},
-                        },
-                    )
+            await _handle_teacher_disconnect(room_id, engine)
 
 
 @router.get("/rooms", response_model=List[Room])
