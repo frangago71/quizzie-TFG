@@ -4,7 +4,7 @@ import secrets
 import string
 from datetime import timedelta
 from datetime import timezone as tz
-from typing import Dict, List
+from typing import Annotated, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
@@ -134,12 +134,14 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int, role: str = "st
 
 
 @router.get("/rooms", response_model=List[Room])
-def get_rooms(session: Session = Depends(get_session)):
+def get_rooms(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Room)).all()
 
 
 @router.post("/rooms", status_code=201)
-def create_room(quiz_id: int, answer_time: int = 45, session: Session = Depends(get_session)):
+def create_room(
+    quiz_id: int, session: Annotated[Session, Depends(get_session)], answer_time: int = 45
+):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz no encontrado")
@@ -174,7 +176,7 @@ def create_room(quiz_id: int, answer_time: int = 45, session: Session = Depends(
 
 
 @router.get("/rooms/verify/{fullcode}")
-def verify_room_code(fullcode: str, session: Session = Depends(get_session)):
+def verify_room_code(fullcode: str, session: Annotated[Session, Depends(get_session)]):
     room = session.exec(select(Room).where(Room.join_code == fullcode)).first()
     if not room:
         raise HTTPException(status_code=404, detail="No hay ninguna sala con ese código.")
@@ -186,7 +188,7 @@ def verify_room_code(fullcode: str, session: Session = Depends(get_session)):
 
 
 @router.get("/rooms/{room_id}/participants")
-def get_participants_names_by_room(room_id: int, session: Session = Depends(get_session)):
+def get_participants_names_by_room(room_id: int, session: Annotated[Session, Depends(get_session)]):
     statement = (
         select(Student.name)
         .join(Participant, Participant.student_id == Student.id)
@@ -197,7 +199,7 @@ def get_participants_names_by_room(room_id: int, session: Session = Depends(get_
 
 
 @router.get("/rooms/{room_id}")
-def get_room_details(room_id: int, session: Session = Depends(get_session)):
+def get_room_details(room_id: int, session: Annotated[Session, Depends(get_session)]):
     room = session.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -276,7 +278,7 @@ def get_room_details(room_id: int, session: Session = Depends(get_session)):
 
 
 @router.post("/rooms/{room_id}/start")
-async def start_quiz(room_id: int, session: Session = Depends(get_session)):
+async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_session)]):
     room = session.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -310,7 +312,7 @@ async def start_quiz(room_id: int, session: Session = Depends(get_session)):
 
 
 @router.patch("/rooms/{room_id}/next-question")
-async def next_question(room_id: int, db: Session = Depends(get_session)):
+async def next_question(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -362,7 +364,7 @@ async def next_question(room_id: int, db: Session = Depends(get_session)):
 
 
 @router.post("/rooms/{room_id}/timer/stop")
-async def stop_timer(room_id: int, db: Session = Depends(get_session)):
+async def stop_timer(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -384,7 +386,7 @@ class VerificationRequest(BaseModel):
 
 @router.post("/rooms/{room_id}/verify-participant")
 async def verify_participant(
-    room_id: int, req: VerificationRequest, db: Session = Depends(get_session)
+    room_id: int, req: VerificationRequest, db: Annotated[Session, Depends(get_session)]
 ):
     statement = (
         select(Participant)
@@ -425,7 +427,7 @@ async def verify_participant(
 
 
 @router.post("/rooms/{room_id}/finish")
-async def finish_room(room_id: int, db: Session = Depends(get_session)):
+async def finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room or room.status != RoomStatus.VERIFYING:
         raise HTTPException(
@@ -443,7 +445,7 @@ async def finish_room(room_id: int, db: Session = Depends(get_session)):
 
 
 @router.post("/rooms/{room_id}/force-finish")
-async def force_finish_room(room_id: int, db: Session = Depends(get_session)):
+async def force_finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -461,13 +463,13 @@ async def force_finish_room(room_id: int, db: Session = Depends(get_session)):
 
 
 @router.get("/participants", response_model=List[Participant])
-def get_participants(session: Session = Depends(get_session)):
+def get_participants(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Participant)).all()
 
 
 @router.post("/participants")
 async def create_participant(
-    student_id: int, room_id: int, session: Session = Depends(get_session)
+    student_id: int, room_id: int, session: Annotated[Session, Depends(get_session)]
 ):
     student = session.get(Student, student_id)
     if not student:
@@ -529,13 +531,16 @@ async def notify_room_update(room_id: int, session: Session):
 
 
 @router.get("/answers", response_model=List[Answer])
-def get_answers(session: Session = Depends(get_session)):
+def get_answers(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Answer)).all()
 
 
 @router.post("/answers", status_code=201)
 def submit_answer(
-    participant_id: int, option_id: int, question_id: int, session: Session = Depends(get_session)
+    participant_id: int,
+    option_id: int,
+    question_id: int,
+    session: Annotated[Session, Depends(get_session)],
 ):
     existing = session.exec(
         select(Answer).where(
@@ -571,7 +576,7 @@ def submit_answer(
 
 
 @router.get("/rooms/{room_id}/leaderboard")
-def get_leaderboard(room_id: int, session: Session = Depends(get_session)):
+def get_leaderboard(room_id: int, session: Annotated[Session, Depends(get_session)]):
     statement = (
         select(Student.name, Participant.score)
         .join(Participant, Participant.student_id == Student.id)
@@ -584,7 +589,7 @@ def get_leaderboard(room_id: int, session: Session = Depends(get_session)):
 
 
 @router.post("/rooms/{room_id}/leaderboard/show")
-async def show_leaderboard(room_id: int, db: Session = Depends(get_session)):
+async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -610,7 +615,9 @@ async def show_leaderboard(room_id: int, db: Session = Depends(get_session)):
 
 
 @router.post("/rooms/{room_id}/questions/{question_id}/finish")
-async def finish_question(room_id: int, question_id: int, db: Session = Depends(get_session)):
+async def finish_question(
+    room_id: int, question_id: int, db: Annotated[Session, Depends(get_session)]
+):
     room = db.get(Room, room_id)
     if not room:
         raise HTTPException(status_code=404, detail="Sala no encontrada")
@@ -648,7 +655,7 @@ async def finish_question(room_id: int, question_id: int, db: Session = Depends(
 
 @router.get("/rooms/{room_id}/participants/{participant_id}/stats")
 def get_participant_stats(
-    room_id: int, participant_id: int, session: Session = Depends(get_session)
+    room_id: int, participant_id: int, session: Annotated[Session, Depends(get_session)]
 ):
     participant = session.get(Participant, participant_id)
     if not participant or participant.room_id != room_id:

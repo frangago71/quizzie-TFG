@@ -1,4 +1,4 @@
-from typing import List
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import selectinload
@@ -22,12 +22,12 @@ router = APIRouter(prefix="/content", tags=["Content"])
 
 
 @router.get("/quizzes", response_model=List[Quiz])
-def get_quizzes(session: Session = Depends(get_session)):
+def get_quizzes(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Quiz)).all()
 
 
 @router.get("/quizzes/{quiz_id}", response_model=QuizRead)
-def get_quiz(quiz_id: int, session: Session = Depends(get_session)):
+def get_quiz(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     statement = (
         select(Quiz)
         .where(Quiz.id == quiz_id)
@@ -42,8 +42,8 @@ def get_quiz(quiz_id: int, session: Session = Depends(get_session)):
 @router.post("/quizzes", status_code=201)
 def post_quiz(
     quiz_data: QuizCreate,
-    session: Session = Depends(get_session),
-    teacher_id: int = Depends(get_current_teacher_id),
+    session: Annotated[Session, Depends(get_session)],
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
 ):
     db_quiz = Quiz(title=quiz_data.title, description=quiz_data.description, teacher_id=teacher_id)
     session.add(db_quiz)
@@ -62,8 +62,8 @@ def post_quiz(
 def update_quiz(
     quiz_id: int,
     quiz_data: QuizUpdate,
-    session: Session = Depends(get_session),
-    teacher_id: int = Depends(get_current_teacher_id),
+    session: Annotated[Session, Depends(get_session)],
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
 ):
     if len(quiz_data.questions) == 0:
         raise HTTPException(
@@ -132,8 +132,8 @@ def update_quiz(
 @router.delete("/quizzes/{quiz_id}")
 def delete_quiz(
     quiz_id: int,
-    session: Session = Depends(get_session),
-    teacher_id: int = Depends(get_current_teacher_id),
+    session: Annotated[Session, Depends(get_session)],
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
@@ -148,8 +148,8 @@ def delete_quiz(
 @router.delete("/quizzes/{quiz_id}/hard")
 def delete_quiz_and_rooms(
     quiz_id: int,
-    session: Session = Depends(get_session),
-    teacher_id: int = Depends(get_current_teacher_id),
+    session: Annotated[Session, Depends(get_session)],
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
@@ -170,7 +170,7 @@ def delete_quiz_and_rooms(
 
 
 @router.get("/quizzes/{quiz_id}/rooms", response_model=List[Room])
-def get_quiz_rooms(quiz_id: int, session: Session = Depends(get_session)):
+def get_quiz_rooms(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
         raise HTTPException(status_code=404, detail="Cuestionario no encontrado")
@@ -178,12 +178,12 @@ def get_quiz_rooms(quiz_id: int, session: Session = Depends(get_session)):
 
 
 @router.get("/questions", response_model=List[Question])
-def get_questions(session: Session = Depends(get_session)):
+def get_questions(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Question)).all()
 
 
 @router.get("/questions/{question_id}", response_model=Question)
-def get_question(question_id: int, session: Session = Depends(get_session)):
+def get_question(question_id: int, session: Annotated[Session, Depends(get_session)]):
     db_question = session.get(Question, question_id)
     if not db_question:
         raise HTTPException(status_code=404, detail="Pregunta no encontrada")
@@ -194,8 +194,8 @@ def get_question(question_id: int, session: Session = Depends(get_session)):
 def create_question(
     quiz_id: int,
     question_data: QuestionCreate,
-    teacher_id: int = Depends(get_current_teacher_id),
-    session: Session = Depends(get_session),
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
@@ -219,8 +219,8 @@ def create_question(
 @router.delete("/questions/{question_id}")
 def delete_question(
     question_id: int,
-    teacher_id: int = Depends(get_current_teacher_id),
-    session: Session = Depends(get_session),
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
 ):
     db_question = session.get(Question, question_id)
     if not db_question:
@@ -238,12 +238,12 @@ def delete_question(
 
 
 @router.get("/options", response_model=List[Option])
-def get_options(session: Session = Depends(get_session)):
+def get_options(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Option)).all()
 
 
 @router.get("/options/{option_id}", response_model=Option)
-def get_option(option_id: int, session: Session = Depends(get_session)):
+def get_option(option_id: int, session: Annotated[Session, Depends(get_session)]):
     db_option = session.get(Option, option_id)
     if not db_option:
         raise HTTPException(status_code=404, detail="Opción no encontrada")
@@ -254,8 +254,8 @@ def get_option(option_id: int, session: Session = Depends(get_session)):
 def create_option(
     question_id: int,
     option_data: OptionCreate,
-    teacher_id: int = Depends(get_current_teacher_id),
-    session: Session = Depends(get_session),
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
 ):
     question = session.get(Question, question_id)
     if not question:
@@ -274,8 +274,8 @@ def create_option(
 @router.delete("/options/{option_id}")
 def delete_option(
     option_id: int,
-    teacher_id: int = Depends(get_current_teacher_id),
-    session: Session = Depends(get_session),
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
 ):
     db_option = session.get(Option, option_id)
     if not db_option:

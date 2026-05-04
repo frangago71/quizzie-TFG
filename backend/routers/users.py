@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.post("/login")
-async def login(login_data: LoginRequest, session: Session = Depends(get_session)):
+async def login(login_data: LoginRequest, session: Annotated[Session, Depends(get_session)]):
     statement = select(Teacher).where(Teacher.email == login_data.email)
     teacher = session.exec(statement).first()
     if not teacher or not verify_password(login_data.password, teacher.hashed_password):
@@ -33,14 +33,15 @@ async def login(login_data: LoginRequest, session: Session = Depends(get_session
 
 
 @router.get("/teachers", response_model=List[TeacherRead])
-def get_teachers(session: Session = Depends(get_session)):
+def get_teachers(session: Annotated[Session, Depends(get_session)]):
     """Devuelve los profesores con la contraseña censurada."""
     return session.exec(select(Teacher)).all()
 
 
 @router.get("/my-quizzes", response_model=List[QuizListRead])
 def get_teacher_quizzes(
-    teacher_id: int = Depends(get_current_teacher_id), session: Session = Depends(get_session)
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
 ):
     statement = select(Quiz).where(Quiz.teacher_id == teacher_id).options(selectinload(Quiz.rooms))
     quizzes = session.exec(statement).all()
@@ -62,17 +63,17 @@ def get_teacher_quizzes(
 
 
 @router.get("/groups", response_model=List[Group])
-def get_groups(session: Session = Depends(get_session)):
+def get_groups(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Group)).all()
 
 
 @router.get("/students", response_model=List[Student])
-def get_students(session: Session = Depends(get_session)):
+def get_students(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Student)).all()
 
 
 @router.get("/students/verify/{nickname}")
-def verify_student(nickname: str, session: Session = Depends(get_session)):
+def verify_student(nickname: str, session: Annotated[Session, Depends(get_session)]):
     clean_nickname = nickname.strip()
     student = session.exec(
         select(Student).filter(func.lower(Student.name) == func.lower(clean_nickname))
@@ -84,7 +85,7 @@ def verify_student(nickname: str, session: Session = Depends(get_session)):
 
 
 @router.post("/students")
-def create_student(nickname: str, session: Session = Depends(get_session)):
+def create_student(nickname: str, session: Annotated[Session, Depends(get_session)]):
     clean_nickname = nickname.strip()
     uvus_pattern_number_letters = r"^[a-zA-Z]{3}\d{4}$"
     uvus_pattern_name = r"^[a-zA-Z]{9,12}\d{0,2}$"

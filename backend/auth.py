@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
+from typing import Annotated
 
 import jwt
 from dotenv import load_dotenv
@@ -42,7 +43,9 @@ def create_access_token(data: dict):
 security = HTTPBearer()
 
 
-def get_current_teacher_id(credentials: HTTPAuthorizationCredentials = Depends(security)) -> int:
+def get_current_teacher_id(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+) -> int:
     token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
