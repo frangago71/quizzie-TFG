@@ -26,7 +26,11 @@ def get_quizzes(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Quiz)).all()
 
 
-@router.get("/quizzes/{quiz_id}", response_model=QuizRead)
+@router.get(
+    "/quizzes/{quiz_id}",
+    response_model=QuizRead,
+    responses={404: {"description": "Quiz no encontrado"}},
+)
 def get_quiz(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     statement = (
         select(Quiz)
@@ -58,7 +62,14 @@ def post_quiz(
     return {"message": "Quiz creado con éxito", "quiz_id": db_quiz.id}
 
 
-@router.put("/quizzes/{quiz_id}")
+@router.put(
+    "/quizzes/{quiz_id}",
+    responses={
+        404: {"description": "Quiz no encontrado"},
+        403: {"description": "No tienes permiso"},
+        400: {"description": "El cuestionario debe tener al menos una pregunta"},
+    },
+)
 def update_quiz(
     quiz_id: int,
     quiz_data: QuizUpdate,
@@ -129,7 +140,13 @@ def update_quiz(
     return {"message": "Quiz actualizado con éxito"}
 
 
-@router.delete("/quizzes/{quiz_id}")
+@router.delete(
+    "/quizzes/{quiz_id}",
+    responses={
+        404: {"description": "Cuestionario no encontrado"},
+        403: {"description": "No tienes permiso para realizar esta acción"},
+    },
+)
 def delete_quiz(
     quiz_id: int,
     session: Annotated[Session, Depends(get_session)],
@@ -145,7 +162,14 @@ def delete_quiz(
     return {"ok": True, "message": "Cuestionario eliminado. Las salas se han conservado."}
 
 
-@router.delete("/quizzes/{quiz_id}/hard")
+@router.delete(
+    "/quizzes/{quiz_id}/hard",
+    responses={
+        404: {"description": "Cuestionario no encontrado"},
+        403: {"description": "No tienes permiso para realizar esta acción"},
+        400: {"description": "No se puede borrar el cuestionario porque tiene una sala activa"},
+    },
+)
 def delete_quiz_and_rooms(
     quiz_id: int,
     session: Annotated[Session, Depends(get_session)],
@@ -169,7 +193,11 @@ def delete_quiz_and_rooms(
     return {"ok": True, "message": "Cuestionario y sus salas eliminados correctamente."}
 
 
-@router.get("/quizzes/{quiz_id}/rooms", response_model=List[Room])
+@router.get(
+    "/quizzes/{quiz_id}/rooms",
+    response_model=List[Room],
+    responses={404: {"description": "Cuestionario no encontrado"}},
+)
 def get_quiz_rooms(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
@@ -182,7 +210,11 @@ def get_questions(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Question)).all()
 
 
-@router.get("/questions/{question_id}", response_model=Question)
+@router.get(
+    "/questions/{question_id}",
+    response_model=Question,
+    responses={404: {"description": "Pregunta no encontrada"}},
+)
 def get_question(question_id: int, session: Annotated[Session, Depends(get_session)]):
     db_question = session.get(Question, question_id)
     if not db_question:
@@ -190,7 +222,14 @@ def get_question(question_id: int, session: Annotated[Session, Depends(get_sessi
     return db_question
 
 
-@router.post("/quizzes/{quiz_id}/questions", response_model=QuestionRead)
+@router.post(
+    "/quizzes/{quiz_id}/questions",
+    response_model=QuestionRead,
+    responses={
+        404: {"description": "Cuestionario no encontrado"},
+        403: {"description": "No tienes permiso para añadir preguntas a este cuestionario"},
+    },
+)
 def create_question(
     quiz_id: int,
     question_data: QuestionCreate,
@@ -216,7 +255,16 @@ def create_question(
     return new_question
 
 
-@router.delete("/questions/{question_id}")
+@router.delete(
+    "/questions/{question_id}",
+    responses={
+        404: {"description": "Pregunta no encontrada"},
+        403: {"description": "No tienes permiso para borrar esta pregunta"},
+        400: {
+            "description": "No puedes borrar la última pregunta. El quiz debe tener al menos una."
+        },
+    },
+)
 def delete_question(
     question_id: int,
     teacher_id: Annotated[int, Depends(get_current_teacher_id)],
@@ -242,7 +290,11 @@ def get_options(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Option)).all()
 
 
-@router.get("/options/{option_id}", response_model=Option)
+@router.get(
+    "/options/{option_id}",
+    response_model=Option,
+    responses={404: {"description": "Opción no encontrada"}},
+)
 def get_option(option_id: int, session: Annotated[Session, Depends(get_session)]):
     db_option = session.get(Option, option_id)
     if not db_option:
@@ -250,7 +302,14 @@ def get_option(option_id: int, session: Annotated[Session, Depends(get_session)]
     return db_option
 
 
-@router.post("/questions/{question_id}/options", response_model=OptionRead)
+@router.post(
+    "/questions/{question_id}/options",
+    response_model=OptionRead,
+    responses={
+        404: {"description": "Pregunta no encontrada"},
+        403: {"description": "No puedes añadir opciones a esta pregunta"},
+    },
+)
 def create_option(
     question_id: int,
     option_data: OptionCreate,
@@ -271,7 +330,14 @@ def create_option(
     return new_option
 
 
-@router.delete("/options/{option_id}")
+@router.delete(
+    "/options/{option_id}",
+    responses={
+        404: {"description": "Opción no encontrada"},
+        403: {"description": "No tienes permiso"},
+        400: {"description": "Error al borrar la opción"},
+    },
+)
 def delete_option(
     option_id: int,
     teacher_id: Annotated[int, Depends(get_current_teacher_id)],

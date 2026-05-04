@@ -138,7 +138,14 @@ def get_rooms(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Room)).all()
 
 
-@router.post("/rooms", status_code=201)
+@router.post(
+    "/rooms",
+    status_code=201,
+    responses={
+        404: {"description": "Quiz no encontrado"},
+        400: {"description": "Ya existe una sala activa para este quiz"},
+    },
+)
 def create_room(
     quiz_id: int, session: Annotated[Session, Depends(get_session)], answer_time: int = 45
 ):
@@ -175,7 +182,13 @@ def create_room(
     return new_room
 
 
-@router.get("/rooms/verify/{fullcode}")
+@router.get(
+    "/rooms/verify/{fullcode}",
+    responses={
+        404: {"description": "No hay ninguna sala con ese código."},
+        400: {"description": "La sala no está disponible en este momento."},
+    },
+)
 def verify_room_code(fullcode: str, session: Annotated[Session, Depends(get_session)]):
     room = session.exec(select(Room).where(Room.join_code == fullcode)).first()
     if not room:
@@ -198,7 +211,10 @@ def get_participants_names_by_room(room_id: int, session: Annotated[Session, Dep
     return list(participants)
 
 
-@router.get("/rooms/{room_id}")
+@router.get(
+    "/rooms/{room_id}",
+    responses={404: {"description": "Sala no encontrada"}},
+)
 def get_room_details(room_id: int, session: Annotated[Session, Depends(get_session)]):
     room = session.get(Room, room_id)
     if not room:
@@ -277,7 +293,13 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
     }
 
 
-@router.post("/rooms/{room_id}/start")
+@router.post(
+    "/rooms/{room_id}/start",
+    responses={
+        404: {"description": "Sala no encontrada"},
+        400: {"description": "No se puede iniciar la sala."},
+    },
+)
 async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_session)]):
     room = session.get(Room, room_id)
     if not room:
@@ -311,7 +333,13 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
     return data
 
 
-@router.patch("/rooms/{room_id}/next-question")
+@router.patch(
+    "/rooms/{room_id}/next-question",
+    responses={
+        404: {"description": "Sala no encontrada"},
+        400: {"description": "Sala no disponible"},
+    },
+)
 async def next_question(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
@@ -363,7 +391,10 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
         return {"status": "VERIFYING"}
 
 
-@router.post("/rooms/{room_id}/timer/stop")
+@router.post(
+    "/rooms/{room_id}/timer/stop",
+    responses={404: {"description": "Sala no encontrada"}},
+)
 async def stop_timer(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
@@ -384,7 +415,14 @@ class VerificationRequest(BaseModel):
     token: str
 
 
-@router.post("/rooms/{room_id}/verify-participant")
+@router.post(
+    "/rooms/{room_id}/verify-participant",
+    responses={
+        404: {"description": "Participante no encontrado"},
+        400: {"description": "Token de verificación inválido"},
+        409: {"description": "Este resultado ya ha sido verificado anteriormente."},
+    },
+)
 async def verify_participant(
     room_id: int, req: VerificationRequest, db: Annotated[Session, Depends(get_session)]
 ):
@@ -426,7 +464,10 @@ async def verify_participant(
     return {"status": "success", "nickname": req.nickname}
 
 
-@router.post("/rooms/{room_id}/finish")
+@router.post(
+    "/rooms/{room_id}/finish",
+    responses={400: {"description": "La sala no está en fase de verificación o ya ha finalizado"}},
+)
 async def finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room or room.status != RoomStatus.VERIFYING:
@@ -444,7 +485,13 @@ async def finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]
     return {"status": "FINISHED"}
 
 
-@router.post("/rooms/{room_id}/force-finish")
+@router.post(
+    "/rooms/{room_id}/force-finish",
+    responses={
+        404: {"description": "Sala no encontrada"},
+        400: {"description": "La sala ya está finalizada"},
+    },
+)
 async def force_finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
@@ -467,7 +514,14 @@ def get_participants(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Participant)).all()
 
 
-@router.post("/participants")
+@router.post(
+    "/participants",
+    responses={
+        404: {"description": "Estudiante o sala no encontrados."},
+        400: {"description": "No puedes unirte. La sala está cerrada"},
+        500: {"description": "Error al vincular"},
+    },
+)
 async def create_participant(
     student_id: int, room_id: int, session: Annotated[Session, Depends(get_session)]
 ):
@@ -535,7 +589,14 @@ def get_answers(session: Annotated[Session, Depends(get_session)]):
     return session.exec(select(Answer)).all()
 
 
-@router.post("/answers", status_code=201)
+@router.post(
+    "/answers",
+    status_code=201,
+    responses={
+        404: {"description": "Participante no encontrado"},
+        400: {"description": "Ya has respondido a esta pregunta."},
+    },
+)
 def submit_answer(
     participant_id: int,
     option_id: int,
@@ -588,7 +649,10 @@ def get_leaderboard(room_id: int, session: Annotated[Session, Depends(get_sessio
     return [{"name": r[0], "score": r[1]} for r in results]
 
 
-@router.post("/rooms/{room_id}/leaderboard/show")
+@router.post(
+    "/rooms/{room_id}/leaderboard/show",
+    responses={404: {"description": "Sala no encontrada"}},
+)
 async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
@@ -614,7 +678,10 @@ async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_sess
     return {"status": "success"}
 
 
-@router.post("/rooms/{room_id}/questions/{question_id}/finish")
+@router.post(
+    "/rooms/{room_id}/questions/{question_id}/finish",
+    responses={404: {"description": "Sala no encontrada"}},
+)
 async def finish_question(
     room_id: int, question_id: int, db: Annotated[Session, Depends(get_session)]
 ):
@@ -653,7 +720,10 @@ async def finish_question(
     return {"status": "success", "question_id": question_id}
 
 
-@router.get("/rooms/{room_id}/participants/{participant_id}/stats")
+@router.get(
+    "/rooms/{room_id}/participants/{participant_id}/stats",
+    responses={404: {"description": "Participante no encontrado en esta sala."}},
+)
 def get_participant_stats(
     room_id: int, participant_id: int, session: Annotated[Session, Depends(get_session)]
 ):

@@ -17,7 +17,10 @@ from schemas.users import LoginRequest
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post("/login")
+@router.post(
+    "/login",
+    responses={401: {"description": "Email o contraseña incorrectos"}},
+)
 async def login(login_data: LoginRequest, session: Annotated[Session, Depends(get_session)]):
     statement = select(Teacher).where(Teacher.email == login_data.email)
     teacher = session.exec(statement).first()
@@ -84,7 +87,13 @@ def verify_student(nickname: str, session: Annotated[Session, Depends(get_sessio
     return {"exists": True, "student_id": student.id, "nickname": student.name}
 
 
-@router.post("/students")
+@router.post(
+    "/students",
+    responses={
+        400: {"description": "Formato de uvus incorrecto o ya registrado."},
+        500: {"description": "Error interno al crear el estudiante."},
+    },
+)
 def create_student(nickname: str, session: Annotated[Session, Depends(get_session)]):
     clean_nickname = nickname.strip()
     uvus_pattern_number_letters = r"^[a-zA-Z]{3}\d{4}$"
