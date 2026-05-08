@@ -13,11 +13,16 @@ def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 
+background_tasks = set()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     print("Base de datos iniciada correctamente y tablas verificadas")
-    asyncio.create_task(stage.timer_sync_loop())
+    task = asyncio.create_task(stage.timer_sync_loop())
+    background_tasks.add(task)
+    task.add_done_callback(background_tasks.discard)
     yield
 
 
