@@ -218,17 +218,16 @@ const CreateQuiz: React.FC = () => {
     }
     try {
       const payload = {
-        ...quiz,
-        questions: quiz.questions.map((q) => {
-          const { id: _qId, ...qRest } = q;
-          return {
-            ...qRest,
-            options: q.options.map((o) => {
-              const { id: _oId, ...oRest } = o;
-              return oRest;
-            }),
-          };
-        }),
+        title: quiz.title,
+        description: quiz.description,
+        questions: quiz.questions.map((q) => ({
+          text: q.text,
+          points: q.points,
+          options: q.options.map((o) => ({
+            text: o.text,
+            is_correct: o.is_correct,
+          })),
+        })),
       };
       await api.post("/content/quizzes", payload);
       toast.success("¡Cuestionario creado con éxito!");
