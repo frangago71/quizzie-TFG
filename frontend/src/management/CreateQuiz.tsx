@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 
 interface Option {
+  id: string;
   text: string;
   is_correct: boolean;
 }
 interface Question {
+  id: string;
   text: string;
   points: number | string;
   options: Option[];
@@ -23,6 +25,8 @@ interface QuizData {
 const MAX_QUESTIONS = 30;
 const MAX_OPTIONS = 8;
 
+const generateId = () => Math.random().toString(36).substring(2, 9);
+
 const CreateQuiz: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const questionInputRef = useRef<HTMLInputElement>(null);
@@ -34,11 +38,12 @@ const CreateQuiz: React.FC = () => {
     description: "",
     questions: [
       {
+        id: generateId(),
         text: "",
         points: 1,
         options: [
-          { text: "", is_correct: true },
-          { text: "", is_correct: false },
+          { id: generateId(), text: "", is_correct: true },
+          { id: generateId(), text: "", is_correct: false },
         ],
       },
     ],
@@ -51,7 +56,7 @@ const CreateQuiz: React.FC = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const isMobile = window.innerWidth < 768;
+  const isMobile = globalThis.innerWidth < 768;
   const minSwipeDistance = 50;
 
   const handleNext = useCallback(() => {
@@ -59,11 +64,12 @@ const CreateQuiz: React.FC = () => {
     if (currentIndex === quiz.questions.length - 1) {
       if (quiz.questions.length >= MAX_QUESTIONS) return;
       const newQuestion: Question = {
+        id: generateId(),
         text: "",
         points: 1,
         options: [
-          { text: "", is_correct: true },
-          { text: "", is_correct: false },
+          { id: generateId(), text: "", is_correct: true },
+          { id: generateId(), text: "", is_correct: false },
         ],
       };
       setQuiz((prev) => ({
@@ -98,8 +104,8 @@ const CreateQuiz: React.FC = () => {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    globalThis.addEventListener("keydown", handleKeyDown);
+    return () => globalThis.removeEventListener("keydown", handleKeyDown);
   }, [handleNext, handlePrev]);
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -121,7 +127,11 @@ const CreateQuiz: React.FC = () => {
   const addOption = (qIndex: number) => {
     if (quiz.questions[qIndex].options.length >= MAX_OPTIONS) return;
     const newQuestions = [...quiz.questions];
-    newQuestions[qIndex].options.push({ text: "", is_correct: false });
+    newQuestions[qIndex].options.push({
+      id: generateId(),
+      text: "",
+      is_correct: false,
+    });
     setQuiz({ ...quiz, questions: newQuestions });
   };
 
@@ -156,9 +166,9 @@ const CreateQuiz: React.FC = () => {
       setQuiz({ ...quiz, questions: newQs });
       return;
     }
-    const val = parseInt(valStr, 10);
-    if (isNaN(val)) return;
-    const finalVal = val > 100 ? 100 : val;
+    const val = Number.parseInt(valStr, 10);
+    if (Number.isNaN(val)) return;
+    const finalVal = Math.min(val, 100);
     const newQs = [...quiz.questions];
     newQs[currentIndex].points = finalVal;
     setQuiz({ ...quiz, questions: newQs });
@@ -166,7 +176,7 @@ const CreateQuiz: React.FC = () => {
 
   const handlePointsBlur = () => {
     const currentPoints = Number(quiz.questions[currentIndex].points);
-    if (isNaN(currentPoints) || currentPoints < 1) {
+    if (Number.isNaN(currentPoints) || currentPoints < 1) {
       const newQs = [...quiz.questions];
       newQs[currentIndex].points = 1;
       setQuiz({ ...quiz, questions: newQs });
@@ -207,7 +217,20 @@ const CreateQuiz: React.FC = () => {
       }
     }
     try {
-      await api.post("/content/quizzes", quiz);
+      const payload = {
+        ...quiz,
+        questions: quiz.questions.map((q) => {
+          const { id: _qId, ...qRest } = q;
+          return {
+            ...qRest,
+            options: q.options.map((o) => {
+              const { id: _oId, ...oRest } = o;
+              return oRest;
+            }),
+          };
+        }),
+      };
+      await api.post("/content/quizzes", payload);
       toast.success("¡Cuestionario creado con éxito!");
       navigate("/quizzes");
     } catch {
@@ -253,7 +276,6 @@ const CreateQuiz: React.FC = () => {
               className="title-input"
               type="text"
               placeholder="Título"
-              tabIndex={1}
               value={quiz.title}
               onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
               required
@@ -261,7 +283,6 @@ const CreateQuiz: React.FC = () => {
             <button
               type="submit"
               className={`btn-main ${isMobile ? "small" : "big"} magenta btn-header-action`}
-              tabIndex={100}
             >
               <span className="text-desktop">Crear cuestionario</span>
               <span className="text-mobile">Crear</span>
@@ -270,7 +291,6 @@ const CreateQuiz: React.FC = () => {
           <textarea
             className="desc-input"
             placeholder="Añade una descripción aquí..."
-            tabIndex={2}
             value={quiz.description}
             onChange={(e) => setQuiz({ ...quiz, description: e.target.value })}
             required
@@ -279,22 +299,26 @@ const CreateQuiz: React.FC = () => {
       </header>
 
       <div className="nav-dots pc-dots">
-        {quiz.questions.map((_, i) => (
-          <div
-            key={i}
+        {quiz.questions.map((q, i) => (
+          <button
+            key={q.id || `dot-${i}`}
+            type="button"
             className={`dot ${i === currentIndex ? "active" : ""}`}
             onClick={() => handleDotClick(i)}
+            aria-label={`Ir a la pregunta ${i + 1}`}
           />
         ))}
       </div>
 
       <div className="quiz-top-nav-mobile">
         <div className="nav-dots">
-          {quiz.questions.map((_, i) => (
-            <div
-              key={i}
+          {quiz.questions.map((q, i) => (
+            <button
+              key={q.id || `mob-dot-${i}`}
+              type="button"
               className={`dot ${i === currentIndex ? "active" : ""}`}
               onClick={() => handleDotClick(i)}
+              aria-label={`Ir a la pregunta ${i + 1}`}
             />
           ))}
         </div>
@@ -332,13 +356,13 @@ const CreateQuiz: React.FC = () => {
               PREGUNTA {currentIndex + 1} de {quiz.questions.length}
             </span>
             <div className="question-meta">
-              <label>PUNTOS</label>
+              <label htmlFor={`points-${currentIndex}`}>PUNTOS</label>
               <input
+                id={`points-${currentIndex}`}
                 type="number"
                 className="input-base points-input"
                 min="1"
                 max="100"
-                tabIndex={3}
                 value={quiz.questions[currentIndex].points || ""}
                 onChange={handlePointsChange}
                 onBlur={handlePointsBlur}
@@ -351,7 +375,6 @@ const CreateQuiz: React.FC = () => {
             className="input-base question-text-input"
             type="text"
             placeholder="Escribe el enunciado"
-            tabIndex={4}
             value={quiz.questions[currentIndex].text}
             onChange={(e) => {
               const newQs = [...quiz.questions];
@@ -362,19 +385,19 @@ const CreateQuiz: React.FC = () => {
 
           <div className="options-wrapper">
             {quiz.questions[currentIndex].options.map((o, oIndex) => (
-              <div key={oIndex} className="option-item">
+              <div key={o.id || `opt-${oIndex}`} className="option-item">
                 <input
                   type="radio"
                   name={`correct-${currentIndex}`}
                   checked={o.is_correct}
                   tabIndex={-1}
                   onChange={() => setCorrectOption(currentIndex, oIndex)}
+                  aria-label="Opción correcta"
                 />
                 <input
                   className="input-base"
                   type="text"
                   placeholder={`Opción ${oIndex + 1}`}
-                  tabIndex={5 + oIndex}
                   value={o.text}
                   onChange={(e) => {
                     const newQs = [...quiz.questions];
@@ -395,10 +418,10 @@ const CreateQuiz: React.FC = () => {
               </div>
             ))}
 
-            <div
-              className={`btn-add-ghost ${!canAddMoreOptions ? "disabled" : ""}`}
+            <button
+              type="button"
+              className={`btn-add-ghost ${canAddMoreOptions ? "" : "disabled"}`}
               onClick={() => canAddMoreOptions && addOption(currentIndex)}
-              tabIndex={5 + currentOptionsCount}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -409,6 +432,8 @@ const CreateQuiz: React.FC = () => {
                   questionInputRef.current?.focus();
                 }
               }}
+              disabled={!canAddMoreOptions}
+              aria-label="Añadir opción"
             >
               <input
                 className="input-base"
@@ -421,7 +446,7 @@ const CreateQuiz: React.FC = () => {
                 readOnly
                 tabIndex={-1}
               />
-            </div>
+            </button>
           </div>
         </div>
 
