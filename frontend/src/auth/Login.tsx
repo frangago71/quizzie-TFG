@@ -29,7 +29,7 @@ export const Login: React.FC = () => {
     setLoading(true);
     try {
       await authService.login(credentials);
-      window.location.href = "/quizzes";
+      globalThis.location.href = "/quizzes";
     } catch (err: unknown) {
       const error = err as { message?: string };
       setError(error.message || "Error al iniciar sesión");
@@ -48,8 +48,11 @@ export const Login: React.FC = () => {
       <div className="join-card">
         <form onSubmit={handleSubmit}>
           <div className="input-field-group">
-            <label className="code-label">EMAIL</label>
+            <label htmlFor="email" className="code-label">
+              EMAIL
+            </label>
             <input
+              id="email"
               name="email"
               type="email"
               className="login-input-text"
@@ -61,8 +64,11 @@ export const Login: React.FC = () => {
           </div>
 
           <div className="input-field-group">
-            <label className="code-label">CONTRASEÑA</label>
+            <label htmlFor="password" className="code-label">
+              CONTRASEÑA
+            </label>
             <input
+              id="password"
               name="password"
               type="password"
               className="login-input-text"
@@ -82,7 +88,7 @@ export const Login: React.FC = () => {
         </form>
         <div className="login-footer-action">
           <button
-            onClick={() => window.history.back()}
+            onClick={() => globalThis.history.back()}
             className="back-link-text"
           >
             Ir a zona de alumnos
