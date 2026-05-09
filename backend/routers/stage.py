@@ -1,5 +1,4 @@
 import asyncio
-import random
 import secrets
 import string
 from datetime import timedelta
@@ -179,7 +178,7 @@ def create_room(
         if not session.exec(statement).first():
             unique_join_code = True
         else:
-            new_join_code = "".join(random.choices(string.digits, k=6))
+            new_join_code = "".join(secrets.choice(string.digits) for _ in range(6))
     new_room = Room(
         quiz_id=quiz_id,
         join_code=new_join_code,
