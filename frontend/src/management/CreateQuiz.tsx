@@ -25,7 +25,7 @@ interface QuizData {
 const MAX_QUESTIONS = 30;
 const MAX_OPTIONS = 8;
 
-const generateId = () => Math.random().toString(36).substring(2, 9);
+const generateId = () => globalThis.crypto.randomUUID();
 
 const CreateQuiz: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
