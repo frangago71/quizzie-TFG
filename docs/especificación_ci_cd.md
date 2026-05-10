@@ -48,4 +48,4 @@ El despliegue se apoya en la infraestructura nativa de las plataformas elegidas:
 
 1.  **Job Backend:** Instalación (uv) → Ruff → pip-audit → Pytest → Upload Coverage.
 2.  **Job Frontend:** Instalación (npm ci) → ESLint → Build.
-3.  **Job Sonarqube:** Download Coverage → SonarCloud Scan (Windows).
+3.  **Job Sonarqube:** Download Coverage → SonarCloud Scan (Ubuntu).
