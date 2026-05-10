@@ -56,18 +56,20 @@ const LiveRoom: React.FC = () => {
     const idToUse = Number(urlRoomId || roomId);
     if (!idToUse || Number.isNaN(idToUse)) return;
 
-    const updateRoomStatus = (data: any) => {
+    const updateRoomStatus = (data: RoomData) => {
       setRoomData(data);
       if (data.status === "live") {
         const isFirstStart =
           data.current_question_index === 1 &&
+          data.time_left !== undefined &&
+          data.answer_time !== undefined &&
           data.time_left >= data.answer_time - 1;
         setPhase(isFirstStart ? "countdown" : "playing");
         setCount(isFirstStart ? 3 : 0);
         if (data.statistics) setStatistics(data.statistics);
         if (data.correct_option_id) setCorrectOptionId(data.correct_option_id);
         if (data.leaderboard) setLeaderboardData(data.leaderboard);
-        setTimeLeft(data.time_left);
+        if (data.time_left !== undefined) setTimeLeft(data.time_left);
       } else if (data.status === "verifying" || data.status === "finished") {
         if (data.leaderboard) setLeaderboardData(data.leaderboard);
       }
@@ -77,7 +79,8 @@ const LiveRoom: React.FC = () => {
       try {
         const res = await api.get(`/stage/rooms/${idToUse}`);
         updateRoomStatus(res.data);
-        setIsPaused(res.data.is_paused);
+        if (res.data.time_left !== undefined) setTimeLeft(res.data.time_left);
+        if (res.data.is_paused !== undefined) setIsPaused(res.data.is_paused);
       } catch (err) {
         console.error("Error sincronizando:", err);
       }
@@ -108,8 +111,8 @@ const LiveRoom: React.FC = () => {
       } else if (type === "participant_verified") {
         setRefreshTrigger((prev) => prev + 1);
       } else if (type === "timer_update") {
-        setTimeLeft(data.time_left);
-        setIsPaused(data.is_paused);
+        if (data.time_left !== undefined) setTimeLeft(data.time_left);
+        if (data.is_paused !== undefined) setIsPaused(data.is_paused);
       }
     };
 
