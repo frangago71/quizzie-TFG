@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext.tsx";
-import api from "../api.ts";
+import api, { WS_BASE_URL } from "../api.ts";
 import type { RoomData } from "../types.ts";
 
 import { Users, PlayCircle, UserCircle2 } from "lucide-react";
@@ -16,12 +16,12 @@ const Lobby: React.FC = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const idToUse = urlRoomId || roomId;
-    if (!idToUse) return;
+    const validatedId = Number(urlRoomId || roomId);
+    if (!validatedId || Number.isNaN(validatedId)) return;
 
     const fetchInitialData = async () => {
       try {
-        const res = await api.get(`/stage/rooms/${idToUse}/participants`);
+        const res = await api.get(`/stage/rooms/${validatedId}/participants`);
         setRoomData(res.data);
       } catch (err) {
         console.error("Error en carga inicial:", err);
@@ -29,7 +29,7 @@ const Lobby: React.FC = () => {
     };
     fetchInitialData();
 
-    const ws = new WebSocket(`ws://localhost:8000/stage/rooms/${idToUse}/ws`);
+    const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${validatedId}/ws`);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -62,15 +62,17 @@ const Lobby: React.FC = () => {
   const room = roomData && !Array.isArray(roomData) ? roomData : null;
 
   useEffect(() => {
-    if (room?.status?.toUpperCase() === "LIVE") {
-      const idToUse = urlRoomId || roomId;
-      navigate(`/live/${idToUse}`);
+    const validatedId = Number(urlRoomId || roomId);
+    if (room?.status?.toUpperCase() === "LIVE" && !Number.isNaN(validatedId)) {
+      navigate(`/live/${validatedId}`);
     }
   }, [room?.status, navigate, urlRoomId, roomId]);
 
   const handleStartRoom = async () => {
+    const vRoomId = Number(roomId);
+    if (!vRoomId || Number.isNaN(vRoomId)) return;
     try {
-      await api.post(`/stage/rooms/${roomId}/start`);
+      await api.post(`/stage/rooms/${vRoomId}/start`);
     } catch {
       toast.error("Error al iniciar la sala");
     }
