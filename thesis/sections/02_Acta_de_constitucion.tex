@@ -73,10 +73,34 @@ A continuación, se detallan los pilares normativos y legales de la aplicación:
     \item \textbf{Propiedad intelectual y licenciamiento:} El código fuente y los entregables de este Trabajo de Fin de Grado se distribuyen bajo una licencia de código abierto MIT. Esta elección garantiza la total transparencia del desarrollo, permite la auditoría pública del sistema y fomenta su reutilización o extensión por parte de la comunidad académica, eximiendo al autor de cualquier responsabilidad derivada de su uso.
 \end{itemize}
 
-\section{Riesgos iniciales de alto nivel}
-Identificación de posibles riesgos que podrían afectar el éxito del proyecto
+\section{Riesgos iniciales de alto nivel}\label{sec:riesgos_iniciales}
 
-Riesgos que pueden comprometer al éxito del proyecto, como falta de experiencia, problemas técnicos, falta de tiempo, etc
+El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos técnicos y operativos. Identificarlos de forma temprana permite establecer estrategias de mitigación para garantizar el éxito del proyecto y el cumplimiento del cronograma.
+
+A continuación, se presentan los riesgos iniciales detectados junto a sus respectivas medidas de contingencia:
+
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{tabularx}{\dimexpr\textwidth-12pt}{l >{\raggedright\arraybackslash}p{2.5cm} YY}
+\hline
+\textbf{Tipo} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Mitigación} \\ 
+\hline
+Técnico & Rendimiento síncrono & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez en clase. & Diseñar un modelo de datos ligero para WebSockets y realizar pruebas de carga tempranas. \\
+\hline
+Técnico & Curva de aprendizaje & Retrasos por falta de experiencia previa con WebSockets o la integración de asistentes de IA. & Desarrollar prototipos aislados y estudiar acerca de nuevas tecnologías en las primeras semanas del proyecto. \\
+\hline
+Gestión & Alcance y tiempo & Los plazos estrictos de la universidad pueden peligrar ante la ambición del catálogo de funciones. & Adoptar metodología ágil y priorizar las tareas bajo un enfoque de Producto Mínimo Viable (MVP). \\
+\hline
+Operativo & Despliegue y red & Fallos de conectividad o restricciones en los puertos de la red wifi que impidan la conexión WebSocket. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos alternativos de reconexión rápida. \\ 
+\hline
+\end{tabularx}
+\caption{Riesgos iniciales y estrategias de mitigación.}
+\label{tab:matriz_riesgos}
+\end{table}
 
 \section{Lista de interesados (Stakeholders)}
 Identificación de las partes interesadas clave en el proyecto, incluyendo sus roles e intereses
