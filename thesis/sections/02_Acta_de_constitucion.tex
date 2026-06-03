@@ -61,8 +61,17 @@ Para validar el correcto estado del sistema, este debe cumplir estrictamente con
     \item \textbf{Privacidad de los datos:} El almacenamiento del histórico de calificaciones y datos académicos debe cumplir estrictamente con el marco legal de protección de datos vigente.
 \end{itemize}
 
-\section{Marco legal y normativo}
-Hablar de RDPD, licencias, seguridad, privacidad, protección de datos, etc
+\section{Marco legal y normativo}\label{sec:marco_legal_y_normativo}
+
+El desarrollo y uso de \textit{Quizzie} se rige por la normativa vigente en materia de protección de datos, seguridad de la información y propiedad intelectual. Al tratarse de una herramienta orientada al entorno educativo, el diseño del sistema ha priorizado el principio de minimización de datos para mitigar los riesgos asociados al tratamiento de información sensible.
+
+A continuación, se detallan los pilares normativos y legales de la aplicación:
+
+\begin{itemize}
+    \item \textbf{Reglamento General de Protección de Datos (RGPD):} La plataforma aplica el principio de privacidad desde el diseño. Para los estudiantes, el acceso a las salas se realiza mediante un código PIN y su \textit{uvus} (\textit{Usuario Virtual de la Universidad de Sevilla}), prescindiendo de un registro tradicional y limitando el almacenamiento de datos personales a este identificador institucional único. En el caso de los docentes, el registro obligatorio se limita a un correo electrónico y un alias, omitiendo identificadores directos como nombres, apellidos o DNI.
+    \item \textbf{Seguridad y persistencia de calificaciones:} El histórico de resultados almacenado en el sistema solo vincula las calificaciones al \textit{uvus} del alumno y cuenta con la previa verificación física del profesor. Esto garantiza la integridad del proceso de evaluación sin exponer la identidad real del estudiantado en la base de datos.
+    \item \textbf{Propiedad intelectual y licenciamiento:} El código fuente y los entregables de este Trabajo de Fin de Grado se distribuyen bajo una licencia de código abierto MIT. Esta elección garantiza la total transparencia del desarrollo, permite la auditoría pública del sistema y fomenta su reutilización o extensión por parte de la comunidad académica, eximiendo al autor de cualquier responsabilidad derivada de su uso.
+\end{itemize}
 
 \section{Riesgos iniciales de alto nivel}
 Identificación de posibles riesgos que podrían afectar el éxito del proyecto
