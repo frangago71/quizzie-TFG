@@ -4,11 +4,23 @@ En la ingeniería de software, el éxito de un proyecto no depende únicamente d
 
 A lo largo de las siguientes secciones se detalla la metodología que se seguirá a lo largo del desarrollo, se establecen formalmente las línea base del alcance, cronograma y de costes, y se presenta el plan de gestión de riesgos y cambios destinado a mitigar las desviaciones del proyecto.
 
-\section{Metodología del trabajo}
-Descripción de la metodología de trabajo (herramientas, seguimiento de tareas, comunicación con el tutor, etc.)
+\section{Metodología del trabajo}\label{sec:metodologia_del_trabajo}
 
-Flujo de trabajo (GitHub, issues, milestones, ramas, etc) herramientas  (clockify, outlook, Github, ) hablar de las reuniones, tutorías, etc
-Creo que cosas como pre-commits, hooks, plantillas de issues etc irían en el capítulo 7, metodología
+El desarrollo de \textit{Quizzie} se organiza gracias a un flujo de trabajo ágil centralizado en GitHub. Para el día a día y el seguimiento del proyecto, se utilizan las siguientes herramientas:
+
+\begin{itemize}
+\item \textbf{GitHub:} Centraliza el almacenamiento del código fuente y la gestión de las tareas mediante las siguientes herramientas:    
+    \begin{itemize}
+        \item \textbf{Issues y Milestones:} Cada funcionalidad o corrección se registra como una \textit{Issue} (tarea). Estas se agrupan en \textit{Milestones} (hitos temporales) para asociar el avance del código con los plazos asignados en el cronograma.
+        \item \textbf{Ramas permanentes:} Se mantiene una separación estricta entre la rama \textit{main} (exclusiva para versiones definitivas y estables) y la rama \textit{develop} (entorno de integración donde se vuelcan las novedades).
+        \item \textbf{Ramas de tareas:} Para cada \textit{issue} se abre una rama específica desde \textit{develop} (ej. \textit{feature/websocket-timer}). Una vez completada y probada la tarea de forma aislada, esta rama se fusiona (\textit{merge}) de vuelta en \textit{develop}.      
+        \item \textbf{Releases:} Al completar un \textit{Milestone} y consolidar los cambios en \textit{main}, se genera una \textit{Release} con su etiqueta de versión. 
+    \end{itemize}
+    \item \textbf{Clockify:} Se utiliza exclusivamente para cronometrar el tiempo real dedicado a cada tarea e hito, permitiendo controlar el esfuerzo invertido.
+    \item \textbf{Outlook:} Canal formal para comunicaciones con el tutor y envío de entregables o documentación.
+\end{itemize}
+
+El avance del proyecto se valida de forma continua mediante tutorías. La dinámica de estas reuniones consiste en presentar y revisar el software funcionando o el texto redactado hasta esa fecha para recibir el visto bueno del tutor y, acto seguido, definir los siguientes pasos y prioridades a realizar para la próxima tutoría.
 
 \section{Línea Base del Alcance}
 Supuestos, exclusiones, restricciones, etc
