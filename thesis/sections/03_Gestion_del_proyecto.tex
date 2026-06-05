@@ -537,6 +537,8 @@ F-10 & Defensa & Preparación del material de soporte y ensayos. & Documentació
 \label{tab:fases}
 \end{table}
 
+\newpage 
+
 \subsection{Lista de actividades}\label{sub:lista_de_actividades}
 
 Cada una de las actividades del cronograma conserva una relación directa con los paquetes de trabajo definidos en el diccionario de la EDT. Para garantizar el seguimiento y la trazabilidad temporal, a continuación se detallan todas las tareas del proyecto:
@@ -594,9 +596,40 @@ ACT-29\label{act:29} & Ensayos de oratoria y preparación de la defensa pública
 \label{tab:lista_actividades}
 \end{table}
 
+\newpage
 
+\subsection{Lista de hitos}\label{sub:lista_de_hitos}
 
-\subsection{Lista de hitos}
+Los hitos representan los puntos de control clave y logros de duración cero dentro del cronograma del proyecto. Su consecución suponen grandes avances en el desarrollo o la finalización de fases completas, y permiten evaluar el progreso general del proyecto. 
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{11cm}l}
+\hline
+\textbf{ID} & \textbf{Hito de logro} & \textbf{Fase} \\ \hline
+H-01 & Acta de constitución del proyecto redactada y firmada & F-01 -- Planificación \\ 
+H-02 & Líneas base del proyecto constituidas y aprobadas & F-01 -- Planificación \\ \hline
+H-03 & Catálogo de requisitos, casos de uso y modelos de datos definidos & F-02 -- Documentación \\ 
+H-04 & Manuales técnicos de usuario y despliegue finalizados & F-02 -- Documentación \\ \hline
+H-05 & Repositorio inicializado y entorno de desarrollo listo & F-03 -- Inicio \\ \hline
+H-06 & Flujo de CI/CD automatizado y plantillas de trabajo desplegadas & F-04 -- CI/CD \\ \hline
+H-07 & Funcionalidades del MVP operativas (creación y respuesta de tests) & F-05 -- MVP \\ \hline
+H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & F-06 -- Testing \\ \hline
+H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & F-07 -- Core \\ 
+H-10 & Motor de validación y control de integridad de respuestas completado & F-07 -- Core \\ \hline
+H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & F-08 -- QA \\ \hline
+H-12 & Memoria académica consolidada y entregada & F-09 -- Memoria \\ \hline
+H-13 & Presentación y material de soporte maquetados para la defensa & F-10 -- Defensa \\
+H-14 & Defensa pública del proyecto ejecutada ante el tribunal & F-10 -- Defensa \\ \hline
+\end{tabular}
+}
+\caption{Lista de hitos de control del proyecto.}
+\label{tab:lista_hitos}
+\end{table}
+
 \subsection{Diagrama de Gantt}
 
 \begin{figure}[H]
