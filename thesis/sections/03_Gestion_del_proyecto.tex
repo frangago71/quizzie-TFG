@@ -511,8 +511,93 @@ Ensayos de oratoria y preparación de la defensa pública & Project Manager & 10
 \end{table}
 
 
-\section{Línea Base del Cronograma}
-\subsection{Lista de actividades}
+\section{Línea base del cronograma}\label{sec:linea_base_del_cronograma}
+A partir de los paquetes de trabajo presentes en la Estructura de Desglose del Trabajo (EDT), se ha planificado la distribución temporal del proyecto. El flujo de trabajo se estructura dividiendo el ciclo de vida en fases temporales que agrupan las actividades y culminan en hitos de control.
+
+\subsection{Fases del proyecto}\label{sub:fases_del_proyecto}
+
+El proyecto se divide en 10 fases temporales consecutivas y paralelas, que se han organizado en 4 bloques de trabajo fundamentales:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{llp{7cm}l}
+\hline
+\textbf{ID} &  \textbf{Nombre} & \textbf{Descripción} & \textbf{Bloque} \\ \hline
+F-01 & Planificación & Planificación inicial, estimación de tiempos y recursos. & Gestión y planificación \\ \hline
+F-02 & Documentación & Redacción de manuales y documentación técnica de soporte. & Documentación y cierre \\ \hline
+F-03 & Inicio & Configuración del entorno base y análisis de requisitos. & Gestión y planificación \\ \hline
+F-04 & CI/CD & Automatización de flujos de trabajo e integración continua. & Ciclo de vida y calidad \\ \hline
+F-05 & MVP & Construcción de la primera versión mínima funcional. & Desarrollo de código \\ \hline
+F-06 & Testing & Diseño y ejecución de la batería de pruebas del sistema. & Ciclo de vida y calidad \\ \hline
+F-07 & Core & Desarrollo de las características principales (WebSockets). & Desarrollo de código \\ \hline
+F-08 & QA & Estabilización de código y corrección de errores finales. & Desarrollo de código \\ \hline
+F-09 & Memoria & Consolidación, revisión final y entrega de la memoria. & Documentación y cierre \\ \hline
+F-10 & Defensa & Preparación del material de soporte y ensayos. & Documentación y cierre \\ \hline
+\end{tabular}
+\caption{Fases temporales del proyecto.}
+\label{tab:fases}
+\end{table}
+
+\subsection{Lista de actividades}\label{sub:lista_de_actividades}
+
+Cada una de las actividades del cronograma conserva una relación directa con los paquetes de trabajo definidos en el diccionario de la EDT. Para garantizar el seguimiento y la trazabilidad temporal, a continuación se detallan todas las tareas del proyecto:
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{11cm}l}
+\hline
+\textbf{ID} & \textbf{Actividad} & \textbf{Fase} \\ \hline
+
+ACT-01 & Redacción del acta de constitución & F01 -- Planificación \\
+ACT-02 & Definición de hitos y estimación del cronograma inicial & F01 -- Planificación \\
+ACT-03 & Elección de estilos, paleta de colores y componentes básicos & F01 -- Planificación \\
+ACT-04 & Diseño de prototipos de las pantallas de gestión del profesor & F01 -- Planificación \\
+ACT-05 & Diseño de la interfaz de respuesta para pantallas de alumnos & F01 -- Planificación \\ \hline
+
+ACT-06 & Elaboración del manual funcional como guía para usuarios & F02 -- Documentación \\
+ACT-07 & Redacción del manual de despliegue técnico de infraestructura & F02 -- Documentación \\
+ACT-08 & Elicitación y redacción de requisitos funcionales y no funcionales & F02 -- Documentación \\
+ACT-09 & Modelado de diagramas de casos de uso y flujos esenciales & F02 -- Documentación \\
+ACT-10 & Diseño del modelo conceptual y lógico de datos & F02 -- Documentación \\
+ACT-11 & Modelado del diagrama de entidades relacional & F02 -- Documentación \\
+ACT-12 & Generación del \textit{script} de inicialización de tablas y poblado & F02 -- Documentación \\ \hline
+
+ACT-13 & Inicialización del repositorio en GitHub y estructura base & F03 -- Inicio \\ \hline
+
+ACT-14 & Configuración de reglas en ramas y automatización base & F04 -- CI/CD \\
+ACT-15 & Diseño y despliegue de \textit{templates} para \textit{issues} & F04 -- CI/CD \\ \hline
+
+ACT-16 & Diseño y desarrollo de la persistencia base para cuestionarios & F05 -- MVP \\
+ACT-17 & Implementación de la interfaz de creación de tests y panel base & F05 -- MVP \\
+ACT-18 & Lógica de control y validación para la ejecución asíncrona & F05 -- MVP \\ \hline
+
+ACT-19 & Desarrollo y ejecución de test de integración de servicios & F06 -- Testing \\
+ACT-20 & Programación y lanzamiento de \textit{scripts} de carga & F06 -- Testing \\ \hline
+
+ACT-21 & Desarrollo de la infraestructura síncrona y canales WebSocket & F07 -- Core \\
+ACT-22 & Implementación en frontend de la conexión reactiva a salas & F07 -- Core \\
+ACT-23 & Programación del motor de validación y control de integridad & F07 -- Core \\ \hline
+
+ACT-24 & Implementación del módulo de autenticación y panel avanzado & F08 -- QA \\
+ACT-25 & Desarrollo de vistas de historial y exportación de datos & F08 -- QA \\
+ACT-26 & Puesta a punto, empaquetado, corrección de errores y despliegue & F08 -- QA \\ \hline
+
+ACT-27 & Redacción y estructuración técnica de la memoria en LaTeX & F09 -- Memoria \\ \hline
+
+ACT-28 & Diseño, desarrollo y maquetación de diapositivas de defensa & F10 -- Defensa \\
+ACT-29 & Ensayos de oratoria y preparación de la defensa pública & F10 -- Defensa \\ \hline
+\end{tabular}
+}
+\caption{Desglose de actividades ordenadas por su fase correspondiente del cronograma.}
+\label{tab:lista_actividades_fases}
+\end{table}
+
+
+
 \subsection{Lista de hitos}
 \subsection{Diagrama de Gantt}
 
