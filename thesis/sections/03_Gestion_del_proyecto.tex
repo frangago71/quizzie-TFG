@@ -22,12 +22,494 @@ El desarrollo de \textit{Quizzie} se organiza gracias a un flujo de trabajo ági
 
 El avance del proyecto se valida de forma continua mediante tutorías. La dinámica de estas reuniones consiste en presentar y revisar el software funcionando o el texto redactado hasta esa fecha para recibir el visto bueno del tutor y, acto seguido, definir los siguientes pasos y prioridades a realizar para la próxima tutoría.
 
-\section{Línea Base del Alcance}
-Supuestos, exclusiones, restricciones, etc
-\subsection{Estructura del Desglose del Trabajo (EDT)}
-Gráfica con entregables, tareas, etc
-\subsection{Diccionario de la EDT}
-Descripción de cada elemento de la EDT
+\section{Línea base del alcance}\label{sec:linea_base_del_alcance}
+
+La línea base del alcance define con precisión los límites del proyecto, asegurando que todos los esfuerzos se concentren exclusivamente en los entregables necesarios para cumplir con los objetivos académicos y técnicos. A continuación, se detallan los supuestos, restricciones y exclusiones que condicionan esta planificación.
+
+\begin{itemize}
+    \item \textbf{Supuestos:} Se asume la disponibilidad continua de las infraestructuras en la nube (proveedores de alojamiento o bases de datos) durante las fases de desarrollo y despliegue, así como el acceso ilimitado a la documentación de las API y tecnologías que componen el \textit{stack} tecnológico.
+    \item \textbf{Restricciones:} El proyecto está sujeto a una restricción temporal vinculada a los plazos institucionales de entrega y defensa del Trabajo Fin de Grado. Asimismo, el desarrollo debe ceñirse al presupuesto simulado y a la capacidad operativa de un único desarrollador.
+    \item \textbf{Exclusiones:} Queda fuera del alcance del proyecto el despliegue comercial en producción y el soporte para navegadores web obsoletos o sin compatibilidad con WebSockets modernos.
+\end{itemize}
+
+\subsection{Estructura del Desglose del Trabajo (EDT)}\label{subsec:edt}
+
+Para organizar y estructurar el alcance total del proyecto, se ha elaborado la siguiente Estructura de Desglose del Trabajo (EDT). Esta representación jerárquica descompone el proyecto en paquetes de trabajo, divididos a su vez en entregables específicos que se detallarán en el diccionario de la EDT (\ref{subsec:diccionario_edt}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/edt.png}
+\caption{Estructura de Desglose del Trabajo (EDT).}
+\label{fig:edt_grafica}
+\end{figure}
+
+\subsection{Diccionario de la EDT}\label{subsec:diccionario_edt}
+
+El diccionario de la EDT define formalmente el alcance de cada entregable y desglosa las actividades necesarias para su consecución, especificando los perfiles profesionales asignados y la estimación temporal.
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\subsubsection*{Paquete 1.0: Gestión del proyecto}
+\addcontentsline{toc}{subsubsection}{Paquete 1.0: Gestión del proyecto}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 1.1 \\
+\hline
+\textbf{Nombre} & Planificación inicial \\
+\hline
+\textbf{Descripción} & Acta de constitución del proyecto y cronograma base estimado para fijar los hitos académicos. \\
+\hline
+\textbf{Paquete} & 1. Gestión del proyecto \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 1.1.}
+\label{entregable_1_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Redacción del acta de constitución & Project Manager & 4h \\
+\hline
+Definición de hitos y estimación del cronograma inicial & Project Manager & 4h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 1.1.}
+\label{actividades_entregable_1_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 1.2 \\
+\hline
+\textbf{Nombre} & Repositorio de código \\
+\hline
+\textbf{Descripción} & Configuración de GitHub con reglas de protección de ramas, flujos de trabajo basados en fusiones (\textit{merges}) y plantillas estandarizadas para \textit{issues}. \\
+\hline
+\textbf{Paquete} & 1. Gestión del proyecto \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 1.2.}
+\label{entregable_1_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Inicialización del repositorio en GitHub y estructura base & Técnico & 2h \\
+\hline
+Configuración de reglas en ramas y automatización base & Project Manager & 5h \\
+\hline
+Diseño y despliegue de \textit{templates} para \textit{issues} & Project Manager & 3h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 1.2.}
+\label{actividades_entregable_1_2}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 1.3 \\
+\hline
+\textbf{Nombre} & Requisitos del sistema \\
+\hline
+\textbf{Descripción} & Catálogo de requisitos funcionales y no funcionales, junto al modelado de casos de uso y flujos \textit{core} de la aplicación. \\
+\hline
+\textbf{Paquete} & 1. Gestión del proyecto \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 1.3.}
+\label{entregable_1_3}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Elicitación y redacción de requisitos funcionales y no funcionales & Analista & 3h \\
+\hline
+Modelado de diagramas de casos de uso y flujos esenciales & Analista & 4h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 1.3.}
+\label{actividades_entregable_1_3}
+\end{table}
+
+
+\subsubsection*{Paquete 2.0: Diseño y Arquitectura}
+\addcontentsline{toc}{subsubsection}{Paquete 2.0: Diseño y Arquitectura}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 2.1 \\
+\hline
+\textbf{Nombre} & Modelo de datos \\
+\hline
+\textbf{Descripción} & Diseño conceptual, lógico y físico de la base de datos relacional, materializado en el diagrama de entidades del sistema. \\
+\hline
+\textbf{Paquete} & 2. Diseño y Arquitectura \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 2.1.}
+\label{entregable_2_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Diseño del modelo conceptual y lógico de datos & Analista & 4h \\
+\hline
+Modelado del diagrama de entidades relacional & Analista & 4h \\
+\hline
+Generación del \textit{script} de inicialización de tablas y poblado de datos & Programador Backend & 2h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 2.1.}
+\label{actividades_entregable_2_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 2.2 \\
+\hline
+\textbf{Nombre} & Prototipo UI \\
+\hline
+\textbf{Descripción} & Diseños visuales y plantillas para las pantallas del sistema. \\
+\hline
+\textbf{Paquete} & 2. Diseño y Arquitectura \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 2.2.}
+\label{entregable_2_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Elección de estilos, paleta de colores y componentes básicos de interfaz & Diseñador UI & 2h \\
+\hline
+Diseño de prototipos de las pantallas de gestión del profesor & Diseñador UI & 5h \\
+\hline
+Diseño de la interfaz de respuesta para pantallas de alumnos & Diseñador UI & 5h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 2.2.}
+\label{actividades_entregable_2_2}
+\end{table}
+
+\newpage
+
+\subsubsection*{Paquete 3.0: Producto software}
+\addcontentsline{toc}{subsubsection}{Paquete 3.0: Producto software}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 3.1 \\
+\hline
+\textbf{Nombre} & Release 1 (MVP) \\
+\hline
+\textbf{Descripción} & Habilitación y despliegue del flujo completo base del sistema, permitiendo la creación de cuestionarios por parte del profesor y la realización de los mismos por los alumnos. \\
+\hline
+\textbf{Paquete} & 3. Producto software \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 3.1.}
+\label{entregable_3_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Diseño y desarrollo de la persistencia base para cuestionarios y preguntas & Programador Backend & 25h \\
+\hline
+Implementación de la interfaz de creación de tests y panel de respuestas básico & Programador Frontend & 35h \\
+\hline
+Lógica de control y validación para la ejecución asíncrona del flujo de cuestionarios & Programador Backend & 20h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 3.1.}
+\label{actividades_entregable_3_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 3.2 \\
+\hline
+\textbf{Nombre} & Release 2 (Funcionalidades Core) \\
+\hline
+\textbf{Descripción} & Implementación de la capa de comunicación en tiempo real mediante WebSockets y el motor de validación de datos del sistema. \\
+\hline
+\textbf{Paquete} & 3. Producto software \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 3.2.}
+\label{entregable_3_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Desarrollo de la infraestructura síncrona del servidor y gestión de canales WebSocket & Programador Backend & 20h \\
+\hline
+Implementación en frontend de la conexión reactiva a las salas en tiempo real & Programador Frontend & 20h \\
+\hline
+Programación del motor de validación y control de integridad de datos & Programador Backend & 12h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 3.2.}
+\label{actividades_entregable_3_2}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 3.3 \\
+\hline
+\textbf{Nombre} & Release 3 (Entrega final y QA) \\
+\hline
+\textbf{Descripción} & Integración de funcionalidades avanzadas de gestión, pulido general de la interfaz y despliegue del sistema. \\
+\hline
+\textbf{Paquete} & 3. Producto software \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 3.3.}
+\label{entregable_3_3}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Implementación del módulo de autenticación de usuarios y panel de gestión avanzada de salas & Programador Backend & 5h \\
+\hline
+Desarrollo de las vistas de historial de salas pasadas y sistema de exportación de datos & Programador Frontend & 5h \\
+\hline
+Puesta a punto, empaquetado, corrección de errores de la interfaz y despliegue definitivo & Técnico & 3h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 3.3.}
+\label{actividades_entregable_3_3}
+\end{table}
+
+
+\subsubsection*{Paquete 4.0: Documentación final}
+\addcontentsline{toc}{subsubsection}{Paquete 4.0: Documentación final}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 4.1 \\
+\hline
+\textbf{Nombre} & Plan de pruebas (QA) \\
+\hline
+\textbf{Descripción} & Diseño y ejecución de baterías de test de integración y \textit{scripts} específicos de pruebas de carga. \\
+\hline
+\textbf{Paquete} & 4. Documentación final \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 4.1.}
+\label{entregable_4_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Desarrollo y ejecución de test de integración de servicios & Tester & 7h \\
+\hline
+Programación y lanzamiento de \textit{scripts} de carga & Tester & 8h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 4.1.}
+\label{actividades_entregable_4_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 4.2 \\
+\hline
+\textbf{Nombre} & Manuales técnicos \\
+\hline
+\textbf{Descripción} & Redacción del manual de usuario y del manual de despliegue. \\
+\hline
+\textbf{Paquete} & 4. Documentación final \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 4.2.}
+\label{entregable_4_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Elaboración del manual funcional como guía para usuarios & Analista & 2h \\
+\hline
+Redacción del manual de despliegue técnico de infraestructura & Técnico & 1h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 4.2.}
+\label{actividades_entregable_4_2}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 4.3 \\
+\hline
+\textbf{Nombre} & Memoria académica \\
+\hline
+\textbf{Descripción} & Redacción técnica, maquetación y consolidación del documento final del TFG junto con el diseño de las diapositivas para la defensa. \\
+\hline
+\textbf{Paquete} & 4. Documentación final \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 4.3.}
+\label{entregable_4_3}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\dimexpr\textwidth-12pt}{Yll}
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+Redacción y estructuración técnica de la memoria en LaTeX & Analista & 70h \\
+\hline
+Diseño, desarrollo y maquetación de las diapositivas de la defensa & Diseñador UI & 10h \\
+\hline
+Ensayos de oratoria y preparación de la defensa pública & Project Manager & 10h \\
+\hline
+\end{tabularx}
+\caption{Actividades del entregable 4.3.}
+\label{actividades_entregable_4_3}
+\end{table}
+
 
 \section{Línea Base del Cronograma}
 \subsection{Lista de actividades}
