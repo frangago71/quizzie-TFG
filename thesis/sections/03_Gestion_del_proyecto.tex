@@ -634,7 +634,7 @@ H-14 & Defensa pública del proyecto ejecutada ante el tribunal & 10 Jun & F-10 
 
 \newpage
 
-\subsection{Diagrama de Gantt}
+\subsection{Diagrama de Gantt}\label{sub:diagrama_de_gantt}
 El siguiente diagrama de Gantt sintetiza de manera visual la distribución cronológica del proyecto, clave para el seguimiento del trabajo realizado y asegurar el cumplimiento de los plazos fijados.
 
 \begin{figure}[H]
@@ -725,18 +725,104 @@ El siguiente diagrama de Gantt sintetiza de manera visual la distribución crono
 \label{fig:gantt}
 \end{figure}
 
+\section{Línea base de Costes}\label{sec:linea_base_de_costes}
+El desarrollo de un proyecto como \textit{Quizzie} no solo exige viabilidad técnica, sino también un modelo financiero sostenible que justifique su implantación frente a otras soluciones. Para ello, se analizan a continuación los costes operativos, el impacto económico que supone el escalado de la infraestructura y el Coste Total de Propiedad (TCO).
 
+\subsection{Análisis de costes}\label{sub:analisis_de_costes}
+El estudio económico de la plataforma se fundamenta en dos componentes financieros esenciales: los Gastos de Capital (\textit{Capital Expenditure} o CAPEX), que engloban el coste teórico de desarrollo y los recursos fijos necesarios para materializar el sistema, y los Gastos Operativos (\textit{Operational Expenditure} o OPEX), que representan el coste mensual estimado para la explotación de la plataforma en producción. 
 
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lr}
+\hline
+\textbf{Concepto} & \textbf{Coste neto} \\ \hline
+Costes laborales & 10.865,49 € \\
+Equipamiento informático & 500,00 € \\
+Licencia comercial anual Google AI Premium (Gemini Pro) & 218,07 € \\
+Licencia GitHub Team (6 meses) & 21,82 € \\
+Licencia Microsoft Teams Essentials (6 meses) & 21,82 € \\
+Reserva de contingencia & 1.162,72 € \\ \hline
+\textbf{Total CAPEX} & \textbf{12.789,92 €} \\ \hline
+\end{tabular}
+\caption{Resumen de Gastos de Capital (CAPEX).}
+\label{tab:resumen_capex}
+\end{table}
 
+Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos debido a que el proyecto ha sido ejecutado íntegramente por un único ingeniero. De este modo, cada actividad de la EDT se presupuesta teniendo en cuenta el rol profesional que la llevará a cabo. Para garantizar el rigor y la objetividad de las tarifas aplicadas, los precios base por hora se han extraído del \textit{Informe Final sobre la Consulta Preliminar del Mercado: ``Perfiles Profesionales Ámbito Informático''} de la Junta de Andalucía \cite{juntaTIC2018}. Siguiendo las directrices de dicho organismo, se utiliza como referencia la métrica de la \textbf{media acotada}, un indicador estadístico corregido mediante el test de Tukey que elimina valores atípicos del sector. Sobre la base salarial neta resultante de 8.358,07 €, se ha aplicado un recargo del 30\% en concepto de Seguridad Social y costes empresariales de contratación directos del mercado español, consolidando el coste laboral real en \textbf{10.865,49 €}. El desglose detallado de las horas por actividad y perfiles profesionales que sustenta este cálculo se presenta en la tabla de \hyperref[tab:coste_personal_rol]{costes netos laborales}.
 
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{
+\begin{tabular}{llccr}
+\hline
+\textbf{Recurso (Rol)} & \textbf{Actividad} & \textbf{Precio/hora} & \textbf{Horas} & \textbf{Coste neto} \\ \hline
+\textbf{Project Manager} & \hyperref[act:01]{\textbf{ACT-01}} & 46,09 € & 4 h  & 184,36 € \\
+                         & \hyperref[act:02]{\textbf{ACT-02}} & 46,09 € & 4 h  & 184,36 € \\
+                         & \hyperref[act:14]{\textbf{ACT-14}} & 46,09 € & 5 h  & 230,45 € \\
+                         & \hyperref[act:15]{\textbf{ACT-15}} & 46,09 € & 3 h  & 138,27 € \\
+                         & \hyperref[act:29]{\textbf{ACT-29}} & 46,09 € & 10 h & 460,90 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}} & \textbf{26 h} & \textbf{1.198,34 €} \\ \hline
+\textbf{Analista}        & \hyperref[act:06]{\textbf{ACT-06}} & 38,33 € & 2 h  & 76,66 € \\
+                         & \hyperref[act:08]{\textbf{ACT-08}} & 38,33 € & 3 h  & 114,99 € \\
+                         & \hyperref[act:09]{\textbf{ACT-09}} & 38,33 € & 4 h  & 153,32 € \\
+                         & \hyperref[act:10]{\textbf{ACT-10}} & 38,33 € & 4 h  & 153,32 € \\
+                         & \hyperref[act:11]{\textbf{ACT-11}} & 38,33 € & 4 h  & 153,32 € \\
+                         & \hyperref[act:27]{\textbf{ACT-27}} & 38,33 € & 70 h & 2.683,10 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{87 h} & \textbf{3.334,71 €} \\ \hline
+\textbf{Diseñador UI}    & \hyperref[act:03]{\textbf{ACT-03}} & 33,43 € & 2 h  & 66,86 € \\
+                         & \hyperref[act:04]{\textbf{ACT-04}} & 33,43 € & 5 h  & 167,15 € \\
+                         & \hyperref[act:05]{\textbf{ACT-05}} & 33,43 € & 5 h  & 167,15 € \\
+                         & \hyperref[act:28]{\textbf{ACT-28}} & 33,43 € & 10 h & 334,30 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}    & \textbf{22 h} & \textbf{735,46 €} \\ \hline
+\textbf{Programador Backend} & \hyperref[act:12]{\textbf{ACT-12}} & 23,85 € & 2 h  & 47,70 € \\
+                         & \hyperref[act:16]{\textbf{ACT-16}} & 23,85 € & 25 h & 596,25 € \\
+                         & \hyperref[act:18]{\textbf{ACT-18}} & 23,85 € & 20 h & 477,00 € \\
+                         & \hyperref[act:21]{\textbf{ACT-21}} & 23,85 € & 20 h & 477,00 € \\
+                         & \hyperref[act:23]{\textbf{ACT-23}} & 23,85 € & 12 h & 286,20 € \\
+                         & \hyperref[act:24]{\textbf{ACT-24}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}   & \textbf{84 h} & \textbf{2.003,40 €} \\ \hline
+\textbf{Programador Frontend} & \hyperref[act:17]{\textbf{ACT-17}} & 23,85 € & 35 h & 834,75 € \\
+                         & \hyperref[act:22]{\textbf{ACT-22}} & 23,85 € & 20 h & 477,00 € \\
+                         & \hyperref[act:25]{\textbf{ACT-25}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}  & \textbf{60 h} & \textbf{1.431,00 €} \\ \hline
+\textbf{Tester}          & \hyperref[act:19]{\textbf{ACT-19}} & 23,68 € & 7 h  & 165,76 € \\
+                         & \hyperref[act:20]{\textbf{ACT-20}} & 23,68 € & 8 h  & 189,44 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}          & \textbf{15 h} & \textbf{355,20 €} \\ \hline
+\textbf{Técnico}         & \hyperref[act:07]{\textbf{ACT-07}} & 19,58 € & 1 h  & 19,58 € \\
+                         & \hyperref[act:13]{\textbf{ACT-13}} & 19,58 € & 2 h  & 39,16 € \\
+                         & \hyperref[act:26]{\textbf{ACT-26}} & 19,58 € & 3 h  & 58,74 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}         & \textbf{6 h}  & \textbf{117,48 €} \\ \hline
+\textbf{TOTAL}         &  &  & \textbf{300 h} & \textbf{8.358,07 €} \\ \hline
+\end{tabular}
+}
+\caption{Costes netos laborales agrupados por perfil profesional.}
+\label{tab:coste_personal_rol}
+\end{table}
 
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lr}
+\hline
+\textbf{Concepto} & \textbf{Coste neto} \\ \hline
+Infraestructura web Frontend (\textit{Vercel Pro}) & 18,18 €/mes \\
+Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 12,73 €/mes \\
+Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 15,00 €/mes \\ \hline
+\textbf{Total OPEX} & \textbf{45,91 €/mes} \\ \hline
+\end{tabular}
+\caption{Resumen de Gastos Operativos mensuales (OPEX).}
+\label{tab:resumen_opex}
+\end{table}
 
-\section{Línea Base de Costes}
-Aquí me surgen las mismas dudas que en el cronograma, quizás podría apoyarme en un Excel para los costes. También dudo en si tengo que poner costes de herramientas como Github o Gemini, y los costes de despliegue 
+Cabe destacar que los Gastos Operativos (OPEX) reflejados en la \hyperref[tab:resumen_opex]{tabla} no constituyen un coste estático, sino que representan una proyección basada en una estimación inicial de 2.000 usuarios activos mensuales, asumiendo un consumo moderado de recursos y una utilización estándar de la API de inteligencia artificial. En escenarios de escalado masivo, donde el volumen de usuarios concurrentes o la demanda de cómputo aumente significativamente, es previsible que estos costes operativos se incrementen de forma proporcional. Por ello, en la siguiente subsección se detalla y aclara matemáticamente el comportamiento financiero de la plataforma ante diferentes escenarios de carga y volumen de usuarios.
 
-\subsection{Análisis de costes}
-Incluyendo Capex y Opex
 \subsection{Costes de infraestructura según el número de usuarios}
+
 \subsection{Coste total de propiedad (TCO)}
 
 
