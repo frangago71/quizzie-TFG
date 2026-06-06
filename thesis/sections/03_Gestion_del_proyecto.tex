@@ -519,6 +519,7 @@ El proyecto se divide en 10 fases temporales consecutivas y paralelas, que se ha
 \centering
 \small
 \renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
 \begin{tabular}{llp{7cm}l}
 \hline
 \textbf{ID} &  \textbf{Nombre} & \textbf{Descripción} & \textbf{Bloque} \\ \hline
@@ -533,6 +534,7 @@ F-08 & QA & Estabilización de código y corrección de errores finales. & Desar
 F-09 & Memoria & Consolidación, revisión final y entrega de la memoria. & Documentación y cierre \\ \hline
 F-10 & Defensa & Preparación del material de soporte y ensayos. & Documentación y cierre \\ \hline
 \end{tabular}
+}
 \caption{Fases temporales del proyecto.}
 \label{tab:fases}
 \end{table}
@@ -607,30 +609,33 @@ Los hitos representan los puntos de control clave y logros de duración cero den
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{11cm}l}
+\begin{tabular}{lp{8.5cm}ll}
 \hline
-\textbf{ID} & \textbf{Hito de logro} & \textbf{Fase} \\ \hline
-H-01 & Acta de constitución del proyecto redactada y firmada & F-01 -- Planificación \\ 
-H-02 & Líneas base del proyecto constituidas y aprobadas & F-01 -- Planificación \\ \hline
-H-03 & Catálogo de requisitos, casos de uso y modelos de datos definidos & F-02 -- Documentación \\ 
-H-04 & Manuales técnicos de usuario y despliegue finalizados & F-02 -- Documentación \\ \hline
-H-05 & Repositorio inicializado y entorno de desarrollo listo & F-03 -- Inicio \\ \hline
-H-06 & Flujo de CI/CD automatizado y plantillas de trabajo desplegadas & F-04 -- CI/CD \\ \hline
-H-07 & Funcionalidades del MVP operativas (creación y respuesta de tests) & F-05 -- MVP \\ \hline
-H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & F-06 -- Testing \\ \hline
-H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & F-07 -- Core \\ 
-H-10 & Motor de validación y control de integridad de respuestas completado & F-07 -- Core \\ \hline
-H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & F-08 -- QA \\ \hline
-H-12 & Memoria académica consolidada y entregada & F-09 -- Memoria \\ \hline
-H-13 & Presentación y material de soporte maquetados para la defensa & F-10 -- Defensa \\
-H-14 & Defensa pública del proyecto ejecutada ante el tribunal & F-10 -- Defensa \\ \hline
+\textbf{ID} & \textbf{Hito de logro} & \textbf{Límite}  & \textbf{Fase} \\ \hline
+H-01 & Acta de constitución del proyecto redactada y firmada & 21 Ene & F-01 -- Planificación  \\ 
+H-02 & Líneas base del proyecto constituidas y aprobadas & 28 Ene & F-01 -- Planificación \\ \hline
+H-03 & Catálogo de requisitos, casos de uso y modelos de datos definidos & 18 Feb & F-02 -- Documentación \\ 
+H-04 & Manuales técnicos de usuario y despliegue finalizados & 14 Abr & F-02 -- Documentación \\ \hline
+H-05 & Repositorio inicializado y entorno de desarrollo listo & 11 Feb & F-03 -- Inicio \\ \hline
+H-06 & Flujo de CI/CD automatizado y plantillas de trabajo desplegadas & 1 Mar & F-04 -- CI/CD \\ \hline
+H-07 & Funcionalidades del MVP operativas (creación y respuesta de tests) & 8 Mar & F-05 -- MVP \\ \hline
+H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & 26 Abr & F-06 -- Testing \\ \hline
+H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & 29 Mar & F-07 -- Core \\ 
+H-10 & Motor de validación y control de integridad de respuestas completado & 12 Abr & F-07 -- Core \\ \hline
+H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & 19 Abr & F-08 -- QA \\ \hline
+H-12 & Memoria académica consolidada y entregada & 17 May & F-09 -- Memoria  \\ \hline
+H-13 & Presentación y material de soporte maquetados para la defensa & 5 Jun & F-10 -- Defensa \\
+H-14 & Defensa pública del proyecto ejecutada ante el tribunal & 10 Jun & F-10 -- Defensa \\ \hline
 \end{tabular}
 }
-\caption{Lista de hitos de control del proyecto.}
+\caption{Hitos de control del proyecto.}
 \label{tab:lista_hitos}
 \end{table}
 
+\newpage
+
 \subsection{Diagrama de Gantt}
+El siguiente diagrama de Gantt sintetiza de manera visual la distribución cronológica del proyecto, clave para el seguimiento del trabajo realizado y asegurar el cumplimiento de los plazos fijados.
 
 \begin{figure}[H]
 \centering
@@ -640,7 +645,7 @@ H-14 & Defensa pública del proyecto ejecutada ante el tribunal & F-10 -- Defens
     vgrid=false, 
     x unit=0.115cm,
     y unit title=0.55cm,
-    y unit chart=0.6cm,
+    y unit chart=0.75cm, 
     time slot format=isodate,
     inline,
     bar label font=\scriptsize\bfseries\color{black},
@@ -658,60 +663,69 @@ H-14 & Defensa pública del proyecto ejecutada ante el tribunal & F-10 -- Defens
     \gantttitle{Jun}{12} \\
 
     \ganttbar[bar/.style={fill=orange!15, draw=orange!50, rounded corners=2pt}]{H01-Plan}{2026-01-15}{2026-01-28} \\
-    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H02-Documentación}{2026-01-29}{2026-04-13} \\
+    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H02-Documentación}{2026-01-29}{2026-04-14} \\
     \ganttbar[bar/.style={fill=orange!15, draw=orange!50, rounded corners=2pt}]{H03-Inicio}{2026-01-29}{2026-02-11} \\
-    \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H04-CI/CD}{2026-02-12}{2026-04-26} \\
+    \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H04-CI/CD}{2026-02-14}{2026-04-26} \\
     \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H05-MVP}{2026-02-12}{2026-03-08} \\
     \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H06-Testing}{2026-02-12}{2026-04-26} \\
     \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H07-Core}{2026-03-09}{2026-04-12} \\
     \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H08-QA}{2026-04-13}{2026-04-26} \\
-    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H09-Memoria}{2026-04-13}{2026-05-17} \\
+    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H09-Memoria}{2026-04-15}{2026-05-17} \\
     \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H10-Defensa}{2026-05-18}{2026-06-12}
 
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{19}{2026-01-19}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{26}{2026-01-26}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{02}{2026-02-02}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{09}{2026-02-09}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{16}{2026-02-16}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{23}{2026-02-23}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{02}{2026-03-02}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{09}{2026-03-09}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{16}{2026-03-16}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{23}{2026-03-23}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{30}{2026-03-30}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{06}{2026-04-06}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{13}{2026-04-13}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{20}{2026-04-20}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{27}{2026-04-27}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{04}{2026-05-04}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{11}{2026-05-11}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{18}{2026-05-18}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{25}{2026-05-25}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{01}{2026-06-01}
-    \ganttvrule[vrule/.style={draw=gray, dotted, thick}]{08}{2026-06-08}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{19}{2026-01-19}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{26}{2026-01-26}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-02-02}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-02-09}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-02-16}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-02-23}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-03-02}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-03-09}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-03-16}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-03-23}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{30}{2026-03-30}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{06}{2026-04-06}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{13}{2026-04-13}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{20}{2026-04-20}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{27}{2026-04-27}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{04}{2026-05-04}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{11}{2026-05-11}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{18}{2026-05-18}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{25}{2026-05-25}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{01}{2026-06-01}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{08}{2026-06-08}
 
-    \ganttvrule[vrule/.style={draw=red, dashed, thick}]{}{2026-05-17}
-    \ganttvrule[vrule/.style={draw=blue, dashed, thick}]{}{2026-06-08}
-
+    \ganttvrule[vrule/.style={draw=orange!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{orange!90!black}, fill=white, inner sep=1pt}]{H-01}{2026-01-21}
+    \ganttvrule[vrule/.style={draw=red, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{red}, fill=white, inner sep=1pt}]{H-02}{2026-01-28}
+    \ganttvrule[vrule/.style={draw=teal!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{teal!90!black}, fill=white, inner sep=1pt}]{H-03}{2026-02-18}
+    \ganttvrule[vrule/.style={draw=yellow!80!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{yellow!80!black}, fill=white, inner sep=1pt}]{H-05}{2026-02-11}
+    \ganttvrule[vrule/.style={draw=purple, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{purple}, fill=white, inner sep=1pt}]{H-06}{2026-03-01}
+    \ganttvrule[vrule/.style={draw=blue, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{blue}, fill=white, inner sep=1pt}]{H-07}{2026-03-08}
+    \ganttvrule[vrule/.style={draw=darkgray, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{darkgray}, fill=white, inner sep=1pt}]{H-09}{2026-03-29}
+    \ganttvrule[vrule/.style={draw=violet!60!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{violet!60!black}, fill=white, inner sep=1pt}]{H-10}{2026-04-12}
+    \ganttvrule[vrule/.style={draw=brown!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=0.3cm, font=\tiny\bfseries\color{brown!90!black}, fill=white, inner sep=1pt}]{H-04}{2026-04-14}
+    \ganttvrule[vrule/.style={draw=cyan!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{cyan!90!black}, fill=white, inner sep=1pt}]{H-11}{2026-04-19}
+    \ganttvrule[vrule/.style={draw=purple, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{purple}, fill=white, inner sep=1pt}]{H-08}{2026-04-26}
+    \ganttvrule[vrule/.style={draw=lime!40!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{lime!40!black}, fill=white, inner sep=1pt}]{H-12}{2026-05-17}
+    \ganttvrule[vrule/.style={draw=olive, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{olive}, fill=white, inner sep=1pt}]{H-13}{2026-06-05}
+    \ganttvrule[vrule/.style={draw=blue!50!violet, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{blue!50!violet}, fill=white, inner sep=1pt}]{H-14}{2026-06-10}
 \end{ganttchart}
 }
-
-\vspace{0.4cm}
+\vspace{0.15cm}
 \begin{center}
 \footnotesize
 \begin{tabular}{clccl}
 \fcolorbox{black}{orange!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
 \fcolorbox{black}{blue!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Desarrollo de código \\
-\fcolorbox{black}{purple!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida & \hspace{0.5cm} &
-\fcolorbox{black}{teal!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y vierre \\
-\rule{0pt}{3ex}\textcolor{red}{\textbf{---}} & Hito: Entrega memoria (17-May) & \hspace{0.5cm} &
-\textcolor{blue}{\textbf{---}} & Hito: Inicio periodo defensas (08-Jun)
+\fcolorbox{black}{purple!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
+\fcolorbox{black}{teal!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
 \end{tabular}
 \end{center}
-
 \caption{Diagrama de Gantt inicial del proyecto.}
-\label{fig:gantt_tfg}
+\label{fig:gantt}
 \end{figure}
+
+
 
 
 
@@ -727,7 +741,7 @@ Incluyendo Capex y Opex
 
 
 
-\subsection{Plan de gestión de cambios y riesgos}
+\section{Plan de gestión de cambios y riesgos}
 Cómo se gestionarán los cambios en el proyecto y los riesgos identificados
 
 Quiero dividir los riesgos en temporales, de alcance y técnicos (económicos no le veo mucho sentido pero también podría ser), y quizás definir roles encargados de solicitar cambios, aprobarlos y demás
