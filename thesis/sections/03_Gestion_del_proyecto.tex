@@ -819,9 +819,104 @@ Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 15,00 €/mes
 \label{tab:resumen_opex}
 \end{table}
 
-Cabe destacar que los Gastos Operativos (OPEX) reflejados en la \hyperref[tab:resumen_opex]{tabla} no constituyen un coste estático, sino que representan una proyección basada en una estimación inicial de 2.000 usuarios activos mensuales, asumiendo un consumo moderado de recursos y una utilización estándar de la API de inteligencia artificial. En escenarios de escalado masivo, donde el volumen de usuarios concurrentes o la demanda de cómputo aumente significativamente, es previsible que estos costes operativos se incrementen de forma proporcional. Por ello, en la siguiente subsección se detalla y aclara matemáticamente el comportamiento financiero de la plataforma ante diferentes escenarios de carga y volumen de usuarios.
+Cabe destacar que los Gastos Operativos (OPEX) reflejados en la \hyperref[tab:resumen_opex]{tabla} no constituyen un coste estático, sino que representan una proyección basada en una estimación inicial de 500 usuarios activos mensuales, asumiendo un consumo moderado de recursos y una utilización estándar de la API de inteligencia artificial. En escenarios de escalado masivo, donde el volumen de usuarios concurrentes o la demanda de cómputo aumente significativamente, es previsible que estos costes operativos se incrementen de forma proporcional. Por ello, en la siguiente subsección se detalla y aclara matemáticamente el comportamiento financiero de la plataforma ante diferentes escenarios de carga y volumen de usuarios.
 
 \subsection{Costes de infraestructura según el número de usuarios}
+
+Para prever el impacto financiero de la plataforma en entornos reales, se analiza el comportamiento de los costes operativos (OPEX) bajo tres escenarios de demanda: pesimista, conservador y optimista. Esta clasificación permite evaluar la elasticidad de la infraestructura en la nube (\textit{Render} y \textit{Vercel}) y el consumo variable de la API de \textit{Gemini} según el volumen de uso.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{
+\begin{tabular}{lccc}
+\hline
+\textbf{Concepto} & \textbf{Pesimista} & \textbf{Conservador} & \textbf{Optimista} \\ \hline
+Infraestructura web Frontend (\textit{Vercel Pro}) & 0,00 € & 18,18 € & 18,18 € \\
+Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 0,00 € & 12,73 € & 27,27 € \\
+Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15,00 € & 60,00 € \\ \hline
+\textbf{Total OPEX} & \textbf{2,50 €/mes} & \textbf{45,91 €/mes} & \textbf{105,45 €/mes} \\ \hline
+\end{tabular}
+}
+\caption{Comparativa de OPEX según escenario de escalado.}
+\label{tab:escalado_opex}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=12pt,                
+    enlarge x limits=0.3,
+    legend style={at={(0.5,-0.25)}, anchor=north, legend columns=-1}, 
+    ylabel={Coste Neto (€/mes)},
+    symbolic x coords={Pesimista, Conservador, Optimista},
+    xtick=data,
+    nodes near coords,
+    nodes near coords style={
+        font=\scriptsize, 
+        rotate=90, 
+        anchor=west, 
+        yshift=3pt,
+        /pgf/number format/fixed,
+        /pgf/number format/precision=2
+    }, 
+    ymin=0, ymax=70, 
+    height=8cm,
+    width=12cm,
+    grid=major,
+    grid style={dashed, gray!30}
+]
+\addplot[fill=blue!50] coordinates {(Pesimista, 0.00) (Conservador, 18.18) (Optimista, 18.18)};
+\addplot[fill=orange!70] coordinates {(Pesimista, 0.00) (Conservador, 12.73) (Optimista, 27.27)};
+\addplot[fill=green!60!black!60] coordinates {(Pesimista, 2.50) (Conservador, 15.00) (Optimista, 60.00)};
+
+\legend{Vercel Pro, Render Starter, Gemini Pro}
+\end{axis}
+\end{tikzpicture}
+\caption{Costes mensuales de infraestructura según escenario de escalado.}
+\label{fig:grafica_opex_desagregada}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm,
+    height=8cm,
+    xlabel={Número de usuarios activos mensuales},
+    ylabel={Coste Neto (€/mes)},
+    xmin=0, xmax=2100,
+    ymin=0, ymax=120,
+    xtick={0, 100, 500, 1000, 1500, 2000},
+    ytick={0, 20, 40, 60, 80, 100, 120},
+    grid=both,
+    grid style={dashed, gray!30},
+    legend style={at={(0.5,-0.2)}, anchor=north, legend columns=-1},
+    line width=1.2pt
+]
+\addplot[color=blue, mark=square*] coordinates {
+    (0,0) (100,0) (500,18.18) (1000,18.18) (2000,18.18)
+};
+\addplot[color=orange, mark=triangle*] coordinates {
+    (0,0) (100,0) (500,12.73) (1000,12.73) (2000,27.27)
+};
+\addplot[color=green!60!black, mark=diamond*] coordinates {
+    (0,0) (100,2.50) (500,15.00) (1000,30.00) (2000,60.00)
+};
+\addplot[color=red, line width=2pt, mark=*] coordinates {
+    (0,0) (100,2.50) (500,45.91) (1000,60.91) (2000,105.45)
+};
+
+\legend{Vercel Pro, Render Starter, Gemini Pro, Total OPEX}
+\end{axis}
+\end{tikzpicture}
+\caption{Evolución de OPEX en función del volumen de usuarios.}
+\label{fig:grafica_lineal_opex}
+\end{figure}
+
 
 \subsection{Coste total de propiedad (TCO)}
 
