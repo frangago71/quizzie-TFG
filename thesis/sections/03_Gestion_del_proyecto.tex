@@ -948,9 +948,36 @@ De este modo, asumiendo los gastos de infraestructura del escenario conservador,
 
 \textit{Nota: No se han imputado costes de personal ni horas de mantenimiento dentro del OPEX debido a que el esfuerzo laboral se ha contabilizado íntegramente como parte del CAPEX, contando con las 300 horas reglamentarias del TFG.}
 
+
 \section{Plan de gestión de cambios y riesgos}
-Cómo se gestionarán los cambios en el proyecto y los riesgos identificados
 
-Quiero dividir los riesgos en temporales, de alcance y técnicos (económicos no le veo mucho sentido pero también podría ser), y quizás definir roles encargados de solicitar cambios, aprobarlos y demás
+Un desarrollo tecnológico está inherentemente sujeto a imprevistos y desviaciones. Para asegurar el éxito y la entrega en plazo de la plataforma, se establece a continuación una tabla de riesgos categorizada en tres dimensiones críticas (temporales, de alcance y técnicos), junto con sus respectivas estrategias de mitigación. Asimismo, se define el procedimiento formal para gestionar cualquier modificación en los requisitos iniciales del sistema.
 
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{5.5cm}p{5.5cm}}
+\hline
+ \textbf{Categoría} & \textbf{ID} & \textbf{Riesgo} & \textbf{Estrategia de mitigación} \\ \hline
+ Temporal & \textbf{R1} & Retraso en el calendario por la curva de aprendizaje en WebSockets o nuevas tecnologías. & Reservar las primeras semanas para crear pruebas de concepto aisladas antes de programar el núcleo. \\
+ & \textbf{R2} & Falta de disponibilidad por la carga de trabajo de otras asignaturas simultáneas del curso. & Planificación mediante \textit{sprints} semanales rígidos con objetivos mínimos viables para mantener un ritmo constante. \\ \hline
+ Alcance & \textbf{R3} & Corrupción del alcance (\textit{Scope Creep}) al querer añadir más modos de juego o analíticas. & Definición estricta del Producto Mínimo Viable (MVP). Las mejoras secundarias se van a \textit{Trabajos Futuros}. \\
+ & \textbf{R4} & Ambigüedad en los requisitos iniciales que obligue a rehacer lógica de negocio ya programada. & Validación previa del modelo de datos e historias de usuario mediante diagramas de flujo antes de codificar. \\ \hline
+ Técnico & \textbf{R5} & Indisponibilidad, caídas o latencia elevada en los servicios de terceros (\textit{Gemini} o \textit{Render}). & Implementación de zonas de control de errores (\textit{error boundaries}). \\
+ & \textbf{R6} & Problemas de concurrencia y desincronización de estado en las salas de juego en tiempo real. & Diseño de un estado centralizado e inmutable en el servidor y pruebas de carga locales con conexiones simuladas. \\ \hline
+\end{tabular}
+}
+\caption{Tabla de riesgos identificados y estrategias de mitigación.}
+\label{tab:riesgos}
+\end{table}
 
+Para evitar que las modificaciones desestabilicen el desarrollo, cualquier variación en los requisitos iniciales se gestionará de forma estructurada siguiendo este flujo secuencial:
+
+\begin{enumerate}
+    \item \textbf{Identificación:} Toda propuesta de modificación se registrará en el \textit{backlog}, especificando si afecta al código de la aplicación, a la redacción de la memoria o a la planificación temporal del proyecto.
+    \item \textbf{Análisis de impacto:} Evaluar el esfuerzo y las horas necesarias para aplicar el cambio, estimando cómo afectará al calendario global de las asignaturas, a la documentación pendiente o a la arquitectura del sistema.
+    \item \textbf{Resolución:} Decidir de forma justificada si el cambio se aprueba para su ejecución inmediata, se pospone como una mejora futura o se descarta si compromete críticamente los plazos de entrega del TFG.
+    \item \textbf{Implementación y despliegue:} Se ejecuta el cambio en el área correspondiente (programación de código, reajuste de la planificación o corrección de la memoria), realizando las pruebas o revisiones pertinentes antes de dar por actualizada la documentación del proyecto.
+\end{enumerate}
