@@ -44,22 +44,219 @@ Como respuesta a las debilidades del mercado identificadas en la sección anteri
 \begin{itemize}
     \item \textbf{Validación de presencia física mediante QR:} Para evitar el fraude por suplantación o que los alumnos participen a distancia, la plataforma genera un código QR único en el dispositivo del estudiante justo al finalizar el test, el cual incluye su nombre y la nota obtenida. El docente es quien escanea este código desde su propio dispositivo al terminar la clase, confirmando de manera inequívoca la asistencia física del alumno y registrando su calificación en el acto.    
     \item \textbf{Creación inteligente asistida por IA:} Para resolver el flujo de trabajo monótono de diseñar cuestionarios desde cero, \textit{Quizzie} integra un motor de Inteligencia Artificial que asiste al docente generando automáticamente baterías de preguntas coherentes a partir del temario o texto introducido, agilizando drásticamente la preparación de la clase.
-    \item \textbf{Exportación directa de calificaciones:} La plataforma simplifica la gestión post-evaluación permitiendo descargar las notas de los alumnos directamente en formatos estándar como CSV o PDF, listos para su revisión o archivo local.
+    \item \textbf{Exportación directa de calificaciones:} La plataforma simplifica la gestión de las calificaciones permitiendo descargar las notas de los alumnos directamente en formatos estándar como CSV o PDF, listos para su revisión o publicación en canales oficiales.
     \item \textbf{Accesibilidad y agilidad en el aula:} Los alumnos acceden de forma inmediata sin necesidad de registros previos ni cuentas obligatorias, mientras que el profesor dispone de un panel simplificado para lanzar y controlar el flujo del cuestionario con un solo clic.
 \end{itemize}
 
-\section{Fundamentación tecnológica}
-Tecnologías de Backend, Frontend, BBDD, infraestructura y por qué se han elegido
-Herramientas de soporte al desarrollo (IDE, control de versiones, etc.)
+\section{Fundamentación tecnológica}\label{sec:fundamentacion_tecnologica}
 
-Aquí se ampliaría lo dicho en la introducción sobre el stack tecnológico, explicando por qué se han elegido y adentrándonos en todas las herramientas utilizadas
+A continuación, se presenta la arquitectura tecnológica que da soporte a \textit{Quizzie}. Como vista general de la infraestructura, la siguiente tabla muestra la distribución definitiva de las herramientas seleccionadas siguiendo un orden ascendente desde la persistencia hasta el despliegue del cliente.
 
-Hay que ver si poner las siguientes subsecciones o dividir por cada una de las tecnologías seleccionadas y hacer una tabla
-\subsection{Limitaciones tecnológicas}
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{Base de datos} & SQLite \\ \hline
+\textbf{ORM / Validación} & SQLModel \\ \hline
+\textbf{Backend} & FastAPI (Python) \\ \hline
+\textbf{Lenguaje frontend} & TypeScript \\ \hline
+\textbf{Frontend (SPA)} & React + Vite \\ \hline
+\textbf{Estilos frontend} & CSS \textit{vanilla} \\ \hline
+\textbf{Alojamiento servidor} & Render \\ \hline
+\textbf{Alojamiento cliente} & Vercel \\ \hline
+\textbf{Flujo de CI/CD} & GitHub Actions \\ \hline
+\end{tabular}
+\caption{Resumen del stack tecnológico de Quizzie.}
+\label{tab:resumen_stack}
+\end{table}
 
-\subsection{Alternativas consideradas}
+\subsection{Alternativas consideradas y justificación de las decisiones}\label{subsec:alternativas_y_justificacion}
 
-\subsection{Justificación de la decisión}
+Para fundamentar la elección de cada componente del sistema, se analizan a continuación las matrices comparativas correspondientes a cada uno de los bloques lógicos de la aplicación.
+
+\subsubsection{Persistencia de datos}
+La gestión del almacenamiento del proyecto requiere evaluar la estructura de los datos frente a la complejidad de la infraestructura en la nube.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} SQLite & Portabilidad en un solo archivo; cero administración de red y coste económico nulo. & Bloqueo del archivo completo durante la concurrencia de escritura masiva. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} PostgreSQL & Escalabilidad masiva y gestión avanzada de accesos y concurrencia. & Elevada complejidad de despliegue y administración de accesos en producción. \\ 
+\hspace{0.3cm} MySQL & Motor relacional maduro, robusto y con gran soporte de la comunidad. & Costes económicos asociados a instancias en la nube innecesarios en esta fase. \\ 
+\hspace{0.3cm} MongoDB & Flexibilidad de esquemas basada en documentos NoSQL y alta velocidad de lectura. & Descartado porque el dominio de datos del proyecto es puramente relacional. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas tecnológicas para la base de datos.}
+\label{tab:comp_base_datos}
+\end{table}
+
+\subsubsection{Mapeo objeto-relacional (ORM)}
+Se evalúa la forma de interactuar con el motor relacional buscando la mayor limpieza y eficiencia en el código.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} SQLModel & Cumple el principio DRY: fusiona eficientemente esquemas de API y modelos de BD. & Herramienta más reciente en el ecosistema, con menor volumen de hilos de soporte. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} SQLAlchemy + Pydantic & Estándar clásico de la industria con máxima madurez y documentación. & Duplicidad de código obligatoria al tener que declarar los modelos por separado. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas tecnológicas para el ORM y validación.}
+\label{tab:comp_orm}
+\end{table}
+
+\subsubsection{Backend y servidor de sockets}
+La lógica de negocio exige un entorno que soporte una alta concurrencia interactiva en tiempo real.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} FastAPI & Rendimiento asíncrono nativo (\textit{async/await}) ideal para sockets. & Estructura menos guiada en comparación con frameworks monolíticos. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} Node.js (Express / NestJS) & Estándar tradicional para WebSockets; unifica el lenguaje del proyecto a JavaScript. & Se descartó para priorizar el uso de Python debido a su ecosistema de IA. \\ 
+\hspace{0.3cm} Django & Framework muy robusto, maduro y con arquitectura \textit{batteries-included}. & Estructura fundamentalmente síncrona por defecto y peso excesivo para una API REST. \\ 
+\hspace{0.3cm} Flask & Microframework extremadamente simple, minimalista y rápido de configurar. & Carece de herramientas nativas de validación y de soporte asíncrono integrado. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas tecnológicas para el desarrollo del backend.}
+\label{tab:comp_backend}
+\end{table}
+
+\subsubsection{Lenguaje del cliente web}
+Se contrasta la seguridad del tipado frente a la velocidad de desarrollo directa en el frontend.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} TypeScript & Tipado estático estricto; mitiga errores con contratos claros para WebSockets. & Requiere tiempo adicional en el ciclo de desarrollo para configurar interfaces. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} JavaScript \textit{vanilla} & Curva de aprendizaje nula y compatibilidad nativa directa en el navegador. & Falta de seguridad de tipos en la mensajería asíncrona en tiempo real. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas para el lenguaje de programación frontend.}
+\label{tab:comp_lenguaje}
+\end{table}
+
+\subsubsection{Frontend (interfaz de usuario)}
+Se analiza la arquitectura de las interfaces y la velocidad en la compilación del entorno de desarrollo.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} React + Vite & \textit{Virtual DOM} reactivo, ecosistema masivo y ciclos de compilación HMR instantáneos. & Curva de aprendizaje inicial superior frente a opciones más básicas. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} Angular & Framework corporativo muy sólido, estructurado y altamente escalable. & Curva de aprendizaje muy empinada y verbosidad excesiva para el alcance del TFG. \\ 
+\hspace{0.3cm} Vue.js & Alternativa equilibrada con un sistema de reactividad sencillo y progresivo. & Ecosistema y penetración en el mercado laboral inferior en comparación con React. \\ 
+\hspace{0.3cm} Svelte & Máxima ligereza al eliminar el \textit{virtual DOM} y compilar a código nativo. & Comunidad reducida y menor disponibilidad de librerías de terceros maduras. \\ 
+\hspace{0.3cm} Webpack & Estándar histórico para el empaquetado de aplicaciones web. & Procesos de construcción muy lentos en desarrollo local comparado con Vite. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas tecnológicas para la interfaz de usuario.}
+\label{tab:comp_frontend}
+\end{table}
+
+\subsubsection{Estilización visual de la interfaz}
+Se evalúa el equilibrio entre la velocidad de diseño y la sobrecarga estética en la aplicación del cliente.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} CSS \textit{vanilla} & Control total de layouts y animaciones sin dependencias ni sobrecarga. & Requiere la escritura manual de todos los estilos desde cero. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} Tailwind CSS & Maquetación veloz mediante clases de utilidad atómicas directas. & Saturación excesiva del marcado JSX, perjudicando la legibilidad del código. \\ 
+\hspace{0.3cm} Bootstrap & Componentes preconstruidos adaptables y fáciles de implementar. & Estética genérica y obsoleta; complejiza la personalización visual premium. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas tecnológicas para el diseño de estilos visuales.}
+\label{tab:comp_estilos}
+\end{table}
+
+\subsubsection{Infraestructura y despliegue}
+Se analizan los entornos de alojamiento priorizando la compatibilidad con canales bidireccionales y la viabilidad económica.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\textwidth + 1.5cm}{l X X}
+\hline
+\textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
+\multicolumn{3}{l}{\textbf{Opción elegida}} \\
+\hspace{0.3cm} Vercel + Render & Plan gratuito sin tarjeta, GitOps automatizado y soporte ASGI para WebSockets. & El plan gratuito de Render sufre de retardos iniciales por \textit{cold start}. \\ \hline
+\multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
+\hspace{0.3cm} AWS & Control absoluto e ilimitado de la infraestructura de red. & Configuración excesivamente compleja y riesgo de costes económicos imprevistos. \\ 
+\hspace{0.3cm} Heroku & Entorno PaaS históricamente óptimo para servidores de sockets interactivos. & Definición obsoleta por la eliminación por completo de sus planes gratuitos. \\ \hline
+\end{tabularx}
+}
+\caption{Alternativas para la infraestructura y el despliegue.}
+\label{tab:comp_infraestructura}
+\end{table}
+
+\subsection{Limitaciones tecnológicas}\label{subsec:limitaciones_tecnologicas}
+
+A pesar de la idoneidad del stack seleccionado, se han identificado las siguientes limitaciones técnicas inherentes a las decisiones tomadas:
+\begin{itemize}
+    \item \textbf{Cold start en Render (plan gratuito):} El contenedor del backend se desactiva tras 15 minutos sin recibir peticiones. Esto genera un retardo inicial de entre 30 y 50 segundos en la primera interacción de un usuario mientras el contenedor vuelve a iniciarse.
+    \item \textbf{Concurrencia de escritura en SQLite:} SQLite bloquea la base de datos a nivel de archivo completo durante las operaciones de escritura. Aunque es imperceptible para un grupo estándar de alumnos, limitaría el escalado para miles de usuarios simultáneos registrando respuestas al unísono.
+    \item \textbf{Falta de SSR (\textit{server-side rendering}) en el frontend:} Al ser una SPA de React pura, el indexado por motores de búsqueda (SEO) es limitado. Sin embargo, al tratarse de una aplicación académica de acceso cerrado mediante credenciales, esta limitación no compromete su viabilidad.
+\end{itemize}
+
+\subsection{Herramientas de soporte al desarrollo y control de calidad}\label{subsec:soporte_desarrollo}
+
+La robustez del sistema y el cumplimiento de los estándares de calidad se articulan mediante las siguientes herramientas de soporte:
+
+\begin{itemize}
+    \item \textbf{Control de versiones y gestión del proyecto:} Se utiliza \textbf{Git} como sistema de control de versiones local y \textbf{GitHub} como plataforma de alojamiento remoto. Para la organización y planificación de las tareas del cronograma, se emplea \textbf{GitHub Projects} estructurado como un tablero \textit{Kanban}, asegurando la trazabilidad del desarrollo mediante la vinculación de \textit{issues} basadas en plantillas personalizadas (\textit{issue templates}) para la apertura de errores o nuevas características.
+    \item \textbf{Estandarización de commits:} Para garantizar un historial de Git limpio, semántico y legible, se integra \textbf{Commitizen}. Esta herramienta obliga al autor a seguir la convención de \textit{Conventional Commits}, categorizando de forma estricta cada cambio (por ejemplo, \textit{feat}, \textit{fix}, \textit{docs} o \textit{refactor}), lo que facilita la auditoría del código y la futura generación automatizada de diarios de cambios (\textit{changelogs}).
+    \item \textbf{Entorno de desarrollo integrado (IDE):} El entorno principal de trabajo es \textbf{Visual Studio Code}, seleccionado por su ligereza y su ecosistema de extensiones. Entre ellas, se ha configurado \textbf{LaTeX Workshop} para centralizar la composición y compilación local de la memoria académica mediante los motores de \textbf{MiKTeX} y \textbf{Strawberry Perl}.
+    \item \textbf{Gestión de entornos y dependencias:} En el entorno de backend se ha adoptado \textbf{uv}, una herramienta de gestión de paquetes y entornos virtuales para Python extremadamente rápida escrita en Rust, que sustituye de forma eficiente a herramientas tradicionales como \textit{pip} y \textit{poetry}. Para el entorno frontend se utiliza \textbf{npm} como gestor de paquetes estándar de Node.js.
+    \item \textbf{Generación y lectura de códigos QR:} Para dar soporte al sistema de validación de presencia física, en el frontend se integra la librería \textbf{qrcode.react} para renderizar de manera eficiente y reactiva el código QR dinámico en la pantalla del alumno al finalizar el test. Por la parte del docente, se utiliza \textbf{html5-qrcode} para acceder a la cámara del dispositivo móvil y procesar el escaneo en tiempo real con baja latencia.
+    \item \textbf{Linter y formateo:} En el backend se utiliza \textbf{Ruff}, \textit{linter} y formateador ultrarrápido programado en Rust que optimiza el cumplimiento de PEP 8 y unifica tareas que antes requerían múltiples librerías independientes (como \textit{Flake8}, \textit{Black} e \textit{isort}). En el frontend se emplea \textbf{ESLint} con \textit{flat config} para controlar la calidad de TypeScript junto a \textbf{Prettier} para garantizar un formateo de código unificado y consistente.
+    \item \textbf{Pre-commit hooks:} Con la librería \textbf{pre-commit}, se interceptan los \textit{commits} locales para garantizar que solo se sube código limpio que supere de forma automatizada las reglas de formato, tipado y análisis estático antes de salir del entorno local.
+    \item \textbf{Pruebas unitarias y de integración:} Se utiliza \textbf{pytest} en el backend junto a \textbf{pytest-cov} para el cálculo de cobertura, y \textbf{Vitest} con \textbf{React Testing Library} en el frontend para evaluar de manera aislada el comportamiento de los componentes. Para flujos de usuario extremo a extremo (E2E), se integra \textbf{Playwright}, permitiendo simular múltiples navegadores concurrentes.
+    \item \textbf{Pruebas de carga:} Se emplea \textbf{Locust} para verificar de manera empírica la capacidad del servidor y medir la latencia del protocolo WebSocket al soportar la avalancha de respuestas concurrentes de los alumnos.
+    \item \textbf{SonarCloud:} Se ha configurado este auditor externo de análisis estático como parte del flujo de CI/CD en GitHub Actions, exigiendo una meta de calidad estricta (\textit{quality gate} A, duplicación $<$ 3\%, cobertura de tests $>$ 80\%).
+\end{itemize}
 
 
 \section{Conclusiones del estudio previo}
