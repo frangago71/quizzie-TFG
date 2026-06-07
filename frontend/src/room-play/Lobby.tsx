@@ -144,8 +144,8 @@ const Lobby: React.FC = () => {
             </div>
           )}
 
-          {displayedNames.map((pName, index) => (
-            <div key={index} className="participant-avatar-item">
+          {displayedNames.map((pName) => (
+            <div key={pName} className="participant-avatar-item">
               <div className="avatar-icon-wrapper">
                 <UserCircle2 size={38} strokeWidth={1.5} />
               </div>
