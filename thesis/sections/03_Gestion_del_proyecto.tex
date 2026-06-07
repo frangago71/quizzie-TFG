@@ -550,48 +550,47 @@ Cada una de las actividades del cronograma conserva una relación directa con lo
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{11cm}l}
+\begin{tabular}{llp{11cm}}
 \hline
-\textbf{ID} & \textbf{Actividad} & \textbf{Fase} \\ \hline
+\textbf{Fase} & \textbf{ID} & \textbf{Actividad}  \\ \hline
 
-ACT-01\label{act:01} & Redacción del acta de constitución & F-01 -- Planificación \\
-ACT-02\label{act:02} & Definición de hitos y estimación del cronograma inicial & F-01 -- Planificación \\
-ACT-03\label{act:03} & Elección de estilos, paleta de colores y componentes básicos & F-01 -- Planificación \\
-ACT-04\label{act:04} & Diseño de prototipos de las pantallas de gestión del profesor & F-01 -- Planificación \\
-ACT-05\label{act:05} & Diseño de la interfaz de respuesta para pantallas de alumnos & F-01 -- Planificación \\ \hline
+F-01 -- Planificación & ACT-01\label{act:01} & Redacción del acta de constitución  \\
+& ACT-02\label{act:02} & Definición de hitos y estimación del cronograma inicial \\
+& ACT-03\label{act:03} & Elección de estilos, paleta de colores y componentes básicos \\
+& ACT-04\label{act:04} & Diseño de prototipos de las pantallas de gestión del profesor \\
+& ACT-05\label{act:05} & Diseño de la interfaz de respuesta para pantallas de alumnos \\ \hline
+F-02 -- Documentación & ACT-06\label{act:06} & Elaboración del manual funcional como guía para usuarios \\
+& ACT-07\label{act:07} & Redacción del manual de despliegue técnico de infraestructura \\
+& ACT-08\label{act:08} & Elicitación y redacción de requisitos funcionales y no funcionales \\
+& ACT-09\label{act:09} & Modelado de diagramas de casos de uso y flujos esenciales \\
+& ACT-10\label{act:10} & Diseño del modelo conceptual y lógico de datos \\
+& ACT-11\label{act:11} & Modelado del diagrama de entidades relacional \\
+& ACT-12\label{act:12} & Generación del \textit{script} de inicialización de tablas y poblado \\ \hline
 
-ACT-06\label{act:06} & Elaboración del manual funcional como guía para usuarios & F-02 -- Documentación \\
-ACT-07\label{act:07} & Redacción del manual de despliegue técnico de infraestructura & F-02 -- Documentación \\
-ACT-08\label{act:08} & Elicitación y redacción de requisitos funcionales y no funcionales & F-02 -- Documentación \\
-ACT-09\label{act:09} & Modelado de diagramas de casos de uso y flujos esenciales & F-02 -- Documentación \\
-ACT-10\label{act:10} & Diseño del modelo conceptual y lógico de datos & F-02 -- Documentación \\
-ACT-11\label{act:11} & Modelado del diagrama de entidades relacional & F-02 -- Documentación \\
-ACT-12\label{act:12} & Generación del \textit{script} de inicialización de tablas y poblado & F-02 -- Documentación \\ \hline
+F-03 -- Inicio & ACT-13\label{act:13} & Inicialización del repositorio en GitHub y estructura base \\ \hline
 
-ACT-13\label{act:13} & Inicialización del repositorio en GitHub y estructura base & F-03 -- Inicio \\ \hline
+F-04 -- CI/CD & ACT-14\label{act:14} & Configuración de reglas en ramas y automatización base \\
+& ACT-15\label{act:15} & Diseño y despliegue de \textit{templates} para \textit{issues} \\ \hline
 
-ACT-14\label{act:14} & Configuración de reglas en ramas y automatización base & F-04 -- CI/CD \\
-ACT-15\label{act:15} & Diseño y despliegue de \textit{templates} para \textit{issues} & F-04 -- CI/CD \\ \hline
+F-05 -- MVP & ACT-16\label{act:16} & Diseño y desarrollo de la persistencia base para cuestionarios \\
+& ACT-17\label{act:17} & Implementación de la interfaz de creación de tests y panel base \\
+& ACT-18\label{act:18} & Lógica de control y validación para la ejecución asíncrona \\ \hline
 
-ACT-16\label{act:16} & Diseño y desarrollo de la persistencia base para cuestionarios & F-05 -- MVP \\
-ACT-17\label{act:17} & Implementación de la interfaz de creación de tests y panel base & F-05 -- MVP \\
-ACT-18\label{act:18} & Lógica de control y validación para la ejecución asíncrona & F-05 -- MVP \\ \hline
+F-06 -- Testing & ACT-19\label{act:19} & Desarrollo y ejecución de test de integración de servicios \\
+& ACT-20\label{act:20} & Programación y lanzamiento de \textit{scripts} de carga \\ \hline
 
-ACT-19\label{act:19} & Desarrollo y ejecución de test de integración de servicios & F-06 -- Testing \\
-ACT-20\label{act:20} & Programación y lanzamiento de \textit{scripts} de carga & F-06 -- Testing \\ \hline
+F-07 -- Core & ACT-21\label{act:21} & Desarrollo de la infraestructura síncrona y canales WebSocket \\
+& ACT-22\label{act:22} & Implementación en frontend de la conexión reactiva a salas \\
+& ACT-23\label{act:23} & Programación del motor de validación y control de integridad \\ \hline
 
-ACT-21\label{act:21} & Desarrollo de la infraestructura síncrona y canales WebSocket & F-07 -- Core \\
-ACT-22\label{act:22} & Implementación en frontend de la conexión reactiva a salas & F-07 -- Core \\
-ACT-23\label{act:23} & Programación del motor de validación y control de integridad & F-07 -- Core \\ \hline
+F-08 -- QA & ACT-24\label{act:24} & Implementación del módulo de autenticación y panel avanzado \\
+& ACT-25\label{act:25} & Desarrollo de vistas de historial y exportación de datos \\
+& ACT-26\label{act:26} & Puesta a punto, empaquetado, corrección de errores y despliegue \\ \hline
 
-ACT-24\label{act:24} & Implementación del módulo de autenticación y panel avanzado & F-08 -- QA \\
-ACT-25\label{act:25} & Desarrollo de vistas de historial y exportación de datos & F-08 -- QA \\
-ACT-26\label{act:26} & Puesta a punto, empaquetado, corrección de errores y despliegue & F-08 -- QA \\ \hline
+F-09 -- Memoria & ACT-27\label{act:27} & Redacción y estructuración técnica de la memoria en LaTeX \\ \hline
 
-ACT-27\label{act:27} & Redacción y estructuración técnica de la memoria en LaTeX & F-09 -- Memoria \\ \hline
-
-ACT-28\label{act:28} & Diseño, desarrollo y maquetación de diapositivas de defensa & F-10 -- Defensa \\
-ACT-29\label{act:29} & Ensayos de oratoria y preparación de la defensa pública & F-10 -- Defensa \\ \hline
+F-10 -- Defensa & ACT-28\label{act:28} & Diseño, desarrollo y maquetación de diapositivas de defensa \\
+& ACT-29\label{act:29} & Ensayos de oratoria y preparación de la defensa pública \\ \hline
 \end{tabular}
 }
 \caption{Actividades organizadas por su fase del cronograma.}
@@ -609,29 +608,28 @@ Los hitos representan los puntos de control clave y logros de duración cero den
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{8.5cm}ll}
+\begin{tabular}{lp{1.2cm}p{7cm}l}
 \hline
-\textbf{ID} & \textbf{Hito de logro} & \textbf{Límite}  & \textbf{Fase} \\ \hline
-H-01 & Acta de constitución del proyecto redactada y firmada & 21 Ene & F-01 -- Planificación  \\ 
-H-02 & Líneas base del proyecto constituidas y aprobadas & 28 Ene & F-01 -- Planificación \\ \hline
-H-03 & Catálogo de requisitos, casos de uso y modelos de datos definidos & 18 Feb & F-02 -- Documentación \\ 
-H-04 & Manuales técnicos de usuario y despliegue finalizados & 14 Abr & F-02 -- Documentación \\ \hline
-H-05 & Repositorio inicializado y entorno de desarrollo listo & 11 Feb & F-03 -- Inicio \\ \hline
-H-06 & Flujo de CI/CD automatizado y plantillas de trabajo desplegadas & 1 Mar & F-04 -- CI/CD \\ \hline
-H-07 & Funcionalidades del MVP operativas (creación y respuesta de tests) & 8 Mar & F-05 -- MVP \\ \hline
-H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & 26 Abr & F-06 -- Testing \\ \hline
-H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & 29 Mar & F-07 -- Core \\ 
-H-10 & Motor de validación y control de integridad de respuestas completado & 12 Abr & F-07 -- Core \\ \hline
-H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & 19 Abr & F-08 -- QA \\ \hline
-H-12 & Memoria académica consolidada y entregada & 17 May & F-09 -- Memoria  \\ \hline
-H-13 & Presentación y material de soporte maquetados para la defensa & 5 Jun & F-10 -- Defensa \\
-H-14 & Defensa pública del proyecto ejecutada ante el tribunal & 10 Jun & F-10 -- Defensa \\ \hline
+\textbf{Fase} & \textbf{ID} & \textbf{Hito de logro} & \textbf{Límite} \\ \hline
+F-01 -- Planificación & H-01 & Acta de constitución del proyecto redactada y firmada & 21 Ene \\ 
+& H-02 & Líneas base del proyecto constituidas y aprobadas & 28 Ene \\ \hline
+F-02 -- Documentación & H-03 & Catálogo de requisitos, casos de uso y modelos de datos definidos & 18 Feb \\ 
+& H-04 & Manuales técnicos de usuario y despliegue finalizados & 14 Abr \\ \hline
+F-03 -- Inicio & H-05 & Repositorio inicializado y entorno de desarrollo listo & 11 Feb \\ \hline
+F-04 -- CI/CD & H-06 & Flujo de CI/CD automatizado y plantillas de trabajo desplegadas & 1 Mar \\ \hline
+F-05 -- MVP & H-07 & Funcionalidades del MVP operativas (creación y respuesta de tests) & 8 Mar \\ \hline
+F-06 -- Testing & H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & 26 Abr \\ \hline
+F-07 -- Core & H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & 29 Mar \\ 
+& H-10 & Motor de validación y control de integridad de respuestas completado & 12 Abr \\ \hline
+F-08 -- QA & H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & 19 Abr \\ \hline
+F-09 -- Memoria & H-12 & Memoria académica consolidada y entregada & 17 May \\ \hline
+F-10 -- Defensa & H-13 & Presentación y material de soporte maquetados para la defensa & 5 Jun \\ 
+& H-14 & Defensa pública del proyecto ejecutada ante el tribunal & 10 Jun \\ \hline
 \end{tabular}
 }
 \caption{Hitos de control del proyecto.}
 \label{tab:lista_hitos}
 \end{table}
-
 \newpage
 
 \subsection{Diagrama de Gantt}\label{sub:diagrama_de_gantt}

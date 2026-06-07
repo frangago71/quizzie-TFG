@@ -78,7 +78,7 @@ Desviaciones relacionadas con el volumen de funcionalidades implementadas y la c
 \begin{tabular}{l p{5.7cm} p{5.7cm} c c}
 \hline
 \textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
-\textbf{R-01} & Corrupción del alcance (\textit{Scope Creep}) al querer añadir más modos de juego o analíticas complejas. & Definición estricta del Producto Mínimo Viable (MVP). Las mejoras secundarias se derivan a "Trabajos Futuros". & \textbf{Medio} & \textbf{Alto} \\
+\textbf{R-01} & Corrupción del alcance (\textit{Scope Creep}) al querer añadir más modos de juego o analíticas complejas. & Definición estricta del Producto Mínimo Viable (MVP). Las mejoras secundarias se derivan a "Trabajos Futuros". & \textbf{Medio} & \textbf{Alto} \\  \hline
 \textbf{R-02} & Ambigüedad en los requisitos iniciales que obligue a rehacer lógica de negocio ya programada. & Validación previa del modelo de datos e historias de usuario mediante diagramas de flujo antes de codificar. & \textbf{Bajo} & \textbf{Medio} \\ \hline
 \end{tabular}
 }
@@ -97,9 +97,9 @@ Incidencias tecnológicas ligadas a la arquitectura del sistema, conectividad de
 \begin{tabular}{l p{5.7cm} p{5.7cm} c c}
 \hline
 \textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
-\textbf{R-03} & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez. & Diseñar un modelo de datos ligero para las tramas de WebSockets y realizar pruebas de carga tempranas. & \textbf{Medio} & \textbf{Alto} \\
-\textbf{R-04} & Indisponibilidad, caídas o latencia elevada en los servicios en la nube de terceros (\textit{Gemini} o \textit{Render}). & Implementación de zonas de control de errores (\textit{error boundaries}) y reintentos exponenciales en el cliente. & \textbf{Bajo} & \textbf{Alto} \\
-\textbf{R-05} & Despliegue y red: fallos de conectividad o puertos bloqueados en la red wifi que impidan la comunicación. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos de reconexión rápida. & \textbf{Bajo} & \textbf{Alto} \\
+\textbf{R-03} & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez. & Diseñar un modelo de datos ligero para las tramas de WebSockets y realizar pruebas de carga tempranas. & \textbf{Medio} & \textbf{Alto} \\  \hline
+\textbf{R-04} & Indisponibilidad, caídas o latencia elevada en los servicios en la nube de terceros (\textit{Gemini} o \textit{Render}). & Implementación de zonas de control de errores (\textit{error boundaries}) y reintentos exponenciales en el cliente. & \textbf{Bajo} & \textbf{Alto} \\ \hline
+\textbf{R-05} & Despliegue y red: fallos de conectividad o puertos bloqueados en la red wifi que impidan la comunicación. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos de reconexión rápida. & \textbf{Bajo} & \textbf{Alto} \\  \hline
 \textbf{R-06} & Incompatibilidades visuales menores o descuadres de la interfaz en ciertos navegadores o pantallas antiguas. & Uso de CSS responsivo estándar mediante \textit{Flexbox}/\textit{Grid} y testeo rápido en Google Chrome y Firefox. & \textbf{Alto} & \textbf{Bajo} \\ \hline
 \end{tabular}
 }
@@ -118,8 +118,8 @@ Amenazas asociadas directa o indirectamente con el cumplimiento de los plazos y 
 \begin{tabular}{l p{5.7cm} p{5.7cm} c c}
 \hline
 \textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
-\textbf{R-07} & Retraso en el calendario por la curva de aprendizaje en WebSockets o la API de \textit{Gemini Pro}. & Reservar las primeras semanas para crear pruebas de concepto aisladas antes de programar el núcleo. & \textbf{Medio} & \textbf{Alto} \\
-\textbf{R-08} & Falta de disponibilidad por la carga de trabajo de otras asignaturas simultáneas del curso. & Planificación mediante \textit{sprints} semanales rígidos con objetivos mínimos viables para mantener el ritmo. & \textbf{Alto} & \textbf{Medio} \\
+\textbf{R-07} & Retraso en el calendario por la curva de aprendizaje en WebSockets o la API de \textit{Gemini Pro}. & Reservar las primeras semanas para crear pruebas de concepto aisladas antes de programar el núcleo. & \textbf{Medio} & \textbf{Alto} \\  \hline
+\textbf{R-08} & Falta de disponibilidad por la carga de trabajo de otras asignaturas simultáneas del curso. & Planificación mediante \textit{sprints} semanales rígidos con objetivos mínimos viables para mantener el ritmo. & \textbf{Alto} & \textbf{Medio} \\  \hline
 \textbf{R-09} & Retrasos menores en la redacción de la memoria final debido al foco exclusivo en el desarrollo de código. & Establecer bloques de tiempo semanales dedicados a documentar los módulos que se acaban de programar. & \textbf{Medio} & \textbf{Bajo} \\ \hline
 \end{tabular}
 }
