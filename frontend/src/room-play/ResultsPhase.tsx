@@ -68,7 +68,7 @@ const ResultsChart: React.FC<ResultsChartProps> = ({
             </div>
             <div className="bar-info">
               <span className="bar-option-letter">
-                {String.fromCharCode(65 + index)}
+                {String.fromCodePoint(65 + index)}
               </span>
               <span className="bar-option-text">{opt.text}</span>
             </div>
@@ -86,7 +86,6 @@ interface SummaryCardProps {
   isConsensusCorrect: boolean;
   userIsCorrect: boolean;
   selectedOptionId: number | null;
-  winningOptionId: string | null;
   winningOptionLetter: string;
   globalSuccess: number;
 }
@@ -201,9 +200,9 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
       (o: RoomOption) => o.id.toString() === winningOptionId,
     ) ?? -1;
   const winningOptionLetter =
-    winningOptionIndex !== -1
-      ? String.fromCharCode(65 + winningOptionIndex)
-      : "---";
+    winningOptionIndex === -1
+      ? "---"
+      : String.fromCodePoint(65 + winningOptionIndex);
 
   const globalSuccess =
     totalVotes > 0
@@ -233,7 +232,6 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
           isConsensusCorrect={isConsensusCorrect}
           userIsCorrect={userIsCorrect}
           selectedOptionId={selectedOptionId}
-          winningOptionId={winningOptionId}
           winningOptionLetter={winningOptionLetter}
           globalSuccess={globalSuccess}
         />
