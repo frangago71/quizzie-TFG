@@ -30,18 +30,24 @@ const TagList: React.FC<{ tags?: string }> = ({ tags }) => {
   return (
     <div className="tags-container">
       {total <= 3 ? (
-        allTags.map((tag, index) => (
-          <span key={index} className="category-tag">
-            {tag.trim()}
-          </span>
-        ))
+        allTags.map((tag) => {
+          const trimmed = tag.trim();
+          return (
+            <span key={trimmed} className="category-tag">
+              {trimmed}
+            </span>
+          );
+        })
       ) : (
         <>
-          {allTags.slice(0, 2).map((tag, index) => (
-            <span key={index} className="category-tag">
-              {tag.trim()}
-            </span>
-          ))}
+          {allTags.slice(0, 2).map((tag) => {
+            const trimmed = tag.trim();
+            return (
+              <span key={trimmed} className="category-tag">
+                {trimmed}
+              </span>
+            );
+          })}
           <span className="category-tag">+{total - 2}</span>
         </>
       )}
@@ -169,6 +175,14 @@ const QuizCard: React.FC<QuizCardProps> = ({
     onNavigate(`/quizzes/setup/${quiz.id}`);
   };
 
+  const getStatusLabel = (status: string) => {
+    const lower = status.toLowerCase();
+    if (lower === "waiting") return "En Lobby";
+    if (lower === "live") return "En vivo";
+    if (lower === "verifying") return "Verificando";
+    return status;
+  };
+
   return (
     <div className="quiz-horizontal-card">
       <div className="quiz-image-container">
@@ -215,13 +229,7 @@ const QuizCard: React.FC<QuizCardProps> = ({
                   <span
                     className={`status-badge ${quiz.active_room_status.toLowerCase()}`}
                   >
-                    {quiz.active_room_status.toLowerCase() === "waiting"
-                      ? "En Lobby"
-                      : quiz.active_room_status.toLowerCase() === "live"
-                        ? "En vivo"
-                        : quiz.active_room_status.toLowerCase() === "verifying"
-                          ? "Verificando"
-                          : quiz.active_room_status}
+                    {getStatusLabel(quiz.active_room_status)}
                   </span>
                 )}
               </div>
@@ -414,7 +422,8 @@ const ListQuizzes: React.FC = () => {
           />
         ))}
 
-        <div
+        <button
+          type="button"
           className="create-new-dashed"
           onClick={() => navigate("/quizzes/create")}
         >
@@ -425,7 +434,7 @@ const ListQuizzes: React.FC = () => {
             <h3>Crear un nuevo cuestionario</h3>
             <p>Diseña un set de preguntas personalizado para tus alumnos.</p>
           </div>
-        </div>
+        </button>
       </div>
 
       <DeleteQuizModal
