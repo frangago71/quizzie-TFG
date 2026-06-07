@@ -918,9 +918,35 @@ Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15
 \end{figure}
 
 
+\newpage
+
 \subsection{Coste total de propiedad (TCO)}
 
+El costo total de propiedad (\textit{Total Cost of Ownership}, TCO) permite evaluar el impacto económico global de la plataforma a medio plazo al consolidar la inversión inicial de desarrollo (CAPEX) junto con los gastos operativos (OPEX) proyectados a tres años. Para garantizar la validez metodológica de este presupuesto frente al mercado real, los costes de la mano de obra se contrastan con el \textit{Informe final sobre la consulta preliminar del mercado} de la Junta de Andalucía \cite{junta:cpi}.
+De este modo, asumiendo los gastos de infraestructura del escenario conservador, la proyección resultante se detalla en la siguiente tabla.
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{
+\begin{tabular}{lccc}
+\hline
+\textbf{Concepto} & \textbf{Año 1} & \textbf{Año 2} & \textbf{Año 3} \\ \hline
+\textbf{Inversión inicial (CAPEX)} & & & \\
+~~Desarrollo de Software (Ingeniería) & 5.935,20 € & 0,00 € & 0,00 € \\ \hline
+\textbf{Gastos operativos (OPEX)} & & & \\
+~~Infraestructura Frontend (\textit{Vercel Pro}) & 218,16 € & 218,16 € & 218,16 € \\
+~~Servidor de aplicaciones y BD (\textit{Render Starter}) & 152,76 € & 152,76 € & 152,76 € \\
+~~Consumo de la API de \textit{Gemini Pro} & 180,00 € & 180,00 € & 180,00 € \\ \hline
+\textbf{Total anual} & \textbf{6.486,12 €} & \textbf{550,92 €} & \textbf{550,92 €} \\ \hline
+\textbf{TCO acumulado (3 Años)} & \multicolumn{3}{c}{\textbf{7.587,96 €}} \\ \hline
+\end{tabular}
+}
+\caption{TCO proyectado a tres años.}
+\label{tab:tco_tres_anos}
+\end{table}
 
+\textit{Nota: No se han imputado costes de personal ni horas de mantenimiento dentro del OPEX debido a que el esfuerzo laboral se ha contabilizado íntegramente como parte del CAPEX, contando con las 300 horas reglamentarias del TFG.}
 
 \section{Plan de gestión de cambios y riesgos}
 Cómo se gestionarán los cambios en el proyecto y los riesgos identificados
