@@ -21,14 +21,26 @@ const DeleteQuizModal: React.FC<DeleteQuizModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  console.log("Salas detectadas:", rooms);
   const hasActiveRooms = rooms?.some(
     (room: Room) => room.status === "live" || room.status === "waiting",
   );
-  console.log("¿Hay salas activas?:", hasActiveRooms);
   return (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="modal-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onCancel();
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          onCancel();
+        }
+      }}
+      role="button"
+      tabIndex={-1}
+    >
+      <div className="modal-card">
         <div className="modal-header">
           <h2>¿Borrar cuestionario?</h2>
           <p>
