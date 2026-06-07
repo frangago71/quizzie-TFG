@@ -1,0 +1,101 @@
+\chapter{Introducción}\label{cap:introduccion}
+
+A lo largo de mi trayectoria en la carrera, he asistido a multitud de clases teóricas y prácticas, y si algo he aprendido de ellas es que mantener un dinamismo activo en el aula marca la diferencia en el proceso de aprendizaje. Esta experiencia de estudiante, sumada al reto de diseñar un producto tecnológico completo y autónomo, me motivó a enfocar mi Trabajo de Fin de Grado en el desarrollo de \textit{Quizzie}, una plataforma orientada a transformar las dinámicas de evaluación en el entorno educativo. 
+
+El objetivo de este capítulo inicial es asentar las bases del trabajo y ofrecer una hoja de ruta clara. Para ello, en las siguientes secciones se detalla el contexto y objeto del proyecto, las motivaciones personales y profesionales que impulsaron su creación, así como los objetivos académicos y técnicos que se pretenden alcanzar. 
+
+\section{Contexto y objeto del proyecto}\label{sec:contexto_y_objeto_del_proyecto}
+A raíz de la creciente digitalización en la enseñanza y la necesidad de mantener el interés de un alumnado, surge la necesidad de buscar soluciones que adapten la forma de evaluar en las aulas a la realidad de los estudiantes. En la primera reunión con el tutor de este proyecto, planteamos el reto de diseñar una herramienta que facilitara el trabajo de los profesores y que, al mismo tiempo, resultara entretenida y motivadora para los alumnos a la hora de comprobar lo aprendido mediante cuestionarios en clase.
+
+La integración de este tipo de cuestionarios rápidos ofrece grandes ventajas en el día a día del aula. Para el alumno, rompe la monotonía de las clases teóricas convencionales introduciendo \textbf{aprendizaje dinámico}, elevando la participación y proporcionando \textit{feedback} instantáneo sobre su nivel de comprensión. Por otro lado, para el profesor funciona como una herramienta de \textbf{seguimiento en tiempo real}: le permite medir de manera automatizada si el grupo está asimilando los conceptos explicados y, en caso de detectar fallos comunes, aclarar las dudas en ese mismo momento.
+
+Sin embargo, el uso de las plataformas actuales en entornos educativos reales destapa un \textbf{problema de control crítico}. Al basarse generalmente en la difusión de un enlace o un código de acceso, es muy sencillo que los estudiantes compartan estas credenciales por grupos de mensajería. Esto provoca que alumnos que no han asistido a clase, o que se encuentran en su casa, puedan responder al cuestionario a distancia. Esta falta de \textbf{verificación de la presencia física} falsea las estadísticas de rendimiento que recibe el docente e impide usar estos test como herramientas de \textbf{evaluación formal}.
+
+Como respuesta a este escenario, el objeto de este proyecto es el desarrollo de \textit{Quizzie}. La aplicación está diseñada para mantener la sencillez y el dinamismo que se busca en los cuestionarios en vivo, pero introduciendo una \textbf{capa de verificación} para los alumnos. A través de este mecanismo de control, \textit{Quizzie} asegura que la participación se acote estrictamente a los alumnos presentes en el aula, evitando el \textbf{fraude a distancia} y consolidándose como un instrumento de evaluación válido y seguro.
+
+\section{Motivación}\label{sec:motivacion}
+La elección de este proyecto nace, en gran medida, de mi propia experiencia como estudiante a lo largo de mi formación. He vivido en primera persona cómo la introducción de \textbf{cuestionarios interactivos} en mitad de una clase es capaz de transformar por completo el clima del aula, despertando el interés de los alumnos y fijando los conceptos de una manera mucho más eficaz que los métodos tradicionales. No obstante, también he sido testigo de las limitaciones de las herramientas actuales: el uso de pseudónimos informales, la posibilidad de participar de forma remota sin acudir a clase o la frustración del docente al no poder \textbf{validar la autenticidad} de los resultados. Ver cómo una dinámica con tanto potencial perdía rigor por falta de control o por limitaciones de las plataformas utilizadas fue el detonante que me impulsó a buscar esta solución.
+
+Desde un punto de vista profesional, mi motivación principal se centra en el reto de plasmar de forma integral todos los conocimientos y competencias adquiridos a lo largo de la carrera. El desarrollo de \textit{Quizzie} representa la oportunidad perfecta para demostrar mi capacidad de afrontar un \textbf{proyecto de \textit{software} completo}, responsabilizándome de cada una de sus fases: desde las etapas iniciales de concepción, estudio previo y análisis de requisitos, hasta el diseño arquitectónico, la implementación técnica y la validación mediante pruebas. Abordar este \textbf{ciclo de vida de extremo a extremo} no solo me permite consolidar mis conocimientos técnicos, sino también validar mi criterio al tomar decisiones justificadas ante problemas, convirtiendo este trabajo en el puente definitivo hacia mi madurez como ingeniero de \textit{software}.
+
+\section{Objetivos del proyecto}\label{sec:objetivos_del_proyecto}
+Para guiar el desarrollo del proyecto y asegurar el cumplimiento de las expectativas tanto formativas como técnicas, he definido una serie de metas divididas en dos vertientes: académica y técnico-profesional.
+
+\subsection{Objetivos académicos}
+Metas orientadas a consolidar la formación recibida durante los estudios de grado:
+\begin{itemize}
+    \item \textbf{Integrar y aplicar} de forma conjunta los conocimientos teóricos y prácticos adquiridos en las distintas asignaturas de la carrera.
+    \item \textbf{Adoptar metodologías de trabajo ágiles} y estándares de la industria en la gestión y planificación temporal del proyecto.
+    \item \textbf{Fomentar el uso de buenas prácticas} de ingeniería del \textit{software}, incluyendo el control de versiones formal, el diseño de código limpio y la documentación sistemática.
+\end{itemize}
+
+\subsection{Objetivos técnicos y profesionales}
+Retos tecnológicos asumidos para el producto final y el desarrollo de competencias laborales:
+\begin{itemize}
+    \item \textbf{Dominar nuevas tecnologías} y herramientas del ecosistema de desarrollo actual, tales como el \textit{framework} FastAPI para el entorno de servidor y React para la interfaz de usuario.
+    \item \textbf{Gestionar de manera autónoma el ciclo de vida completo} de un producto de \textit{software} real, abarcando desde su concepción y análisis hasta su despliegue y evaluación.
+    \item \textbf{Diseñar e implementar un sistema de verificación} robusto y eficiente que resuelva de manera efectiva la problemática de la asistencia y autoría en las evaluaciones en el aula.
+    \item \textbf{Asegurar la calidad del \textit{software}:} Diseñar e implementar un plan de pruebas automatizadas combinado con herramientas de análisis estático de código, garantizando la mantenibilidad, seguridad y fiabilidad.    
+    \item \textbf{Implementar una estrategia de pruebas exhaustiva} que abarque \textit{tests} unitarios y de integración, asegurando la fiabilidad del código y el correcto funcionamiento de las reglas de negocio del sistema.
+    \item \textbf{Diseñar y configurar un flujo de trabajo basado en CI/CD} (Integración y Despliegue Continuo) mediante herramientas de automatización, garantizando que cada cambio en el repositorio se verifique y despliegue de manera segura y eficiente.
+\end{itemize}
+
+\subsubsection{Objetivos de la plataforma}
+Aspiraciones funcionales y operativas de \textit{Quizzie}:
+\begin{itemize}
+    \item \textbf{Evaluación docente simplificada:} Proveer al profesorado de un sistema eficiente para gestionar cuestionarios que sirvan de herramienta de evaluación.
+    \item \textbf{Dinamismo e interactividad en el aula:} Priorizar la fluidez de las sesiones en tiempo real mediante mecánicas gamificadas que fomenten una participación activa y competitiva por parte de los estudiantes.
+    \item \textbf{Seguimiento continuo del alumnado:} Ofrecer herramientas analíticas que permitan monitorizar el rendimiento individual y colectivo, ayudando a identificar las necesidades de aprendizaje durante el curso.
+    \item \textbf{Validación y presencialidad física:} Asegurar la legitimidad de las pruebas mediante mecanismos de verificación digital \textit{in situ}, garantizando que los resultados registrados correspondan exclusivamente a los alumnos presentes en el aula.
+    \item \textbf{Accesibilidad y agilidad de incorporación:} Optimizar la experiencia de usuario con flujos de acceso inmediato y sin necesidad de registro previo para los estudiantes, facilitando una entrada instantánea a las salas de cuestionarios.
+    \item \textbf{Compatibilidad y despliegue multidispositivo:} Garantizar que la plataforma sea completamente responsiva y accesible desde cualquier tipo de dispositivo (móviles, \textit{tablets} u ordenadores), independientemente de su sistema operativo o navegador.
+    \item \textbf{Garantía de privacidad y cumplimiento:} Blindar el almacenamiento y tratamiento de los datos académicos bajo el estricto cumplimiento del marco legal y de protección de datos vigente.
+\end{itemize}
+
+\section{Resumen del \textit{stack} tecnológico}\label{sec:resumen_del_stack_tecnologico}
+
+Para garantizar el cumplimiento de los objetivos técnicos del proyecto y asegurar un desarrollo robusto, eficiente y escalable, se ha seleccionado un conjunto de herramientas alineadas con los estándares de la industria actual. Esta sección ofrece una visión inicial del \textit{stack} tecnológico empleado para la construcción de \textit{Quizzie}. Las ventajas técnicas de cada opción frente a otras alternativas del mercado se argumentarán en profundidad en el Capítulo \ref{cap:estado_del_arte_y_fundamentacion}.
+
+El núcleo del sistema se divide claramente bajo una arquitectura cliente-servidor, donde el \textit{backend} gestiona la lógica de negocio, la seguridad y la comunicación en tiempo real, mientras que el \textit{frontend} ofrece una experiencia interactiva y fluida para profesores y alumnos.
+
+\subsection{Ecosistema del \textit{backend}}
+El entorno se ha diseñado priorizando el alto rendimiento, la seguridad y la agilidad en el desarrollo. Las tecnologías y herramientas principales que componen esta capa son:
+\begin{itemize}
+    \item \textbf{Lenguaje de programación:} Python 3.12, aprovechando las últimas mejoras de rendimiento y tipado estático del lenguaje.
+    \item \textbf{\textit{Framework} de desarrollo:} FastAPI, seleccionado por su alta velocidad de ejecución, soporte nativo de operaciones asíncronas y validación automática de datos.
+    \item \textbf{Comunicación en tiempo real:} Protocolo WebSocket, implementado para gestionar de manera bidireccional y eficiente el flujo de eventos y la sincronización de las salas en vivo.
+    \item \textbf{Persistencia y ORM:} SQLModel en combinación con SQLite. Al no requerir un gestor de base de datos externo complejo en esta fase, esta solución permite interactuar de forma nativa con la base de datos utilizando objetos de Python de manera eficiente.
+    \item \textbf{Gestión de dependencias:} \textit{uv}, utilizado como gestor de paquetes ultrarrápido para optimizar los tiempos de instalación y asegurar la reproducibilidad del entorno.
+\end{itemize}
+
+\subsection{Ecosistema del \textit{frontend}}
+La interfaz de usuario se ha planteado como una \textit{Single Page Application} (SPA) responsiva para ofrecer la fluidez que requiere una aplicación con dinámicas lúdicas y en vivo:
+\begin{itemize}
+    \item \textbf{\textit{Framework} principal:} React, para la construcción de una interfaz basada en componentes reutilizables y reactivos.
+    \item \textbf{Herramienta de construcción (\textit{Build Tool}):} Vite, que proporciona un entorno de desarrollo ágil gracias a su velocidad de compilación y recarga en caliente.
+    \item \textbf{Lenguajes:} TypeScript como eje principal para dotar al código de tipado fuerte y robustez, apoyado puntualmente en JavaScript.
+    \item \textbf{Enrutado y consumo de API:} React Router Dom para la navegación interna de la aplicación y Axios para realizar peticiones asíncronas y comunicarse con el \textit{backend}.
+\end{itemize}
+
+\section{Estructura de la memoria}\label{sec:estructura_de_la_memoria}
+
+Para facilitar la lectura y comprensión de este documento, la memoria se ha estructurado en diez capítulos principales y dos manuales adicionales organizados de la siguiente manera:
+
+\begin{itemize}
+    \item \textbf{Capítulo \ref{cap:introduccion}: Introducción.} Define el punto de partida del proyecto, contextualizando el problema de la evaluación presencial frente al uso de herramientas digitales. Se exponen la motivación, los objetivos del proyecto y una visión general del \textit{stack} tecnológico seleccionado.
+    \item \textbf{Capítulo \ref{cap:acta_de_constitucion}: Acta de constitución.} Formaliza el inicio del proyecto, detallando la descripción general del producto, los requerimientos de alto nivel, el marco legal y normativo (incluyendo cumplimiento de RGPD y licencias), los riesgos preliminares y los interesados o \textit{stakeholders}.
+    \item \textbf{Capítulo \ref{cap:gestion_del_proyecto}: Gestión del proyecto.} Describe la planificación organizativa inicial, incluyendo la metodología de trabajo, la línea base del alcance (a través de la EDT y su diccionario), la línea base del cronograma (con el diagrama de Gantt e hitos), la línea base de costes (estimación de presupuestos, Capex, Opex y TCO), así como los mecanismos para la gestión de riesgos y solicitudes de cambios.
+    \item \textbf{Capítulo \ref{cap:estado_del_arte_y_fundamentacion}: Estado del arte y fundamentación.} Presenta un análisis comparativo de las soluciones y competidores existentes en el mercado de la gamificación educativa, identificando los factores diferenciales de \textit{Quizzie}. Además, justifica detalladamente las decisiones tecnológicas del \textit{stack} y las alternativas consideradas.
+    \item \textbf{Capítulo \ref{cap:analisis_de_requisitos}: Análisis de requisitos.} Modela los requisitos del sistema empleando casos de uso, historias de usuario y reglas de negocio. Especifica tanto los requisitos funcionales como los no funcionales, y establece la matriz de trazabilidad que vincula los objetivos iniciales con las pruebas del sistema.
+    \item \textbf{Capítulo \ref{cap:diseno_y_arquitectura}: Diseño y arquitectura.} Detalla la arquitectura de \textit{software} seleccionada (cliente-servidor estructurada en capas y basada en eventos), la modularización del código en el \textit{frontend} y el \textit{backend}, el modelo de datos relacional mediante diagramas de dominio, el diseño de la interfaz de usuario (\textit{mockups} iniciales frente al acabado final), los mecanismos de seguridad (JWT y \textit{tokens} de acceso) y la documentación de la API con OpenAPI/Swagger.
+    \item \textbf{Capítulo \ref{cap:metodologia_tecnica}: Metodología técnica (CI/CD).} Detalla los aspectos de ingeniería y DevOps integrados en el repositorio, abarcando las políticas de ramas y \textit{commits} (Commitizen, \textit{hooks} de \textit{pre-commit}), el \textit{pipeline} de integración y despliegue continuo (GitHub Actions), la gestión de perfiles de configuración y secretos, y el control de calidad estática mediante SonarQube.
+    \item \textbf{Capítulo \ref{cap:implementacion_y_pruebas}: Implementación y pruebas.} Recoge las decisiones del desarrollo real mostrando fragmentos de código significativos. Describe la estrategia de \textit{testing} (pruebas unitarias, de integración y extremo a extremo), los umbrales de cobertura y el diseño de las pruebas de carga y rendimiento de la plataforma.
+    \item \textbf{Capítulo \ref{cap:resultados_y_evaluacion}: Resultados y evaluación.} Expone el análisis tras la finalización del desarrollo, comparando los datos de ejecución reales con la planificación inicial (desviaciones en alcance, tiempos y costes). Asimismo, presenta los resultados de los casos de prueba ejecutados y una retrospectiva técnica enfocada en la \textbf{deuda técnica acumulada}.
+    \item \textbf{Capítulo \ref{cap:conclusiones}: Conclusiones.} Evalúa el \textbf{grado de consecución de los objetivos} generales e individuales planteados. Recoge las lecciones aprendidas durante el ciclo de vida del proyecto, una valoración personal sobre el proceso y las futuras líneas de evolución de la plataforma.
+\end{itemize}
+
+Adicionalmente, se incluyen dos manuales prácticos al final del documento como anexos independientes:
+\begin{itemize}
+    \item \textbf{Manual de instalación:} Guía técnica detallada para el despliegue del sistema tanto en un entorno local de desarrollo como en entornos de producción en la nube.
+    \item \textbf{Manual de usuario:} Guía visual e instructiva orientada a profesores y alumnos para el correcto uso y manejo de la plataforma.
+\end{itemize}

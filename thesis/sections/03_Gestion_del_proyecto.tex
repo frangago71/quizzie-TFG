@@ -1,0 +1,961 @@
+\chapter{Gestión del proyecto}\label{cap:gestion_del_proyecto}
+
+En la ingeniería de software, el éxito de un proyecto no depende únicamente de la calidad de su código, sino de una rigurosa gobernanza que garantice la viabilidad técnica, temporal y económica del proyecto. Para ello, se adopta un enfoque predictivo en la definición de las líneas base, complementado con prácticas ágiles para la gestión y ejecucióndel cambio.
+
+A lo largo de las siguientes secciones se detalla la metodología que se seguirá a lo largo del desarrollo, se establecen formalmente las línea base del alcance, cronograma y de costes, y se presenta el plan de gestión de riesgos y cambios destinado a mitigar las desviaciones del proyecto.
+
+\section{Metodología del trabajo}\label{sec:metodologia_del_trabajo}
+
+El desarrollo de \textit{Quizzie} se organiza gracias a un flujo de trabajo ágil centralizado en GitHub. Para el día a día y el seguimiento del proyecto, se utilizan las siguientes herramientas:
+
+\begin{itemize}
+\item \textbf{GitHub:} Centraliza el almacenamiento del código fuente y la gestión de las tareas mediante las siguientes herramientas:    
+    \begin{itemize}
+        \item \textbf{Issues y Milestones:} Cada funcionalidad o corrección se registra como una \textit{Issue} (tarea). Estas se agrupan en \textit{Milestones} (hitos temporales) para asociar el avance del código con los plazos asignados en el cronograma.
+        \item \textbf{Ramas permanentes:} Se mantiene una separación estricta entre la rama \textit{main} (exclusiva para versiones definitivas y estables) y la rama \textit{develop} (entorno de integración donde se vuelcan las novedades).
+        \item \textbf{Ramas de tareas:} Para cada \textit{issue} se abre una rama específica desde \textit{develop} (ej. \textit{feature/websocket-timer}). Una vez completada y probada la tarea de forma aislada, esta rama se fusiona (\textit{merge}) de vuelta en \textit{develop}.      
+        \item \textbf{Releases:} Al completar un \textit{Milestone} y consolidar los cambios en \textit{main}, se genera una \textit{Release} con su etiqueta de versión. 
+    \end{itemize}
+    \item \textbf{Clockify:} Se utiliza exclusivamente para cronometrar el tiempo real dedicado a cada tarea e hito, permitiendo controlar el esfuerzo invertido.
+    \item \textbf{Outlook:} Canal formal para comunicaciones con el tutor y envío de entregables o documentación.
+\end{itemize}
+
+El avance del proyecto se valida de forma continua mediante tutorías. La dinámica de estas reuniones consiste en presentar y revisar el software funcionando o el texto redactado hasta esa fecha para recibir el visto bueno del tutor y, acto seguido, definir los siguientes pasos y prioridades a realizar para la próxima tutoría.
+
+\section{Línea base del alcance}\label{sec:linea_base_del_alcance}
+
+La línea base del alcance define con precisión los límites del proyecto, asegurando que todos los esfuerzos se concentren exclusivamente en los entregables necesarios para cumplir con los objetivos académicos y técnicos. A continuación, se detallan los supuestos, restricciones y exclusiones que condicionan esta planificación.
+
+\begin{itemize}
+    \item \textbf{Supuestos:} Se asume la disponibilidad continua de las infraestructuras en la nube (proveedores de alojamiento o bases de datos) durante las fases de desarrollo y despliegue, así como el acceso ilimitado a la documentación de las API y tecnologías que componen el \textit{stack} tecnológico.
+    \item \textbf{Restricciones:} El proyecto está sujeto a una restricción temporal vinculada a los plazos institucionales de entrega y defensa del Trabajo Fin de Grado. Asimismo, el desarrollo debe ceñirse al presupuesto simulado y a la capacidad operativa de un único desarrollador.
+    \item \textbf{Exclusiones:} Queda fuera del alcance del proyecto el despliegue comercial en producción y el soporte para navegadores web obsoletos o sin compatibilidad con WebSockets modernos.
+\end{itemize}
+
+\subsection{Estructura del Desglose del Trabajo (EDT)}\label{subsec:edt}
+
+Para organizar y estructurar el alcance total del proyecto, se ha elaborado la siguiente Estructura de Desglose del Trabajo (EDT). Esta representación jerárquica descompone el proyecto en paquetes de trabajo, divididos a su vez en entregables específicos que se detallarán en el diccionario de la EDT (\ref{subsec:diccionario_edt}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/edt.png}
+\caption{Estructura de Desglose del Trabajo (EDT).}
+\label{fig:edt_grafica}
+\end{figure}
+
+\subsection{Diccionario de la EDT}\label{subsec:diccionario_edt}
+
+El diccionario de la EDT define formalmente el alcance de cada entregable y desglosa las actividades necesarias para su consecución, especificando los perfiles profesionales asignados y la estimación temporal.
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\subsubsection*{Paquete 1.0: Gestión del proyecto}
+\addcontentsline{toc}{subsubsection}{Paquete 1.0: Gestión del proyecto}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 1.1 \\
+\hline
+\textbf{Nombre} & Planificación inicial \\
+\hline
+\textbf{Descripción} & Acta de constitución del proyecto y cronograma base estimado para fijar los hitos académicos. \\
+\hline
+\textbf{Paquete} & 1. Gestión del proyecto \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 1.1.}
+\label{entregable_1_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:01]{\textbf{ACT-01}} & Project Manager & 4h \\
+\hline
+\hyperref[act:02]{\textbf{ACT-02}} & Project Manager & 4h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 1.1.}
+\label{actividades_entregable_1_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 1.2 \\
+\hline
+\textbf{Nombre} & Repositorio de código \\
+\hline
+\textbf{Descripción} & Configuración de GitHub con reglas de protección de ramas, flujos de trabajo basados en fusiones (\textit{merges}) y plantillas estandarizadas para \textit{issues}. \\
+\hline
+\textbf{Paquete} & 1. Gestión del proyecto \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 1.2.}
+\label{entregable_1_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:13]{\textbf{ACT-13}} & Técnico & 2h \\
+\hline
+\hyperref[act:14]{\textbf{ACT-14}} & Project Manager & 5h \\
+\hline
+\hyperref[act:15]{\textbf{ACT-15}} & Project Manager & 3h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 1.2.}
+\label{actividades_entregable_1_2}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 1.3 \\
+\hline
+\textbf{Nombre} & Requisitos del sistema \\
+\hline
+\textbf{Descripción} & Catálogo de requisitos funcionales y no funcionales, junto al modelado de casos de uso y flujos \textit{core} de la aplicación. \\
+\hline
+\textbf{Paquete} & 1. Gestión del proyecto \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 1.3.}
+\label{entregable_1_3}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:08]{\textbf{ACT-08}} & Analista & 3h \\
+\hline
+\hyperref[act:09]{\textbf{ACT-09}} & Analista & 4h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 1.3.}
+\label{actividades_entregable_1_3}
+\end{table}
+
+\subsubsection*{Paquete 2.0: Diseño y Arquitectura}
+\addcontentsline{toc}{subsubsection}{Paquete 2.0: Diseño y Arquitectura}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 2.1 \\
+\hline
+\textbf{Nombre} & Modelo de datos \\
+\hline
+\textbf{Descripción} & Diseño conceptual, lógico y físico de la base de datos relacional, materializado en el diagrama de entidades del sistema. \\
+\hline
+\textbf{Paquete} & 2. Diseño y Arquitectura \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 2.1.}
+\label{entregable_2_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:10]{\textbf{ACT-10}} & Analista & 4h \\
+\hline
+\hyperref[act:11]{\textbf{ACT-11}} & Analista & 4h \\
+\hline
+\hyperref[act:12]{\textbf{ACT-12}} & Programador Backend & 2h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 2.1.}
+\label{actividades_entregable_2_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 2.2 \\
+\hline
+\textbf{Nombre} & Prototipo UI \\
+\hline
+\textbf{Descripción} & Diseños visuales y plantillas para las pantallas del sistema. \\
+\hline
+\textbf{Paquete} & 2. Diseño y Arquitectura \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 2.2.}
+\label{entregable_2_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:03]{\textbf{ACT-03}} & Diseñador UI & 2h \\
+\hline
+\hyperref[act:04]{\textbf{ACT-04}} & Diseñador UI & 5h \\
+\hline
+\hyperref[act:05]{\textbf{ACT-05}} & Diseñador UI & 5h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 2.2.}
+\label{actividades_entregable_2_2}
+\end{table}
+
+\newpage
+
+\subsubsection*{Paquete 3.0: Producto software}
+\addcontentsline{toc}{subsubsection}{Paquete 3.0: Producto software}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 3.1 \\
+\hline
+\textbf{Nombre} & Release 1 (MVP) \\
+\hline
+\textbf{Descripción} & Habilitación y despliegue del flujo completo base del sistema, permitiendo la creación de cuestionarios por parte del profesor y la realización de los mismos por los alumnos. \\
+\hline
+\textbf{Paquete} & 3. Producto software \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 3.1.}
+\label{entregable_3_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:16]{\textbf{ACT-16}} & Programador Backend & 25h \\
+\hline
+\hyperref[act:17]{\textbf{ACT-17}} & Programador Frontend & 35h \\
+\hline
+\hyperref[act:18]{\textbf{ACT-18}} & Programador Backend & 20h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 3.1.}
+\label{actividades_entregable_3_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 3.2 \\
+\hline
+\textbf{Nombre} & Release 2 (Funcionalidades Core) \\
+\hline
+\textbf{Descripción} & Implementación de la capa de comunicación en tiempo real mediante WebSockets y el motor de validación de datos del sistema. \\
+\hline
+\textbf{Paquete} & 3. Producto software \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 3.2.}
+\label{entregable_3_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:21]{\textbf{ACT-21}} & Programador Backend & 20h \\
+\hline
+\hyperref[act:22]{\textbf{ACT-22}} & Programador Frontend & 20h \\
+\hline
+\hyperref[act:23]{\textbf{ACT-23}} & Programador Backend & 12h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 3.2.}
+\label{actividades_entregable_3_2}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 3.3 \\
+\hline
+\textbf{Nombre} & Release 3 (Entrega final y QA) \\
+\hline
+\textbf{Descripción} & Integración de funcionalidades avanzadas de gestión, pulido general de la interfaz y despliegue del sistema. \\
+\hline
+\textbf{Paquete} & 3. Producto software \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 3.3.}
+\label{entregable_3_3}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:24]{\textbf{ACT-24}} & Programador Backend & 5h \\
+\hline
+\hyperref[act:25]{\textbf{ACT-25}} & Programador Frontend & 5h \\
+\hline
+\hyperref[act:26]{\textbf{ACT-26}} & Técnico & 3h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 3.3.}
+\label{actividades_entregable_3_3}
+\end{table}
+
+\subsubsection*{Paquete 4.0: Documentación final}
+\addcontentsline{toc}{subsubsection}{Paquete 4.0: Documentación final}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 4.1 \\
+\hline
+\textbf{Nombre} & Plan de pruebas (QA) \\
+\hline
+\textbf{Descripción} & Diseño y ejecución de baterías de test de integración y \textit{scripts} específicos de pruebas de carga. \\
+\hline
+\textbf{Paquete} & 4. Documentación final \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 4.1.}
+\label{entregable_4_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:19]{\textbf{ACT-19}} & Tester & 7h \\
+\hline
+\hyperref[act:20]{\textbf{ACT-20}} & Tester & 8h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 4.1.}
+\label{actividades_entregable_4_1}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 4.2 \\
+\hline
+\textbf{Nombre} & Manuales técnicos \\
+\hline
+\textbf{Descripción} & Redacción del manual de usuario y del manual de despliegue. \\
+\hline
+\textbf{Paquete} & 4. Documentación final \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 4.2.}
+\label{entregable_4_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:06]{\textbf{ACT-06}} & Analista & 2h \\
+\hline
+\hyperref[act:07]{\textbf{ACT-07}} & Técnico & 1h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 4.2.}
+\label{actividades_entregable_4_2}
+\end{table}
+
+\nopagebreak
+\vspace{0.4cm}
+\noindent{\color{gray!30}\rule{\textwidth}{2pt}}
+\vspace{0.4cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lp{9.5cm}}
+\hline
+\textbf{ID Entregable} & 4.3 \\
+\hline
+\textbf{Nombre} & Memoria académica \\
+\hline
+\textbf{Descripción} & Redacción técnica, maquetación y consolidación del documento final del TFG junto con el diseño de las diapositivas para la defensa. \\
+\hline
+\textbf{Paquete} & 4. Documentación final \\
+\hline
+\end{tabular}
+\caption{Datos del entregable 4.3.}
+\label{entregable_4_3}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{16pt} 
+\begin{tabular}{lll} 
+\hline
+\textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
+\hline
+\hyperref[act:27]{\textbf{ACT-27}} & Analista & 70h \\
+\hline
+\hyperref[act:28]{\textbf{ACT-28}} & Diseñador UI & 10h \\
+\hline
+\hyperref[act:29]{\textbf{ACT-29}} & Project Manager & 10h \\
+\hline
+\end{tabular}
+\caption{Actividades del entregable 4.3.}
+\label{actividades_entregable_4_3}
+\end{table}
+
+\section{Línea base del cronograma}\label{sec:linea_base_del_cronograma}
+A partir de los paquetes de trabajo presentes en la Estructura de Desglose del Trabajo (EDT), se ha planificado la distribución temporal del proyecto. El flujo de trabajo se estructura dividiendo el ciclo de vida en fases temporales que agrupan las actividades y culminan en hitos de control.
+
+\subsection{Fases del proyecto}\label{sub:fases_del_proyecto}
+
+El proyecto se divide en 10 fases temporales consecutivas y paralelas, que se han organizado en 4 bloques de trabajo fundamentales:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{7cm}l}
+\hline
+\textbf{ID} &  \textbf{Nombre} & \textbf{Descripción} & \textbf{Bloque} \\ \hline
+F-01 & Planificación & Planificación inicial, estimación de tiempos y recursos. & Gestión y planificación \\ \hline
+F-02 & Documentación & Redacción de manuales y documentación técnica de soporte. & Documentación y cierre \\ \hline
+F-03 & Inicio & Configuración del entorno base y análisis de requisitos. & Gestión y planificación \\ \hline
+F-04 & CI/CD & Automatización de flujos de trabajo e integración continua. & Ciclo de vida y calidad \\ \hline
+F-05 & MVP & Construcción de la primera versión mínima funcional. & Desarrollo de código \\ \hline
+F-06 & Testing & Diseño y ejecución de la batería de pruebas del sistema. & Ciclo de vida y calidad \\ \hline
+F-07 & Core & Desarrollo de las características principales (WebSockets). & Desarrollo de código \\ \hline
+F-08 & QA & Estabilización de código y corrección de errores finales. & Desarrollo de código \\ \hline
+F-09 & Memoria & Consolidación, revisión final y entrega de la memoria. & Documentación y cierre \\ \hline
+F-10 & Defensa & Preparación del material de soporte y ensayos. & Documentación y cierre \\ \hline
+\end{tabular}
+}
+\caption{Fases temporales del proyecto.}
+\label{tab:fases}
+\end{table}
+
+\newpage 
+
+\subsection{Lista de actividades}\label{sub:lista_de_actividades}
+
+Cada una de las actividades del cronograma conserva una relación directa con los paquetes de trabajo definidos en el diccionario de la EDT. Para garantizar el seguimiento y la trazabilidad temporal, a continuación se detallan todas las tareas del proyecto:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{11cm}}
+\hline
+\textbf{Fase} & \textbf{ID} & \textbf{Actividad}  \\ \hline
+
+F-01 -- Planificación & ACT-01\label{act:01} & Redacción del acta de constitución  \\
+& ACT-02\label{act:02} & Definición de hitos y estimación del cronograma inicial \\
+& ACT-03\label{act:03} & Elección de estilos, paleta de colores y componentes básicos \\
+& ACT-04\label{act:04} & Diseño de prototipos de las pantallas de gestión del profesor \\
+& ACT-05\label{act:05} & Diseño de la interfaz de respuesta para pantallas de alumnos \\ \hline
+F-02 -- Documentación & ACT-06\label{act:06} & Elaboración del manual funcional como guía para usuarios \\
+& ACT-07\label{act:07} & Redacción del manual de despliegue técnico de infraestructura \\
+& ACT-08\label{act:08} & Elicitación y redacción de requisitos funcionales y no funcionales \\
+& ACT-09\label{act:09} & Modelado de diagramas de casos de uso y flujos esenciales \\
+& ACT-10\label{act:10} & Diseño del modelo conceptual y lógico de datos \\
+& ACT-11\label{act:11} & Modelado del diagrama de entidades relacional \\
+& ACT-12\label{act:12} & Generación del \textit{script} de inicialización de tablas y poblado \\ \hline
+
+F-03 -- Inicio & ACT-13\label{act:13} & Inicialización del repositorio en GitHub y estructura base \\ \hline
+
+F-04 -- CI/CD & ACT-14\label{act:14} & Configuración de reglas en ramas y automatización base \\
+& ACT-15\label{act:15} & Diseño y despliegue de \textit{templates} para \textit{issues} \\ \hline
+
+F-05 -- MVP & ACT-16\label{act:16} & Diseño y desarrollo de la persistencia base para cuestionarios \\
+& ACT-17\label{act:17} & Implementación de la interfaz de creación de tests y panel base \\
+& ACT-18\label{act:18} & Lógica de control y validación para la ejecución asíncrona \\ \hline
+
+F-06 -- Testing & ACT-19\label{act:19} & Desarrollo y ejecución de test de integración de servicios \\
+& ACT-20\label{act:20} & Programación y lanzamiento de \textit{scripts} de carga \\ \hline
+
+F-07 -- Core & ACT-21\label{act:21} & Desarrollo de la infraestructura síncrona y canales WebSocket \\
+& ACT-22\label{act:22} & Implementación en frontend de la conexión reactiva a salas \\
+& ACT-23\label{act:23} & Programación del motor de validación y control de integridad \\ \hline
+
+F-08 -- QA & ACT-24\label{act:24} & Implementación del módulo de autenticación y panel avanzado \\
+& ACT-25\label{act:25} & Desarrollo de vistas de historial y exportación de datos \\
+& ACT-26\label{act:26} & Puesta a punto, empaquetado, corrección de errores y despliegue \\ \hline
+
+F-09 -- Memoria & ACT-27\label{act:27} & Redacción y estructuración técnica de la memoria en LaTeX \\ \hline
+
+F-10 -- Defensa & ACT-28\label{act:28} & Diseño, desarrollo y maquetación de diapositivas de defensa \\
+& ACT-29\label{act:29} & Ensayos de oratoria y preparación de la defensa pública \\ \hline
+\end{tabular}
+}
+\caption{Actividades organizadas por su fase del cronograma.}
+\label{tab:lista_actividades}
+\end{table}
+
+\newpage
+
+\subsection{Lista de hitos}\label{sub:lista_de_hitos}
+
+Los hitos representan los puntos de control clave y logros de duración cero dentro del cronograma del proyecto. Su consecución suponen grandes avances en el desarrollo o la finalización de fases completas, y permiten evaluar el progreso general del proyecto. 
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{1.2cm}p{7cm}l}
+\hline
+\textbf{Fase} & \textbf{ID} & \textbf{Hito de logro} & \textbf{Límite} \\ \hline
+F-01 -- Planificación & H-01 & Acta de constitución del proyecto redactada y firmada & 21 Ene \\ 
+& H-02 & Líneas base del proyecto constituidas y aprobadas & 28 Ene \\ \hline
+F-02 -- Documentación & H-03 & Catálogo de requisitos, casos de uso y modelos de datos definidos & 18 Feb \\ 
+& H-04 & Manuales técnicos de usuario y despliegue finalizados & 14 Abr \\ \hline
+F-03 -- Inicio & H-05 & Repositorio inicializado y entorno de desarrollo listo & 11 Feb \\ \hline
+F-04 -- CI/CD & H-06 & Flujo de CI/CD automatizado y plantillas de trabajo desplegadas & 1 Mar \\ \hline
+F-05 -- MVP & H-07 & Funcionalidades del MVP operativas (creación y respuesta de tests) & 8 Mar \\ \hline
+F-06 -- Testing & H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & 26 Abr \\ \hline
+F-07 -- Core & H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & 29 Mar \\ 
+& H-10 & Motor de validación y control de integridad de respuestas completado & 12 Abr \\ \hline
+F-08 -- QA & H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & 19 Abr \\ \hline
+F-09 -- Memoria & H-12 & Memoria académica consolidada y entregada & 17 May \\ \hline
+F-10 -- Defensa & H-13 & Presentación y material de soporte maquetados para la defensa & 5 Jun \\ 
+& H-14 & Defensa pública del proyecto ejecutada ante el tribunal & 10 Jun \\ \hline
+\end{tabular}
+}
+\caption{Hitos de control del proyecto.}
+\label{tab:lista_hitos}
+\end{table}
+\newpage
+
+\subsection{Diagrama de Gantt}\label{sub:diagrama_de_gantt}
+El siguiente diagrama de Gantt sintetiza de manera visual la distribución cronológica del proyecto, clave para el seguimiento del trabajo realizado y asegurar el cumplimiento de los plazos fijados.
+
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{
+\begin{ganttchart}[
+    hgrid=false, 
+    vgrid=false, 
+    x unit=0.115cm,
+    y unit title=0.55cm,
+    y unit chart=0.75cm, 
+    time slot format=isodate,
+    inline,
+    bar label font=\scriptsize\bfseries\color{black},
+    ganttbar label node/.style={text width=0pt, inner sep=0pt},
+    title label font=\scriptsize\bfseries,
+    title calendar link/.style={draw=black},
+    canvas/.style={draw=black, fill=white}
+]{2026-01-15}{2026-06-12}
+
+    \gantttitle{Ene}{17}
+    \gantttitle{Feb}{28}
+    \gantttitle{Mar}{31}
+    \gantttitle{Abr}{30}
+    \gantttitle{May}{31}
+    \gantttitle{Jun}{12} \\
+
+    \ganttbar[bar/.style={fill=orange!15, draw=orange!50, rounded corners=2pt}]{H01-Plan}{2026-01-15}{2026-01-28} \\
+    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H02-Documentación}{2026-01-29}{2026-04-14} \\
+    \ganttbar[bar/.style={fill=orange!15, draw=orange!50, rounded corners=2pt}]{H03-Inicio}{2026-01-29}{2026-02-11} \\
+    \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H04-CI/CD}{2026-02-14}{2026-04-26} \\
+    \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H05-MVP}{2026-02-12}{2026-03-08} \\
+    \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H06-Testing}{2026-02-12}{2026-04-26} \\
+    \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H07-Core}{2026-03-09}{2026-04-12} \\
+    \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H08-QA}{2026-04-13}{2026-04-26} \\
+    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H09-Memoria}{2026-04-15}{2026-05-17} \\
+    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H10-Defensa}{2026-05-18}{2026-06-12}
+
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{19}{2026-01-19}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{26}{2026-01-26}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-02-02}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-02-09}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-02-16}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-02-23}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-03-02}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-03-09}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-03-16}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-03-23}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{30}{2026-03-30}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{06}{2026-04-06}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{13}{2026-04-13}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{20}{2026-04-20}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{27}{2026-04-27}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{04}{2026-05-04}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{11}{2026-05-11}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{18}{2026-05-18}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{25}{2026-05-25}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{01}{2026-06-01}
+    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{08}{2026-06-08}
+
+    \ganttvrule[vrule/.style={draw=orange!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{orange!90!black}, fill=white, inner sep=1pt}]{H-01}{2026-01-21}
+    \ganttvrule[vrule/.style={draw=red, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{red}, fill=white, inner sep=1pt}]{H-02}{2026-01-28}
+    \ganttvrule[vrule/.style={draw=teal!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{teal!90!black}, fill=white, inner sep=1pt}]{H-03}{2026-02-18}
+    \ganttvrule[vrule/.style={draw=yellow!80!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{yellow!80!black}, fill=white, inner sep=1pt}]{H-05}{2026-02-11}
+    \ganttvrule[vrule/.style={draw=purple, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{purple}, fill=white, inner sep=1pt}]{H-06}{2026-03-01}
+    \ganttvrule[vrule/.style={draw=blue, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{blue}, fill=white, inner sep=1pt}]{H-07}{2026-03-08}
+    \ganttvrule[vrule/.style={draw=darkgray, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{darkgray}, fill=white, inner sep=1pt}]{H-09}{2026-03-29}
+    \ganttvrule[vrule/.style={draw=violet!60!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{violet!60!black}, fill=white, inner sep=1pt}]{H-10}{2026-04-12}
+    \ganttvrule[vrule/.style={draw=brown!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=0.3cm, font=\tiny\bfseries\color{brown!90!black}, fill=white, inner sep=1pt}]{H-04}{2026-04-14}
+    \ganttvrule[vrule/.style={draw=cyan!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{cyan!90!black}, fill=white, inner sep=1pt}]{H-11}{2026-04-19}
+    \ganttvrule[vrule/.style={draw=purple, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{purple}, fill=white, inner sep=1pt}]{H-08}{2026-04-26}
+    \ganttvrule[vrule/.style={draw=lime!40!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{lime!40!black}, fill=white, inner sep=1pt}]{H-12}{2026-05-17}
+    \ganttvrule[vrule/.style={draw=olive, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{olive}, fill=white, inner sep=1pt}]{H-13}{2026-06-05}
+    \ganttvrule[vrule/.style={draw=blue!50!violet, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{blue!50!violet}, fill=white, inner sep=1pt}]{H-14}{2026-06-10}
+\end{ganttchart}
+}
+\vspace{0.15cm}
+\begin{center}
+\footnotesize
+\begin{tabular}{clccl}
+\fcolorbox{black}{orange!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
+\fcolorbox{black}{blue!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Desarrollo de código \\
+\fcolorbox{black}{purple!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
+\fcolorbox{black}{teal!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
+\end{tabular}
+\end{center}
+\caption{Diagrama de Gantt inicial del proyecto.}
+\label{fig:gantt}
+\end{figure}
+
+\section{Línea base de Costes}\label{sec:linea_base_de_costes}
+El desarrollo de un proyecto como \textit{Quizzie} no solo exige viabilidad técnica, sino también un modelo financiero sostenible que justifique su implantación frente a otras soluciones. Para ello, se analizan a continuación los costes operativos, el impacto económico que supone el escalado de la infraestructura y el Coste Total de Propiedad (TCO).
+
+\subsection{Análisis de costes}\label{sub:analisis_de_costes}
+El estudio económico de la plataforma se fundamenta en dos componentes financieros esenciales: los Gastos de Capital (\textit{Capital Expenditure} o CAPEX), que engloban el coste teórico de desarrollo y los recursos fijos necesarios para materializar el sistema, y los Gastos Operativos (\textit{Operational Expenditure} o OPEX), que representan el coste mensual estimado para la explotación de la plataforma en producción. 
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lr}
+\hline
+\textbf{Concepto} & \textbf{Coste neto} \\ \hline
+Costes laborales & 10.865,49 € \\
+Equipamiento informático & 500,00 € \\
+Licencia comercial anual Google AI Premium (Gemini Pro) & 218,07 € \\
+Licencia GitHub Team (6 meses) & 21,82 € \\
+Licencia Microsoft Teams Essentials (6 meses) & 21,82 € \\
+Reserva de contingencia & 1.162,72 € \\ \hline
+\textbf{Total CAPEX} & \textbf{12.789,92 €} \\ \hline
+\end{tabular}
+\caption{Resumen de Gastos de Capital (CAPEX).}
+\label{tab:resumen_capex}
+\end{table}
+
+Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos debido a que el proyecto ha sido ejecutado íntegramente por un único ingeniero. De este modo, cada actividad de la EDT se presupuesta teniendo en cuenta el rol profesional que la llevará a cabo. Para garantizar el rigor y la objetividad de las tarifas aplicadas, los precios base por hora se han extraído del \textit{Informe Final sobre la Consulta Preliminar del Mercado: ``Perfiles Profesionales Ámbito Informático''} de la Junta de Andalucía \cite{juntaTIC2018}. Siguiendo las directrices de dicho organismo, se utiliza como referencia la métrica de la \textbf{media acotada}, un indicador estadístico corregido mediante el test de Tukey que elimina valores atípicos del sector. Sobre la base salarial neta resultante de 8.358,07 €, se ha aplicado un recargo del 30\% en concepto de Seguridad Social y costes empresariales de contratación directos del mercado español, consolidando el coste laboral real en \textbf{10.865,49 €}. El desglose detallado de las horas por actividad y perfiles profesionales que sustenta este cálculo se presenta en la tabla de \hyperref[tab:coste_personal_rol]{costes netos laborales}.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{
+\begin{tabular}{llccr}
+\hline
+\textbf{Recurso (Rol)} & \textbf{Actividad} & \textbf{Precio/hora} & \textbf{Horas} & \textbf{Coste neto} \\ \hline
+\textbf{Project Manager} & \hyperref[act:01]{\textbf{ACT-01}} & 46,09 € & 4 h  & 184,36 € \\
+                         & \hyperref[act:02]{\textbf{ACT-02}} & 46,09 € & 4 h  & 184,36 € \\
+                         & \hyperref[act:14]{\textbf{ACT-14}} & 46,09 € & 5 h  & 230,45 € \\
+                         & \hyperref[act:15]{\textbf{ACT-15}} & 46,09 € & 3 h  & 138,27 € \\
+                         & \hyperref[act:29]{\textbf{ACT-29}} & 46,09 € & 10 h & 460,90 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}} & \textbf{26 h} & \textbf{1.198,34 €} \\ \hline
+\textbf{Analista}        & \hyperref[act:06]{\textbf{ACT-06}} & 38,33 € & 2 h  & 76,66 € \\
+                         & \hyperref[act:08]{\textbf{ACT-08}} & 38,33 € & 3 h  & 114,99 € \\
+                         & \hyperref[act:09]{\textbf{ACT-09}} & 38,33 € & 4 h  & 153,32 € \\
+                         & \hyperref[act:10]{\textbf{ACT-10}} & 38,33 € & 4 h  & 153,32 € \\
+                         & \hyperref[act:11]{\textbf{ACT-11}} & 38,33 € & 4 h  & 153,32 € \\
+                         & \hyperref[act:27]{\textbf{ACT-27}} & 38,33 € & 70 h & 2.683,10 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{87 h} & \textbf{3.334,71 €} \\ \hline
+\textbf{Diseñador UI}    & \hyperref[act:03]{\textbf{ACT-03}} & 33,43 € & 2 h  & 66,86 € \\
+                         & \hyperref[act:04]{\textbf{ACT-04}} & 33,43 € & 5 h  & 167,15 € \\
+                         & \hyperref[act:05]{\textbf{ACT-05}} & 33,43 € & 5 h  & 167,15 € \\
+                         & \hyperref[act:28]{\textbf{ACT-28}} & 33,43 € & 10 h & 334,30 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}    & \textbf{22 h} & \textbf{735,46 €} \\ \hline
+\textbf{Programador Backend} & \hyperref[act:12]{\textbf{ACT-12}} & 23,85 € & 2 h  & 47,70 € \\
+                         & \hyperref[act:16]{\textbf{ACT-16}} & 23,85 € & 25 h & 596,25 € \\
+                         & \hyperref[act:18]{\textbf{ACT-18}} & 23,85 € & 20 h & 477,00 € \\
+                         & \hyperref[act:21]{\textbf{ACT-21}} & 23,85 € & 20 h & 477,00 € \\
+                         & \hyperref[act:23]{\textbf{ACT-23}} & 23,85 € & 12 h & 286,20 € \\
+                         & \hyperref[act:24]{\textbf{ACT-24}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}   & \textbf{84 h} & \textbf{2.003,40 €} \\ \hline
+\textbf{Programador Frontend} & \hyperref[act:17]{\textbf{ACT-17}} & 23,85 € & 35 h & 834,75 € \\
+                         & \hyperref[act:22]{\textbf{ACT-22}} & 23,85 € & 20 h & 477,00 € \\
+                         & \hyperref[act:25]{\textbf{ACT-25}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}  & \textbf{60 h} & \textbf{1.431,00 €} \\ \hline
+\textbf{Tester}          & \hyperref[act:19]{\textbf{ACT-19}} & 23,68 € & 7 h  & 165,76 € \\
+                         & \hyperref[act:20]{\textbf{ACT-20}} & 23,68 € & 8 h  & 189,44 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}          & \textbf{15 h} & \textbf{355,20 €} \\ \hline
+\textbf{Técnico}         & \hyperref[act:07]{\textbf{ACT-07}} & 19,58 € & 1 h  & 19,58 € \\
+                         & \hyperref[act:13]{\textbf{ACT-13}} & 19,58 € & 2 h  & 39,16 € \\
+                         & \hyperref[act:26]{\textbf{ACT-26}} & 19,58 € & 3 h  & 58,74 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}         & \textbf{6 h}  & \textbf{117,48 €} \\ \hline
+\textbf{TOTAL}         &  &  & \textbf{300 h} & \textbf{8.358,07 €} \\ \hline
+\end{tabular}
+}
+\caption{Costes netos laborales agrupados por perfil profesional.}
+\label{tab:coste_personal_rol}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lr}
+\hline
+\textbf{Concepto} & \textbf{Coste neto} \\ \hline
+Infraestructura web Frontend (\textit{Vercel Pro}) & 18,18 €/mes \\
+Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 12,73 €/mes \\
+Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 15,00 €/mes \\ \hline
+\textbf{Total OPEX} & \textbf{45,91 €/mes} \\ \hline
+\end{tabular}
+\caption{Resumen de Gastos Operativos mensuales (OPEX).}
+\label{tab:resumen_opex}
+\end{table}
+
+Cabe destacar que los Gastos Operativos (OPEX) reflejados en la \hyperref[tab:resumen_opex]{tabla} no constituyen un coste estático, sino que representan una proyección basada en una estimación inicial de 500 usuarios activos mensuales, asumiendo un consumo moderado de recursos y una utilización estándar de la API de inteligencia artificial. En escenarios de escalado masivo, donde el volumen de usuarios concurrentes o la demanda de cómputo aumente significativamente, es previsible que estos costes operativos se incrementen de forma proporcional. Por ello, en la siguiente subsección se detalla y aclara matemáticamente el comportamiento financiero de la plataforma ante diferentes escenarios de carga y volumen de usuarios.
+
+\subsection{Costes de infraestructura según el número de usuarios}
+
+Para prever el impacto financiero de la plataforma en entornos reales, se analiza el comportamiento de los costes operativos (OPEX) bajo tres escenarios de demanda: pesimista, conservador y optimista. Esta clasificación permite evaluar la elasticidad de la infraestructura en la nube (\textit{Render} y \textit{Vercel}) y el consumo variable de la API de \textit{Gemini} según el volumen de uso.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{
+\begin{tabular}{lccc}
+\hline
+\textbf{Concepto} & \textbf{Pesimista} & \textbf{Conservador} & \textbf{Optimista} \\ \hline
+Infraestructura web Frontend (\textit{Vercel Pro}) & 0,00 € & 18,18 € & 18,18 € \\
+Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 0,00 € & 12,73 € & 27,27 € \\
+Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15,00 € & 60,00 € \\ \hline
+\textbf{Total OPEX} & \textbf{2,50 €/mes} & \textbf{45,91 €/mes} & \textbf{105,45 €/mes} \\ \hline
+\end{tabular}
+}
+\caption{Comparativa de OPEX según escenario de escalado.}
+\label{tab:escalado_opex}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=12pt,                
+    enlarge x limits=0.3,
+    legend style={at={(0.5,-0.25)}, anchor=north, legend columns=-1}, 
+    ylabel={Coste Neto (€/mes)},
+    symbolic x coords={Pesimista, Conservador, Optimista},
+    xtick=data,
+    nodes near coords,
+    nodes near coords style={
+        font=\scriptsize, 
+        rotate=90, 
+        anchor=west, 
+        yshift=3pt,
+        /pgf/number format/fixed,
+        /pgf/number format/precision=2
+    }, 
+    ymin=0, ymax=70, 
+    height=8cm,
+    width=12cm,
+    grid=major,
+    grid style={dashed, gray!30}
+]
+\addplot[fill=blue!50] coordinates {(Pesimista, 0.00) (Conservador, 18.18) (Optimista, 18.18)};
+\addplot[fill=orange!70] coordinates {(Pesimista, 0.00) (Conservador, 12.73) (Optimista, 27.27)};
+\addplot[fill=green!60!black!60] coordinates {(Pesimista, 2.50) (Conservador, 15.00) (Optimista, 60.00)};
+
+\legend{Vercel Pro, Render Starter, Gemini Pro}
+\end{axis}
+\end{tikzpicture}
+\caption{Costes mensuales de infraestructura según escenario de escalado.}
+\label{fig:grafica_opex_desagregada}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm,
+    height=8cm,
+    xlabel={Número de usuarios activos mensuales},
+    ylabel={Coste Neto (€/mes)},
+    xmin=0, xmax=2100,
+    ymin=0, ymax=120,
+    xtick={0, 100, 500, 1000, 1500, 2000},
+    ytick={0, 20, 40, 60, 80, 100, 120},
+    grid=both,
+    grid style={dashed, gray!30},
+    legend style={at={(0.5,-0.2)}, anchor=north, legend columns=-1},
+    line width=1.2pt
+]
+\addplot[color=blue, mark=square*] coordinates {
+    (0,0) (100,0) (500,18.18) (1000,18.18) (2000,18.18)
+};
+\addplot[color=orange, mark=triangle*] coordinates {
+    (0,0) (100,0) (500,12.73) (1000,12.73) (2000,27.27)
+};
+\addplot[color=green!60!black, mark=diamond*] coordinates {
+    (0,0) (100,2.50) (500,15.00) (1000,30.00) (2000,60.00)
+};
+\addplot[color=red, line width=2pt, mark=*] coordinates {
+    (0,0) (100,2.50) (500,45.91) (1000,60.91) (2000,105.45)
+};
+
+\legend{Vercel Pro, Render Starter, Gemini Pro, Total OPEX}
+\end{axis}
+\end{tikzpicture}
+\caption{Evolución de OPEX en función del volumen de usuarios.}
+\label{fig:grafica_lineal_opex}
+\end{figure}
+
+
+\newpage
+
+\subsection{Coste total de propiedad (TCO)}
+
+El costo total de propiedad (\textit{Total Cost of Ownership}, TCO) permite evaluar el impacto económico global de la plataforma a medio plazo al consolidar la inversión inicial de desarrollo (CAPEX) junto con los gastos operativos (OPEX) proyectados a tres años. Para garantizar la validez metodológica de este presupuesto frente al mercado real, los costes de la mano de obra se contrastan con el \textit{Informe final sobre la consulta preliminar del mercado} de la Junta de Andalucía \cite{junta:cpi}.
+De este modo, asumiendo los gastos de infraestructura del escenario conservador, la proyección resultante se detalla en la siguiente tabla.
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{
+\begin{tabular}{lccc}
+\hline
+\textbf{Concepto} & \textbf{Año 1} & \textbf{Año 2} & \textbf{Año 3} \\ \hline
+\textbf{Inversión inicial (CAPEX)} & & & \\
+~~Desarrollo de Software (Ingeniería) & 5.935,20 € & 0,00 € & 0,00 € \\ \hline
+\textbf{Gastos operativos (OPEX)} & & & \\
+~~Infraestructura Frontend (\textit{Vercel Pro}) & 218,16 € & 218,16 € & 218,16 € \\
+~~Servidor de aplicaciones y BD (\textit{Render Starter}) & 152,76 € & 152,76 € & 152,76 € \\
+~~Consumo de la API de \textit{Gemini Pro} & 180,00 € & 180,00 € & 180,00 € \\ \hline
+\textbf{Total anual} & \textbf{6.486,12 €} & \textbf{550,92 €} & \textbf{550,92 €} \\ \hline
+\textbf{TCO acumulado (3 Años)} & \multicolumn{3}{c}{\textbf{7.587,96 €}} \\ \hline
+\end{tabular}
+}
+\caption{TCO proyectado a tres años.}
+\label{tab:tco_tres_anos}
+\end{table}
+
+\textit{Nota: No se han imputado costes de personal ni horas de mantenimiento dentro del OPEX debido a que el esfuerzo laboral se ha contabilizado íntegramente como parte del CAPEX, contando con las 300 horas reglamentarias del TFG.}
+
+
+\section{Plan de gestión de cambios y riesgos}\label{sec:plan_gestion_cambios_riesgos}
+
+Un desarrollo tecnológico está inherentemente sujeto a imprevistos y desviaciones. Para asegurar el éxito y la entrega en plazo de la plataforma, este plan de contingencia se apoyará de forma sistemática en la matriz de riesgos iniciales definida en la \autoref{sec:riesgos_iniciales}. En caso de que alguna de las amenazas identificadas se materialice, o bien si surge la necesidad de aplicar cualquier variación sobre los requisitos o la planificación del sistema, se activará el procedimiento formal de control estructurado a continuación.
+
+Cualquier propuesta de modificación se gestionará siguiendo este flujo secuencial:
+
+\begin{enumerate}
+    \item \textbf{Identificación:} Toda propuesta de modificación se registrará en el \textit{backlog}, especificando si afecta al código de la aplicación, a la redacción de la memoria o a la planificación temporal del proyecto.
+    \item \textbf{Análisis de impacto:} Evaluar el esfuerzo y las horas necesarias para aplicar el cambio, estimando cómo afectará al calendario global de las asignaturas, a la documentación pendiente o a la arquitectura del sistema.
+    \item \textbf{Resolución:} Decidir de forma justificada si el cambio se aprueba para su ejecución inmediata, se pospone como una mejora futura o se descarta si compromete críticamente los plazos de entrega del TFG.
+    \item \textbf{Implementación y despliegue:} Se ejecuta el cambio en el área correspondiente (programación de código, reajuste de la planificación o corrección de la memoria), realizando las pruebas o revisiones pertinentes antes de dar por actualizada la documentación del proyecto.
+\end{enumerate}

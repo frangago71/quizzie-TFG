@@ -40,3 +40,12 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+
+
+# Thesis documents
+/thesis/*
+
+!/thesis/memoria.tex
+!/thesis/memoria.pdf
+!/thesis/bibliografia.bib
+!/thesis/*/

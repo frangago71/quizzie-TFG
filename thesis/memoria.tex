@@ -1,0 +1,61 @@
+\documentclass[12pt]{report}
+
+% Paquetes LaTeX y estilos globales
+\input{etc/pkgs}
+\input{etc/style}
+
+
+\setTitle{Quizzie - Plataforma multidispositivo para la realización y gestión dinámica de tests educativos}
+\setAuthor{Francisco Gago Vázquez}
+\setDegree{Grado en Ingeniería Informática - Ingeniería del Software} 
+\setSupervisor{Jesús Moreno León} 
+\setDepartment{Lenguajes y Sistemas Informáticos}
+\setMonth{julio} 
+\setYear{2025/26} 
+
+\setDedication{Aquí la dedicatoria del trabajo}
+
+\begin{document}
+
+    % Portada y secciones no numeradas
+    \input{sections/00_portada}
+    \input{sections/00_agradecimientos}
+    \input{sections/00_resumen}
+    \input{sections/00_abstract}
+
+    % Índice del documento y de figuras
+    \begingroup
+        \hypersetup{linkcolor=black}        % Los enlaces son normalmente azules, pero en los índices se configuran a negro para que no aparezca todo azul
+        \tableofcontents
+        \listoffigures
+        \listoftables
+        \lstlistoflistings
+    \endgroup
+
+    % Cambia el estilo de números de página de romanos a normal
+    \clearpage\pagenumbering{arabic}
+
+    % Capítulos del trabajo
+    \input{sections/01_Introduccion}
+    \input{sections/02_Acta_de_constitucion}
+    \input{sections/03_Gestion_del_proyecto}
+    \input{sections/04_Estado_del_arte_y_fundamentacion}
+    \input{sections/05_Analisis_de_requisitos}
+    \input{sections/06_Diseño_y_arquitectura}
+    \input{sections/07_Metodologia_de_desarrollo}
+    \input{sections/08_Implementacion_y_pruebas}
+    \input{sections/09_Resultados_y_evaluacion}
+    \input{sections/10_Conclusiones}
+
+    % Anexos
+    \input{sections/99_Manual_de_usuario}
+    \input{sections/99_Manual_de_instalacion}
+
+
+    % Bibliografía
+    \bibliographystyle{unsrtnat}
+    \bibliography{bibliografia.bib}
+
+
+% Fin del documento
+\end{document}
