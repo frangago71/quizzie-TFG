@@ -1,12 +1,52 @@
 \chapter{Estado del arte y fundamentación}\label{cap:estado_del_arte_y_fundamentacion}
 
-Este es quizás, el capítulo que menos claro tengo cómo enfocarlo
+El éxito de una plataforma tecnológica no solo radica en su correcto funcionamiento, sino en su capacidad para aportar valor real frente a las soluciones existentes y sustentarse sobre decisiones de ingeniería justificadas. Antes de iniciar el diseño arquitectónico, es clave analizar el ecosistema competitivo y evaluar críticamente las herramientas de desarrollo disponibles en la industria actual.
 
-\section{Análisis del mercado}
-Análisis de aplicaciones similares, competidores y soluciones existentes
+A lo largo de las siguientes secciones se realiza un análisis del mercado de plataformas de evaluación mediante cuestionarios para identificar sus limitaciones y fijar los factores diferenciadores de \textit{Quizzie}. Asimismo, se detalla la fundamentación tecnológica del proyecto, examinando las alternativas consideradas y justificando la selección del stack definitivo, para concluir con la síntesis estratégica del estudio previo.
 
-\section{Facatores diferenciadores}
-Elementos que hacen que el proyecto sea único o innovador en comparación con las soluciones existentes
+\section{Análisis del mercado}\label{sec:analisis_del_mercado}
+
+Para fundamentar la necesidad de desarrollar una nueva plataforma de evaluación, es imprescindible analizar el ecosistema de soluciones empleadas actualmente en el ámbito educativo. Aunque el mercado cuenta con soluciones consolidadas, el estudio de sus características revela limitaciones críticas en el control de la presencialidad, la exportación de datos y la asistencia al profesorado. A continuación, se examinan las tres alternativas más representativas:
+
+\begin{itemize}
+    \item \textbf{Kahoot!:} Pionera en el ámbito de la gamificación educativa, destaca por su alta capacidad de fidelización y su interfaz visual atractiva. Sin embargo, su enfoque lúdico penaliza la rigurosidad académica: prioriza la velocidad de respuesta sobre la reflexión profunda, apenas ofrece analíticas avanzadas exportables en sus versiones gratuitas y carece de cualquier mecanismo que impida a un alumno participar de forma remota compartiendo el código PIN de la sala.
+    \item \textbf{Wooclap:} Orientada a un entorno universitario y corporativo más formal, ofrece una excelente variedad de tipos de preguntas y herramientas de interacción en vivo. Su principal barrera reside en la usabilidad y la agilidad de los flujos de trabajo; el proceso de diseño de cuestionarios extensos resulta monótono y manual para el docente, y no tiene funcionalidades inteligentes de automatización que agilicen la generación de contenido académico.
+    \item \textbf{Cuestionarios de Enseñanza Virtual:} Las plataformas institucionales integradas ofrecen una robustez indiscutible a nivel de seguridad, evaluación formal y exportación nativa de calificaciones. No obstante, sacrifican por completo la inmediatez y la experiencia de usuario. Su interfaz rígida, la complejidad técnica para configurar sesiones en tiempo real y la imposibilidad de mitigar de forma sencilla el fraude por suplantación digital a distancia limitan su efectividad como dinámicas de aula ágiles.
+\end{itemize}
+
+Frente a este escenario, se ha sintetizado una comparativa directa en la \hyperref[tab:comparativa_mercado]{Tabla~\ref{tab:comparativa_mercado}}, evaluando las características esenciales para la docencia presencial moderna. Las carencias detectadas en las alternativas comerciales e institucionales delimitan el espacio de oportunidad para una solución integral.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabular}{l c c c c}
+\hline
+\textbf{Característica} & \textbf{Kahoot!} & \textbf{Wooclap} & \textbf{Enseñanza Virtual} & \textbf{\textit{Quizzie}} \\ \hline
+Evaluación en tiempo real & \textbf{Sí} & \textbf{Sí} & Limitado & \textbf{Sí} \\ \hline
+Acceso rápido (sin registro de alumnos) & \textbf{Sí} & \textbf{Sí} & No & \textbf{Sí} \\ \hline
+Verificación de presencialidad física & No & No & No & \textbf{Sí} \\ \hline
+Generación de test asistida por IA & No & Limitado & No & \textbf{Sí} \\ \hline
+Creación ágil de cuestionarios & \textbf{Sí} & Limitado & No & \textbf{Sí} \\ \hline
+Visualización de estadísticas y analíticas & \textbf{Sí} & \textbf{Sí} & Limitado & \textbf{Sí} \\ \hline
+Exportación de resultados & De pago & Limitado & \textbf{Sí} & \textbf{Sí} \\ \hline
+\end{tabular}
+}
+\caption{Tabla comparativa del mercado.}
+\label{tab:comparativa_mercado}
+\end{table}
+
+\section{Factores diferenciadores}\label{sec:factores_diferenciadores}
+
+Como respuesta a las debilidades del mercado identificadas en la sección anterior, \textit{Quizzie} se diseña no como una alternativa lúdica adicional, sino como un entorno equilibrado que fusiona el dinamismo interactivo con la formalidad académica. Sus elementos innovadores y ventajas competitivas se estructuran en los siguientes pilares:
+
+\begin{itemize}
+    \item \textbf{Validación de presencia física mediante QR:} Para evitar el fraude por suplantación o que los alumnos participen a distancia, la plataforma genera un código QR único en el dispositivo del estudiante justo al finalizar el test, el cual incluye su nombre y la nota obtenida. El docente es quien escanea este código desde su propio dispositivo al terminar la clase, confirmando de manera inequívoca la asistencia física del alumno y registrando su calificación en el acto.    
+    \item \textbf{Creación inteligente asistida por IA:} Para resolver el flujo de trabajo monótono de diseñar cuestionarios desde cero, \textit{Quizzie} integra un motor de Inteligencia Artificial que asiste al docente generando automáticamente baterías de preguntas coherentes a partir del temario o texto introducido, agilizando drásticamente la preparación de la clase.
+    \item \textbf{Exportación directa de calificaciones:} La plataforma simplifica la gestión post-evaluación permitiendo descargar las notas de los alumnos directamente en formatos estándar como CSV o PDF, listos para su revisión o archivo local.
+    \item \textbf{Accesibilidad y agilidad en el aula:} Los alumnos acceden de forma inmediata sin necesidad de registros previos ni cuentas obligatorias, mientras que el profesor dispone de un panel simplificado para lanzar y controlar el flujo del cuestionario con un solo clic.
+\end{itemize}
 
 \section{Fundamentación tecnológica}
 Tecnologías de Backend, Frontend, BBDD, infraestructura y por qué se han elegido
