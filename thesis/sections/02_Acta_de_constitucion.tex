@@ -6,9 +6,7 @@ El desarrollo de \textit{Quizzie} requiere fijar un marco formal que defina sus 
 
 La formalización de \textit{Quizzie} como Trabajo de Fin de Grado requiere establecer, en primer lugar, los datos de identificación administrativa y académica que muestran su autoría y tutorización.
 
-A continuación, la Tabla \ref{tab:datos_proyecto} resume la información de referencia del proyecto:
-
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.5}
 \setlength{\tabcolsep}{12pt}
@@ -35,17 +33,7 @@ A continuación, la Tabla \ref{tab:datos_proyecto} resume la información de ref
 
 \section{Descripción y propósito}\label{sec:descripcion_y_proposito}
 
-\textit{Quizzie} nace como una plataforma multidispositivo orientada a transformar la dinámica de evaluación en el entorno educativo. El propósito fundamental de su desarrollo es ofrecer una herramienta interactiva que agilice la creación, gestión y ejecución de tests en tiempo real. Frente a soluciones comerciales existentes, la aplicación pone el foco en la inmediatez, la robustez técnica y control del flujo de evaluación por parte del profesor gracias a la verificación de la presencialidad de los alumnos.
-
-A diferencia de las metas de ingeniería y gestión académica planteadas en la sección \ref{sec:objetivos_del_proyecto}, este apartado define los objetivos globales de la plataforma, los cuales se materializarán detalladamente en el catálogo de requisitos funcionales del sistema expuesto en el capítulo \ref{cap:analisis_de_requisitos}.
-
-\begin{itemize}
-    \item \textbf{Control docente síncrono y monitorización:} Proveer al profesorado de herramientas dinámicas para guiar la sesión en tiempo real, permitiendo la gestión de salas y el control sobre los tiempos de respuesta.
-    \item \textbf{Validación y presencialidad física:} Asegurar la legitimidad de las evaluaciones en el aula mediante mecanismos de verificación digital \textit{in situ}, garantizando que el histórico de calificaciones refleje únicamente interacciones validadas.
-    \item \textbf{Accesibilidad y agilidad de participación:} Optimizar la experiencia de usuario con flujos de acceso rápido sin registro para los estudiantes, facilitando una incorporación multidispositivo inmediata a la dinámica de la clase.
-    \item \textbf{Automatización y análisis de rendimiento:} Incorporar capacidades de asistencia inteligente para agilizar el diseño de cuestionarios y estructurar analíticas de seguimiento que permitan evaluar la evolución del alumnado.
-    \item \textbf{Garantía de privacidad y cumplimiento:} Blindar el tratamiento de los datos y el almacenamiento de resultados bajo el estricto cumplimiento del marco legal establecido.
-\end{itemize}
+\textit{Quizzie} nace como una plataforma multidispositivo orientada a transformar la dinámica de evaluación en el entorno educativo. El propósito fundamental de su desarrollo es ofrecer una herramienta interactiva que agilice la creación, gestión y ejecución de tests en tiempo real. Frente a soluciones comerciales existentes, la aplicación pone el foco en la inmediatez, la robustez técnica y el control del flujo de evaluación por parte del profesor gracias a la verificación de la presencialidad de los alumnos. El desglose de estas capacidades se materializará detalladamente en el capítulo de \hyperref[cap:analisis_de_requisitos]{análisis de requisitos}.
 
 \section{Requerimientos de alto nivel}\label{sec:requerimientos_alto_nivel}
 
@@ -75,31 +63,68 @@ A continuación, se detallan los pilares normativos y legales de la aplicación:
 
 \section{Riesgos iniciales de alto nivel}\label{sec:riesgos_iniciales}
 
-El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos técnicos y operativos. Identificarlos de forma temprana permite establecer estrategias de mitigación para garantizar el éxito del proyecto y el cumplimiento del cronograma.
+El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos de alcance, técnicos y temporales. Identificarlos de forma temprana permite establecer el impacto potencial de cada amenaza y diseñar estrategias de mitigación que garanticen el éxito del proyecto y el cumplimiento del cronograma.
 
-A continuación, se presentan los riesgos iniciales detectados junto a sus respectivas medidas de contingencia:
+A continuación, se detallan los riesgos iniciales organizados por su naturaleza y evaluados según su probabilidad de ocurrencia y el impacto estimado en el desarrollo global del proyecto.
 
-\begin{table}[htbp]
+\subsection{Riesgos de alcance}
+Desviaciones relacionadas con el volumen de funcionalidades implementadas y la correcta definición de los requisitos del sistema:
+
+\begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{4pt}
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabular}{l p{5.7cm} p{5.7cm} c c}
+\hline
+\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
+\textbf{R-01} & Corrupción del alcance (\textit{Scope Creep}) al querer añadir más modos de juego o analíticas complejas. & Definición estricta del Producto Mínimo Viable (MVP). Las mejoras secundarias se derivan a "Trabajos Futuros". & \textbf{Medio} & \textbf{Alto} \\
+\textbf{R-02} & Ambigüedad en los requisitos iniciales que obligue a rehacer lógica de negocio ya programada. & Validación previa del modelo de datos e historias de usuario mediante diagramas de flujo antes de codificar. & \textbf{Bajo} & \textbf{Medio} \\ \hline
+\end{tabular}
+}
+\caption{Tabla de riesgos de alcance.}
+\label{tab:riesgos_alcance}
+\end{table}
 
-\begin{tabularx}{\dimexpr\textwidth-12pt}{l >{\raggedright\arraybackslash}p{2.5cm} YY}
+\subsection{Riesgos técnicos}
+Incidencias tecnológicas ligadas a la arquitectura del sistema, conectividad de red e infraestructura empleada:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabular}{l p{5.7cm} p{5.7cm} c c}
 \hline
-\textbf{Tipo} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Mitigación} \\ 
+\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
+\textbf{R-03} & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez. & Diseñar un modelo de datos ligero para las tramas de WebSockets y realizar pruebas de carga tempranas. & \textbf{Medio} & \textbf{Alto} \\
+\textbf{R-04} & Indisponibilidad, caídas o latencia elevada en los servicios en la nube de terceros (\textit{Gemini} o \textit{Render}). & Implementación de zonas de control de errores (\textit{error boundaries}) y reintentos exponenciales en el cliente. & \textbf{Bajo} & \textbf{Alto} \\
+\textbf{R-05} & Despliegue y red: fallos de conectividad o puertos bloqueados en la red wifi que impidan la comunicación. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos de reconexión rápida. & \textbf{Bajo} & \textbf{Alto} \\
+\textbf{R-06} & Incompatibilidades visuales menores o descuadres de la interfaz en ciertos navegadores o pantallas antiguas. & Uso de CSS responsivo estándar mediante \textit{Flexbox}/\textit{Grid} y testeo rápido en Google Chrome y Firefox. & \textbf{Alto} & \textbf{Bajo} \\ \hline
+\end{tabular}
+}
+\caption{Tabla de riesgos técnicos.}
+\label{tab:riesgos_tecnicos}
+\end{table}
+
+\subsection{Riesgos temporales}
+Amenazas asociadas directa o indirectamente con el cumplimiento de los plazos y el calendario de entregas de la memoria y el software:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabular}{l p{5.7cm} p{5.7cm} c c}
 \hline
-Técnico & Rendimiento síncrono & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez en clase. & Diseñar un modelo de datos ligero para WebSockets y realizar pruebas de carga tempranas. \\
-\hline
-Técnico & Curva de aprendizaje & Retrasos por falta de experiencia previa con WebSockets o la integración de asistentes de IA. & Desarrollar prototipos aislados y estudiar acerca de nuevas tecnologías en las primeras semanas del proyecto. \\
-\hline
-Gestión & Alcance y tiempo & Los plazos estrictos de la universidad pueden peligrar ante la ambición del catálogo de funciones. & Adoptar metodología ágil y priorizar las tareas bajo un enfoque de Producto Mínimo Viable (MVP). \\
-\hline
-Operativo & Despliegue y red & Fallos de conectividad o restricciones en los puertos de la red wifi que impidan la conexión WebSocket. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos alternativos de reconexión rápida. \\ 
-\hline
-\end{tabularx}
-\caption{Riesgos iniciales y estrategias de mitigación.}
-\label{tab:tabla_riesgos}
+\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
+\textbf{R-07} & Retraso en el calendario por la curva de aprendizaje en WebSockets o la API de \textit{Gemini Pro}. & Reservar las primeras semanas para crear pruebas de concepto aisladas antes de programar el núcleo. & \textbf{Medio} & \textbf{Alto} \\
+\textbf{R-08} & Falta de disponibilidad por la carga de trabajo de otras asignaturas simultáneas del curso. & Planificación mediante \textit{sprints} semanales rígidos con objetivos mínimos viables para mantener el ritmo. & \textbf{Alto} & \textbf{Medio} \\
+\textbf{R-09} & Retrasos menores en la redacción de la memoria final debido al foco exclusivo en el desarrollo de código. & Establecer bloques de tiempo semanales dedicados a documentar los módulos que se acaban de programar. & \textbf{Medio} & \textbf{Bajo} \\ \hline
+\end{tabular}
+}
+\caption{Tabla de riesgos temporales.}
+\label{tab:riesgos_temporales}
 \end{table}
 
 \section{Lista de interesados (\textit{Stakeholders})}\label{sec:lista_interesados}
