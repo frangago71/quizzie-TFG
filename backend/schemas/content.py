@@ -118,7 +118,7 @@ class QuestionRead(BaseModel):
 class QuizRead(BaseModel):
     id: int
     title: str
-    description: Optional[str]
+    description: Optional[str] = None
     questions: List[QuestionRead]
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
@@ -127,7 +127,7 @@ class QuizRead(BaseModel):
 class QuizListRead(BaseModel):
     id: int
     title: str
-    description: Optional[str]
+    description: Optional[str] = None
     created_at: datetime
     active_room_id: Optional[int] = None
     active_room_status: Optional[str] = None

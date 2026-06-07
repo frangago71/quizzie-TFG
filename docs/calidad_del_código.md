@@ -25,7 +25,8 @@ Se ha puesto especial foco en la **eliminación de tipos `any`** y en la robuste
 - **Seguridad de tipos:** Uso de interfaces estrictas (ej. `RoomData`, `QuizData`) y de la sintaxis `import type` para asegurar que el tipado no genere código innecesario en el bundle final.
 - **Estabilización de Hooks:** Auditoría de dependencias en `useEffect` y `useCallback` para garantizar un ciclo de vida de componentes eficiente y sin fugas de memoria.
 - **Arquitectura de Contextos:** Organización cohesionada de Providers y Hooks (ej. `RoomContext`), utilizando supresiones técnicas selectivas de ESLint para mantener la compatibilidad con **Fast Refresh** sin sacrificar la mantenibilidad.
-- **ESLint:** Configurado con **Flat Config** para validar el cumplimiento de las reglas de hooks y las mejores prácticas de React.
+- **ESLint & Prettier:** Configurado con **Flat Config** para validar el cumplimiento de las reglas de hooks y las mejores prácticas de React. Prettier está integrado como una regla de ESLint, lo que permite validar el estilo y el formato en un solo paso.
+- **Configuración de Formato (`.prettierrc`):** Se utiliza un archivo de configuración para garantizar la compatibilidad multiplataforma (ej. `endOfLine: "auto"`), evitando errores por saltos de línea diferentes entre Windows y Linux.
 
 **Comandos útiles:**
 ```bash
@@ -105,7 +106,7 @@ Para garantizar la estabilidad de la rama principal, se han implementado reglas 
 
 **Nota sobre fallos:** La mayoría de fallos de formato se corrigen automáticamente al ejecutar el comando anterior. Si tras la ejecución siguen apareciendo errores:
 - **Backend:** Usa `uvx ruff check . --fix` para errores de lógica/estilo y `uvx ruff format .` para el formato.
-- **Frontend:** Usa `npx eslint . --fix` para corregir reglas de TypeScript/React.
+- **Frontend:** Usa `npx eslint . --fix` para corregir tanto reglas de TypeScript/React como problemas de formato de Prettier.
 - Si los errores persisten, deberás corregirlos manualmente siguiendo las indicaciones de la consola.
 
 

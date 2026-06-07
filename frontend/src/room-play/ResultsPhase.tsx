@@ -68,7 +68,7 @@ const ResultsChart: React.FC<ResultsChartProps> = ({
             </div>
             <div className="bar-info">
               <span className="bar-option-letter">
-                {String.fromCharCode(65 + index)}
+                {String.fromCodePoint(65 + index)}
               </span>
               <span className="bar-option-text">{opt.text}</span>
             </div>
@@ -86,7 +86,6 @@ interface SummaryCardProps {
   isConsensusCorrect: boolean;
   userIsCorrect: boolean;
   selectedOptionId: number | null;
-  winningOptionId: string | null;
   winningOptionLetter: string;
   globalSuccess: number;
 }
@@ -101,6 +100,47 @@ const SummaryCards: React.FC<SummaryCardProps> = ({
   winningOptionLetter,
   globalSuccess,
 }) => {
+  const getStatusData = () => {
+    if (isHost) {
+      if (isTie) {
+        return {
+          bg: "bg-gray-soft",
+          icon: <MinusCircle size={22} color="#94a3b8" />,
+          value: "---",
+        };
+      }
+      return {
+        bg: isConsensusCorrect ? "bg-green-soft" : "bg-red-soft",
+        icon: isConsensusCorrect ? (
+          <TrendingUp size={22} color="var(--color-green)" />
+        ) : (
+          <TrendingDown size={22} color="var(--color-red)" />
+        ),
+        value: `Opción ${winningOptionLetter}`,
+      };
+    }
+
+    if (!selectedOptionId) {
+      return {
+        bg: "bg-gray-soft",
+        icon: <MinusCircle size={22} color="#94a3b8" />,
+        value: "Sin voto",
+      };
+    }
+
+    return {
+      bg: userIsCorrect ? "bg-green-soft" : "bg-red-soft",
+      icon: userIsCorrect ? (
+        <Check size={22} color="var(--color-green)" />
+      ) : (
+        <XCircle size={22} color="var(--color-red)" />
+      ),
+      value: userIsCorrect ? "¡Correcto!" : "Fallaste",
+    };
+  };
+
+  const status = getStatusData();
+
   return (
     <div className="results-summary-row">
       <div className="summary-card">
@@ -114,52 +154,12 @@ const SummaryCards: React.FC<SummaryCardProps> = ({
       </div>
 
       <div className="summary-card">
-        <div
-          className={`summary-icon-box ${
-            isHost
-              ? isTie
-                ? "bg-gray-soft"
-                : isConsensusCorrect
-                  ? "bg-green-soft"
-                  : "bg-red-soft"
-              : !selectedOptionId
-                ? "bg-gray-soft"
-                : userIsCorrect
-                  ? "bg-green-soft"
-                  : "bg-red-soft"
-          }`}
-        >
-          {isHost ? (
-            isTie ? (
-              <MinusCircle size={22} color="#94a3b8" />
-            ) : isConsensusCorrect ? (
-              <TrendingUp size={22} color="var(--color-green)" />
-            ) : (
-              <TrendingDown size={22} color="var(--color-red)" />
-            )
-          ) : !selectedOptionId ? (
-            <MinusCircle size={22} color="#94a3b8" />
-          ) : userIsCorrect ? (
-            <Check size={22} color="var(--color-green)" />
-          ) : (
-            <XCircle size={22} color="var(--color-red)" />
-          )}
-        </div>
+        <div className={`summary-icon-box ${status.bg}`}>{status.icon}</div>
         <div className="summary-data">
           <span className="summary-label">
             {isHost ? "OPCIÓN MÁS VOTADA" : "TU RESULTADO"}
           </span>
-          <span className="summary-value">
-            {isHost
-              ? isTie
-                ? "---"
-                : `Opción ${winningOptionLetter}`
-              : !selectedOptionId
-                ? "Sin voto"
-                : userIsCorrect
-                  ? "¡Correcto!"
-                  : "Fallaste"}
-          </span>
+          <span className="summary-value">{status.value}</span>
         </div>
       </div>
 
@@ -200,9 +200,9 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
       (o: RoomOption) => o.id.toString() === winningOptionId,
     ) ?? -1;
   const winningOptionLetter =
-    winningOptionIndex !== -1
-      ? String.fromCharCode(65 + winningOptionIndex)
-      : "---";
+    winningOptionIndex === -1
+      ? "---"
+      : String.fromCodePoint(65 + winningOptionIndex);
 
   const globalSuccess =
     totalVotes > 0
@@ -232,7 +232,6 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
           isConsensusCorrect={isConsensusCorrect}
           userIsCorrect={userIsCorrect}
           selectedOptionId={selectedOptionId}
-          winningOptionId={winningOptionId}
           winningOptionLetter={winningOptionLetter}
           globalSuccess={globalSuccess}
         />

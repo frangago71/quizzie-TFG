@@ -1,5 +1,4 @@
 import asyncio
-import random
 import secrets
 import string
 from datetime import timedelta
@@ -17,6 +16,10 @@ from models.stage import Answer, Participant, Room, RoomPhase, RoomStatus, get_u
 from models.users import Student
 
 router = APIRouter(prefix="/stage", tags=["Stage"])
+
+ROOM_NOT_FOUND = "Sala no encontrada"
+QUIZ_NOT_FOUND = "Cuestionario no encontrado"
+PARTICIPANT_NOT_FOUND = "Participante no encontrado"
 
 
 class ConnectionManager:
@@ -150,7 +153,7 @@ def get_rooms(session: Annotated[Session, Depends(get_session)]):
     "/rooms",
     status_code=201,
     responses={
-        404: {"description": "Quiz no encontrado"},
+        404: {"description": QUIZ_NOT_FOUND},
         400: {"description": "Ya existe una sala activa para este quiz"},
     },
 )
@@ -159,7 +162,7 @@ def create_room(
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
-        raise HTTPException(status_code=404, detail="Quiz no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     active_room_statement = select(Room).where(
         Room.quiz_id == quiz_id, Room.status != RoomStatus.FINISHED
     )
@@ -175,7 +178,7 @@ def create_room(
         if not session.exec(statement).first():
             unique_join_code = True
         else:
-            new_join_code = "".join(random.choices(string.digits, k=6))
+            new_join_code = "".join(secrets.choice(string.digits) for _ in range(6))
     new_room = Room(
         quiz_id=quiz_id,
         join_code=new_join_code,
@@ -221,12 +224,12 @@ def get_participants_names_by_room(room_id: int, session: Annotated[Session, Dep
 
 @router.get(
     "/rooms/{room_id}",
-    responses={404: {"description": "Sala no encontrada"}},
+    responses={404: {"description": ROOM_NOT_FOUND}},
 )
 def get_room_details(room_id: int, session: Annotated[Session, Depends(get_session)]):
     room = session.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
     total_questions = session.exec(
         select(func.count(Question.id)).where(Question.quiz_id == room.quiz_id)
@@ -304,14 +307,14 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
 @router.post(
     "/rooms/{room_id}/start",
     responses={
-        404: {"description": "Sala no encontrada"},
+        404: {"description": ROOM_NOT_FOUND},
         400: {"description": "No se puede iniciar la sala."},
     },
 )
 async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_session)]):
     room = session.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
     if room.status != RoomStatus.WAITING:
         raise HTTPException(status_code=400, detail="No se puede iniciar la sala.")
 
@@ -344,14 +347,14 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
 @router.patch(
     "/rooms/{room_id}/next-question",
     responses={
-        404: {"description": "Sala no encontrada"},
+        404: {"description": ROOM_NOT_FOUND},
         400: {"description": "Sala no disponible"},
     },
 )
 async def next_question(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
     if room.status != RoomStatus.LIVE:
         raise HTTPException(status_code=400, detail="Sala no disponible")
 
@@ -401,12 +404,12 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
 
 @router.post(
     "/rooms/{room_id}/timer/stop",
-    responses={404: {"description": "Sala no encontrada"}},
+    responses={404: {"description": ROOM_NOT_FOUND}},
 )
 async def stop_timer(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
     room.remaining_time_at_pause = 0
     room.is_paused = True
@@ -426,7 +429,7 @@ class VerificationRequest(BaseModel):
 @router.post(
     "/rooms/{room_id}/verify-participant",
     responses={
-        404: {"description": "Participante no encontrado"},
+        404: {"description": PARTICIPANT_NOT_FOUND},
         400: {"description": "Token de verificación inválido"},
         409: {"description": "Este resultado ya ha sido verificado anteriormente."},
     },
@@ -442,7 +445,7 @@ async def verify_participant(
     participant = db.exec(statement).first()
 
     if not participant:
-        raise HTTPException(status_code=404, detail="Participante no encontrado")
+        raise HTTPException(status_code=404, detail=PARTICIPANT_NOT_FOUND)
 
     if participant.verification_token != req.token:
         raise HTTPException(status_code=400, detail="Token de verificación inválido")
@@ -496,14 +499,14 @@ async def finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]
 @router.post(
     "/rooms/{room_id}/force-finish",
     responses={
-        404: {"description": "Sala no encontrada"},
+        404: {"description": ROOM_NOT_FOUND},
         400: {"description": "La sala ya está finalizada"},
     },
 )
 async def force_finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
     if room.status == RoomStatus.FINISHED:
         raise HTTPException(status_code=400, detail="La sala ya está finalizada")
 
@@ -539,7 +542,7 @@ async def create_participant(
 
     room = session.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada.")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
     if room.status not in [RoomStatus.WAITING, RoomStatus.LIVE]:
         raise HTTPException(status_code=400, detail="No puedes unirte. La sala está cerrada")
@@ -623,7 +626,7 @@ def submit_answer(
     participant = session.get(Participant, participant_id)
 
     if not participant:
-        raise HTTPException(status_code=404, detail="Participante no encontrado")
+        raise HTTPException(status_code=404, detail=PARTICIPANT_NOT_FOUND)
 
     time_left = get_calculated_time_left(participant.room)
 
@@ -659,12 +662,12 @@ def get_leaderboard(room_id: int, session: Annotated[Session, Depends(get_sessio
 
 @router.post(
     "/rooms/{room_id}/leaderboard/show",
-    responses={404: {"description": "Sala no encontrada"}},
+    responses={404: {"description": ROOM_NOT_FOUND}},
 )
 async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_session)]):
     room = db.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
     room.phase = "leaderboard"
     room.phase_start_time = get_utc_now()
@@ -688,14 +691,14 @@ async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_sess
 
 @router.post(
     "/rooms/{room_id}/questions/{question_id}/finish",
-    responses={404: {"description": "Sala no encontrada"}},
+    responses={404: {"description": ROOM_NOT_FOUND}},
 )
 async def finish_question(
     room_id: int, question_id: int, db: Annotated[Session, Depends(get_session)]
 ):
     room = db.get(Room, room_id)
     if not room:
-        raise HTTPException(status_code=404, detail="Sala no encontrada")
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
     stats_query = (
         select(Answer.option_id, func.count(Answer.id).label("total"))

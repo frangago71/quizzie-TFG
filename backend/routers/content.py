@@ -20,6 +20,9 @@ from schemas.content import (
 
 router = APIRouter(prefix="/content", tags=["Content"])
 
+QUIZ_NOT_FOUND = "Cuestionario no encontrado"
+QUESTION_NOT_FOUND = "Pregunta no encontrada"
+
 
 @router.get("/quizzes", response_model=List[Quiz])
 def get_quizzes(session: Annotated[Session, Depends(get_session)]):
@@ -29,7 +32,7 @@ def get_quizzes(session: Annotated[Session, Depends(get_session)]):
 @router.get(
     "/quizzes/{quiz_id}",
     response_model=QuizRead,
-    responses={404: {"description": "Quiz no encontrado"}},
+    responses={404: {"description": QUIZ_NOT_FOUND}},
 )
 def get_quiz(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     statement = (
@@ -39,7 +42,7 @@ def get_quiz(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     )
     quiz = session.exec(statement).first()
     if not quiz:
-        raise HTTPException(status_code=404, detail="Quiz no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     return quiz
 
 
@@ -107,7 +110,7 @@ def _sync_questions(session: Session, db_quiz: Quiz, incoming_questions: List[Qu
 @router.put(
     "/quizzes/{quiz_id}",
     responses={
-        404: {"description": "Quiz no encontrado"},
+        404: {"description": QUIZ_NOT_FOUND},
         403: {"description": "No tienes permiso"},
         400: {"description": "El cuestionario debe tener al menos una pregunta"},
     },
@@ -130,7 +133,7 @@ def update_quiz(
     )
     db_quiz = session.exec(statement).first()
     if not db_quiz:
-        raise HTTPException(status_code=404, detail="Quiz no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     if db_quiz.teacher_id != teacher_id:
         raise HTTPException(status_code=403, detail="No tienes permiso")
 
@@ -147,7 +150,7 @@ def update_quiz(
 @router.delete(
     "/quizzes/{quiz_id}",
     responses={
-        404: {"description": "Cuestionario no encontrado"},
+        404: {"description": QUIZ_NOT_FOUND},
         403: {"description": "No tienes permiso para realizar esta acción"},
     },
 )
@@ -158,7 +161,7 @@ def delete_quiz(
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
-        raise HTTPException(status_code=404, detail="Cuestionario no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     if quiz.teacher_id != teacher_id:
         raise HTTPException(status_code=403, detail="No tienes permiso para realizar esta acción")
     session.delete(quiz)
@@ -169,7 +172,7 @@ def delete_quiz(
 @router.delete(
     "/quizzes/{quiz_id}/hard",
     responses={
-        404: {"description": "Cuestionario no encontrado"},
+        404: {"description": QUIZ_NOT_FOUND},
         403: {"description": "No tienes permiso para realizar esta acción"},
         400: {"description": "No se puede borrar el cuestionario porque tiene una sala activa"},
     },
@@ -181,7 +184,7 @@ def delete_quiz_and_rooms(
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
-        raise HTTPException(status_code=404, detail="Cuestionario no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     if quiz.teacher_id != teacher_id:
         raise HTTPException(status_code=403, detail="No tienes permiso para realizar esta acción")
     active_rooms = [r for r in quiz.rooms if r.status in [RoomStatus.LIVE, RoomStatus.WAITING]]
@@ -200,12 +203,12 @@ def delete_quiz_and_rooms(
 @router.get(
     "/quizzes/{quiz_id}/rooms",
     response_model=List[Room],
-    responses={404: {"description": "Cuestionario no encontrado"}},
+    responses={404: {"description": QUIZ_NOT_FOUND}},
 )
 def get_quiz_rooms(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
-        raise HTTPException(status_code=404, detail="Cuestionario no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     return quiz.rooms
 
 
@@ -217,12 +220,12 @@ def get_questions(session: Annotated[Session, Depends(get_session)]):
 @router.get(
     "/questions/{question_id}",
     response_model=Question,
-    responses={404: {"description": "Pregunta no encontrada"}},
+    responses={404: {"description": QUESTION_NOT_FOUND}},
 )
 def get_question(question_id: int, session: Annotated[Session, Depends(get_session)]):
     db_question = session.get(Question, question_id)
     if not db_question:
-        raise HTTPException(status_code=404, detail="Pregunta no encontrada")
+        raise HTTPException(status_code=404, detail=QUESTION_NOT_FOUND)
     return db_question
 
 
@@ -230,7 +233,7 @@ def get_question(question_id: int, session: Annotated[Session, Depends(get_sessi
     "/quizzes/{quiz_id}/questions",
     response_model=QuestionRead,
     responses={
-        404: {"description": "Cuestionario no encontrado"},
+        404: {"description": QUIZ_NOT_FOUND},
         403: {"description": "No tienes permiso para añadir preguntas a este cuestionario"},
     },
 )
@@ -242,7 +245,7 @@ def create_question(
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
-        raise HTTPException(status_code=404, detail="Cuestionario no encontrado")
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
     if quiz.teacher_id != teacher_id:
         raise HTTPException(
             status_code=403, detail="No tienes permiso para añadir preguntas a este cuestionario"
@@ -262,7 +265,7 @@ def create_question(
 @router.delete(
     "/questions/{question_id}",
     responses={
-        404: {"description": "Pregunta no encontrada"},
+        404: {"description": QUESTION_NOT_FOUND},
         403: {"description": "No tienes permiso para borrar esta pregunta"},
         400: {
             "description": "No puedes borrar la última pregunta. El quiz debe tener al menos una."
@@ -276,7 +279,7 @@ def delete_question(
 ):
     db_question = session.get(Question, question_id)
     if not db_question:
-        raise HTTPException(status_code=404, detail="Pregunta no encontrada")
+        raise HTTPException(status_code=404, detail=QUESTION_NOT_FOUND)
     if db_question.quiz.teacher_id != teacher_id:
         raise HTTPException(status_code=403, detail="No tienes permiso para borrar esta pregunta")
     if len(db_question.quiz.questions) <= 1:
@@ -310,7 +313,7 @@ def get_option(option_id: int, session: Annotated[Session, Depends(get_session)]
     "/questions/{question_id}/options",
     response_model=OptionRead,
     responses={
-        404: {"description": "Pregunta no encontrada"},
+        404: {"description": QUESTION_NOT_FOUND},
         403: {"description": "No puedes añadir opciones a esta pregunta"},
     },
 )
@@ -322,7 +325,7 @@ def create_option(
 ):
     question = session.get(Question, question_id)
     if not question:
-        raise HTTPException(status_code=404, detail="Pregunta no encontrada")
+        raise HTTPException(status_code=404, detail=QUESTION_NOT_FOUND)
     if question.quiz.teacher_id != teacher_id:
         raise HTTPException(status_code=403, detail="No puedes añadir opciones a esta pregunta")
     new_option = Option(**option_data.model_dump(), question_id=question_id)

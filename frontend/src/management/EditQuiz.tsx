@@ -40,11 +40,12 @@ const EditQuiz: React.FC = () => {
     description: "",
     questions: [
       {
+        id: -1,
         text: "",
         points: 1,
         options: [
-          { text: "", is_correct: true },
-          { text: "", is_correct: false },
+          { id: -1, text: "", is_correct: true },
+          { id: -2, text: "", is_correct: false },
         ],
       },
     ],
@@ -67,14 +68,13 @@ const EditQuiz: React.FC = () => {
 
   const currentQ = quiz.questions[currentIndex];
   const isCurrentQuestionBlank =
-    currentQ &&
-    currentQ.text.trim() === "" &&
-    currentQ.options.every((opt) => opt.text.trim() === "");
+    currentQ?.text.trim() === "" &&
+    currentQ?.options.every((opt) => opt.text.trim() === "");
 
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const isMobile = window.innerWidth < 768;
+  const isMobile = globalThis.innerWidth < 768;
   const minSwipeDistance = 50;
 
   const handleNext = useCallback(() => {
@@ -97,8 +97,8 @@ const EditQuiz: React.FC = () => {
       if (e.key === "ArrowRight") handleNext();
       else if (e.key === "ArrowLeft") handlePrev();
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    globalThis.addEventListener("keydown", handleKeyDown);
+    return () => globalThis.removeEventListener("keydown", handleKeyDown);
   }, [handleNext, handlePrev, isModalOpen]);
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -256,7 +256,7 @@ const EditQuiz: React.FC = () => {
   };
 
   if (loading) return <div style={{ padding: 40 }}>Cargando...</div>;
-  if (!quiz || !quiz.questions || quiz.questions.length === 0)
+  if (!quiz?.questions?.length)
     return <div style={{ padding: 40 }}>Error cargando preguntas.</div>;
 
   const isNextDisabled =
@@ -276,7 +276,6 @@ const EditQuiz: React.FC = () => {
                 className="title-input"
                 type="text"
                 placeholder="Título"
-                tabIndex={1}
                 value={quiz.title}
                 onChange={(e) => handleQuizChange("title", e.target.value)}
                 required
@@ -284,7 +283,6 @@ const EditQuiz: React.FC = () => {
               <button
                 type="submit"
                 className={`btn-main ${isMobile ? "small" : "big"} cyan btn-header-action`}
-                tabIndex={100}
               >
                 <span className="text-desktop">Confirmar</span>
                 <span className="text-mobile">Confirmar</span>
@@ -293,7 +291,6 @@ const EditQuiz: React.FC = () => {
             <textarea
               className="desc-input"
               placeholder="Añade una descripción aquí..."
-              tabIndex={2}
               value={quiz.description}
               onChange={(e) => handleQuizChange("description", e.target.value)}
               required
@@ -303,11 +300,16 @@ const EditQuiz: React.FC = () => {
 
         <div className="nav-dots pc-dots">
           {quiz.questions.map((q, i) => (
-            <div
-              key={i}
+            <button
+              type="button"
+              key={q.id}
               className={`dot ${i === currentIndex ? "active" : ""} ${q._deleted ? "deleted-dot" : ""}`}
               onClick={() => handleDotClick(i)}
-              style={{ opacity: q._deleted ? 0.3 : 1 }}
+              style={{
+                opacity: q._deleted ? 0.3 : 1,
+                border: "none",
+                padding: 0,
+              }}
             />
           ))}
         </div>
@@ -315,11 +317,16 @@ const EditQuiz: React.FC = () => {
         <div className="quiz-top-nav-mobile">
           <div className="nav-dots">
             {quiz.questions.map((q, i) => (
-              <div
-                key={i}
+              <button
+                type="button"
+                key={q.id}
                 className={`dot ${i === currentIndex ? "active" : ""}`}
                 onClick={() => handleDotClick(i)}
-                style={{ opacity: q._deleted ? 0.3 : 1 }}
+                style={{
+                  opacity: q._deleted ? 0.3 : 1,
+                  border: "none",
+                  padding: 0,
+                }}
               />
             ))}
           </div>
@@ -361,13 +368,13 @@ const EditQuiz: React.FC = () => {
                 PREGUNTA {currentIndex + 1} de {quiz.questions.length}
               </span>
               <div className="question-meta">
-                <label>PUNTOS</label>
+                <label htmlFor="points-input">PUNTOS</label>
                 <input
+                  id="points-input"
                   type="number"
                   className="input-base points-input"
                   min="1"
                   max="100"
-                  tabIndex={3}
                   value={currentQ.points || ""}
                   onChange={(e) =>
                     handleQuestionChange(currentIndex, "points", e.target.value)
@@ -382,7 +389,6 @@ const EditQuiz: React.FC = () => {
               className="input-base question-text-input"
               type="text"
               placeholder="Escribe el enunciado"
-              tabIndex={4}
               value={currentQ.text}
               onChange={(e) =>
                 handleQuestionChange(currentIndex, "text", e.target.value)
@@ -393,7 +399,7 @@ const EditQuiz: React.FC = () => {
             <div className="options-wrapper">
               {currentQ.options.map((o, oIndex) => (
                 <div
-                  key={oIndex}
+                  key={o.id}
                   className="option-item"
                   style={{
                     opacity: o._deleted ? 0.5 : 1,
@@ -414,7 +420,6 @@ const EditQuiz: React.FC = () => {
                     className="input-base"
                     type="text"
                     placeholder={`Opción ${oIndex + 1}`}
-                    tabIndex={5 + oIndex}
                     value={o.text}
                     onChange={(e) =>
                       handleOptionChange(currentIndex, oIndex, e.target.value)
@@ -467,8 +472,22 @@ const EditQuiz: React.FC = () => {
       </form>
 
       {isModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsModalOpen(false);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setIsModalOpen(false);
+            }
+          }}
+          role="button"
+          tabIndex={-1}
+        >
+          <div className="modal-card">
             <div className="modal-header">
               <h2>Confirmar Cambios</h2>
               <p>

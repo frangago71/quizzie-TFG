@@ -15,8 +15,25 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="modal-overlay"
+      onClick={onCancel}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onCancel();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label="Cerrar ventana emergente"
+    >
+      <div
+        className="modal-card"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        role="document"
+        tabIndex={-1}
+      >
         <div className="modal-header">
           <h2>¿Cerrar sesión?</h2>
           <p>

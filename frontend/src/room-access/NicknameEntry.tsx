@@ -61,12 +61,17 @@ const NicknameEntry: React.FC = () => {
           },
         });
 
-        setUserNickname(cleanNickname);
-        setParticipantId(partRes.data.participant_id);
+        const vParticipantId = Number(partRes.data.participant_id);
+        const vNickname = String(cleanNickname).trim();
 
-        const destination =
-          roomStatus === "live" ? `/live/${roomId}` : `/lobby/${roomId}`;
-        navigate(destination);
+        if (!Number.isNaN(vParticipantId)) {
+          setUserNickname(vNickname);
+          setParticipantId(vParticipantId);
+
+          const destination =
+            roomStatus === "live" ? `/live/${roomId}` : `/lobby/${roomId}`;
+          navigate(destination);
+        }
       } else {
         setShowModal(true);
       }
@@ -140,12 +145,17 @@ const NicknameEntry: React.FC = () => {
           nickname={nickname.trim()}
           roomId={roomId}
           onConfirm={(name, participantId) => {
-            setShowModal(false);
-            setUserNickname(name);
-            setParticipantId(participantId);
-            const destination =
-              roomStatus === "live" ? `/live/${roomId}` : `/lobby/${roomId}`;
-            navigate(destination);
+            const vParticipantId = Number(participantId);
+            const vNickname = String(name).trim();
+
+            if (!Number.isNaN(vParticipantId)) {
+              setShowModal(false);
+              setUserNickname(vNickname);
+              setParticipantId(vParticipantId);
+              const destination =
+                roomStatus === "live" ? `/live/${roomId}` : `/lobby/${roomId}`;
+              navigate(destination);
+            }
           }}
           onCancel={() => setShowModal(false)}
         />

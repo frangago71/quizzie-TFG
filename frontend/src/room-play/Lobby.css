@@ -182,13 +182,9 @@
   }
 
   .header-info h1 {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     line-height: 1.2;
     word-break: break-word;
-  }
-
-  .header-info h1 {
-    font-size: 1.8rem;
     letter-spacing: -0.5px;
   }
 
@@ -198,17 +194,6 @@
 
   .status-text {
     font-size: 0.85rem;
-  }
-
-  .header-actions {
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  .stat-badge {
-    width: 100%;
-    justify-content: center;
-    padding: 15px;
   }
 
   .stat-number {
@@ -242,6 +227,7 @@
     width: 100%;
     max-width: 320px;
     justify-content: center;
+    padding: 15px;
   }
 
   .btn-start-game {

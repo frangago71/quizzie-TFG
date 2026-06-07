@@ -224,6 +224,10 @@
   align-items: center;
   cursor: pointer;
   transition: all 0.2s;
+  background: none;
+  font-family: inherit;
+  width: 100%;
+  text-align: inherit;
 }
 
 .create-new-dashed:hover {

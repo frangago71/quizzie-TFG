@@ -41,9 +41,14 @@ const RoomCode: React.FC = () => {
       const response = await api.get(`/stage/rooms/verify/${fullCode}`);
 
       if (response.data.success) {
-        setRoomCode(fullCode);
-        setRoomId(response.data.room_id);
-        navigate(`/join/${fullCode}`);
+        const validatedRoomId = Number(response.data.room_id);
+        const cleanCode = String(fullCode).trim();
+
+        if (!Number.isNaN(validatedRoomId) && cleanCode.length === 6) {
+          setRoomCode(cleanCode);
+          setRoomId(validatedRoomId);
+          navigate(`/join/${cleanCode}`);
+        }
       }
     } catch (error: unknown) {
       const err = error as { response?: { data?: { detail?: string } } };

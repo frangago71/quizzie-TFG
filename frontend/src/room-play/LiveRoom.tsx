@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AnsweringPhase from "./AnsweringPhase";
 import ResultsPhase from "./ResultsPhase";
 import LeaderboardPhase from "./LeaderboardPhase";
@@ -6,7 +6,7 @@ import FinalScreen from "./FinalScreen";
 import "./LiveRoom.css";
 import api, { WS_BASE_URL } from "../api";
 import { useRoom } from "../context/RoomContext.tsx";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 import type { RoomData } from "../types.ts";
 
@@ -29,7 +29,6 @@ const LiveRoom: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   const { id: urlRoomId } = useParams();
-  const navigate = useNavigate();
 
   const {
     roomId,
@@ -53,136 +52,86 @@ const LiveRoom: React.FC = () => {
     }
   }, [urlRoomId, roomId, setRoomId]);
 
-  useEffect(() => {
-    const idToUse = urlRoomId || roomId;
-    if (!idToUse) return;
-
-    const syncRoom = async () => {
-      try {
-        const res = await api.get(`/stage/rooms/${idToUse}`);
-        const data = res.data;
-        setRoomData(data);
-        setIsPaused(data.is_paused);
-
-        if (data.status === "live") {
-          const isFirstQuestionStart =
-            data.current_question_index === 1 &&
-            data.time_left >= data.answer_time - 1;
-          if (isFirstQuestionStart) {
-            setPhase("countdown");
-            setCount(3);
-          } else {
-            setPhase("playing");
-            setCount(0);
-          }
-
-          if (data.statistics) setStatistics(data.statistics);
-          if (data.correct_option_id)
-            setCorrectOptionId(data.correct_option_id);
-          if (data.leaderboard) setLeaderboardData(data.leaderboard);
-
-          setTimeLeft(data.time_left);
-        } else if (data.status === "verifying" || data.status === "finished") {
-          if (data.leaderboard) setLeaderboardData(data.leaderboard);
-        }
-      } catch (err) {
-        console.error("Error sincronizando al entrar:", err);
+  const updateRoomStatus = useCallback(
+    (data: RoomData) => {
+      setRoomData(data);
+      if (data.status === "live") {
+        const isFirstStart =
+          data.current_question_index === 1 &&
+          data.time_left !== undefined &&
+          data.answer_time !== undefined &&
+          data.time_left >= data.answer_time - 1;
+        setPhase(isFirstStart ? "countdown" : "playing");
+        setCount(isFirstStart ? 3 : 0);
+        if (data.statistics) setStatistics(data.statistics);
+        if (data.correct_option_id) setCorrectOptionId(data.correct_option_id);
+        if (data.leaderboard) setLeaderboardData(data.leaderboard);
+        if (data.time_left !== undefined) setTimeLeft(data.time_left);
+      } else if (data.status === "verifying" || data.status === "finished") {
+        if (data.leaderboard) setLeaderboardData(data.leaderboard);
       }
-    };
-    syncRoom();
-
-    const ws = new WebSocket(
-      `${WS_BASE_URL}/stage/rooms/${idToUse}/ws?role=${isHost ? "teacher" : "student"}`,
-    );
-
-    ws.onopen = () => {
-      console.log("WebSocket conectado");
-      setIsConnected(true);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket desconectado");
-      setIsConnected(false);
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      const data = message.data;
-
-      if (
-        ["next_question", "room_start", "room_update"].includes(message.type)
-      ) {
-        setRoomData(data);
-        if (data.status === "live") {
-          const isFirstQuestionStart =
-            data.current_question_index === 1 &&
-            data.time_left >= data.answer_time - 1;
-          if (isFirstQuestionStart) {
-            setPhase("countdown");
-            setCount(3);
-          } else {
-            setPhase("playing");
-            setCount(0);
-          }
-
-          if (data.statistics) setStatistics(data.statistics);
-          if (data.correct_option_id)
-            setCorrectOptionId(data.correct_option_id);
-          if (data.leaderboard) setLeaderboardData(data.leaderboard);
-
-          setTimeLeft(data.time_left);
-        } else if (data.status === "verifying" || data.status === "finished") {
-          if (data.leaderboard) setLeaderboardData(data.leaderboard);
-        }
-      }
-
-      if (message.type === "show_results") {
-        setStatistics(message.data.statistics);
-        setCorrectOptionId(message.data.correct_option_id);
+    },
+    [setRoomData],
+  );
+  const onMessage = useCallback(
+    (event: MessageEvent) => {
+      const { type, data } = JSON.parse(event.data);
+      if (["next_question", "room_start", "room_update"].includes(type)) {
+        updateRoomStatus(data);
+      } else if (type === "show_results") {
+        setStatistics(data.statistics);
+        setCorrectOptionId(data.correct_option_id);
         setRoomData((prev) =>
           prev && !Array.isArray(prev) ? { ...prev, phase: "results" } : prev,
         );
-      }
-
-      if (message.type === "show_leaderboard") {
-        setLeaderboardData(message.data.leaderboard);
+      } else if (type === "show_leaderboard") {
+        setLeaderboardData(data.leaderboard);
         setRoomData((prev) =>
           prev && !Array.isArray(prev)
             ? { ...prev, phase: "leaderboard" }
             : prev,
         );
-      }
-
-      if (message.type === "room_finish") {
+      } else if (type === "room_finish" || type === "room_verifying") {
+        const status = type === "room_finish" ? "finished" : "verifying";
         setRoomData((prev) =>
-          prev && !Array.isArray(prev) ? { ...prev, status: "finished" } : null,
+          prev && !Array.isArray(prev) ? { ...prev, status } : null,
         );
-      }
-
-      if (message.type === "room_verifying") {
-        setRoomData((prev) =>
-          prev && !Array.isArray(prev)
-            ? { ...prev, status: "verifying" }
-            : null,
-        );
-      }
-
-      if (message.type === "participant_verified") {
+      } else if (type === "participant_verified") {
         setRefreshTrigger((prev) => prev + 1);
+      } else if (type === "timer_update") {
+        if (data.time_left !== undefined) setTimeLeft(data.time_left);
+        if (data.is_paused !== undefined) setIsPaused(data.is_paused);
       }
+    },
+    [updateRoomStatus, setRoomData],
+  );
 
-      if (message.type === "timer_update") {
-        setTimeLeft(message.data.time_left);
-        setIsPaused(message.data.is_paused);
+  useEffect(() => {
+    const idToUse = Number(urlRoomId || roomId);
+    if (!idToUse || Number.isNaN(idToUse)) return;
+
+    const syncRoom = async () => {
+      try {
+        const res = await api.get(`/stage/rooms/${idToUse}`);
+        updateRoomStatus(res.data);
+        if (res.data.time_left !== undefined) setTimeLeft(res.data.time_left);
+        if (res.data.is_paused !== undefined) setIsPaused(res.data.is_paused);
+      } catch (err) {
+        console.error("Error sincronizando:", err);
       }
     };
 
+    syncRoom();
+    const ws = new WebSocket(
+      `${WS_BASE_URL}/stage/rooms/${idToUse}/ws?role=${isHost ? "teacher" : "student"}`,
+    );
+    ws.onopen = () => setIsConnected(true);
+    ws.onclose = () => setIsConnected(false);
+    ws.onmessage = onMessage;
     return () => ws.close();
-  }, [roomId, urlRoomId, setRoomData, navigate, isHost]);
+  }, [roomId, urlRoomId, isHost, updateRoomStatus, onMessage]);
 
   useEffect(() => {
-    // We use a microtask to avoid the "cascading renders" warning
-    // while ensuring the state resets when the question changes.
     queueMicrotask(() => {
       setIsSent(false);
       setSelectedOptionId(null);
@@ -190,63 +139,45 @@ const LiveRoom: React.FC = () => {
   }, [room?.question_id]);
 
   const handleShowResults = async () => {
-    const qId = room?.question_id;
-    if (!qId) {
-      toast.error("No se encuentra el ID de la pregunta");
-      return;
-    }
+    const vRoomId = Number(roomId || urlRoomId);
+    const qId = Number(room?.question_id);
+    if (!vRoomId || !qId) return;
+
     try {
-      await api.post(
-        `/stage/rooms/${roomId || urlRoomId}/questions/${qId}/finish`,
-      );
+      await api.post(`/stage/rooms/${vRoomId}/questions/${qId}/finish`);
     } catch (error) {
-      console.error(
-        "Error al finalizar: Es posible que el ID enviado sea erróneo",
-        error,
-      );
-      toast.error("El ID enviado no parece ser de una pregunta válida.");
+      console.error("Error al finalizar:", error);
+      toast.error("Error al finalizar la pregunta.");
     }
   };
 
   const handleShowLeaderboard = async () => {
-    try {
-      await api.post(`/stage/rooms/${roomId || urlRoomId}/leaderboard/show`);
-    } catch (error) {
-      console.error("Error al mostrar ranking:", error);
-    }
+    const vRoomId = Number(roomId || urlRoomId);
+    if (vRoomId) await api.post(`/stage/rooms/${vRoomId}/leaderboard/show`);
   };
 
   const handleNextQuestion = async () => {
-    try {
-      await api.patch(`/stage/rooms/${roomId}/next-question`);
-    } catch (error) {
-      console.error("Error al pasar de pregunta:", error);
-    }
+    const vRoomId = Number(roomId);
+    if (vRoomId) await api.patch(`/stage/rooms/${vRoomId}/next-question`);
   };
 
   const handleStopTimer = async () => {
-    try {
-      await api.post(`/stage/rooms/${roomId}/timer/stop`);
-    } catch (error) {
-      console.error("Error al detener el tiempo:", error);
-    }
+    const vRoomId = Number(roomId);
+    if (vRoomId) await api.post(`/stage/rooms/${vRoomId}/timer/stop`);
   };
 
   const handleSubmitAnswer = async () => {
-    if (
-      !selectedOptionId ||
-      isSent ||
-      isHost ||
-      !participantId ||
-      !room?.question_id
-    )
+    const vParticipantId = Number(participantId);
+    const qId = Number(room?.question_id);
+    if (!selectedOptionId || isSent || isHost || !vParticipantId || !qId)
       return;
+
     try {
       await api.post(`/stage/answers`, null, {
         params: {
-          participant_id: participantId,
+          participant_id: vParticipantId,
           option_id: selectedOptionId,
-          question_id: room.question_id,
+          question_id: qId,
         },
       });
       setIsSent(true);
@@ -257,7 +188,7 @@ const LiveRoom: React.FC = () => {
 
   useEffect(() => {
     const fetchQuizData = async () => {
-      const currentQuizId = room?.quiz_id;
+      const currentQuizId = Number(room?.quiz_id);
       if (!currentQuizId) return;
 
       try {
@@ -295,6 +226,66 @@ const LiveRoom: React.FC = () => {
       </div>
     );
 
+  const renderPhase = () => {
+    if (room.status === "verifying" || room.status === "finished") {
+      return (
+        <FinalScreen
+          isHost={isHost}
+          data={leaderboardData}
+          status={room.status}
+          refreshTrigger={refreshTrigger}
+        />
+      );
+    }
+
+    if (room.phase === "results") {
+      return (
+        <ResultsPhase
+          roomData={room}
+          statistics={statistics}
+          correctOptionId={correctOptionId}
+          selectedOptionId={selectedOptionId}
+          isHost={isHost}
+          handleShowLeaderboard={handleShowLeaderboard}
+        />
+      );
+    }
+
+    if (room.phase === "leaderboard") {
+      return (
+        <LeaderboardPhase
+          data={leaderboardData}
+          isHost={isHost}
+          handleNextQuestion={handleNextQuestion}
+          isLastQuestion={room.current_question_index === room.total_questions}
+        />
+      );
+    }
+
+    return (
+      <AnsweringPhase
+        phase={phase}
+        count={count}
+        roomCode={roomCode}
+        quizTitle={quizTitle}
+        showAnswersCount={showAnswersCount}
+        setShowAnswersCount={setShowAnswersCount}
+        isHost={isHost}
+        statistics={statistics}
+        timeLeft={timeLeft}
+        answeringProgress={answeringProgress}
+        isPaused={isPaused}
+        handleShowResults={handleShowResults}
+        roomData={room}
+        selectedOptionId={selectedOptionId}
+        setSelectedOptionId={setSelectedOptionId}
+        isSent={isSent}
+        handleSubmitAnswer={handleSubmitAnswer}
+        handleStopTimer={handleStopTimer}
+      />
+    );
+  };
+
   return (
     <>
       {!isConnected && (
@@ -305,51 +296,7 @@ const LiveRoom: React.FC = () => {
           </div>
         </div>
       )}
-      {room?.status === "verifying" || room?.status === "finished" ? (
-        <FinalScreen
-          isHost={isHost}
-          data={leaderboardData}
-          status={room.status}
-          refreshTrigger={refreshTrigger}
-        />
-      ) : room?.phase === "results" ? (
-        <ResultsPhase
-          roomData={room}
-          statistics={statistics}
-          correctOptionId={correctOptionId}
-          selectedOptionId={selectedOptionId}
-          isHost={isHost}
-          handleShowLeaderboard={handleShowLeaderboard}
-        />
-      ) : room?.phase === "leaderboard" ? (
-        <LeaderboardPhase
-          data={leaderboardData}
-          isHost={isHost}
-          handleNextQuestion={handleNextQuestion}
-          isLastQuestion={room.current_question_index === room.total_questions}
-        />
-      ) : (
-        <AnsweringPhase
-          phase={phase}
-          count={count}
-          roomCode={roomCode}
-          quizTitle={quizTitle}
-          showAnswersCount={showAnswersCount}
-          setShowAnswersCount={setShowAnswersCount}
-          isHost={isHost}
-          statistics={statistics}
-          timeLeft={timeLeft}
-          answeringProgress={answeringProgress}
-          isPaused={isPaused}
-          handleShowResults={handleShowResults}
-          roomData={room}
-          selectedOptionId={selectedOptionId}
-          setSelectedOptionId={setSelectedOptionId}
-          isSent={isSent}
-          handleSubmitAnswer={handleSubmitAnswer}
-          handleStopTimer={handleStopTimer}
-        />
-      )}
+      {renderPhase()}
     </>
   );
 };

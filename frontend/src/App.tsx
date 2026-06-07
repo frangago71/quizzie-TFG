@@ -42,24 +42,24 @@ const PublicRoute = ({
   children: React.ReactElement;
   isLoggedIn: boolean;
 }) => {
-  return !isLoggedIn ? children : <Navigate to="/quizzes" replace />;
+  return isLoggedIn ? <Navigate to="/quizzes" replace /> : children;
 };
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const isLoggedIn = authService.isLoggedIn();
 
+  const layoutClass = isLoggedIn
+    ? `app-container ${sidebarOpen ? "menu-open" : "menu-closed"}`
+    : "public-layout";
+
+  const mainClass = isLoggedIn ? "main-content" : "full-width-content";
+
   return (
     <ToastProvider>
       <ToastContainer />
       <RoomProvider>
-        <div
-          className={
-            !isLoggedIn
-              ? "public-layout"
-              : `app-container ${sidebarOpen ? "menu-open" : "menu-closed"}`
-          }
-        >
+        <div className={layoutClass}>
           {isLoggedIn && (
             <>
               <Sidebar
@@ -75,11 +75,17 @@ function App() {
               <div
                 className="mobile-overlay"
                 onClick={() => setSidebarOpen(false)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setSidebarOpen(false);
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label="Cerrar menú lateral"
               ></div>
             </>
           )}
 
-          <main className={!isLoggedIn ? "full-width-content" : "main-content"}>
+          <main className={mainClass}>
             <div className="content-body">
               <Routes>
                 <Route
