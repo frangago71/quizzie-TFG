@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AnsweringPhase from "./AnsweringPhase";
 import ResultsPhase from "./ResultsPhase";
 import LeaderboardPhase from "./LeaderboardPhase";
@@ -52,11 +52,8 @@ const LiveRoom: React.FC = () => {
     }
   }, [urlRoomId, roomId, setRoomId]);
 
-  useEffect(() => {
-    const idToUse = Number(urlRoomId || roomId);
-    if (!idToUse || Number.isNaN(idToUse)) return;
-
-    const updateRoomStatus = (data: RoomData) => {
+  const updateRoomStatus = useCallback(
+    (data: RoomData) => {
       setRoomData(data);
       if (data.status === "live") {
         const isFirstStart =
@@ -73,20 +70,11 @@ const LiveRoom: React.FC = () => {
       } else if (data.status === "verifying" || data.status === "finished") {
         if (data.leaderboard) setLeaderboardData(data.leaderboard);
       }
-    };
-
-    const syncRoom = async () => {
-      try {
-        const res = await api.get(`/stage/rooms/${idToUse}`);
-        updateRoomStatus(res.data);
-        if (res.data.time_left !== undefined) setTimeLeft(res.data.time_left);
-        if (res.data.is_paused !== undefined) setIsPaused(res.data.is_paused);
-      } catch (err) {
-        console.error("Error sincronizando:", err);
-      }
-    };
-
-    const onMessage = (event: MessageEvent) => {
+    },
+    [setRoomData],
+  );
+  const onMessage = useCallback(
+    (event: MessageEvent) => {
       const { type, data } = JSON.parse(event.data);
       if (["next_question", "room_start", "room_update"].includes(type)) {
         updateRoomStatus(data);
@@ -114,6 +102,23 @@ const LiveRoom: React.FC = () => {
         if (data.time_left !== undefined) setTimeLeft(data.time_left);
         if (data.is_paused !== undefined) setIsPaused(data.is_paused);
       }
+    },
+    [updateRoomStatus, setRoomData],
+  );
+
+  useEffect(() => {
+    const idToUse = Number(urlRoomId || roomId);
+    if (!idToUse || Number.isNaN(idToUse)) return;
+
+    const syncRoom = async () => {
+      try {
+        const res = await api.get(`/stage/rooms/${idToUse}`);
+        updateRoomStatus(res.data);
+        if (res.data.time_left !== undefined) setTimeLeft(res.data.time_left);
+        if (res.data.is_paused !== undefined) setIsPaused(res.data.is_paused);
+      } catch (err) {
+        console.error("Error sincronizando:", err);
+      }
     };
 
     syncRoom();
@@ -124,7 +129,7 @@ const LiveRoom: React.FC = () => {
     ws.onclose = () => setIsConnected(false);
     ws.onmessage = onMessage;
     return () => ws.close();
-  }, [roomId, urlRoomId, setRoomData, isHost]);
+  }, [roomId, urlRoomId, isHost, updateRoomStatus, onMessage]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -221,6 +226,66 @@ const LiveRoom: React.FC = () => {
       </div>
     );
 
+  const renderPhase = () => {
+    if (room.status === "verifying" || room.status === "finished") {
+      return (
+        <FinalScreen
+          isHost={isHost}
+          data={leaderboardData}
+          status={room.status}
+          refreshTrigger={refreshTrigger}
+        />
+      );
+    }
+
+    if (room.phase === "results") {
+      return (
+        <ResultsPhase
+          roomData={room}
+          statistics={statistics}
+          correctOptionId={correctOptionId}
+          selectedOptionId={selectedOptionId}
+          isHost={isHost}
+          handleShowLeaderboard={handleShowLeaderboard}
+        />
+      );
+    }
+
+    if (room.phase === "leaderboard") {
+      return (
+        <LeaderboardPhase
+          data={leaderboardData}
+          isHost={isHost}
+          handleNextQuestion={handleNextQuestion}
+          isLastQuestion={room.current_question_index === room.total_questions}
+        />
+      );
+    }
+
+    return (
+      <AnsweringPhase
+        phase={phase}
+        count={count}
+        roomCode={roomCode}
+        quizTitle={quizTitle}
+        showAnswersCount={showAnswersCount}
+        setShowAnswersCount={setShowAnswersCount}
+        isHost={isHost}
+        statistics={statistics}
+        timeLeft={timeLeft}
+        answeringProgress={answeringProgress}
+        isPaused={isPaused}
+        handleShowResults={handleShowResults}
+        roomData={room}
+        selectedOptionId={selectedOptionId}
+        setSelectedOptionId={setSelectedOptionId}
+        isSent={isSent}
+        handleSubmitAnswer={handleSubmitAnswer}
+        handleStopTimer={handleStopTimer}
+      />
+    );
+  };
+
   return (
     <>
       {!isConnected && (
@@ -231,51 +296,7 @@ const LiveRoom: React.FC = () => {
           </div>
         </div>
       )}
-      {room?.status === "verifying" || room?.status === "finished" ? (
-        <FinalScreen
-          isHost={isHost}
-          data={leaderboardData}
-          status={room.status}
-          refreshTrigger={refreshTrigger}
-        />
-      ) : room?.phase === "results" ? (
-        <ResultsPhase
-          roomData={room}
-          statistics={statistics}
-          correctOptionId={correctOptionId}
-          selectedOptionId={selectedOptionId}
-          isHost={isHost}
-          handleShowLeaderboard={handleShowLeaderboard}
-        />
-      ) : room?.phase === "leaderboard" ? (
-        <LeaderboardPhase
-          data={leaderboardData}
-          isHost={isHost}
-          handleNextQuestion={handleNextQuestion}
-          isLastQuestion={room.current_question_index === room.total_questions}
-        />
-      ) : (
-        <AnsweringPhase
-          phase={phase}
-          count={count}
-          roomCode={roomCode}
-          quizTitle={quizTitle}
-          showAnswersCount={showAnswersCount}
-          setShowAnswersCount={setShowAnswersCount}
-          isHost={isHost}
-          statistics={statistics}
-          timeLeft={timeLeft}
-          answeringProgress={answeringProgress}
-          isPaused={isPaused}
-          handleShowResults={handleShowResults}
-          roomData={room}
-          selectedOptionId={selectedOptionId}
-          setSelectedOptionId={setSelectedOptionId}
-          isSent={isSent}
-          handleSubmitAnswer={handleSubmitAnswer}
-          handleStopTimer={handleStopTimer}
-        />
-      )}
+      {renderPhase()}
     </>
   );
 };
