@@ -179,7 +179,14 @@ const HostView: React.FC<HostViewProps> = ({
   return (
     <>
       {data.length === 0 ? (
-        <div className="empty-podium-message" style={{ margin: "40px 0", textAlign: "center", color: "var(--text-gray-light)" }}>
+        <div
+          className="empty-podium-message"
+          style={{
+            margin: "40px 0",
+            textAlign: "center",
+            color: "var(--text-gray-light)",
+          }}
+        >
           <p>No hay participantes registrados en esta sala.</p>
         </div>
       ) : (

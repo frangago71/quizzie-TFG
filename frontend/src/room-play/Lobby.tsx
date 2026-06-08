@@ -11,7 +11,8 @@ import { useToast } from "../context/ToastContext";
 const Lobby: React.FC = () => {
   const { roomId: urlRoomId } = useParams();
   const navigate = useNavigate();
-  const { roomId, roomCode, setRoomCode, userNickname, roomData, setRoomData } = useRoom();
+  const { roomId, roomCode, setRoomCode, userNickname, roomData, setRoomData } =
+    useRoom();
   const [isMobile] = useState(window.innerWidth <= 768);
   const { toast } = useToast();
 
@@ -66,7 +67,7 @@ const Lobby: React.FC = () => {
     return () => {
       ws.close();
     };
-  }, [roomId, urlRoomId, setRoomData]);
+  }, [roomId, urlRoomId, setRoomData, setRoomCode]);
 
   const room = roomData && !Array.isArray(roomData) ? roomData : null;
 

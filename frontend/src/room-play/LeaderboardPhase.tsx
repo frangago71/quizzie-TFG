@@ -28,7 +28,8 @@ const LeaderboardPhase: React.FC<Props> = ({
 
   const getPodiumSubtitle = () => {
     if (data.length >= 3) return "¡Enhorabuena a los 3 con mayor puntuación!";
-    if (data.length === 2) return "¡Enhorabuena a los líderes de la clasificación!";
+    if (data.length === 2)
+      return "¡Enhorabuena a los líderes de la clasificación!";
     if (data.length === 1) return "¡Enhorabuena al líder de la clasificación!";
     return "Esperando puntuaciones...";
   };
@@ -41,7 +42,14 @@ const LeaderboardPhase: React.FC<Props> = ({
       </div>
 
       {data.length === 0 ? (
-        <div className="empty-podium-message" style={{ margin: "40px 0", textAlign: "center", color: "var(--text-gray-light)" }}>
+        <div
+          className="empty-podium-message"
+          style={{
+            margin: "40px 0",
+            textAlign: "center",
+            color: "var(--text-gray-light)",
+          }}
+        >
           <p>No hay participantes en la partida aún.</p>
         </div>
       ) : (
