@@ -34,6 +34,7 @@ const LiveRoom: React.FC = () => {
     roomId,
     setRoomId,
     roomCode,
+    setRoomCode,
     roomData,
     setRoomData,
     participantId,
@@ -55,6 +56,9 @@ const LiveRoom: React.FC = () => {
   const updateRoomStatus = useCallback(
     (data: RoomData) => {
       setRoomData(data);
+      if (data.join_code) {
+        setRoomCode(data.join_code);
+      }
       if (data.status === "live") {
         const isFirstStart =
           data.current_question_index === 1 &&
@@ -71,7 +75,7 @@ const LiveRoom: React.FC = () => {
         if (data.leaderboard) setLeaderboardData(data.leaderboard);
       }
     },
-    [setRoomData],
+    [setRoomData, setRoomCode],
   );
   const onMessage = useCallback(
     (event: MessageEvent) => {

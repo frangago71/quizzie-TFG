@@ -27,6 +27,7 @@ export interface RoomOption {
 export interface RoomData {
   id?: number;
   room_code?: string;
+  join_code?: string;
   status?: string;
   phase?: string;
   quiz_id?: number;

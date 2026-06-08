@@ -11,7 +11,7 @@ import { useToast } from "../context/ToastContext";
 const Lobby: React.FC = () => {
   const { roomId: urlRoomId } = useParams();
   const navigate = useNavigate();
-  const { roomId, roomCode, userNickname, roomData, setRoomData } = useRoom();
+  const { roomId, roomCode, setRoomCode, userNickname, roomData, setRoomData } = useRoom();
   const [isMobile] = useState(window.innerWidth <= 768);
   const { toast } = useToast();
 
@@ -25,6 +25,15 @@ const Lobby: React.FC = () => {
         setRoomData(res.data);
       } catch (err) {
         console.error("Error en carga inicial:", err);
+      }
+
+      try {
+        const roomDetails = await api.get(`/stage/rooms/${validatedId}`);
+        if (roomDetails.data.join_code) {
+          setRoomCode(roomDetails.data.join_code);
+        }
+      } catch (err) {
+        console.error("Error al obtener los detalles de la sala:", err);
       }
     };
     fetchInitialData();
