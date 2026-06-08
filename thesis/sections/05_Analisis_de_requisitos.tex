@@ -1,6 +1,31 @@
 \chapter{Análisis de requisitos}\label{cap:analisis_de_requisitos}
 
-Aquí se describirán los objetivos del sistema
+Una vez contrastada la viabilidad de las ideas iniciales y analizadas las oportunidades del mercado, es imperativo definir de manera precisa el comportamiento del sistema antes de comenzar la fase de desarrollo técnico. Explicitar las funciones de negocio en este punto es un paso clave para construir un producto robusto y libre de ambigüedades. Con el fin de transformar de forma efectiva las aspiraciones generales plasmadas en los \hyperref[sec:objetivos_del_proyecto]{objetivos del proyecto}, la lógica de la aplicación se desglosa inicialmente en doce objetivos funcionales concretos que asientan las bases del sistema.
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{4cm} X}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
+\textbf{OBJ-01} & Módulo de usuario y autenticación & Proveer un sistema de autenticación seguro para profesores. \\ \hline
+\textbf{OBJ-02} & Gestión de cuestionarios & Permitir la creación, edición y configuración de cuestionarios de preguntas. \\ \hline
+\textbf{OBJ-03} & Creación de salas & Habilitar sesiones de test únicas identificadas mediante un código PIN. \\ \hline
+\textbf{OBJ-04} & Acceso rápido & Permitir el acceso de alumnos a las salas mediante PIN y \textit{nickname} sin registro. \\ \hline
+\textbf{OBJ-05} & Interacción en tiempo real & Sincronizar el estado de la partida y preguntas entre dispositivos. \\ \hline
+\textbf{OBJ-06} & Verificación QR & Generar comprobante digital QR para validación presencial por el profesor. \\ \hline
+\textbf{OBJ-07} & Persistencia validada & Almacenar en histórico solo los resultados verificados físicamente. \\ \hline 
+\textbf{OBJ-08} & Estadísticas y análisis & Visualizar estadísticas de rendimiento basadas en datos validados. \\ \hline
+\textbf{OBJ-09} & Asistente IA & Integrar IA para generar preguntas automáticamente según temáticas. \\ \hline
+\textbf{OBJ-10} & Escaneo de código QR & Habilitar el uso de la cámara para la lectura ágil de códigos QR. \\ \hline
+\textbf{OBJ-11} & Gestión de grupos & Organizar alumnos en clases para un seguimiento histórico. \\ \hline
+\textbf{OBJ-12} & Exportación de datos & Permitir la descarga de resultados en formatos CSV/Excel. \\ \hline
+\end{tabularx}
+\caption{Objetivos funcionales de \textit{Quizzie}.}
+\label{tab:objetivos_funcionales}
+\end{table}
+
+A lo largo de las siguientes secciones se identifican en primer lugar los actores que interactúan con la aplicación para, posteriormente, modelar su comportamiento mediante historias de usuario y casos de uso detallados. Asimismo, se determinan los requisitos de información, las reglas de negocio y los requisitos funcionales asociados a sus respectivos criterios de aceptación. El capítulo concluye con la definición de las restricciones no funcionales y la matriz de trazabilidad que garantiza la cobertura total del desarrollo propuesto.
 
 \section{Actores del sistema}
 Alumnos, profesores (si procede, también administrador)
