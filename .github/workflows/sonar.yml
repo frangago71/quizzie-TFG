@@ -1,13 +1,16 @@
 name: Code Quality - SonarQube
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI - Quality & Security"]
     branches: [ main ]
+    types:
+      - completed
 
 jobs:
   sonarqube:
     name: SonarQube
-    needs: [backend-ci, frontend-ci]
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +28,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-coverage
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5

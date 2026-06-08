@@ -27,7 +27,7 @@ Este workflow se ejecuta en cada `push` o `pull_request` a las ramas `main` y `d
 
 ### B. Code Quality - SonarQube (`sonar.yml`)
 Para optimizar el uso de recursos y evitar ejecuciones redundantes, el análisis estático de código se ha separado en este workflow independiente.
-*   **Trigger:** Se ejecuta únicamente ante un `push` en la rama principal (`main`).
+*   **Trigger:** Se ejecuta automáticamente tras la finalización exitosa del workflow **CI - Quality & Security** (`quality_and_security.yml`) en la rama principal (`main`) (usando el evento `workflow_run`).
 *   **Análisis estático (SonarCloud):** Se ejecuta en un runner de **ubuntu-latest** para consistencia de rutas:
     *   **Integración de cobertura:** Se descarga el artefacto `coverage.xml` generado en el backend para mostrar las métricas de cobertura real.
     *   **Detección de deuda técnica:** Identificación automatizada de bugs, vulnerabilidades de seguridad y code smells.
