@@ -178,64 +178,64 @@ const HostView: React.FC<HostViewProps> = ({
 
   return (
     <>
-      <div
-        className="podium-wrapper"
-        style={{ marginTop: "20px", marginBottom: "40px" }}
-      >
+      {data.length === 0 ? (
+        <div className="empty-podium-message" style={{ margin: "40px 0", textAlign: "center", color: "var(--text-gray-light)" }}>
+          <p>No hay participantes registrados en esta sala.</p>
+        </div>
+      ) : (
         <div
-          className="podium-column animate-slide-up"
-          style={{ animationDelay: "0.2s" }}
+          className="podium-wrapper"
+          style={{ marginTop: "20px", marginBottom: "40px" }}
         >
           {second && (
-            <>
+            <div
+              className="podium-column animate-slide-up"
+              style={{ animationDelay: "0.2s" }}
+            >
               <span className="p-name">{second.name}</span>
               <span className="p-score score-silver">
                 {second.score.toLocaleString()} pts
               </span>
-            </>
-          )}
-          <div className="p-bar bar-silver" style={{ height: "100px" }}>
-            <div className="p-medal">
-              <Medal size={24} />
+              <div className="p-bar bar-silver" style={{ height: "100px" }}>
+                <div className="p-medal">
+                  <Medal size={24} />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          )}
 
-        <div className="podium-column animate-slide-up">
           {first && (
-            <>
+            <div className="podium-column animate-slide-up">
               <span className="p-name name-gold">{first.name}</span>
               <span className="p-score score-gold">
                 {first.score.toLocaleString()} pts
               </span>
-            </>
-          )}
-          <div className="p-bar bar-gold" style={{ height: "130px" }}>
-            <div className="p-medal">
-              <Star size={28} fill="white" stroke="transparent" />
+              <div className="p-bar bar-gold" style={{ height: "130px" }}>
+                <div className="p-medal">
+                  <Star size={28} fill="white" stroke="transparent" />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          )}
 
-        <div
-          className="podium-column animate-slide-up"
-          style={{ animationDelay: "0.4s" }}
-        >
           {third && (
-            <>
+            <div
+              className="podium-column animate-slide-up"
+              style={{ animationDelay: "0.4s" }}
+            >
               <span className="p-name">{third.name}</span>
               <span className="p-score score-bronze">
                 {third.score.toLocaleString()} pts
               </span>
-            </>
-          )}
-          <div className="p-bar bar-bronze" style={{ height: "80px" }}>
-            <div className="p-medal">
-              <Medal size={24} />
+              <div className="p-bar bar-bronze" style={{ height: "80px" }}>
+                <div className="p-medal">
+                  <Medal size={24} />
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
-      </div>
+      )}
 
       <div className="final-actions">
         <div className="final-info-card">
