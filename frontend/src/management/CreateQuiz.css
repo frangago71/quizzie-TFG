@@ -243,10 +243,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
 }
 
 .btn-add-ghost .input-base {
   flex: 1;
+  background: transparent;
+  border: 1px dashed var(--border-dashed);
+  cursor: pointer;
 }
 
 .btn-add-ghost.disabled {
