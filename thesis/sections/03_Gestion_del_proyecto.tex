@@ -34,7 +34,7 @@ La línea base del alcance define con precisión los límites del proyecto, aseg
 
 \subsection{Estructura del Desglose del Trabajo (EDT)}\label{subsec:edt}
 
-Para organizar y estructurar el alcance total del proyecto, se ha elaborado la siguiente Estructura de Desglose del Trabajo (EDT). Esta representación jerárquica descompone el proyecto en paquetes de trabajo, divididos a su vez en entregables específicos que se detallarán en el diccionario de la EDT (\ref{subsec:diccionario_edt}).
+Para organizar y estructurar el alcance total del proyecto, se ha elaborado la siguiente Estructura de Desglose del Trabajo (EDT). Esta representación jerárquica descompone el proyecto en paquetes de trabajo, divididos a su vez en entregables específicos que se detallarán en el \hyperref[subsec:diccionario_edt]{diccionario de la EDT}.
 
 \begin{figure}[H]
 \centering
@@ -817,7 +817,7 @@ Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 15,00 €/mes
 \label{tab:resumen_opex}
 \end{table}
 
-Cabe destacar que los Gastos Operativos (OPEX) reflejados en la \hyperref[tab:resumen_opex]{tabla} no constituyen un coste estático, sino que representan una proyección basada en una estimación inicial de 500 usuarios activos mensuales, asumiendo un consumo moderado de recursos y una utilización estándar de la API de inteligencia artificial. En escenarios de escalado masivo, donde el volumen de usuarios concurrentes o la demanda de cómputo aumente significativamente, es previsible que estos costes operativos se incrementen de forma proporcional. Por ello, en la siguiente subsección se detalla y aclara matemáticamente el comportamiento financiero de la plataforma ante diferentes escenarios de carga y volumen de usuarios.
+Cabe destacar que las cifras reflejadas en el \hyperref[tab:resumen_opex]{resumen de Gastos Operativos mensuales (OPEX)} no constituyen un coste estático, sino que representan una proyección basada en una estimación inicial de 500 usuarios activos mensuales, asumiendo un consumo moderado de recursos y una utilización estándar de la API de inteligencia artificial. En escenarios de escalado masivo, donde el volumen de usuarios concurrentes o la demanda de cómputo aumente significativamente, es previsible que estos costes operativos se incrementen de forma proporcional. Por ello, en la siguiente subsección se detalla y aclara matemáticamente el comportamiento financiero de la plataforma ante diferentes escenarios de carga y volumen de usuarios.
 
 \subsection{Costes de infraestructura según el número de usuarios}
 
@@ -949,12 +949,12 @@ De este modo, asumiendo los gastos de infraestructura del escenario conservador,
 
 \section{Plan de gestión de cambios y riesgos}\label{sec:plan_gestion_cambios_riesgos}
 
-Un desarrollo tecnológico está inherentemente sujeto a imprevistos y desviaciones. Para asegurar el éxito y la entrega en plazo de la plataforma, este plan de contingencia se apoyará de forma sistemática en la matriz de riesgos iniciales definida en la \autoref{sec:riesgos_iniciales}. En caso de que alguna de las amenazas identificadas se materialice, o bien si surge la necesidad de aplicar cualquier variación sobre los requisitos o la planificación del sistema, se activará el procedimiento formal de control estructurado a continuación.
+Un desarrollo tecnológico está inherentemente sujeto a imprevistos y desviaciones. Para asegurar el éxito y la entrega en plazo de la plataforma, este plan de contingencia se apoyará de forma sistemática en las tablas de riesgos (\hyperref[tab:riesgos_alcance]{de alcance}, \hyperref[tab:riesgos_tecnicos]{técnicos} y \hyperref[tab:riesgos_temporales]{temporales}) definida en la sección de \hyperref[sec:riesgos_iniciales]{riesgos iniciales}. En caso de que alguna de las amenazas identificadas se materialice, o bien si surge la necesidad de aplicar cualquier variación sobre los requisitos o la planificación del sistema, se activará el procedimiento formal de control estructurado a continuación.
 
 Cualquier propuesta de modificación se gestionará siguiendo este flujo secuencial:
 
 \begin{enumerate}
-    \item \textbf{Identificación:} Toda propuesta de modificación se registrará en el \textit{backlog}, especificando si afecta al código de la aplicación, a la redacción de la memoria o a la planificación temporal del proyecto.
+    \item \textbf{Identificación:} Toda propuesta de modificación se registrará en el \textit{backlog}, especificando si afecta al código de la aplicación, a la redacción de la memoria o a la planificación temporal del proyecto. 
     \item \textbf{Análisis de impacto:} Evaluar el esfuerzo y las horas necesarias para aplicar el cambio, estimando cómo afectará al calendario global de las asignaturas, a la documentación pendiente o a la arquitectura del sistema.
     \item \textbf{Resolución:} Decidir de forma justificada si el cambio se aprueba para su ejecución inmediata, se pospone como una mejora futura o se descarta si compromete críticamente los plazos de entrega del TFG.
     \item \textbf{Implementación y despliegue:} Se ejecuta el cambio en el área correspondiente (programación de código, reajuste de la planificación o corrección de la memoria), realizando las pruebas o revisiones pertinentes antes de dar por actualizada la documentación del proyecto.
