@@ -36,6 +36,96 @@ interface AnsweringPhaseProps {
   handleStopTimer: () => void;
 }
 
+const CountdownScreen: React.FC<{ count: number }> = ({ count }) => (
+  <div className="live-room-wrapper countdown-bg">
+    <div className="countdown-card">
+      <h1 className="countdown-number animate-pop">{count}</h1>
+      <h2 className="countdown-title">¡Prepárate!</h2>
+    </div>
+  </div>
+);
+
+interface HostTimerControlsProps {
+  timeLeft: number;
+  handleStopTimer: () => void;
+  handleShowResults: () => void;
+}
+
+const HostTimerControls: React.FC<HostTimerControlsProps> = ({
+  timeLeft,
+  handleStopTimer,
+  handleShowResults,
+}) => (
+  <div className="host-timer-controls">
+    {timeLeft > 0 ? (
+      <button className="lr-btn-finish" onClick={handleStopTimer}>
+        Terminar tiempo
+      </button>
+    ) : (
+      <button className="lr-btn-finish" onClick={handleShowResults}>
+        <Eye size={18} /> Ver estadísticas
+      </button>
+    )}
+  </div>
+);
+
+interface OptionButtonProps {
+  opt: RoomOption;
+  index: number;
+  disabled: boolean;
+  isSelected: boolean;
+  onClick: () => void;
+}
+
+const OptionButton: React.FC<OptionButtonProps> = ({
+  opt,
+  index,
+  disabled,
+  isSelected,
+  onClick,
+}) => (
+  <button
+    disabled={disabled}
+    className={`lr-option-item ${isSelected ? "active" : ""}`}
+    onClick={onClick}
+  >
+    <div className="option-letter-box">{String.fromCodePoint(65 + index)}</div>
+    <span className="option-text">{opt.text}</span>
+  </button>
+);
+
+interface StudentActionBarProps {
+  selectedOptionId: number | null;
+  isPaused: boolean;
+  timeLeft: number;
+  isSent: boolean;
+  handleSubmitAnswer: () => void;
+}
+
+const StudentActionBar: React.FC<StudentActionBarProps> = ({
+  selectedOptionId,
+  isPaused,
+  timeLeft,
+  isSent,
+  handleSubmitAnswer,
+}) => {
+  const isDisabled = !selectedOptionId || isSent || isPaused || timeLeft === 0;
+  const isNotSelected = !selectedOptionId || isPaused || timeLeft === 0;
+
+  return (
+    <div className="action-bar">
+      <button
+        className={`btn-send-answer ${isNotSelected ? "not-selected" : ""} ${isSent ? "is-sent" : ""}`}
+        onClick={handleSubmitAnswer}
+        disabled={isDisabled}
+      >
+        {isSent ? <Check size={18} /> : <Send size={18} />}
+        <span>{isSent ? "Respuesta enviada" : "Enviar respuesta"}</span>
+      </button>
+    </div>
+  );
+};
+
 const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
   phase,
   count,
@@ -58,15 +148,13 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
   handleStopTimer,
 }) => {
   if (phase === "countdown") {
-    return (
-      <div className="live-room-wrapper countdown-bg">
-        <div className="countdown-card">
-          <h1 className="countdown-number animate-pop">{count}</h1>
-          <h2 className="countdown-title">¡Prepárate!</h2>
-        </div>
-      </div>
-    );
+    return <CountdownScreen count={count} />;
   }
+
+  const answersCountText =
+    isHost && showAnswersCount
+      ? Object.values(statistics).reduce((a, b) => a + b, 0)
+      : "••";
 
   return (
     <div className="live-room-wrapper answering-mode">
@@ -92,13 +180,7 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
               )}
               <div className="stat-texts">
                 <span className="stat-label">RESPUESTAS</span>
-                <span className="stat-number">
-                  {isHost
-                    ? showAnswersCount
-                      ? Object.values(statistics).reduce((a, b) => a + b, 0)
-                      : "••"
-                    : "••"}
-                </span>
+                <span className="stat-number">{answersCountText}</span>
               </div>
             </div>
           </div>
@@ -124,17 +206,11 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
           </div>
 
           {isHost && (
-            <div className="host-timer-controls">
-              {timeLeft > 0 ? (
-                <button className="lr-btn-finish" onClick={handleStopTimer}>
-                  Terminar tiempo
-                </button>
-              ) : (
-                <button className="lr-btn-finish" onClick={handleShowResults}>
-                  <Eye size={18} /> Ver estadísticas
-                </button>
-              )}
-            </div>
+            <HostTimerControls
+              timeLeft={timeLeft}
+              handleStopTimer={handleStopTimer}
+              handleShowResults={handleShowResults}
+            />
           )}
         </div>
 
@@ -149,34 +225,24 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
             <div className="answering-area animate-fade-in">
               <div className="options-grid">
                 {roomData?.options?.map((opt: RoomOption, index: number) => (
-                  <button
+                  <OptionButton
                     key={opt.id}
+                    opt={opt}
+                    index={index}
                     disabled={isSent || isHost || isPaused || timeLeft === 0}
-                    className={`lr-option-item ${selectedOptionId === opt.id ? "active" : ""}`}
+                    isSelected={selectedOptionId === opt.id}
                     onClick={() => setSelectedOptionId(opt.id)}
-                  >
-                    <div className="option-letter-box">
-                      {String.fromCharCode(65 + index)}
-                    </div>
-                    <span className="option-text">{opt.text}</span>
-                  </button>
+                  />
                 ))}
               </div>
               {!isHost && (
-                <div className="action-bar">
-                  <button
-                    className={`btn-send-answer ${!selectedOptionId || isPaused || timeLeft === 0 ? "not-selected" : ""} ${isSent ? "is-sent" : ""}`}
-                    onClick={handleSubmitAnswer}
-                    disabled={
-                      !selectedOptionId || isSent || isPaused || timeLeft === 0
-                    }
-                  >
-                    {isSent ? <Check size={18} /> : <Send size={18} />}
-                    <span>
-                      {isSent ? "Respuesta enviada" : "Enviar respuesta"}
-                    </span>
-                  </button>
-                </div>
+                <StudentActionBar
+                  selectedOptionId={selectedOptionId}
+                  isPaused={isPaused}
+                  timeLeft={timeLeft}
+                  isSent={isSent}
+                  handleSubmitAnswer={handleSubmitAnswer}
+                />
               )}
             </div>
           </section>
