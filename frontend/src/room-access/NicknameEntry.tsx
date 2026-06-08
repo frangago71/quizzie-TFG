@@ -17,6 +17,12 @@ const NicknameEntry: React.FC = () => {
 
   useEffect(() => {
     if (!roomCode) return;
+
+    if (!/^[a-zA-Z0-9]{1,20}$/.test(roomCode)) {
+      console.warn("Código de sala inválido.");
+      return;
+    }
+
     const fetchRoomStatus = async () => {
       try {
         const response = await api.get(`/stage/rooms/verify/${roomCode}`);
