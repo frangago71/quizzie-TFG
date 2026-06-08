@@ -76,31 +76,44 @@ const LiveRoom: React.FC = () => {
   const onMessage = useCallback(
     (event: MessageEvent) => {
       const { type, data } = JSON.parse(event.data);
-      if (["next_question", "room_start", "room_update"].includes(type)) {
-        updateRoomStatus(data);
-      } else if (type === "show_results") {
-        setStatistics(data.statistics);
-        setCorrectOptionId(data.correct_option_id);
-        setRoomData((prev) =>
-          prev && !Array.isArray(prev) ? { ...prev, phase: "results" } : prev,
-        );
-      } else if (type === "show_leaderboard") {
-        setLeaderboardData(data.leaderboard);
-        setRoomData((prev) =>
-          prev && !Array.isArray(prev)
-            ? { ...prev, phase: "leaderboard" }
-            : prev,
-        );
-      } else if (type === "room_finish" || type === "room_verifying") {
-        const status = type === "room_finish" ? "finished" : "verifying";
-        setRoomData((prev) =>
-          prev && !Array.isArray(prev) ? { ...prev, status } : null,
-        );
-      } else if (type === "participant_verified") {
-        setRefreshTrigger((prev) => prev + 1);
-      } else if (type === "timer_update") {
-        if (data.time_left !== undefined) setTimeLeft(data.time_left);
-        if (data.is_paused !== undefined) setIsPaused(data.is_paused);
+      switch (type) {
+        case "next_question":
+        case "room_start":
+        case "room_update":
+          updateRoomStatus(data);
+          break;
+        case "show_results":
+          setStatistics(data.statistics);
+          setCorrectOptionId(data.correct_option_id);
+          setRoomData((prev) =>
+            prev && !Array.isArray(prev) ? { ...prev, phase: "results" } : prev,
+          );
+          break;
+        case "show_leaderboard":
+          setLeaderboardData(data.leaderboard);
+          setRoomData((prev) =>
+            prev && !Array.isArray(prev)
+              ? { ...prev, phase: "leaderboard" }
+              : prev,
+          );
+          break;
+        case "room_finish":
+        case "room_verifying": {
+          const status = type === "room_finish" ? "finished" : "verifying";
+          setRoomData((prev) =>
+            prev && !Array.isArray(prev) ? { ...prev, status } : null,
+          );
+          break;
+        }
+        case "participant_verified":
+          setRefreshTrigger((prev) => prev + 1);
+          break;
+        case "timer_update":
+          if (data.time_left !== undefined) setTimeLeft(data.time_left);
+          if (data.is_paused !== undefined) setIsPaused(data.is_paused);
+          break;
+        default:
+          break;
       }
     },
     [updateRoomStatus, setRoomData],
