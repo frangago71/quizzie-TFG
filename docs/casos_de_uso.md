@@ -5,8 +5,7 @@ Este documento detalla las interacciones entre los usuarios y el sistema, establ
 ## 1. Actores del sistema
 
 * **Profesor:** Usuario registrado encargado de la creación de contenido académico, gestión de grupos y administración de las sesiones de evaluación. Es el único actor con permisos para validar resultados de forma presencial.
-* **Alumno:** Usuario no registrado que participa en las sesiones de juego en tiempo real. Su interacción se centra en la respuesta a cuestionarios y la obtención de certificados de autoría (QR).
-* **Sistema de IA:** Actor externo (API) que procesa las peticiones del profesor para la generación automática de preguntas y soporte en la navegación.
+* **Alumno:** Usuario no registrado que participa en las sesiones de juego en tiempo real. Su interacción se centra en responder a los cuestionarios y obtener en su pantalla el código QR dinámico que certifica la autoría y validación de su presencialidad en el aula.
 
 
 ## 2. Descripción de Casos de Uso

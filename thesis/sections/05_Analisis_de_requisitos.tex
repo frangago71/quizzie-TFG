@@ -27,8 +27,14 @@ Una vez contrastada la viabilidad de las ideas iniciales y analizadas las oportu
 
 A lo largo de las siguientes secciones se identifican en primer lugar los actores que interactúan con la aplicación para, posteriormente, modelar su comportamiento mediante historias de usuario y casos de uso detallados. Asimismo, se determinan los requisitos de información, las reglas de negocio y los requisitos funcionales asociados a sus respectivos criterios de aceptación. El capítulo concluye con la definición de las restricciones no funcionales y la matriz de trazabilidad que garantiza la cobertura total del desarrollo propuesto.
 
-\section{Actores del sistema}
-Alumnos, profesores (si procede, también administrador)
+\section{Actores del sistema}\label{sec:actores_del_sistema}
+
+En el contexto de una plataforma \textit{software}, un actor representa cualquier entidad externa que interactúa directamente con la aplicación para ejecutar una funcionalidad o desencadenar un flujo del sistema. Tal y como se mostró en la \hyperref[tab:lista_interesados]{lista de interesados}, los dos únicos perfiles que interactúan directamente con el sistema son el profesor y el alumno:
+
+\begin{itemize}
+    \item \textbf{Profesor:} Usuario registrado encargado de la creación de contenido académico, gestión de grupos y administración de las sesiones de evaluación. Es el único actor con permisos para validar resultados de forma presencial.
+    \item \textbf{Alumno:} Usuario no registrado que participa en las sesiones de juego en tiempo real. Su interacción se centra en responder a los cuestionarios y obtener en su pantalla el código QR dinámico que certifica la autoría y validación de su presencialidad en el aula.
+\end{itemize}
 
 \section{Historias de usuario}
 "Como [actor], quiero [acción] para [beneficio]". 
