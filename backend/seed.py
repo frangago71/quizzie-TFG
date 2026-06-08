@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlmodel import Session, SQLModel, delete, select
 
 from auth import get_password_hash
@@ -439,7 +441,7 @@ def _seed_participants(
         session.add(
             Participant(
                 student_id=all_students[i].id,
-                score=i % 10,
+                score=0,
                 room_id=r_waiting1.id,
                 is_verified=False,
             )
@@ -449,7 +451,7 @@ def _seed_participants(
         session.add(
             Participant(
                 student_id=all_students[i].id,
-                score=i % 10,
+                score=0,
                 room_id=r_waiting2.id,
                 is_verified=False,
             )
@@ -459,16 +461,19 @@ def _seed_participants(
         session.add(
             Participant(
                 student_id=all_students[i].id,
-                score=i % 10,
+                score=0,
                 room_id=r_live.id,
                 is_verified=False,
             )
         )
 
     fin_parts = []
-    for i in range(60, 70):
+    for idx, i in enumerate(range(60, 70)):
         p = Participant(
-            student_id=all_students[i].id, score=i % 10, room_id=r_finished.id, is_verified=True
+            student_id=all_students[i].id,
+            score=5 * (idx % 3),
+            room_id=r_finished.id,
+            is_verified=True,
         )
         session.add(p)
         fin_parts.append(p)
@@ -476,7 +481,7 @@ def _seed_participants(
     session.add(
         Participant(
             student_id=all_students[71].id,
-            score=i % 10,
+            score=5,
             room_id=r_verifying.id,
             is_verified=False,
         )
@@ -484,7 +489,7 @@ def _seed_participants(
     session.add(
         Participant(
             student_id=all_students[72].id,
-            score=i % 10,
+            score=10,
             room_id=r_verifying.id,
             is_verified=True,
         )
@@ -496,26 +501,44 @@ def _seed_participants(
     return fin_parts
 
 
-def _seed_answers(session: Session, quiz_lengua, r_finished, fin_parts):
+def _seed_answers(session: Session, rooms: List[Room]):
     # --- 9. RESPUESTAS ---
-    qs_fin = session.exec(select(Question).where(Question.quiz_id == quiz_lengua.id)).all()
-    for q_f in qs_fin:
-        opts = session.exec(select(Option).where(Option.question_id == q_f.id)).all()
-        correct = next(o for o in opts if o.is_correct)
-        wrong = next(o for o in opts if not o.is_correct)
-        for idx, p in enumerate(fin_parts):
-            is_ok = idx >= 2
-            session.add(
-                Answer(
-                    points_earned=q_f.points if is_ok else 0,
-                    was_correct=is_ok,
-                    participant_id=p.id,
-                    room_id=r_finished.id,
-                    question_id=q_f.id,
-                    option_id=correct.id if is_ok else wrong.id,
-                )
-            )
+    for room in rooms:
+        if room.status == RoomStatus.WAITING:
+            continue
+        questions = session.exec(
+            select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
+        ).all()
+        if not questions:
+            continue
+        participants = session.exec(select(Participant).where(Participant.room_id == room.id)).all()
+        for p in participants:
+            remaining_score = p.score
+            for q in questions:
+                opts = session.exec(select(Option).where(Option.question_id == q.id)).all()
+                correct_opt = next((o for o in opts if o.is_correct), None)
+                wrong_opt = next((o for o in opts if not o.is_correct), None)
+                q_points = q.points
+                if remaining_score >= q_points:
+                    is_correct = True
+                    points_earned = q_points
+                    opt_id = correct_opt.id if correct_opt else None
+                    remaining_score -= q_points
+                else:
+                    is_correct = False
+                    points_earned = 0
+                    opt_id = wrong_opt.id if wrong_opt else None
 
+                session.add(
+                    Answer(
+                        points_earned=points_earned,
+                        was_correct=is_correct,
+                        participant_id=p.id,
+                        room_id=room.id,
+                        question_id=q.id,
+                        option_id=opt_id,
+                    )
+                )
     session.commit()
 
 
@@ -595,11 +618,11 @@ def create_seed_data():
             g_cajal,
         )
 
-        fin_parts = _seed_participants(
+        _seed_participants(
             session, all_students, r_waiting1, r_waiting2, r_live, r_finished, r_verifying
         )
 
-        _seed_answers(session, quiz_lengua, r_finished, fin_parts)
+        _seed_answers(session, [r_live, r_finished, r_verifying])
 
         print("Base de datos poblada correctamente.")
 
