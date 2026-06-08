@@ -1,5 +1,14 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  type ReactNode,
+} from "react";
 import type { RoomData } from "../types.ts";
+
+type RoomDataType = RoomData | string[] | null;
 
 interface RoomContextType {
   roomCode: string;
@@ -10,69 +19,108 @@ interface RoomContextType {
   setUserNickname: (name: string | undefined) => void;
   participantId: number | null;
   setParticipantId: (id: number | null) => void;
-  roomData: RoomData | string[] | null;
-  setRoomData: React.Dispatch<React.SetStateAction<RoomData | string[] | null>>;
+  roomData: RoomDataType;
+  setRoomData: React.Dispatch<React.SetStateAction<RoomDataType>>;
 }
 
 const RoomContext = createContext<RoomContextType | undefined>(undefined);
 
-export function RoomProvider({ children }: { children: ReactNode }) {
-  const [roomCode, setRoomCodeState] = useState(
+const sanitizeAlphanumeric = (value: string): string => {
+  return value.replace(/[^a-zA-Z0-9_-]/g, "");
+};
+
+const sanitizeNumeric = (value: string | number): string => {
+  return String(value).replace(/[^0-9]/g, "");
+};
+
+const sanitizeNickname = (value: string): string => {
+  return value.replace(/[<>'"&]/g, "");
+};
+
+export function RoomProvider({ children }: Readonly<{ children: ReactNode }>) {
+  const [rawRoomCode, setRawRoomCode] = useState(
     sessionStorage.getItem("roomCode") || "",
   );
-  const [roomId, setRoomIdState] = useState<number | null>(() => {
+  const [rawRoomId, setRawRoomId] = useState<number | null>(() => {
     const savedId = sessionStorage.getItem("roomId");
     return savedId ? Number(savedId) : null;
   });
-  const [userNickname, setUserNicknameState] = useState<string | undefined>(
+  const [rawUserNickname, setRawUserNickname] = useState<string | undefined>(
     sessionStorage.getItem("userNickname") || undefined,
   );
-  const [participantId, setParticipantIdState] = useState<number | null>(() => {
-    const savedPId = sessionStorage.getItem("participantId");
-    return savedPId ? Number(savedPId) : null;
-  });
-  const [roomData, setRoomData] = useState<RoomData | string[] | null>(null);
+  const [rawParticipantId, setRawParticipantId] = useState<number | null>(
+    () => {
+      const savedPId = sessionStorage.getItem("participantId");
+      return savedPId ? Number(savedPId) : null;
+    },
+  );
+  const [roomData, setRoomData] = useState<RoomDataType>(null);
 
-  const setRoomCode = (code: string) => {
-    setRoomCodeState(code);
-    sessionStorage.setItem("roomCode", code);
-  };
+  const setRoomCode = useCallback((code: string) => {
+    const sanitized = sanitizeAlphanumeric(code);
+    setRawRoomCode(sanitized);
+    sessionStorage.setItem("roomCode", sanitized);
+  }, []);
 
-  const setRoomId = (id: number | null) => {
-    setRoomIdState(id);
-    if (id) sessionStorage.setItem("roomId", id.toString());
-    else sessionStorage.removeItem("roomId");
-  };
+  const setRoomId = useCallback((id: number | null) => {
+    setRawRoomId(id);
+    if (id !== null) {
+      const sanitized = sanitizeNumeric(id);
+      sessionStorage.setItem("roomId", sanitized);
+    } else {
+      sessionStorage.removeItem("roomId");
+    }
+  }, []);
 
-  const setUserNickname = (name: string | undefined) => {
-    setUserNicknameState(name);
-    if (name) sessionStorage.setItem("userNickname", name);
-    else sessionStorage.removeItem("userNickname");
-  };
+  const setUserNickname = useCallback((name: string | undefined) => {
+    setRawUserNickname(name);
+    if (name !== undefined) {
+      const sanitized = sanitizeNickname(name);
+      sessionStorage.setItem("userNickname", sanitized);
+    } else {
+      sessionStorage.removeItem("userNickname");
+    }
+  }, []);
 
-  const setParticipantId = (id: number | null) => {
-    setParticipantIdState(id);
-    if (id) sessionStorage.setItem("participantId", id.toString());
-    else sessionStorage.removeItem("participantId");
-  };
+  const setParticipantId = useCallback((id: number | null) => {
+    setRawParticipantId(id);
+    if (id !== null) {
+      const sanitized = sanitizeNumeric(id);
+      sessionStorage.setItem("participantId", sanitized);
+    } else {
+      sessionStorage.removeItem("participantId");
+    }
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({
+      roomCode: rawRoomCode,
+      setRoomCode,
+      roomId: rawRoomId,
+      setRoomId,
+      userNickname: rawUserNickname,
+      setUserNickname,
+      participantId: rawParticipantId,
+      setParticipantId,
+      roomData,
+      setRoomData,
+    }),
+    [
+      rawRoomCode,
+      setRoomCode,
+      rawRoomId,
+      setRoomId,
+      rawUserNickname,
+      setUserNickname,
+      rawParticipantId,
+      setParticipantId,
+      roomData,
+      setRoomData,
+    ],
+  );
 
   return (
-    <RoomContext.Provider
-      value={{
-        roomCode,
-        setRoomCode,
-        roomId,
-        setRoomId,
-        userNickname,
-        setUserNickname,
-        participantId,
-        setParticipantId,
-        roomData,
-        setRoomData,
-      }}
-    >
-      {children}
-    </RoomContext.Provider>
+    <RoomContext.Provider value={contextValue}>{children}</RoomContext.Provider>
   );
 }
 
