@@ -27,19 +27,81 @@ Una vez contrastada la viabilidad de las ideas iniciales y analizadas las oportu
 
 A lo largo de las siguientes secciones se identifican en primer lugar los actores que interactúan con la aplicación para, posteriormente, modelar su comportamiento mediante historias de usuario y casos de uso detallados. Asimismo, se determinan los requisitos de información, las reglas de negocio y los requisitos funcionales asociados a sus respectivos criterios de aceptación. El capítulo concluye con la definición de las restricciones no funcionales y la matriz de trazabilidad que garantiza la cobertura total del desarrollo propuesto.
 
-\section{Actores del sistema}\label{sec:actores_del_sistema}
+\section{Historias de usuario}\label{sec:historias_de_usuario}
 
-En el contexto de una plataforma \textit{software}, un actor representa cualquier entidad externa que interactúa directamente con la aplicación para ejecutar una funcionalidad o desencadenar un flujo del sistema. Tal y como se mostró en la \hyperref[tab:lista_interesados]{lista de interesados}, los dos únicos perfiles que interactúan directamente con el sistema son el profesor y el alumno:
+Una vez definidos los perfiles que interactúan con la plataforma, el comportamiento del sistema se define mediante el uso de historias de usuario. Estas especificaciones permiten capturar las necesidades reales de cada actor siguiendo la estructura clásica de rol \textit{[como]}, acción \textit{[quiero]} y beneficio \textit{[para]}. Para facilitar la trazabilidad y el seguimiento de las historias, se han dividido y numerado de forma independiente según el perfil al que corresponden: el alumno (\textit{HU-AL}) y el profesor (\textit{HU-PR}).
 
-\begin{itemize}
-    \item \textbf{Profesor:} Usuario registrado encargado de la creación de contenido académico, gestión de grupos y administración de las sesiones de evaluación. Es el único actor con permisos para validar resultados de forma presencial.
-    \item \textbf{Alumno:} Usuario no registrado que participa en las sesiones de juego en tiempo real. Su interacción se centra en responder a los cuestionarios y obtener en su pantalla el código QR dinámico que certifica la autoría y validación de su presencialidad en el aula.
-\end{itemize}
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\dimexpr\textwidth+1cm}{l l X}
+\hline
+\textbf{ID} & \textbf{Descripción} & \\ \hline
+\textbf{HU-AL-01} & \textit{Como} alumno, & \textit{quiero} unirme a una sala solo con un PIN y un apodo \\
+                                     && \textit{para} participar de forma inmediata sin necesidad de crear una cuenta. \\ \hline
+\textbf{HU-AL-02} & \textit{Como} alumno, & \textit{quiero} recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada \\
+                                     && \textit{para} competir en igualdad de condiciones con mis compañeros. \\ \hline
+\textbf{HU-AL-03} & \textit{Como} alumno, & \textit{quiero} saber si mi respuesta ha sido correcta justo después de enviarla \\
+                                     && \textit{para} reforzar mi aprendizaje en el momento. \\ \hline
+\textbf{HU-AL-04} & \textit{Como} alumno, & \textit{quiero} que se genere un código QR único al finalizar el test \\
+                                     && \textit{para} mostrárselo al profesor y que mi nota sea oficializada. \\ \hline
+\textbf{HU-AL-05} & \textit{Como} alumno, & \textit{quiero} ver mi posición en el ranking después de cada bloque de preguntas \\
+                                     && \textit{para} motivarme durante la realización del cuestionario. \\ \hline
+\textbf{HU-AL-06} & \textit{Como} alumno, & \textit{quiero} poder reengancharme a la partida si pierdo la conexión a internet \\
+                                     && \textit{para} no perder mi progreso y poder terminar el test. \\ \hline
+\textbf{HU-AL-07} & \textit{Como} alumno, & \textit{quiero} recibir puntos extra por responder rápido o mantener una racha de aciertos \\
+                                     && \textit{para} sentirme recompensado por mi agilidad y constancia. \\ \hline
+\end{tabularx}
+}
+\caption{Historias de usuario asociadas al rol de Alumno.}
+\label{tab:hu_alumno}
+\end{table}
 
-\section{Historias de usuario}
-"Como [actor], quiero [acción] para [beneficio]". 
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{
+\begin{tabularx}{\dimexpr\textwidth+1cm}{l l X}
+\hline
+\textbf{ID} & \textbf{Descripción} & \\ \hline
+\textbf{HU-PR-01} & \textit{Como} profesor, & \textit{quiero} crear y organizar mis propios cuestionarios \\
+                                     && \textit{para} disponer de un repositorio de actividades personalizado por asignatura o tema. \\ \hline
+\textbf{HU-PR-02} & \textit{Como} profesor, & \textit{quiero} poder editar mis cuestionarios existentes \\
+                                     && \textit{para} corregir errores o crear variantes rápidas para diferentes grupos. \\ \hline
+\textbf{HU-PR-03} & \textit{Como} profesor, & \textit{quiero} crear y administrar una sala con un PIN único \\
+                                     && \textit{para} controlar el acceso de los alumnos y decidir cuándo comienza el test. \\ \hline
+\textbf{HU-PR-04} & \textit{Como} profesor, & \textit{quiero} ver en tiempo real qué están respondiendo los alumnos y quiénes se van conectando \\
+                                     && \textit{para} llevar un control del progreso de la clase. \\ \hline
+\textbf{HU-PR-05} & \textit{Como} profesor, & \textit{quiero} poder cerrar la sala una vez iniciada la actividad \\
+                                     && \textit{para} que ningún alumno se una tarde o de forma externa. \\ \hline
+\textbf{HU-PR-06} & \textit{Como} profesor, & \textit{quiero} escanear el móvil del alumno \\
+                                     && \textit{para} confirmar su presencia física y validar su nota en el sistema evitando respuestas no autorizadas. \\ \hline
+\textbf{HU-PR-07} & \textit{Como} profesor, & \textit{quiero} crear grupos o clases \\
+                                     && \textit{para} tener organizados a mis alumnos y facilitar el volcado de notas histórico. \\ \hline
+\textbf{HU-PR-08} & \textit{Como} profesor, & \textit{quiero} visualizar estadísticas de acierto por pregunta al finalizar \\
+                                     && \textit{para} detectar conceptos que no han quedado claros y reforzarlos. \\ \hline
+\textbf{HU-PR-09} & \textit{Como} profesor, & \textit{quiero} generar borradores de preguntas mediante IA \\
+                                     && \textit{para} reducir el tiempo de preparación de mis clases. \\ \hline
+\textbf{HU-PR-10} & \textit{Como} profesor, & \textit{quiero} exportar los resultados verificados a CSV \\
+                                     && \textit{para} integrarlos en mis herramientas de gestión docente externas. \\ \hline
+\textbf{HU-PR-11} & \textit{Como} profesor, & \textit{quiero} configurar si se otorgan puntos extra por rapidez o racha \\
+                                     && \textit{para} adaptar el nivel de competitividad de la sesión. \\ \hline
+\textbf{HU-PR-12} & \textit{Como} profesor, & \textit{quiero} decidir si el ranking se muestra tras cada pregunta \\
+                                     && \textit{para} gestionar el ritmo y la atención de la clase. \\ \hline
+\textbf{HU-PR-13} & \textit{Como} profesor, & \textit{quiero} añadir etiquetas e imágenes a mis cuestionarios \\
+                                     && \textit{para} identificar los y personalizarlos visualmente. \\ \hline
+\textbf{HU-PR-14} & \textit{Como} profesor, & \textit{quiero} acceder al historial de salas pasadas \\
+                                     && \textit{para} revisar resultados y analizar el progreso de mis alumnos en el tiempo. \\ \hline
+\end{tabularx}
+}
+\caption{Historias de usuario asociadas al rol de Profesor.}
+\label{tab:hu_profesor}
+\end{table}
 
-Valorar si incluirlos todos en una diagrama estilo draw.io
+
 
 \section{Requisitos de información}
 
@@ -49,6 +111,7 @@ Valorar si incluirlos todos en una diagrama estilo draw.io
 
 \subsection{Criterios de aceptación}
 Se puede poner dentro de los RF como subsección o fuera como sección, enlazar con los casos de prueba y validación (cap 8.3)
+
 \section{Casos de uso}
 Descripción y después diagrama parecido al del de historias de usuario, pero un diagrama por CU
 

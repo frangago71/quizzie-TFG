@@ -101,16 +101,16 @@ Definen los atributos de calidad y restricciones técnicas del sistema.
 * **HU-08:** **Como** *profesor*, **quiero** visualizar estadísticas de acierto por pregunta al finalizar **para** detectar conceptos que no han quedado claros y reforzarlos.
 * **HU-09:** **Como** *profesor*, **quiero** generar borradores de preguntas mediante IA **para** reducir el tiempo de preparación de mis clases.
 * **HU-10:** **Como** *profesor*, **quiero** exportar los resultados verificados a CSV **para** integrarlos en mis herramientas de gestión docente externas.
-* **HU-17:** **Como** *profesor*, **quiero** configurar si se otorgan puntos extra por rapidez o racha **para** adaptar el nivel de competitividad de la sesión.
-* **HU-18:** **Como** *profesor*, **quiero** decidir si el ranking se muestra tras cada pregunta **para** gestionar el ritmo y la atención de la clase.
-* **HU-19:** **Como** *profesor*, **quiero** añadir etiquetas e imágenes a mis cuestionarios **para** identificarlos y personalizarlos visualmente.
-* **HU-20:** **Como** *profesor*, **quiero** acceder al historial de salas pasadas **para** revisar resultados y analizar el progreso de mis alumnos en el tiempo.
+* **HU-11:** **Como** *profesor*, **quiero** configurar si se otorgan puntos extra por rapidez o racha **para** adaptar el nivel de competitividad de la sesión.
+* **HU-12:** **Como** *profesor*, **quiero** decidir si el ranking se muestra tras cada pregunta **para** gestionar el ritmo y la atención de la clase.
+* **HU-13:** **Como** *profesor*, **quiero** añadir etiquetas e imágenes a mis cuestionarios **para** identificarlos y personalizarlos visualmente.
+* **HU-14:** **Como** *profesor*, **quiero** acceder al historial de salas pasadas **para** revisar resultados y analizar el progreso de mis alumnos en el tiempo.
 
 ### 4.2 Alumno
-* **HU-11:** **Como** *alumno*, **quiero** unirme a una sala solo con un PIN y un apodo **para** participar de forma inmediata sin necesidad de crear una cuenta.
-* **HU-12:** **Como** *alumno*, **quiero** recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada **para** competir en igualdad de condiciones con mis compañeros.
-* **HU-13:** **Como** *alumno*, **quiero** saber si mi respuesta ha sido correcta justo después de enviarla **para** reforzar mi aprendizaje en el momento.
-* **HU-14:** **Como** *alumno*, **quiero** que se genere un código QR único al finalizar el test **para** mostrárselo al profesor y que mi nota sea oficializada.
-* **HU-15:** **Como** *alumno*, **quiero** ver mi posición en el ranking después de cada bloque de preguntas **para** motivarme durante la realización del cuestionario.
-* **HU-16:** **Como** *alumno*, **quiero** poder reengancharme a la partida si pierdo la conexión a internet **para** no perder mi progreso y poder terminar el test.
+* **HU-15:** **Como** *alumno*, **quiero** unirme a una sala solo con un PIN y un apodo **para** participar de forma inmediata sin necesidad de crear una cuenta.
+* **HU-16:** **Como** *alumno*, **quiero** recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada **para** competir en igualdad de condiciones con mis compañeros.
+* **HU-17:** **Como** *alumno*, **quiero** saber si mi respuesta ha sido correcta justo después de enviarla **para** reforzar mi aprendizaje en el momento.
+* **HU-18:** **Como** *alumno*, **quiero** que se genere un código QR único al finalizar el test **para** mostrárselo al profesor y que mi nota sea oficializada.
+* **HU-19:** **Como** *alumno*, **quiero** ver mi posición en el ranking después de cada bloque de preguntas **para** motivarme durante la realización del cuestionario.
+* **HU-20:** **Como** *alumno*, **quiero** poder reengancharme a la partida si pierdo la conexión a internet **para** no perder mi progreso y poder terminar el test.
 * **HU-21:** **Como** *alumno*, **quiero** recibir puntos extra por responder rápido o mantener una racha de aciertos **para** sentirme recompensado por mi agilidad y constancia.
