@@ -10,7 +10,10 @@ El proyecto implementa un flujo de trabajo automatizado que garantiza la entrega
 3.  **Etapa de despliegue (CD):** Una vez que el código validado llega a `main`, las plataformas de hosting disparan el despliegue automático.
 
 ## 2. Pipeline de Integración Continua (CI)
-El flujo de CI se gestiona de manera unificada mediante el workflow **CI - Quality & Security** (`quality_and_security.yml`) en **GitHub Actions**:
+El flujo de CI se divide en dos workflows independientes gestionados mediante **GitHub Actions**:
+
+### A. CI - Quality & Security (`quality_and_security.yml`)
+Este workflow se ejecuta en cada `push` o `pull_request` a las ramas `main` y `develop`, y se compone de dos trabajos paralelos:
 
 *   **Backend CI (`backend-ci`):**
     *   **Instalación:** Se utiliza el gestor de paquetes **uv** (`uv sync --all-groups`) para una instalación ultra-rápida y reproducible.
@@ -21,11 +24,12 @@ El flujo de CI se gestiona de manera unificada mediante el workflow **CI - Quali
     *   **Instalación:** `npm ci` en el directorio `frontend` para un árbol de dependencias exacto y limpio.
     *   **Linting:** Ejecución de **ESLint** (`npm run lint`) para validar reglas de React y tipado.
     *   **Compilación:** Compilación del proyecto (`npm run build`) para asegurar la ausencia de errores de tipado antes de producción.
-*   **SonarQube (`sonarqube`):**
-    *   **Trigger condicional:** Para optimizar recursos, este trabajo se ejecuta únicamente ante un `push` en la rama principal (`main`) tras finalizar con éxito `backend-ci` y `frontend-ci`.
-    *   **Análisis estático (SonarCloud):** Se ejecuta en un runner de **ubuntu-latest** para consistencia de rutas:
-        *   **Integración de cobertura:** Se descarga el artefacto `coverage.xml` generado en el backend para mostrar las métricas de cobertura real.
-        *   **Detección de deuda técnica:** Identificación automatizada de bugs, vulnerabilidades de seguridad y code smells.
+
+### B. Code Quality - SonarQube (`sonar.yml`)
+Para optimizar el uso de recursos y garantizar el desacoplamiento total entre ramas, el análisis estático se gestiona en este workflow autocontenido.
+*   **Trigger:** Se ejecuta únicamente ante un `push` en la rama principal (`main`). No se ejecuta en `develop` ni en Pull Requests, de modo que en `develop` solo se visualizarán los checks de calidad básicos.
+*   **Diseño autocontenido:** Para evitar dependencias cruzadas entre archivos de workflow (las cuales impiden el correcto funcionamiento en GitHub Actions), este workflow realiza la instalación de dependencias y la suite de pruebas de forma independiente para generar el informe de cobertura (`coverage.xml`).
+*   **Análisis estático (SonarCloud):** Se ejecuta en un runner de **ubuntu-latest** para consistencia de rutas.
 
 ## 3. Estrategia de Despliegue Continuo (CD)
 El despliegue se apoya en la infraestructura nativa de las plataformas elegidas:
@@ -40,9 +44,9 @@ El despliegue se apoya en la infraestructura nativa de las plataformas elegidas:
 
 ## 4. Resumen del flujo técnico
 
-### En ramas `develop` y `main` (de forma general):
+### En ramas `develop` y `main` (via `quality_and_security.yml`):
 1.  **Job Backend:** Instalación (uv) → Ruff Check & Format → pip-audit → Pytest → Upload Coverage.
 2.  **Job Frontend:** Instalación (npm ci) → ESLint → Build.
 
-### Solo ante pushes en la rama `main`:
-3.  **Job Sonarqube:** Download Coverage → SonarCloud Scan (Ubuntu).
+### Solo en rama `main` (via `sonar.yml`):
+3.  **Job Sonarqube (autocontenido):** Instalación (uv) → Pytest (generación de cobertura) → SonarCloud Scan.
