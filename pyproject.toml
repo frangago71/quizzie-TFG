@@ -98,3 +98,20 @@ exclude_lines = [
     "raise AssertionError",
     "raise NotImplementedError",
 ]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+extraPaths = ["backend"]
+typeCheckingMode = "off"
+reportArgumentType = "none"
+reportAssignmentType = "none"
+reportAttributeAccessIssue = "none"
+reportOptionalMemberAccess = "none"
+reportOptionalSubscript = "none"
+reportOptionalOperand = "none"
+reportGeneralTypeIssues = "none"
+reportOperatorIssue = "none"
+reportReturnType = "none"
+reportCallIssue = "none"
+reportIndexIssue = "none"
