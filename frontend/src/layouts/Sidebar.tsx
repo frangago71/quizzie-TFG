@@ -21,7 +21,6 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
 
   const handleLogout = () => {
     authService.logout();
-    localStorage.clear();
     window.location.href = "/";
   };
 
