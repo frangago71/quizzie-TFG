@@ -25,47 +25,75 @@ interface RoomContextType {
 
 const RoomContext = createContext<RoomContextType | undefined>(undefined);
 
-const sanitizeAlphanumeric = (value: string): string => {
-  return value.replace(/[^a-zA-Z0-9_-]/g, "");
-};
-
-const sanitizeNumeric = (value: string | number): string => {
-  return String(value).replace(/[^0-9]/g, "");
-};
-
-const sanitizeNickname = (value: string): string => {
-  return value.replace(/[<>'"&]/g, "");
-};
-
 export function RoomProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [rawRoomCode, setRawRoomCode] = useState(
-    sessionStorage.getItem("roomCode") || "",
-  );
+  const [rawRoomCode, setRawRoomCode] = useState(() => {
+    const saved = sessionStorage.getItem("roomCode");
+    if (saved) {
+      try {
+        return decodeURIComponent(saved);
+      } catch {
+        return saved;
+      }
+    }
+    return "";
+  });
+
   const [rawRoomId, setRawRoomId] = useState<number | null>(() => {
     const savedId = sessionStorage.getItem("roomId");
-    return savedId ? Number(savedId) : null;
+    if (savedId) {
+      try {
+        const decoded = decodeURIComponent(savedId);
+        return Number(decoded) || null;
+      } catch {
+        return Number(savedId) || null;
+      }
+    }
+    return null;
   });
+
   const [rawUserNickname, setRawUserNickname] = useState<string | undefined>(
-    sessionStorage.getItem("userNickname") || undefined,
+    () => {
+      const saved = sessionStorage.getItem("userNickname");
+      if (saved) {
+        try {
+          return decodeURIComponent(saved);
+        } catch {
+          return saved;
+        }
+      }
+      return undefined;
+    },
   );
+
   const [rawParticipantId, setRawParticipantId] = useState<number | null>(
     () => {
       const savedPId = sessionStorage.getItem("participantId");
-      return savedPId ? Number(savedPId) : null;
+      if (savedPId) {
+        try {
+          const decoded = decodeURIComponent(savedPId);
+          return Number(decoded) || null;
+        } catch {
+          return Number(savedPId) || null;
+        }
+      }
+      return null;
     },
   );
+
   const [roomData, setRoomData] = useState<RoomDataType>(null);
 
   const setRoomCode = useCallback((code: string) => {
-    const sanitized = sanitizeAlphanumeric(code);
-    setRawRoomCode(sanitized);
+    const cleanCode = code.replace(/[^a-zA-Z0-9_-]/g, "");
+    const sanitized = encodeURIComponent(cleanCode);
+    setRawRoomCode(cleanCode);
     sessionStorage.setItem("roomCode", sanitized);
   }, []);
 
   const setRoomId = useCallback((id: number | null) => {
     setRawRoomId(id);
     if (id !== null) {
-      const sanitized = sanitizeNumeric(id);
+      const cleanId = String(id).replace(/[^0-9]/g, "");
+      const sanitized = encodeURIComponent(cleanId);
       sessionStorage.setItem("roomId", sanitized);
     } else {
       sessionStorage.removeItem("roomId");
@@ -75,7 +103,8 @@ export function RoomProvider({ children }: Readonly<{ children: ReactNode }>) {
   const setUserNickname = useCallback((name: string | undefined) => {
     setRawUserNickname(name);
     if (name !== undefined) {
-      const sanitized = sanitizeNickname(name);
+      const cleanNickname = name.replace(/[<>'"&]/g, "");
+      const sanitized = encodeURIComponent(cleanNickname);
       sessionStorage.setItem("userNickname", sanitized);
     } else {
       sessionStorage.removeItem("userNickname");
@@ -85,7 +114,8 @@ export function RoomProvider({ children }: Readonly<{ children: ReactNode }>) {
   const setParticipantId = useCallback((id: number | null) => {
     setRawParticipantId(id);
     if (id !== null) {
-      const sanitized = sanitizeNumeric(id);
+      const cleanParticipantId = String(id).replace(/[^0-9]/g, "");
+      const sanitized = encodeURIComponent(cleanParticipantId);
       sessionStorage.setItem("participantId", sanitized);
     } else {
       sessionStorage.removeItem("participantId");
