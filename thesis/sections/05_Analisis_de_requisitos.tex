@@ -136,7 +136,7 @@ Para que las políticas de negocio descritas anteriormente puedan ejecutarse de 
 
 \section{Requisitos de información}\label{sec:requisitos_de_informacion}
 
-Los requisitos de información determinan los conjuntos de datos que el sistema debe almacenar de forma persistente para garantizar el correcto funcionamiento de la aplicación y dar soporte a las reglas de negocio e historias de usuario definidas. En esta fase de análisis no se busca detallar la estructura técnica de las tablas, las restricciones de integridad ni sus atributos específicos. Dichos aspectos se detallarán en el capítulo de \hyperref[cap:diseno_y_arquitectura]{diseño y arquitectura}.
+Los requisitos de información determinan los conjuntos de datos que el sistema debe almacenar de forma persistente para garantizar el correcto funcionamiento de la aplicación y dar soporte a las reglas de negocio e historias de usuario definidas. En esta fase de análisis no se busca detallar la estructura técnica de las tablas, las restricciones de integridad ni sus atributos específicos. Dichos aspectos se detallarán en el capítulo  \hyperref[cap:diseno_y_arquitectura]{6. Diseño y arquitectura}.
 
 \begin{table}[H]
 \centering
@@ -159,10 +159,143 @@ Los requisitos de información determinan los conjuntos de datos que el sistema 
 \label{tab:requisitos_informacion}
 \end{table}
 
-\section{Requisitos funcionales}
+\newpage
 
-\subsection{Criterios de aceptación}
-Se puede poner dentro de los RF como subsección o fuera como sección, enlazar con los casos de prueba y validación (cap 8.3)
+\section{Requisitos funcionales}\label{sec:requisitos_funcionales}
+
+Los requisitos funcionales determinan las acciones específicas, comportamientos y servicios que la plataforma \textit{Quizzie} debe ejecutar para satisfacer las necesidades de los usuarios. Este catálogo traduce las historias de usuario y las políticas lógicas del sistema en directrices operativas de desarrollo. A continuación, se detallan los requisitos funcionales del sistema:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{l>{\raggedright\arraybackslash}p{2.5cm}p{9.5cm}c}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Prioridad} \\ \hline
+
+\textbf{RF-01} & Gestión de registro & Registro de nuevos profesores con validación de correo electrónico y \textit{hash} de contraseña. & Alta \\ \hline
+\textbf{RF-02} & Inicio de sesión & Autenticación de docentes mediante correo electrónico y contraseña cifrada con emisión de tokens JWT. & Alta \\ \hline
+\textbf{RF-03} & Baja de usuarios & Eliminación de la cuenta de profesor y todos sus datos asociados de forma permanente del sistema. & Media \\ \hline
+\textbf{RF-04} & Recuperación contraseña & Solicitud y tramitación de restablecimiento de credenciales de acceso vía correo electrónico. & Baja \\ \hline
+\textbf{RF-05} & Edición perfil & Modificación de los datos de usuario del profesor, incluyendo el nombre visible y la contraseña. & Media \\ \hline
+\textbf{RF-06} & Cierre de sesión & Invalidación del token de autenticación activo en el servidor y redirección automática al formulario de acceso. & Alta \\ \hline
+\textbf{RF-07} & Crear cuestionario & Creación de nuevas pruebas de evaluación con un límite máximo estructurado de hasta 30 preguntas. & Alta \\ \hline
+\textbf{RF-08} & Listar cuestionarios & Visualización del catálogo de pruebas diseñadas por el profesor, ordenadas cronológicamente por fecha. & Alta \\ \hline
+\textbf{RF-09} & Mostrar ranking & Presentación de la tabla de clasificación de alumnos después de cada pregunta y al finalizar la sesión. & Media \\ \hline
+\textbf{RF-10} & Aleatoriedad & Configuración opcional para alterar de forma automática el orden de las preguntas y sus respectivas respuestas. & Baja \\ \hline
+\textbf{RF-11} & Configurar tiempo & Definición personalizada del tiempo límite de respuesta para cada enunciado durante la creación de la sala. & Media \\ \hline
+\textbf{RF-12} & Importación & Carga masiva de preguntas y opciones desde archivos externos estructurados exclusivamente en formato \texttt{.txt} o \texttt{.csv}. & Media \\ \hline
+\textbf{RF-13} & Edición de cuestionarios & Modificación integral del título, descripción, enunciados y opciones de respuestas de un test existente. & Media \\ \hline
+\textbf{RF-14} & Eliminación de datos & Borrado lógico en el sistema de cuestionarios o preguntas individuales sin destruir el histórico pasado. & Media \\ \hline
+
+\end{tabular}
+}
+\caption{Requisitos funcionales (1/3)}
+\label{tab:requisitos_funcionales_1}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{l>{\raggedright\arraybackslash}p{2.5cm}p{9.5cm}c}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Prioridad} \\ \hline
+
+\textbf{RF-15} & Crear sala & Instanciación en tiempo real de una sesión de evaluación protegida mediante un código PIN único de acceso. & Alta \\ \hline
+\textbf{RF-16} & Validar PIN & Verificación inmediata en el servidor de que el código PIN introducido corresponde a una sala en estado de espera. & Alta \\ \hline
+\textbf{RF-17} & Validar \textit{uvus} & Control de acceso que valida el formato alfanumérico institucional de la Universidad de Sevilla y mitiga duplicados. & Alta \\ \hline
+\textbf{RF-18} & Sala de espera & Gestión y mantenimiento del flujo de alumnos conectados en tiempo real mediante \textit{WebSockets} antes del inicio. & Alta \\ \hline
+\textbf{RF-19} & Cerrar sala & Finalización manual o automática de la sesión, despliegue de resultados finales y desconexión de los participantes. & Media \\ \hline
+\textbf{RF-20} & Comenzar sala & Activación de la cuenta atrás sincronizada en el servidor y apertura de la primera pregunta del test. & Alta \\ \hline
+\textbf{RF-21} & Distribución síncrona & Envío simultáneo de la secuencia de enunciados y opciones desde el backend a todos los clientes conectados. & Alta \\ \hline
+\textbf{RF-22} & Temporizador servidor & Control centralizado y ejecución estricta del tiempo de respuesta remota en el hilo del backend. & Alta \\ \hline
+\textbf{RF-23} & Recepción respuestas & Captura, marca de tiempo y procesamiento de la opción de respuesta seleccionada por el alumno. & Alta \\ \hline
+\textbf{RF-24} & Feedback inmediato & Notificación instantánea en el dispositivo del alumno sobre el acierto o fallo sin consolidar la nota permanente. & Alta \\ \hline
+\textbf{RF-25} & Registro provisional & Almacenamiento transitorio del resultado del participante bajo el estado de "No Verificado" y emisión de un token único. & Alta \\ \hline
+\textbf{RF-26} & Generación QR & Renderizado de un código QR dinámico en la pantalla del alumno que encapsula su identidad y su token criptográfico. & Alta \\ \hline
+\textbf{RF-27} & Activación cámara & Solicitud de permisos e inicialización del flujo de vídeo de la cámara web en el dispositivo del profesor. & Alta \\ \hline
+\textbf{RF-28} & Lectura de QR & Captura óptica, decodificación y extracción de la estructura de datos del alumno desde la interfaz docente. & Alta \\ \hline
+\textbf{RF-29} & Validación Token & Comparación criptográfica en el servidor del token escaneado frente al registro transitorio de la sesión activa. & Alta \\ \hline
+\textbf{RF-30} & Control de estado & Bloqueo lógico automático de solicitudes de validación de notas si el registro ya consta como "Verificado". & Alta \\ \hline
+
+\end{tabular}
+}
+\caption{Requisitos funcionales (2/3)}
+\label{tab:requisitos_funcionales_2}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{l>{\raggedright\arraybackslash}p{2.5cm}p{9.5cm}c}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Prioridad} \\ \hline
+
+\textbf{RF-31} & Check verificación & Actualización de la sesión a estado verificado y consolidación oficial de la nota en el histórico definitivo. & Alta \\ \hline
+\textbf{RF-32} & Listado en vivo & Actualización en tiempo real del panel docente reflejando la lista de alumnos validados presencialmente. & Media \\ \hline
+\textbf{RF-33} & Estadísticas de sala & Cálculo de los porcentajes de acierto y fallo por enunciado para la detección automatizada de conceptos complejos. & Media \\ \hline
+\textbf{RF-34} & Generación por IA & Procesamiento automatizado de textos introducidos por el docente para la sugerencia de borradores de preguntas mediante IA. & Media \\ \hline
+\textbf{RF-35} & Asistente de ayuda & Resolución de dudas conceptuales y de uso del sistema mediante una interfaz de lenguaje natural integrada. & Baja \\ \hline
+\textbf{RF-36} & Navegación por IA & Sistema de soporte inteligente encargado de detectar intenciones de uso y guiar al profesor en el entorno web. & Baja \\ \hline
+\textbf{RF-37} & Revisión post IA & Interfaz de edición específica para la inspección manual, corrección y aprobación de las preguntas sugeridas por la IA. & Media \\ \hline
+\textbf{RF-38} & Crear clase & Agrupación e indexación de conjuntos estables de alumnos bajo etiquetas de grupo o clase académica. & Baja \\ \hline
+\textbf{RF-39} & Exportación resultados & Generación y descarga local de las calificaciones oficiales y verificadas en formatos estandarizados PDF o CSV. & Alta \\ \hline
+\textbf{RF-40} & Gestión de conexiones & Manejo de admisiones tardías, retención de estados por caída de red y flujos de reconexión adaptativa. & Media \\ \hline
+\textbf{RF-41} & Filtros de búsqueda & Herramientas de filtrado avanzado en el catálogo de cuestionarios (activos, inactivos, recientes o etiquetas). & Media \\ \hline
+\textbf{RF-42} & Bonificación por tiempo & Algoritmo de cálculo de puntuación adicional ponderada según la rapidez de respuesta del participante. & Baja \\ \hline
+\textbf{RF-43} & Sistema de rachas & Concesión de multiplicadores de puntuación por el encadenamiento consecutivo de respuestas correctas. & Baja \\ \hline
+\textbf{RF-44} & Modo de puntuación & Selección de las reglas de asignación de puntos (estándar o adaptativa) en los parámetros iniciales de la sala. & Baja \\ \hline
+\textbf{RF-45} & Visibilidad de ranking & Opción para conmutar la presencia de la pantalla intermedia de clasificación global entre preguntas. & Baja \\ \hline
+\textbf{RF-46} & Formulario avanzado & Inclusión de imágenes de soporte y gestión de etiquetas avanzadas (tags) en la edición del cuestionario, con hasta 8 opciones. & Baja \\ \hline
+\textbf{RF-47} & Historial de salas & Acceso permanente al registro histórico de sesiones cerradas que hayan completado la fase de verificación presencial. & Alta \\ \hline
+
+\end{tabular}
+}
+\caption{Requisitos funcionales (3/3)}
+\label{tab:requisitos_funcionales_3}
+\end{table}
+
+\subsection{Criterios de aceptación y definición de hecho}\label{sub:criterios_de_aceptacion}
+
+Para garantizar que los requisitos funcionales especificados alcancen los estándares de calidad, seguridad y robustez técnica exigidos, el proceso de desarrollo se rige por una \textit{Definition of Done} (DoD) o Definición de Hecho. Esta definición actúa como una \textit{checklist} obligatoria y transversal que cualquier funcionalidad debe satisfacer antes de ser dada por finalizada y consolidada en el sistema.
+
+De manera general, un requisito funcional se considerará formalmente aceptado cuando cumpla con las siguientes dimensiones de verificación:
+
+\begin{itemize}
+    \item \textbf{Comportamiento funcional:}
+    \begin{itemize}
+        \item El flujo principal de la funcionalidad se ejecuta correctamente en la interfaz del usuario sin producir bloqueos, errores ni excepciones.
+        \item El sistema gestiona los flujos alternativos y de error (entradas inválidas, caídas de red o datos duplicados) devolviendo un feedback informativo e inmediato al usuario.
+        \item Se respetan los límites físicos, lógicos y de formato estructurados en las restricciones del sistema.
+    \end{itemize}
+
+    \item \textbf{Calidad técnica y seguridad:}
+    \begin{itemize}
+        \item El código fuente cumple con las directrices de seguridad relativas a la persistencia de datos y el cifrado de credenciales.
+        \item Las comunicaciones síncronas o en tiempo real emplean de forma estricta los canales bidireccionales y protocolos establecidos en la arquitectura del sistema.
+        \item Los datos asociados se mapean de forma exacta en las estructuras definidas en los requisitos de información.
+    \end{itemize}
+
+    \item \textbf{Verificación y pruebas:}
+    \begin{itemize}
+        \item La funcionalidad tiene asociado, al menos, un caso de prueba unitario, de integración o de sistema dentro del plan de verificación.
+        \item El comportamiento real del software coincide con el esperado tras superar con éxito las pruebas de caja negra, de carga o de seguridad.
+    \end{itemize}
+
+    \item \textbf{Documentación y gestión del ciclo de vida:}
+    \begin{itemize}
+        \item Se ha redactado la documentación técnica correspondiente en los módulos afectados del sistema, incluyendo comentarios en el código según las buenas prácticas de desarrollo.
+        \item El \textit{issue} asignado en la plataforma de control de versiones (GitHub) se ha actualizado con la solución implementada, asociando los \textit{commits} pertinentes y procediendo a su cierre formal tras la aprobación del despliegue.
+    \end{itemize}
+\end{itemize}
+
+Estos criterios globales de aceptación aseguran que el paso del análisis de requisitos a la fase de pruebas finales sea completamente trazable, transparente y verificable, sirviendo de base para la posterior validación del sistema en la sección \hyperref[sec:casos_de_prueba_y_validacion]{8.3 Casos de prueba y validación}. 
+
 
 \section{Casos de uso}
 Descripción y después diagrama parecido al del de historias de usuario, pero un diagrama por CU
