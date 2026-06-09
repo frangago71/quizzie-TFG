@@ -101,11 +101,63 @@ Una vez definidos los perfiles que interactúan con la plataforma, el comportami
 \label{tab:hu_profesor}
 \end{table}
 
+\section{Reglas de negocio y restricciones}\label{sec:reglas_de_negocio_y_restricciones}
 
+El correcto funcionamiento de la plataforma \textit{Quizzie} está sujeto a un conjunto de directrices operativas y limitaciones técnicas que garantizan tanto la validez funcional como la seguridad del sistema. 
 
-\section{Requisitos de información}
+\subsection{Reglas de negocio}\label{sec:reglas_de_negocio}
 
-\section{Reglas de negocio y restricciones}
+Las reglas de negocio definen las políticas, derechos y leyes lógicas que gobiernan el flujo de trabajo de la aplicación:
+
+\begin{itemize}
+    \item \textbf{Ciclo de vida de las salas:} Una sala de evaluación podrá encontrarse en espera, en juego, en fase de verificación o cerrada. Los alumnos carecerán de privilegios para alterar el estado operativo de la sesión.
+    \item \textbf{Acceso a salas activas:} Un alumno solo podrá participar en una sala activa si introduce el código PIN correcto y un \textit{nickname} que no esté siendo utilizado por otro participante dentro de la misma sesión.
+    \item \textbf{Validación presencial de calificaciones:} Ninguna calificación obtenida en una sesión en vivo se consolidará en el histórico permanente ni será válida para su exportación si no ha sido verificada físicamente en el aula mediante el escaneo del código QR del alumno por parte del dispositivo del profesor.
+    \item \textbf{Caducidad y unicidad del token QR:} El código QR generado por el dispositivo del alumno al finalizar el test contendrá un token criptográfico único asociado a su sesión. Este token será de un solo uso; una vez escaneado y marcado como "Verificado", el sistema bloqueará cualquier intento posterior de lectura para evitar su duplicación.
+    \item \textbf{Propiedad y gestión de cuestionarios:} Los cuestionarios creados, editados o eliminados lógicamente en la plataforma estarán asociados únicamente al profesor que los diseñó. Un docente no podrá visualizar, modificar ni utilizar para una sala los cuestionarios propiedad de otro usuario del sistema.
+    \item \textbf{Generación asistida por IA:} El sistema proporcionará la generación automatizada de preguntas mediante Inteligencia Artificial, actuando como una herramienta de ayuda para el profesor. Todo contenido generado se considerará una propuesta preliminar, siendo responsabilidad exclusiva del profesor su revisión, edición y aprobación final.
+    \item \textbf{Almacenamiento del historial de salas:} Una sala de evaluación se trasladará de forma definitiva al historial de sesiones pasadas únicamente tras concluir con éxito la fase de verificación presencial. En este registro permanente solo se consolidarán las calificaciones e identidades de aquellos alumnos que completaron el flujo de validación mediante código QR.
+    \item \textbf{Análisis de rendimiento:} El sistema generará métricas analíticas orientadas a facilitar la detección de tendencias de aprendizaje en el aula, identificando automáticamente los conceptos con mayor índice de error y los patrones de acierto global del alumnado.
+    \item \textbf{Exportación de resultados:} El profesorado dispondrá del derecho de portabilidad de las calificaciones oficiales del sistema, permitiendo la generación y descarga local de boletines de calificaciones en formatos estandarizados como PDF o CSV.
+    \item \textbf{Seguimiento por grupos:} La plataforma permitirá la estructuración de los alumnos en grupos o clases con el fin de centralizar y evaluar la evolución histórica de un mismo conjunto de estudiantes a lo largo de diferentes sesiones académicas y cuestionarios.
+\end{itemize}
+
+\subsection{Restricciones}\label{sub:restricciones}
+Para que las políticas de negocio descritas anteriormente puedan ejecutarse de manera efectiva, el sistema debe acatar una serie de restricciones:
+
+\begin{itemize}
+    \item \textbf{Validación de \textit{uvus}:} El sistema restringirá el formato del \textit{uvus} de los alumnos para que coincida estrictamente con el patrón definido por la Universidad de Sevilla. El servidor validará mediante expresiones regulares que la cadena cumpla con los formatos oficiales, rechazando cualquier formato de nombre inválido.
+    \item \textbf{Dimensionamiento de cuestionarios:} En la creación de contenido se impondrá un límite estructural rígido por motivos de maquetación de la interfaz móvil y rendimiento de la base de datos, restringiendo cada cuestionario a un máximo de 30 preguntas y fijando un límite máximo de 8 opciones de respuesta por cada enunciado.
+    \item \textbf{Persistencia ante desconexiones:} Ante una pérdida accidental de conectividad a internet por parte de un alumno en plena partida, el backend retendrá su estado y puntuación. Esto permitirá su reconexión mientras la sala siga activa sin perder las respuestas previas a la desconexión.
+    \item \textbf{Protocolos de comunicación síncrona:} Para garantizar la sincronización en tiempo real y asegurar que los eventos de la partida se procesen con la latencia mínima requerida, la comunicación bidireccional entre los dispositivos de la sala (profesor/alumnos) estará restringida exclusivamente al uso del protocolo seguro \textit{WebSockets} (\texttt{WSS}).
+    \item \textbf{Cifrado de credenciales:} El sistema operativo del backend prohibirá el almacenamiento de contraseñas en texto plano dentro de la base de datos. Será obligatorio aplicar un algoritmo de \textit{hashing} seguro y unidireccional antes de cualquier operación de persistencia de credenciales de profesores.
+    \item \textbf{Seguridad del código QR:} El \textit{token} incrustado en el código QR del alumno deberá generarse mediante criptografía segura y no falsificable desde el servidor. 
+\end{itemize}
+
+\section{Requisitos de información}\label{sec:requisitos_de_informacion}
+
+Los requisitos de información determinan los conjuntos de datos que el sistema debe almacenar de forma persistente para garantizar el correcto funcionamiento de la aplicación y dar soporte a las reglas de negocio e historias de usuario definidas. En esta fase de análisis no se busca detallar la estructura técnica de las tablas, las restricciones de integridad ni sus atributos específicos. Dichos aspectos se detallarán en el capítulo de \hyperref[cap:diseno_y_arquitectura]{diseño y arquitectura}.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{l>{\raggedright\arraybackslash}p{3.5cm}p{9.5cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
+\textbf{RI-01} & Profesores y cuentas & Credenciales de acceso de los profesores (correo electrónico y el \textit{hash} de la contraseña) y su nombre visible. \\ \hline
+\textbf{RI-02} & Cuestionarios y preguntas & Datos relativos a los tests diseñadas por los profesores. Incluye los campos básicos del cuestionario (título, descripción) y la composición de sus preguntas y opciones asociadas. \\ \hline
+\textbf{RI-03} & Configuración y control de salas & Código PIN único de acceso, el estado operativo de la sala (espera, en juego, en fase de verificación o cerrada), el temporizador del servidor para la sincronización mediante \textit{WebSockets}. \\ \hline
+\textbf{RI-04} & Registro temporal de participación & Datos de alumnos conectados identificados mediante su \textit{uvus}, opciones seleccionadas y puntuaciones obtenidas. \\ \hline
+\textbf{RI-05} & Comprobantes de presencialidad y tokens QR & Validación de notas y mitigación del fraude digital. Debe almacenar el token criptográfico seguro y firmado digitalmente que se asocia a cada alumno al terminar un test, su estado de verificación actual. \\ \hline
+\textbf{RI-06} & Histórico de calificaciones y respuestas & Salas que han completado con éxito la fase de verificación presencial. Debe registrar los mismos datos de cada alumno que el registro temporal, pero con el estado de verificación completado y persistiendo dichos datos. \\ \hline
+\textbf{RI-07} & Gestión de grupos & Etiquetas de grupo o clase, profesor responsable y lista de alumnos asociados. \\ \hline
+\end{tabular}
+}
+\caption{Requisitos de información.}
+\label{tab:requisitos_informacion}
+\end{table}
 
 \section{Requisitos funcionales}
 

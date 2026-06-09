@@ -81,7 +81,7 @@ classDiagram
 | :--- | :--- | :--- | :--- |
 | **Room** | id | int (PK) | Identificador único de la sesión. |
 | | join_code | str | PIN único de acceso. |
-| | status | RoomStatus (Enum) | Estado actual: waiting, live o finished. |
+| | status | RoomStatus (Enum) | Estado actual: waiting, live, verifying o finished. |
 | | created_at | datetime | Fecha y hora de creación de la sala (UTC). |
 | | current_question_index | int | Índice de la pregunta activa en la sesión. |
 | | phase | RoomPhase (Enum) | Fase actual: reading, answering, results, leaderboard. |
