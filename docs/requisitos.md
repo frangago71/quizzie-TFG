@@ -73,18 +73,18 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 
 ## 3. Requisitos No Funcionales (RNF)
 Definen los atributos de calidad y restricciones técnicas del sistema.
-
 | ID | Atributo | Definición del Requisito |
 | :--- | :--- | :--- |
-| **RNF-01** | Rendimiento | **Latencia:** Los eventos en tiempo real deben procesarse en menos de 200ms para asegurar la sincronía. |
-| **RNF-02** | Rendimiento | **Concurrencia:** Soporte mínimo de 100 alumnos por sala sin pérdida de rendimiento. |
-| **RNF-03** | Seguridad | **Integridad:** El Token de validación del alumno debe ser criptográficamente seguro y no falsificable. |
-| **RNF-04** | Seguridad | **Privacidad:** Almacenamiento obligatorio de contraseñas mediante algoritmos de hashing seguros. |
-| **RNF-05** | Seguridad | **Cifrado:** Uso de protocolos HTTPS y WSS para proteger la comunicación de red. |
-| **RNF-06** | Usabilidad | **Responsividad:** Interfaz adaptativa (Responsive) optimizada para móviles y ordenadores. |
-| **RNF-07** | Usabilidad | **Eficiencia QR:** Tiempo de escaneo y validación del código QR inferior a 2 segundos. |
-| **RNF-08** | Fiabilidad | **Reconexión:** Capacidad de recuperar la sesión de un alumno tras una desconexión accidental. |
-| **RNF-09** | Disponibilidad | **Persistencia:** Respaldo de resultados temporales ante posibles caídas del servidor. |
+| **RNF-01** | Rendimiento | **Sincronización:** Los eventos en tiempo real deben procesarse de forma óptima en el backend para garantizar la coherencia síncrona en el aula. |
+| **RNF-02** | Rendimiento | **Concurrencia:** Soporte mínimo de 100 alumnos interactuando de forma simultánea dentro de una misma sala sin degradación de los servicios básicos. |
+| **RNF-03** | Seguridad | **Integridad:** El token de validación presencial embebido en el QR del alumno debe ser criptográficamente seguro, firmado por el servidor y no falsificable. |
+| **RNF-04** | Seguridad | **Privacidad:** Almacenamiento e inserción obligatoria de credenciales de acceso de profesores mediante algoritmos de *hashing* seguro y unidireccional. |
+| **RNF-05** | Seguridad | **Cifrado:** Uso estricto de canales de red protegidos bajo protocolos de comunicación seguros HTTPS y *WebSockets* seguros (WSS). |
+| **RNF-06** | Usabilidad | **Responsividad:** Interfaz de usuario adaptativa (*Responsive Design*) optimizada para una navegación fluida tanto en dispositivos móviles como en ordenadores. |
+| **RNF-07** | Usabilidad | **Eficiencia QR:** Optimización del flujo óptico para que el tiempo de lectura, decodificación y validación de la firma del código QR por la cámara sea inmediato. |
+| **RNF-08** | Fiabilidad | **Reconexión:** Capacidad de retener y recuperar el estado lógico y la puntuación transitoria de un participante ante caídas o pérdidas accidentales de conectividad. |
+| **RNF-09** | Disponibilidad | **Persistencia:** Mecanismo de salvaguarda y respaldo de los resultados provisionales en el backend ante interrupciones críticas o fallos imprevistos del servidor. |
+| **RNF-10** | Mantenibilidad | **Modularidad:** Separación clara de responsabilidades entre el servidor de base de datos, el backend y el cliente frontend para facilitar futuras actualizaciones. |
 
 
 ## 4. Historias de Usuario (HU)

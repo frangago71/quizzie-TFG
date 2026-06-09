@@ -333,7 +333,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-01: Iniciar sesión como docente} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
@@ -354,7 +354,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-02: Gestionar cuestionarios} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
@@ -377,7 +377,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-03: Generar preguntas con IA} \\ \hline
 \textbf{Actores} & Principal: Profesor. Secundario: Servicio de IA (API). \\ \hline
@@ -399,7 +399,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-04: Administrar sala en vivo} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
@@ -422,7 +422,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-05: Unirse a sala y realizar test} \\ \hline
 \textbf{Actor principal} & Alumno. \\ \hline
@@ -446,7 +446,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-06: Visualizar ranking en vivo} \\ \hline
 \textbf{Actores} & Principal: Profesor / Alumno. \\ \hline
@@ -467,7 +467,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-07: Validar calificación mediante QR} \\ \hline
 \textbf{Actores} & Principal: Profesor. Secundario: Alumno. \\ \hline
@@ -484,12 +484,14 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \label{tab:cu_07}
 \end{table}
 
+\newpage
+
 \begin{table}[H]
 \centering
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-08: Consultar estadísticas} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
@@ -510,7 +512,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-09: Exportar resultados} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
@@ -531,7 +533,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-10: Responder pregunta} \\ \hline
 \textbf{Actor principal} & Alumno. \\ \hline
@@ -557,7 +559,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \small
 \renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{
-\begin{tabular}{lp{13cm}}
+\begin{tabular}{lp{12cm}}
 \hline
 \textbf{Caso de Uso} & \textbf{CU-11: Gestionar grupos} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
@@ -576,8 +578,40 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 
 \newpage 
 
-\section{Requisitos no funcionales}
-Requisitos de rendimiento, seguridad, usabilidad, etc.
+\section{Requisitos no funcionales}\label{sec:requisitos_no_funcionales}
+
+Una vez analizados los requisitos funcionales, es imprescindible enfocar la atención en los requisitos no funcionales, los cuales resultan igualmente críticos para el éxito de la plataforma. Mientras que los primeros definen el comportamiento explícito del sistema, los requisitos no funcionales establecen las cualidades globales de operación, tales como la seguridad de los flujos de evaluación, la agilidad en el funcionamiento del sistema y la robustez técnica ante fallos de conectividad. 
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{10.5cm}}
+\hline
+\textbf{Dimensión} & \textbf{ID} & \textbf{Definición del requisito} \\ \hline
+
+Rendimiento & \textbf{RNF-01} & \textbf{Sincronización:} Los eventos en tiempo real deben procesarse de forma óptima en el backend para garantizar la coherencia síncrona en el aula. \\ 
+ & \textbf{RNF-02} & \textbf{Concurrencia:} Soporte mínimo de 100 alumnos interactuando de forma simultánea dentro de una misma sala sin degradación de los servicios básicos. \\ \hline
+
+Seguridad & \textbf{RNF-03} & \textbf{Integridad:} El token de validación presencial embebido en el QR del alumno debe ser criptográficamente seguro, firmado por el servidor y no falsificable. \\ 
+ & \textbf{RNF-04} & \textbf{Privacidad:} Almacenamiento e inserción obligatoria de credenciales de acceso de profesores mediante algoritmos de \textit{hashing} seguro y unidireccional. \\ 
+ & \textbf{RNF-05} & \textbf{Cifrado:} Uso estricto de canales de red protegidos bajo protocolos de comunicación seguros HTTPS y \textit{WebSockets} seguros (\texttt{WSS}). \\ \hline
+
+Usabilidad & \textbf{RNF-06} & \textbf{Responsividad:} Interfaz de usuario adaptativa (\textit{Responsive Design}) optimizada para una navegación fluida tanto en dispositivos móviles como en ordenadores. \\ 
+ & \textbf{RNF-07} & \textbf{Eficiencia QR:} Optimización del flujo óptico para que el tiempo de lectura, decodificación y validación de la firma del código QR por la cámara sea inmediato. \\ \hline
+
+Fiabilidad & \textbf{RNF-08} & \textbf{Reconexión:} Capacidad de retener y recuperar el estado lógico y la puntuación transitoria de un participante ante caídas o pérdidas accidentales de conectividad. \\ \hline
+
+Disponibilidad & \textbf{RNF-09} & \textbf{Persistencia:} Mecanismo de salvaguarda y respaldo de los resultados provisionales en el backend ante interrupciones críticas o fallos imprevistos del servidor. \\ \hline
+
+Mantenibilidad & \textbf{RNF-10} & \textbf{Modularidad:} Separación clara de responsabilidades entre el servidor de base de datos, el backend y el cliente frontend para facilitar futuras actualizaciones. \\ \hline
+
+\end{tabular}
+}
+\caption{Requisitos no funcionales clasificados por dimensión de calidad.}
+\label{tab:requisitos_no_funcionales}
+\end{table}
 
 \section{Trazabilidad de requisitos}
 Matriz de trazabilidad : Objetivos → Requisitos → Diseño → Pruebas → Resultados
