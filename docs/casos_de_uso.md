@@ -135,6 +135,16 @@ Este documento detalla las interacciones entre los usuarios y el sistema, establ
 * **Flujo alternativo (Tiempo agotado):** Si el alumno no selecciona ninguna opción antes de que el cronómetro llegue a cero, el sistema registra la pregunta como "No contestada" con 0 puntos.
 * **Postcondición:** El resultado de la pregunta se almacena temporalmente para actualizar el ranking en vivo.
 
+### CU-11: Gestionar grupos
+* **Actor principal:** Profesor.
+* **Precondición:** El profesor ha iniciado sesión correctamente en el sistema.
+* **Flujo principal:**
+    1. El profesor accede a la sección de gestión de grupos desde el panel de control.
+    2. Selecciona la opción de crear una nueva clase e introduce un nombre descriptivo o etiqueta de grupo.
+    3. El profesor asocia la lista de identificadores de alumnos válidos correspondientes a ese conjunto académico.
+    4. El sistema almacena la estructura del grupo vinculándola directamente al perfil del docente responsable.
+    5. El profesor consulta los reportes específicos para comprobar el progreso y la evolución histórica de las calificaciones de dicha clase.
+
 ## 4. Matriz de Trazabilidad (Casos de Uso vs RF)
 
 Esta matriz permite verificar que cada requisito funcional está cubierto por al menos un caso de uso y viceversa, garantizando la integridad del diseño del sistema.

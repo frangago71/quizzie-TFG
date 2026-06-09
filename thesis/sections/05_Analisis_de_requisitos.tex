@@ -296,9 +296,285 @@ De manera general, un requisito funcional se considerará formalmente aceptado c
 
 Estos criterios globales de aceptación aseguran que el paso del análisis de requisitos a la fase de pruebas finales sea completamente trazable, transparente y verificable, sirviendo de base para la posterior validación del sistema en la sección \hyperref[sec:casos_de_prueba_y_validacion]{8.3 Casos de prueba y validación}. 
 
+\section{Casos de uso}\label{sec:casos_de_uso}
 
-\section{Casos de uso}
-Descripción y después diagrama parecido al del de historias de usuario, pero un diagrama por CU
+Los diagramas y especificaciones de casos de uso sirven para modelar el comportamiento del sistema desde el punto de vista de los actores involucrados, transformando los requisitos funcionales abstractos en interacciones lógicas concretas. Con el propósito de mantener la claridad de la memoria y evitar redundancias estructurales, las funcionalidades de la plataforma \textit{Quizzie} se estructuran en paquetes funcionales según el área operativa donde actúan los usuarios principales (\textit{Profesor} y \textit{Alumno}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/casos_de_uso.png}
+    \vspace{0.5cm}
+    \caption{Diagrama general de casos de uso del sistema.}
+    \label{fig:diagrama_casos_uso}
+\end{figure}
+
+El conjunto de los casos de uso que componen el sistema es el siguiente:
+
+\begin{itemize}
+    \item \textbf{CU-01: Iniciar sesión como docente.} Permite al profesor acceder a su panel privado, registrarse o cerrar sesión de forma segura.
+    \item \textbf{CU-02: Gestionar cuestionarios.} El profesor puede crear, editar, listar y eliminar sus bancos de preguntas.
+    \item \textbf{CU-03: Generar preguntas con IA.} Extensión del CU-02 donde el profesor solicita a la IA la creación de borradores de preguntas basados en un tema.
+    \item \textbf{CU-04: Administrar sala en vivo.} El profesor instancia un cuestionario, genera un PIN de acceso y controla el flujo de la partida (inicio, paso de preguntas y cierre).
+    \item \textbf{CU-05: Unirse a sala y realizar test.} El alumno accede mediante PIN, responde a las preguntas sincronizadas y recibe feedback inmediato sobre su rendimiento.
+    \item \textbf{CU-06: Visualizar ranking en vivo.} Los alumnos y el profesor visualizan la progresión de los líderes de la sala tras cada pregunta.
+    \item \textbf{CU-07: Validar calificación mediante QR.} El profesor utiliza su dispositivo para escanear el código QR del alumno, verificando su identidad y presencia física para oficializar la calificación.
+    \item \textbf{CU-08: Consultar estadísticas.} El profesor analiza los puntos críticos y el rendimiento general de la clase tras finalizar la sesión.
+    \item \textbf{CU-09: Exportar resultados.} El profesor descarga los datos de los alumnos verificados en formato CSV para su uso en plataformas externas.
+    \item \textbf{CU-10: Responder pregunta.} El alumno puede responder durante el tiempo determinado a las preguntas del test obteniendo la puntuación pertinente.
+    \item \textbf{CU-11: Gestionar grupos.} El profesor organiza el alumnado creando etiquetas de grupo para asociar y evaluar la evolución histórica de un mismo conjunto de estudiantes.
+\end{itemize}
+
+\subsection{Especificación detallada de Casos de Uso}\label{sub:especificacion_casos_de_uso}
+
+A continuación, se detallan las plantillas descriptivas de cada caso de uso del sistema, especificando sus actores, precondiciones, secuencias de pasos lógicos y la gestión de escenarios alternativos de error:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-01: Iniciar sesión como docente} \\ \hline
+\textbf{Actor principal} & Profesor. \\ \hline
+\textbf{Precondición} & El profesor debe estar registrado en la plataforma. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor introduce su correo electrónico y contraseña en el formulario de login.\newline
+2. El sistema cifra la contraseña introducida y la compara con el hash almacenado.\newline
+3. El sistema genera un token de sesión (JWT) y redirige al profesor a su panel principal. \\ \hline
+\textbf{Flujo alternativo} & Si las credenciales son incorrectas, el sistema muestra un mensaje de error y permite reintentar el acceso. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-01.}
+\label{tab:cu_01}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-02: Gestionar cuestionarios} \\ \hline
+\textbf{Actor principal} & Profesor. \\ \hline
+\textbf{Precondición} & El profesor ha iniciado sesión correctamente. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor accede a su biblioteca de contenidos.\newline
+2. Selecciona la opción de crear un nuevo cuestionario o editar uno existente.\newline
+3. El profesor define el título, descripción y añade preguntas con sus respectivas opciones.\newline
+4. El profesor marca la opción correcta para cada pregunta y asigna una puntuación.\newline
+5. El sistema guarda los cambios en la base de datos permanente. \\ \hline
+\textbf{Postcondición} & El cuestionario queda disponible para ser utilizado en una sala. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-02.}
+\label{tab:cu_02}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-03: Generar preguntas con IA} \\ \hline
+\textbf{Actores} & Principal: Profesor. Secundario: Servicio de IA (API). \\ \hline
+\textbf{Precondición} & El profesor se encuentra dentro del editor de cuestionarios. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor activa el asistente de IA e introduce un tema o pega un texto base.\newline
+2. El sistema envía la información a la API de IA externa.\newline
+3. El sistema recibe y presenta al profesor un listado de preguntas y respuestas sugeridas.\newline
+4. El profesor selecciona las preguntas que desea importar y las edita si es necesario.\newline
+5. El sistema integra las preguntas seleccionadas en el cuestionario actual. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-03.}
+\label{tab:cu_03}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-04: Administrar sala en vivo} \\ \hline
+\textbf{Actor principal} & Profesor. \\ \hline
+\textbf{Precondición} & El profesor está autenticado y ha seleccionado un cuestionario de su biblioteca. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor solicita la creación de una nueva sala de juego.\newline
+2. El sistema genera un PIN único de 6 dígitos y abre el socket de comunicación.\newline
+3. El profesor visualiza en tiempo real la entrada de alumnos en la sala de espera.\newline
+4. El profesor inicia el test, enviando la señal de comienzo a todos los alumnos.\newline
+5. El profesor controla el paso de las preguntas o permite el avance automático.\newline
+6. El profesor finaliza la sesión manualmente o al terminar las preguntas. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-04.}
+\label{tab:cu_04}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-05: Unirse a sala y realizar test} \\ \hline
+\textbf{Actor principal} & Alumno. \\ \hline
+\textbf{Precondición} & Existe una sala activa y el alumno posee el código PIN. \\ \hline
+\textbf{Flujo principal} & 
+1. El alumno introduce el PIN y un Nickname.\newline
+2. El sistema valida el acceso y posiciona al alumno en la sala de espera.\newline
+3. Al comenzar el test, el alumno recibe las preguntas de forma sincronizada con el resto de la clase.\newline
+4. El alumno selecciona la opción deseada dentro del tiempo límite.\newline
+5. El sistema registra la respuesta y el tiempo empleado.\newline
+6. Al finalizar el cuestionario, el alumno recibe un código QR único de validación. \\ \hline
+\textbf{Flujo alternativo} & Si el alumno sufre una desconexión, puede reingresar con el mismo PIN y Nickname; el sistema restaurará su sesión y lo situará en la pregunta activa. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-05.}
+\label{tab:cu_05}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-06: Visualizar ranking en vivo} \\ \hline
+\textbf{Actores} & Principal: Profesor / Alumno. \\ \hline
+\textbf{Precondición} & Se ha completado al menos una pregunta en una sala activa. \\ \hline
+\textbf{Flujo principal} & 
+1. El sistema calcula la puntuación de cada alumno basándose en aciertos y velocidad de respuesta.\newline
+2. El sistema actualiza el ranking global de la sala.\newline
+3. El profesor visualiza el "Top 5" en la pantalla principal para motivar a la clase.\newline
+4. El alumno visualiza su posición relativa y sus puntos en su propio dispositivo. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-06.}
+\label{tab:cu_06}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-07: Validar calificación mediante QR} \\ \hline
+\textbf{Actores} & Principal: Profesor. Secundario: Alumno. \\ \hline
+\textbf{Precondición} & La sala ha finalizado y el alumno muestra el QR generado por el sistema. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor selecciona la opción de "Validar Alumno" en su panel de sala.\newline
+2. El profesor escanea el código QR del dispositivo del alumno.\newline
+3. El sistema extrae el Token cifrado del QR y lo valida contra el registro provisional en el backend.\newline
+4. Tras la validación positiva, el sistema cambia el estado del alumno a "Verificado".\newline
+5. La nota se hace persistente y se vincula oficialmente al registro del alumno. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-07.}
+\label{tab:cu_07}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-08: Consultar estadísticas} \\ \hline
+\textbf{Actor principal} & Profesor. \\ \hline
+\textbf{Precondición} & Existen salas finalizadas con respuestas registradas. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor accede al histórico de salas desde su panel.\newline
+2. Selecciona una sesión específica para analizar.\newline
+3. El sistema genera gráficas comparativas sobre el porcentaje de aciertos por pregunta.\newline
+4. El profesor identifica las áreas de conocimiento donde los alumnos han tenido más dificultades. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-08.}
+\label{tab:cu_08}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-09: Exportar resultados} \\ \hline
+\textbf{Actor principal} & Profesor. \\ \hline
+\textbf{Precondición} & La sala ha finalizado y existen alumnos con estado "Verificado". \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor solicita la exportación de resultados desde el informe de la sala.\newline
+2. El sistema filtra los registros para incluir únicamente a los alumnos validados presencialmente.\newline
+3. El sistema genera un archivo en formato CSV o Excel.\newline
+4. El archivo se descarga automáticamente en el dispositivo del profesor. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-09.}
+\label{tab:cu_09}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-10: Responder pregunta} \\ \hline
+\textbf{Actor principal} & Alumno. \\ \hline
+\textbf{Precondición} & El alumno está dentro de una sala activa y el profesor ha lanzado una pregunta. \\ \hline
+\textbf{Flujo principal} & 
+1. El sistema muestra el enunciado y las opciones de respuesta en el dispositivo del alumno.\newline
+2. El sistema inicia el cronómetro de cuenta atrás configurado para esa pregunta.\newline
+3. El alumno selecciona una de las opciones antes de que el tiempo se agote.\newline
+4. El sistema captura la opción elegida y registra el milisegundo exacto de la respuesta (timestamp).\newline
+5. Al agotarse el tiempo o responder todos los alumnos, el sistema cierra la recepción de datos.\newline
+6. El sistema compara la respuesta con la opción correcta definida en el cuestionario.\newline
+7. El sistema calcula los puntos obtenidos basándose en el acierto y la bonificación por rapidez. \\ \hline
+\textbf{Flujo alternativo} & Si el alumno no selecciona ninguna opción antes de que el cronómetro llegue a cero, el sistema registra la pregunta como "No contestada" con 0 puntos. \\ \hline
+\textbf{Postcondición} & El resultado de la pregunta se almacena temporalmente para actualizar el ranking en vivo. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-10.}
+\label{tab:cu_10}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{13cm}}
+\hline
+\textbf{Caso de Uso} & \textbf{CU-11: Gestionar grupos} \\ \hline
+\textbf{Actor principal} & Profesor. \\ \hline
+\textbf{Precondición} & El profesor ha iniciado sesión correctamente en el sistema. \\ \hline
+\textbf{Flujo principal} & 
+1. El profesor accede a la sección de gestión de grupos desde el panel de control.\newline
+2. Selecciona la opción de crear una nueva clase e introduce un nombre descriptivo o etiqueta de grupo.\newline
+3. El profesor asocia la lista de identificadores de alumnos válidos correspondientes a ese conjunto académico.\newline
+4. El sistema almacena la estructura del grupo vinculándola directamente al perfil del docente responsable.\newline
+5. El profesor consulta los reportes específicos para comprobar el progreso y la evolución histórica de las calificaciones de dicha clase. \\ \hline
+\end{tabular}
+}
+\caption{Especificación del caso de uso CU-11.}
+\label{tab:cu_11}
+\end{table}
+
+\newpage 
 
 \section{Requisitos no funcionales}
 Requisitos de rendimiento, seguridad, usabilidad, etc.
