@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 
@@ -52,6 +53,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     info: (msg: string) => addToast(msg, "info"),
     warning: (msg: string) => addToast(msg, "warning"),
   };
+
+  useEffect(() => {
+    const successMsg = sessionStorage.getItem("toast_success");
+    if (successMsg) {
+      addToast(successMsg, "success");
+      sessionStorage.removeItem("toast_success");
+    }
+    const errorMsg = sessionStorage.getItem("toast_error");
+    if (errorMsg) {
+      addToast(errorMsg, "error");
+      sessionStorage.removeItem("toast_error");
+    }
+  }, [addToast]);
 
   return (
     <ToastContext.Provider value={{ toasts, toast, dismiss }}>

@@ -48,13 +48,12 @@ export const Register: React.FC = () => {
     try {
       await authService.register(formData);
 
-      toast.success("¡Registro completado! Iniciando sesión...");
-
       await authService.login({
         email: formData.email,
         password: formData.password,
       });
 
+      sessionStorage.setItem("toast_success", "¡Registro completado con éxito!");
       globalThis.location.href = "/quizzes";
     } catch (err: unknown) {
       const errorObj = err as { message?: string };

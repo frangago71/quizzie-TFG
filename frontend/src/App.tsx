@@ -1,8 +1,10 @@
+
 import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { authService } from "./auth/authService";
 import { Login } from "./auth/Login.tsx";
 import { Register } from "./auth/Register.tsx";
+import { Profile } from "./auth/Profile.tsx";
 
 import Sidebar from "./layouts/Sidebar.tsx";
 import ToastContainer from "./layouts/ToastContainer.tsx";
@@ -128,6 +130,14 @@ function App() {
                   element={
                     <ProtectedRoute isLoggedIn={isLoggedIn}>
                       <TeacherDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute isLoggedIn={isLoggedIn}>
+                      <Profile />
                     </ProtectedRoute>
                   }
                 />

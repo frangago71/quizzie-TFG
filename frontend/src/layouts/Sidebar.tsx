@@ -72,6 +72,16 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
               >
                 Crear cuestionario
               </NavLink>
+
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
+                onClick={handleLinkClick}
+              >
+                Mi perfil
+              </NavLink>
             </div>
 
             <div className="nav-menu-bottom">
