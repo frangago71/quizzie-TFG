@@ -12,7 +12,7 @@ from models.stage import RoomStatus
 from models.users import Group, Student, Teacher, TeacherRead
 from routers.content import Quiz
 from schemas.content import QuizListRead
-from schemas.users import LoginRequest, TeacherCreate
+from schemas.users import DeleteAccountRequest, LoginRequest, TeacherCreate
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -166,3 +166,34 @@ def create_student(nickname: str, session: Annotated[Session, Depends(get_sessio
     except Exception:
         session.rollback()
         raise HTTPException(status_code=500, detail="Error interno al crear el estudiante.")
+
+
+@router.get("/me", response_model=TeacherRead)
+def get_me(
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    teacher = session.get(Teacher, teacher_id)
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+    return teacher
+
+
+@router.delete("/me", status_code=204)
+def delete_me(
+    delete_data: DeleteAccountRequest,
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    teacher = session.get(Teacher, teacher_id)
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+    if not verify_password(delete_data.password, teacher.hashed_password):
+        raise HTTPException(status_code=400, detail="La contraseña introducida es incorrecta.")
+    try:
+        session.delete(teacher)
+        session.commit()
+        return
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar la cuenta: {str(e)}")

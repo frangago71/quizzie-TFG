@@ -7,12 +7,11 @@ El siguiente diagrama describe las relaciones lógicas entre las entidades del s
 classDiagram
     direction LR
 
-    Teacher o-- Quiz
-    Teacher o-- Group
     Room --o Quiz
 
-    Teacher "1" -- "*" Room
-
+    Teacher *-- Quiz
+    Teacher *-- Group
+    Teacher *-- Room
     Quiz *-- Question
     Question *-- Option
     Room *-- Participant

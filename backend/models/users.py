@@ -19,9 +19,15 @@ class Teacher(SQLModel, table=True):
     email: str = Field(unique=True)
     hashed_password: str
 
-    quizzes: List["Quiz"] = Relationship(back_populates="teacher")
-    groups: List["Group"] = Relationship(back_populates="teacher")
-    rooms: List["Room"] = Relationship(back_populates="teacher")
+    quizzes: List["Quiz"] = Relationship(
+        back_populates="teacher", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
+    groups: List["Group"] = Relationship(
+        back_populates="teacher", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
+    rooms: List["Room"] = Relationship(
+        back_populates="teacher", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
 
 
 class TeacherRead(SQLModel):
@@ -43,7 +49,9 @@ class Group(SQLModel, table=True):
     teacher: Teacher = Relationship(back_populates="groups")
 
     rooms: List["Room"] = Relationship(back_populates="group")
-    students: List["Student"] = Relationship(back_populates="group")
+    students: List["Student"] = Relationship(
+        back_populates="group", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
 
 
 class Student(SQLModel, table=True):
