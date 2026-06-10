@@ -55,3 +55,58 @@
   margin-bottom: 15px;
   text-align: center;
 }
+
+.login-footer-action {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.register-container {
+  padding: 20px 20px !important;
+}
+
+.register-header {
+  margin-bottom: 15px !important;
+}
+
+.register-header h2 {
+  font-size: 1.8rem !important;
+  margin-bottom: 6px !important;
+}
+
+.register-header p {
+  font-size: 0.95rem !important;
+}
+
+.register-card {
+  padding: 25px 25px !important;
+  border-radius: 20px !important;
+}
+
+.register-card .input-field-group {
+  margin-bottom: 14px !important;
+}
+
+.register-card .code-label {
+  margin-bottom: 6px !important;
+  font-size: 0.78rem !important;
+}
+
+.register-card .login-input-text {
+  height: 38px !important;
+  font-size: 0.95rem !important;
+  border-radius: 10px !important;
+}
+
+.register-card .btn-main {
+  height: 42px !important;
+  margin-top: 5px !important;
+}
+
+.register-card .login-footer-action {
+  margin-top: 15px !important;
+  gap: 6px !important;
+}

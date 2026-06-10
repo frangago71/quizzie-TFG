@@ -1,9 +1,24 @@
-import { type LoginRequest, type LoginResponse } from "../types";
+import { type LoginRequest, type LoginResponse, type RegisterRequest, type RegisterResponse } from "../types";
 
 const API_URL: string =
   (import.meta.env.VITE_API_URL as string) || "http://localhost:8000";
 
 export const authService = {
+  async register(data: RegisterRequest): Promise<RegisterResponse> {
+    const response = await fetch(`${API_URL}/users/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || "Error en el registro");
+    }
+    return response.json();
+  },
+
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await fetch(`${API_URL}/users/login`, {
       method: "POST",

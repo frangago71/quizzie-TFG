@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { authService } from "./auth/authService";
 import { Login } from "./auth/Login.tsx";
+import { Register } from "./auth/Register.tsx";
 
 import Sidebar from "./layouts/Sidebar.tsx";
 import ToastContainer from "./layouts/ToastContainer.tsx";
@@ -110,6 +111,14 @@ function App() {
                   element={
                     <PublicRoute isLoggedIn={isLoggedIn}>
                       <Login />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/register"
+                  element={
+                    <PublicRoute isLoggedIn={isLoggedIn}>
+                      <Register />
                     </PublicRoute>
                   }
                 />
