@@ -6,13 +6,13 @@ from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
-from auth import create_access_token, get_current_teacher_id, verify_password
+from auth import create_access_token, get_current_teacher_id, get_password_hash, verify_password
 from database import get_session
 from models.stage import RoomStatus
 from models.users import Group, Student, Teacher, TeacherRead
 from routers.content import Quiz
 from schemas.content import QuizListRead
-from schemas.users import LoginRequest
+from schemas.users import LoginRequest, TeacherCreate
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -33,6 +33,50 @@ async def login(login_data: LoginRequest, session: Annotated[Session, Depends(ge
     teacher_id_str = str(teacher.id)
     access_token = create_access_token(data={"sub": teacher_id_str})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post(
+    "/register",
+    response_model=TeacherRead,
+    status_code=201,
+    responses={
+        400: {"description": "El email o el nombre de usuario ya está registrado."},
+        500: {"description": "Error interno al registrar el profesor."},
+    },
+)
+async def register(teacher_data: TeacherCreate, session: Annotated[Session, Depends(get_session)]):
+    existing_email = session.exec(
+        select(Teacher).where(Teacher.email == teacher_data.email)
+    ).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=400,
+            detail="El correo electrónico ya está registrado.",
+        )
+
+    existing_username = session.exec(
+        select(Teacher).where(Teacher.username == teacher_data.username)
+    ).first()
+    if existing_username:
+        raise HTTPException(
+            status_code=400,
+            detail="El nombre de usuario ya está registrado.",
+        )
+
+    try:
+        hashed_password = get_password_hash(teacher_data.password)
+        new_teacher = Teacher(
+            username=teacher_data.username,
+            email=teacher_data.email,
+            hashed_password=hashed_password,
+        )
+        session.add(new_teacher)
+        session.commit()
+        session.refresh(new_teacher)
+        return new_teacher
+    except Exception:
+        session.rollback()
+        raise HTTPException(status_code=500, detail="Error interno al registrar el profesor.")
 
 
 @router.get("/teachers", response_model=List[TeacherRead])
