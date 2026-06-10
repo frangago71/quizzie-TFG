@@ -1,6 +1,7 @@
 \chapter{Análisis de requisitos}\label{cap:analisis_de_requisitos}
 
 Una vez contrastada la viabilidad de las ideas iniciales y analizadas las oportunidades del mercado, es imperativo definir de manera precisa el comportamiento del sistema antes de comenzar la fase de desarrollo técnico. Explicitar las funciones de negocio en este punto es un paso clave para construir un producto robusto y libre de ambigüedades. Con el fin de transformar de forma efectiva las aspiraciones generales plasmadas en los \hyperref[sec:objetivos_del_proyecto]{objetivos del proyecto}, la lógica de la aplicación se desglosa inicialmente en doce objetivos funcionales concretos que asientan las bases del sistema.
+
 \begin{table}[H]
 \centering
 \small
@@ -8,18 +9,18 @@ Una vez contrastada la viabilidad de las ideas iniciales y analizadas las oportu
 \begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{4cm} X}
 \hline
 \textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
-\textbf{OBJ-01} & Módulo de usuario y autenticación & Proveer un sistema de autenticación seguro para profesores. \\ \hline
-\textbf{OBJ-02} & Gestión de cuestionarios & Permitir la creación, edición y configuración de cuestionarios de preguntas. \\ \hline
-\textbf{OBJ-03} & Creación de salas & Habilitar sesiones de test únicas identificadas mediante un código PIN. \\ \hline
-\textbf{OBJ-04} & Acceso rápido & Permitir el acceso de alumnos a las salas mediante PIN y \textit{nickname} sin registro. \\ \hline
-\textbf{OBJ-05} & Interacción en tiempo real & Sincronizar el estado de la partida y preguntas entre dispositivos. \\ \hline
-\textbf{OBJ-06} & Verificación QR & Generar comprobante digital QR para validación presencial por el profesor. \\ \hline
-\textbf{OBJ-07} & Persistencia validada & Almacenar en histórico solo los resultados verificados físicamente. \\ \hline 
-\textbf{OBJ-08} & Estadísticas y análisis & Visualizar estadísticas de rendimiento basadas en datos validados. \\ \hline
-\textbf{OBJ-09} & Asistente IA & Integrar IA para generar preguntas automáticamente según temáticas. \\ \hline
-\textbf{OBJ-10} & Escaneo de código QR & Habilitar el uso de la cámara para la lectura ágil de códigos QR. \\ \hline
-\textbf{OBJ-11} & Gestión de grupos & Organizar alumnos en clases para un seguimiento histórico. \\ \hline
-\textbf{OBJ-12} & Exportación de datos & Permitir la descarga de resultados en formatos CSV/Excel. \\ \hline
+\textbf{OBJ-01}\label{obj:01} & Módulo de usuario y autenticación & Proveer un sistema de autenticación seguro para profesores. \\ \hline
+\textbf{OBJ-02}\label{obj:02} & Gestión de cuestionarios & Permitir la creación, edición y configuración de cuestionarios de preguntas. \\ \hline
+\textbf{OBJ-03}\label{obj:03} & Creación de salas & Habilitar sesiones de test únicas identificadas mediante un código PIN. \\ \hline
+\textbf{OBJ-04}\label{obj:04} & Acceso rápido & Permitir el acceso de alumnos a las salas mediante PIN y \textit{nickname} sin registro. \\ \hline
+\textbf{OBJ-05}\label{obj:05} & Interacción en tiempo real & Sincronizar el estado de la partida y preguntas entre dispositivos. \\ \hline
+\textbf{OBJ-06}\label{obj:06} & Verificación QR & Generar comprobante digital QR para validación presencial por el profesor. \\ \hline
+\textbf{OBJ-07}\label{obj:07} & Persistencia validada & Almacenar en histórico solo los resultados verificados físicamente. \\ \hline 
+\textbf{OBJ-08}\label{obj:08} & Estadísticas y análisis & Visualizar estadísticas de rendimiento basadas en datos validados. \\ \hline
+\textbf{OBJ-09}\label{obj:09} & Asistente IA & Integrar IA para generar preguntas automáticamente según temáticas. \\ \hline
+\textbf{OBJ-10}\label{obj:10} & Escaneo de código QR & Habilitar el uso de la cámara para la lectura ágil de códigos QR. \\ \hline
+\textbf{OBJ-11}\label{obj:11} & Gestión de grupos & Organizar alumnos en clases para un seguimiento histórico. \\ \hline
+\textbf{OBJ-12}\label{obj:12} & Exportación de datos & Permitir la descarga de resultados en formatos CSV/Excel. \\ \hline
 \end{tabularx}
 \caption{Objetivos funcionales de \textit{Quizzie}.}
 \label{tab:objetivos_funcionales}
@@ -39,19 +40,19 @@ Una vez definidos los perfiles que interactúan con la plataforma, el comportami
 \begin{tabularx}{\dimexpr\textwidth+1cm}{l l X}
 \hline
 \textbf{ID} & \textbf{Descripción} & \\ \hline
-\textbf{HU-AL-01} & \textit{Como} alumno, & \textit{quiero} unirme a una sala solo con un PIN y un apodo \\
+\textbf{HU-AL-01}\label{hu:al-01} & \textit{Como} alumno, & \textit{quiero} unirme a una sala solo con un PIN y un apodo \\
                                      && \textit{para} participar de forma inmediata sin necesidad de crear una cuenta. \\ \hline
-\textbf{HU-AL-02} & \textit{Como} alumno, & \textit{quiero} recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada \\
+\textbf{HU-AL-02}\label{hu:al-02} & \textit{Como} alumno, & \textit{quiero} recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada \\
                                      && \textit{para} competir en igualdad de condiciones con mis compañeros. \\ \hline
-\textbf{HU-AL-03} & \textit{Como} alumno, & \textit{quiero} saber si mi respuesta ha sido correcta justo después de enviarla \\
+\textbf{HU-AL-03}\label{hu:al-03} & \textit{Como} alumno, & \textit{quiero} saber si mi respuesta ha sido correcta justo después de enviarla \\
                                      && \textit{para} reforzar mi aprendizaje en el momento. \\ \hline
-\textbf{HU-AL-04} & \textit{Como} alumno, & \textit{quiero} que se genere un código QR único al finalizar el test \\
+\textbf{HU-AL-04}\label{hu:al-04} & \textit{Como} alumno, & \textit{quiero} que se genere un código QR único al finalizar el test \\
                                      && \textit{para} mostrárselo al profesor y que mi nota sea oficializada. \\ \hline
-\textbf{HU-AL-05} & \textit{Como} alumno, & \textit{quiero} ver mi posición en el ranking después de cada bloque de preguntas \\
+\textbf{HU-AL-05}\label{hu:al-05} & \textit{Como} alumno, & \textit{quiero} ver mi posición en el ranking después de cada bloque de preguntas \\
                                      && \textit{para} motivarme durante la realización del cuestionario. \\ \hline
-\textbf{HU-AL-06} & \textit{Como} alumno, & \textit{quiero} poder reengancharme a la partida si pierdo la conexión a internet \\
+\textbf{HU-AL-06}\label{hu:al-06} & \textit{Como} alumno, & \textit{quiero} poder reengancharme a la partida si pierdo la conexión a internet \\
                                      && \textit{para} no perder mi progreso y poder terminar el test. \\ \hline
-\textbf{HU-AL-07} & \textit{Como} alumno, & \textit{quiero} recibir puntos extra por responder rápido o mantener una racha de aciertos \\
+\textbf{HU-AL-07}\label{hu:al-07} & \textit{Como} alumno, & \textit{quiero} recibir puntos extra por responder rápido o mantener una racha de aciertos \\
                                      && \textit{para} sentirme recompensado por mi agilidad y constancia. \\ \hline
 \end{tabularx}
 }
@@ -67,33 +68,33 @@ Una vez definidos los perfiles que interactúan con la plataforma, el comportami
 \begin{tabularx}{\dimexpr\textwidth+1cm}{l l X}
 \hline
 \textbf{ID} & \textbf{Descripción} & \\ \hline
-\textbf{HU-PR-01} & \textit{Como} profesor, & \textit{quiero} crear y organizar mis propios cuestionarios \\
+\textbf{HU-PR-01}\label{hu:pr-01} & \textit{Como} profesor, & \textit{quiero} crear y organizar mis propios cuestionarios \\
                                      && \textit{para} disponer de un repositorio de actividades personalizado por asignatura o tema. \\ \hline
-\textbf{HU-PR-02} & \textit{Como} profesor, & \textit{quiero} poder editar mis cuestionarios existentes \\
+\textbf{HU-PR-02}\label{hu:pr-02} & \textit{Como} profesor, & \textit{quiero} poder editar mis cuestionarios existentes \\
                                      && \textit{para} corregir errores o crear variantes rápidas para diferentes grupos. \\ \hline
-\textbf{HU-PR-03} & \textit{Como} profesor, & \textit{quiero} crear y administrar una sala con un PIN único \\
+\textbf{HU-PR-03}\label{hu:pr-03} & \textit{Como} profesor, & \textit{quiero} crear y administrar una sala con un PIN único \\
                                      && \textit{para} controlar el acceso de los alumnos y decidir cuándo comienza el test. \\ \hline
-\textbf{HU-PR-04} & \textit{Como} profesor, & \textit{quiero} ver en tiempo real qué están respondiendo los alumnos y quiénes se van conectando \\
+\textbf{HU-PR-04}\label{hu:pr-04} & \textit{Como} profesor, & \textit{quiero} ver en tiempo real qué están respondiendo los alumnos y quiénes se van conectando \\
                                      && \textit{para} llevar un control del progreso de la clase. \\ \hline
-\textbf{HU-PR-05} & \textit{Como} profesor, & \textit{quiero} poder cerrar la sala una vez iniciada la actividad \\
+\textbf{HU-PR-05}\label{hu:pr-05} & \textit{Como} profesor, & \textit{quiero} poder cerrar la sala una vez iniciada la actividad \\
                                      && \textit{para} que ningún alumno se una tarde o de forma externa. \\ \hline
-\textbf{HU-PR-06} & \textit{Como} profesor, & \textit{quiero} escanear el móvil del alumno \\
+\textbf{HU-PR-06}\label{hu:pr-06} & \textit{Como} profesor, & \textit{quiero} escanear el móvil del alumno \\
                                      && \textit{para} confirmar su presencia física y validar su nota en el sistema evitando respuestas no autorizadas. \\ \hline
-\textbf{HU-PR-07} & \textit{Como} profesor, & \textit{quiero} crear grupos o clases \\
+\textbf{HU-PR-07}\label{hu:pr-07} & \textit{Como} profesor, & \textit{quiero} crear grupos o clases \\
                                      && \textit{para} tener organizados a mis alumnos y facilitar el volcado de notas histórico. \\ \hline
-\textbf{HU-PR-08} & \textit{Como} profesor, & \textit{quiero} visualizar estadísticas de acierto por pregunta al finalizar \\
+\textbf{HU-PR-08}\label{hu:pr-08} & \textit{Como} profesor, & \textit{quiero} visualizar estadísticas de acierto por pregunta al finalizar \\
                                      && \textit{para} detectar conceptos que no han quedado claros y reforzarlos. \\ \hline
-\textbf{HU-PR-09} & \textit{Como} profesor, & \textit{quiero} generar borradores de preguntas mediante IA \\
+\textbf{HU-PR-09}\label{hu:pr-09} & \textit{Como} profesor, & \textit{quiero} generar borradores de preguntas mediante IA \\
                                      && \textit{para} reducir el tiempo de preparación de mis clases. \\ \hline
-\textbf{HU-PR-10} & \textit{Como} profesor, & \textit{quiero} exportar los resultados verificados a CSV \\
+\textbf{HU-PR-10}\label{hu:pr-10} & \textit{Como} profesor, & \textit{quiero} exportar los resultados verificados a CSV \\
                                      && \textit{para} integrarlos en mis herramientas de gestión docente externas. \\ \hline
-\textbf{HU-PR-11} & \textit{Como} profesor, & \textit{quiero} configurar si se otorgan puntos extra por rapidez o racha \\
+\textbf{HU-PR-11}\label{hu:pr-11} & \textit{Como} profesor, & \textit{quiero} configurar si se otorgan puntos extra por rapidez o racha \\
                                      && \textit{para} adaptar el nivel de competitividad de la sesión. \\ \hline
-\textbf{HU-PR-12} & \textit{Como} profesor, & \textit{quiero} decidir si el ranking se muestra tras cada pregunta \\
+\textbf{HU-PR-12}\label{hu:pr-12} & \textit{Como} profesor, & \textit{quiero} decidir si el ranking se muestra tras cada pregunta \\
                                      && \textit{para} gestionar el ritmo y la atención de la clase. \\ \hline
-\textbf{HU-PR-13} & \textit{Como} profesor, & \textit{quiero} añadir etiquetas e imágenes a mis cuestionarios \\
+\textbf{HU-PR-13}\label{hu:pr-13} & \textit{Como} profesor, & \textit{quiero} añadir etiquetas e imágenes a mis cuestionarios \\
                                      && \textit{para} identificar los y personalizarlos visualmente. \\ \hline
-\textbf{HU-PR-14} & \textit{Como} profesor, & \textit{quiero} acceder al historial de salas pasadas \\
+\textbf{HU-PR-14}\label{hu:pr-14} & \textit{Como} profesor, & \textit{quiero} acceder al historial de salas pasadas \\
                                      && \textit{para} revisar resultados y analizar el progreso de mis alumnos en el tiempo. \\ \hline
 \end{tabularx}
 }
@@ -146,13 +147,13 @@ Los requisitos de información determinan los conjuntos de datos que el sistema 
 \begin{tabular}{l>{\raggedright\arraybackslash}p{3.5cm}p{9.5cm}}
 \hline
 \textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
-\textbf{RI-01} & Profesores y cuentas & Credenciales de acceso de los profesores (correo electrónico y el \textit{hash} de la contraseña) y su nombre visible. \\ \hline
-\textbf{RI-02} & Cuestionarios y preguntas & Datos relativos a los tests diseñadas por los profesores. Incluye los campos básicos del cuestionario (título, descripción) y la composición de sus preguntas y opciones asociadas. \\ \hline
-\textbf{RI-03} & Configuración y control de salas & Código PIN único de acceso, el estado operativo de la sala (espera, en juego, en fase de verificación o cerrada), el temporizador del servidor para la sincronización mediante \textit{WebSockets}. \\ \hline
-\textbf{RI-04} & Registro temporal de participación & Datos de alumnos conectados identificados mediante su \textit{uvus}, opciones seleccionadas y puntuaciones obtenidas. \\ \hline
-\textbf{RI-05} & Comprobantes de presencialidad y tokens QR & Validación de notas y mitigación del fraude digital. Debe almacenar el token criptográfico seguro y firmado digitalmente que se asocia a cada alumno al terminar un test, su estado de verificación actual. \\ \hline
-\textbf{RI-06} & Histórico de calificaciones y respuestas & Salas que han completado con éxito la fase de verificación presencial. Debe registrar los mismos datos de cada alumno que el registro temporal, pero con el estado de verificación completado y persistiendo dichos datos. \\ \hline
-\textbf{RI-07} & Gestión de grupos & Etiquetas de grupo o clase, profesor responsable y lista de alumnos asociados. \\ \hline
+\textbf{RI-01}\label{ri:01} & Profesores y cuentas & Credenciales de acceso de los profesores (correo electrónico y el \textit{hash} de la contraseña) y su nombre visible. \\ \hline
+\textbf{RI-02}\label{ri:02} & Cuestionarios y preguntas & Datos relativos a los tests diseñadas por los profesores. Incluye los campos básicos del cuestionario (título, descripción) y la composición de sus preguntas y opciones asociadas. \\ \hline
+\textbf{RI-03}\label{ri:03} & Configuración y control de salas & Código PIN único de acceso, el estado operativo de la sala (espera, en juego, en fase de verificación o cerrada), el temporizador del servidor para la sincronización mediante \textit{WebSockets}. \\ \hline
+\textbf{RI-04}\label{ri:04} & Registro temporal de participación & Datos de alumnos conectados identificados mediante su \textit{uvus}, opciones seleccionadas y puntuaciones obtenidas. \\ \hline
+\textbf{RI-05}\label{ri:05} & Comprobantes de presencialidad y tokens QR & Validación de notas y mitigación del fraude digital. Debe almacenar el token criptográfico seguro y firmado digitalmente que se asocia a cada alumno al terminar un test, su estado de verificación actual. \\ \hline
+\textbf{RI-06}\label{ri:06} & Histórico de calificaciones y respuestas & Salas que han completado con éxito la fase de verificación presencial. Debe registrar los mismos datos de cada alumno que el registro temporal, pero con el estado de verificación completado y persistiendo dichos datos. \\ \hline
+\textbf{RI-07}\label{ri:07} & Gestión de grupos & Etiquetas de grupo o clase, profesor responsable y lista de alumnos asociados. \\ \hline
 \end{tabular}
 }
 \caption{Requisitos de información.}
@@ -174,20 +175,20 @@ Los requisitos funcionales determinan las acciones específicas, comportamientos
 \hline
 \textbf{ID} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Prioridad} \\ \hline
 
-\textbf{RF-01} & Gestión de registro & Registro de nuevos profesores con validación de correo electrónico y \textit{hash} de contraseña. & Alta \\ \hline
-\textbf{RF-02} & Inicio de sesión & Autenticación de docentes mediante correo electrónico y contraseña cifrada con emisión de tokens JWT. & Alta \\ \hline
-\textbf{RF-03} & Baja de usuarios & Eliminación de la cuenta de profesor y todos sus datos asociados de forma permanente del sistema. & Media \\ \hline
-\textbf{RF-04} & Recuperación contraseña & Solicitud y tramitación de restablecimiento de credenciales de acceso vía correo electrónico. & Baja \\ \hline
-\textbf{RF-05} & Edición perfil & Modificación de los datos de usuario del profesor, incluyendo el nombre visible y la contraseña. & Media \\ \hline
-\textbf{RF-06} & Cierre de sesión & Invalidación del token de autenticación activo en el servidor y redirección automática al formulario de acceso. & Alta \\ \hline
-\textbf{RF-07} & Crear cuestionario & Creación de nuevas pruebas de evaluación con un límite máximo estructurado de hasta 30 preguntas. & Alta \\ \hline
-\textbf{RF-08} & Listar cuestionarios & Visualización del catálogo de pruebas diseñadas por el profesor, ordenadas cronológicamente por fecha. & Alta \\ \hline
-\textbf{RF-09} & Mostrar ranking & Presentación de la tabla de clasificación de alumnos después de cada pregunta y al finalizar la sesión. & Media \\ \hline
-\textbf{RF-10} & Aleatoriedad & Configuración opcional para alterar de forma automática el orden de las preguntas y sus respectivas respuestas. & Baja \\ \hline
-\textbf{RF-11} & Configurar tiempo & Definición personalizada del tiempo límite de respuesta para cada enunciado durante la creación de la sala. & Media \\ \hline
-\textbf{RF-12} & Importación & Carga masiva de preguntas y opciones desde archivos externos estructurados exclusivamente en formato \texttt{.txt} o \texttt{.csv}. & Media \\ \hline
-\textbf{RF-13} & Edición de cuestionarios & Modificación integral del título, descripción, enunciados y opciones de respuestas de un test existente. & Media \\ \hline
-\textbf{RF-14} & Eliminación de datos & Borrado lógico en el sistema de cuestionarios o preguntas individuales sin destruir el histórico pasado. & Media \\ \hline
+\textbf{RF-01}\label{req:01} & Gestión de registro & Registro de nuevos profesores con validación de correo electrónico y \textit{hash} de contraseña. & Alta \\ \hline
+\textbf{RF-02}\label{req:02} & Inicio de sesión & Autenticación de docentes mediante correo electrónico y contraseña cifrada con emisión de tokens JWT. & Alta \\ \hline
+\textbf{RF-03}\label{req:03} & Baja de usuarios & Eliminación de la cuenta de profesor y todos sus datos asociados de forma permanente del sistema. & Media \\ \hline
+\textbf{RF-04}\label{req:04} & Recuperación contraseña & Solicitud y tramitación de restablecimiento de credenciales de acceso vía correo electrónico. & Baja \\ \hline
+\textbf{RF-05}\label{req:05} & Edición perfil & Modificación de los datos de usuario del profesor, incluyendo el nombre visible y la contraseña. & Media \\ \hline
+\textbf{RF-06}\label{req:06} & Cierre de sesión & Invalidación del token de autenticación activo en el servidor y redirección automática al formulario de acceso. & Alta \\ \hline
+\textbf{RF-07}\label{req:07} & Crear cuestionario & Creación de nuevas pruebas de evaluación con un límite máximo estructurado de hasta 30 preguntas. & Alta \\ \hline
+\textbf{RF-08}\label{req:08} & Listar cuestionarios & Visualización del catálogo de pruebas diseñadas por el profesor, ordenadas cronológicamente por fecha. & Alta \\ \hline
+\textbf{RF-09}\label{req:09} & Mostrar ranking & Presentación de la tabla de clasificación de alumnos después de cada pregunta y al finalizar la sesión. & Media \\ \hline
+\textbf{RF-10}\label{req:10} & Aleatoriedad & Configuración opcional para alterar de forma automática el orden de las preguntas y sus respectivas respuestas. & Baja \\ \hline
+\textbf{RF-11}\label{req:11} & Configurar tiempo & Definición personalizada del tiempo límite de respuesta para cada enunciado durante la creación de la sala. & Media \\ \hline
+\textbf{RF-12}\label{req:12} & Importación & Carga masiva de preguntas y opciones desde archivos externos estructurados exclusivamente en formato \texttt{.txt} o \texttt{.csv}. & Media \\ \hline
+\textbf{RF-13}\label{req:13} & Edición de cuestionarios & Modificación integral del título, descripción, enunciados y opciones de respuestas de un test existente. & Media \\ \hline
+\textbf{RF-14}\label{req:14} & Eliminación de datos & Borrado lógico en el sistema de cuestionarios o preguntas individuales sin destruir el histórico pasado. & Media \\ \hline
 
 \end{tabular}
 }
@@ -204,22 +205,22 @@ Los requisitos funcionales determinan las acciones específicas, comportamientos
 \hline
 \textbf{ID} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Prioridad} \\ \hline
 
-\textbf{RF-15} & Crear sala & Instanciación en tiempo real de una sesión de evaluación protegida mediante un código PIN único de acceso. & Alta \\ \hline
-\textbf{RF-16} & Validar PIN & Verificación inmediata en el servidor de que el código PIN introducido corresponde a una sala en estado de espera. & Alta \\ \hline
-\textbf{RF-17} & Validar \textit{uvus} & Control de acceso que valida el formato alfanumérico institucional de la Universidad de Sevilla y mitiga duplicados. & Alta \\ \hline
-\textbf{RF-18} & Sala de espera & Gestión y mantenimiento del flujo de alumnos conectados en tiempo real mediante \textit{WebSockets} antes del inicio. & Alta \\ \hline
-\textbf{RF-19} & Cerrar sala & Finalización manual o automática de la sesión, despliegue de resultados finales y desconexión de los participantes. & Media \\ \hline
-\textbf{RF-20} & Comenzar sala & Activación de la cuenta atrás sincronizada en el servidor y apertura de la primera pregunta del test. & Alta \\ \hline
-\textbf{RF-21} & Distribución síncrona & Envío simultáneo de la secuencia de enunciados y opciones desde el backend a todos los clientes conectados. & Alta \\ \hline
-\textbf{RF-22} & Temporizador servidor & Control centralizado y ejecución estricta del tiempo de respuesta remota en el hilo del backend. & Alta \\ \hline
-\textbf{RF-23} & Recepción respuestas & Captura, marca de tiempo y procesamiento de la opción de respuesta seleccionada por el alumno. & Alta \\ \hline
-\textbf{RF-24} & Feedback inmediato & Notificación instantánea en el dispositivo del alumno sobre el acierto o fallo sin consolidar la nota permanente. & Alta \\ \hline
-\textbf{RF-25} & Registro provisional & Almacenamiento transitorio del resultado del participante bajo el estado de "No Verificado" y emisión de un token único. & Alta \\ \hline
-\textbf{RF-26} & Generación QR & Renderizado de un código QR dinámico en la pantalla del alumno que encapsula su identidad y su token criptográfico. & Alta \\ \hline
-\textbf{RF-27} & Activación cámara & Solicitud de permisos e inicialización del flujo de vídeo de la cámara web en el dispositivo del profesor. & Alta \\ \hline
-\textbf{RF-28} & Lectura de QR & Captura óptica, decodificación y extracción de la estructura de datos del alumno desde la interfaz docente. & Alta \\ \hline
-\textbf{RF-29} & Validación Token & Comparación criptográfica en el servidor del token escaneado frente al registro transitorio de la sesión activa. & Alta \\ \hline
-\textbf{RF-30} & Control de estado & Bloqueo lógico automático de solicitudes de validación de notas si el registro ya consta como "Verificado". & Alta \\ \hline
+\textbf{RF-15}\label{req:15} & Crear sala & Instanciación en tiempo real de una sesión de evaluación protegida mediante un código PIN único de acceso. & Alta \\ \hline
+\textbf{RF-16}\label{req:16} & Validar PIN & Verificación inmediata en el servidor de que el código PIN introducido corresponde a una sala en estado de espera. & Alta \\ \hline
+\textbf{RF-17}\label{req:17} & Validar \textit{uvus} & Control de acceso que valida el formato alfanumérico institucional de la Universidad de Sevilla y mitiga duplicados. & Alta \\ \hline
+\textbf{RF-18}\label{req:18} & Sala de espera & Gestión y mantenimiento del flujo de alumnos conectados en tiempo real mediante \textit{WebSockets} antes del inicio. & Alta \\ \hline
+\textbf{RF-19}\label{req:19} & Cerrar sala & Finalización manual o automática de la sesión, despliegue de resultados finales y desconexión de los participantes. & Media \\ \hline
+\textbf{RF-20}\label{req:20} & Comenzar sala & Activación de la cuenta atrás sincronizada en el servidor y apertura de la primera pregunta del test. & Alta \\ \hline
+\textbf{RF-21}\label{req:21} & Distribución síncrona & Envío simultáneo de la secuencia de enunciados y opciones desde el backend a todos los clientes conectados. & Alta \\ \hline
+\textbf{RF-22}\label{req:22} & Temporizador servidor & Control centralizado y ejecución estricta del tiempo de respuesta remota en el hilo del backend. & Alta \\ \hline
+\textbf{RF-23}\label{req:23} & Recepción respuestas & Captura, marca de tiempo y procesamiento de la opción de respuesta seleccionada por el alumno. & Alta \\ \hline
+\textbf{RF-24}\label{req:24} & Feedback inmediato & Notificación instantánea en el dispositivo del alumno sobre el acierto o fallo sin consolidar la nota permanente. & Alta \\ \hline
+\textbf{RF-25}\label{req:25} & Registro provisional & Almacenamiento transitorio del resultado del participante bajo el estado de "No Verificado" y emisión de un token único. & Alta \\ \hline
+\textbf{RF-26}\label{req:26} & Generación QR & Renderizado de un código QR dinámico en la pantalla del alumno que encapsula su identidad y su token criptográfico. & Alta \\ \hline
+\textbf{RF-27}\label{req:27} & Activación cámara & Solicitud de permisos e inicialización del flujo de vídeo de la cámara web en el dispositivo del profesor. & Alta \\ \hline
+\textbf{RF-28}\label{req:28} & Lectura de QR & Captura óptica, decodificación y extracción de la estructura de datos del alumno desde la interfaz docente. & Alta \\ \hline
+\textbf{RF-29}\label{req:29} & Validación Token & Comparación criptográfica en el servidor del token escaneado frente al registro transitorio de la sesión activa. & Alta \\ \hline
+\textbf{RF-30}\label{req:30} & Control de estado & Bloqueo lógico automático de solicitudes de validación de notas si el registro ya consta como "Verificado". & Alta \\ \hline
 
 \end{tabular}
 }
@@ -236,23 +237,23 @@ Los requisitos funcionales determinan las acciones específicas, comportamientos
 \hline
 \textbf{ID} & \textbf{Nombre} & \textbf{Descripción} & \textbf{Prioridad} \\ \hline
 
-\textbf{RF-31} & Check verificación & Actualización de la sesión a estado verificado y consolidación oficial de la nota en el histórico definitivo. & Alta \\ \hline
-\textbf{RF-32} & Listado en vivo & Actualización en tiempo real del panel docente reflejando la lista de alumnos validados presencialmente. & Media \\ \hline
-\textbf{RF-33} & Estadísticas de sala & Cálculo de los porcentajes de acierto y fallo por enunciado para la detección automatizada de conceptos complejos. & Media \\ \hline
-\textbf{RF-34} & Generación por IA & Procesamiento automatizado de textos introducidos por el docente para la sugerencia de borradores de preguntas mediante IA. & Media \\ \hline
-\textbf{RF-35} & Asistente de ayuda & Resolución de dudas conceptuales y de uso del sistema mediante una interfaz de lenguaje natural integrada. & Baja \\ \hline
-\textbf{RF-36} & Navegación por IA & Sistema de soporte inteligente encargado de detectar intenciones de uso y guiar al profesor en el entorno web. & Baja \\ \hline
-\textbf{RF-37} & Revisión post IA & Interfaz de edición específica para la inspección manual, corrección y aprobación de las preguntas sugeridas por la IA. & Media \\ \hline
-\textbf{RF-38} & Crear clase & Agrupación e indexación de conjuntos estables de alumnos bajo etiquetas de grupo o clase académica. & Baja \\ \hline
-\textbf{RF-39} & Exportación resultados & Generación y descarga local de las calificaciones oficiales y verificadas en formatos estandarizados PDF o CSV. & Alta \\ \hline
-\textbf{RF-40} & Gestión de conexiones & Manejo de admisiones tardías, retención de estados por caída de red y flujos de reconexión adaptativa. & Media \\ \hline
-\textbf{RF-41} & Filtros de búsqueda & Herramientas de filtrado avanzado en el catálogo de cuestionarios (activos, inactivos, recientes o etiquetas). & Media \\ \hline
-\textbf{RF-42} & Bonificación por tiempo & Algoritmo de cálculo de puntuación adicional ponderada según la rapidez de respuesta del participante. & Baja \\ \hline
-\textbf{RF-43} & Sistema de rachas & Concesión de multiplicadores de puntuación por el encadenamiento consecutivo de respuestas correctas. & Baja \\ \hline
-\textbf{RF-44} & Modo de puntuación & Selección de las reglas de asignación de puntos (estándar o adaptativa) en los parámetros iniciales de la sala. & Baja \\ \hline
-\textbf{RF-45} & Visibilidad de ranking & Opción para conmutar la presencia de la pantalla intermedia de clasificación global entre preguntas. & Baja \\ \hline
-\textbf{RF-46} & Formulario avanzado & Inclusión de imágenes de soporte y gestión de etiquetas avanzadas (tags) en la edición del cuestionario, con hasta 8 opciones. & Baja \\ \hline
-\textbf{RF-47} & Historial de salas & Acceso permanente al registro histórico de sesiones cerradas que hayan completado la fase de verificación presencial. & Alta \\ \hline
+\textbf{RF-31}\label{req:31} & Check verificación & Actualización de la sesión a estado verificado y consolidación oficial de la nota en el histórico definitivo. & Alta \\ \hline
+\textbf{RF-32}\label{req:32} & Listado en vivo & Actualización en tiempo real del panel docente reflejando la lista de alumnos validados presencialmente. & Media \\ \hline
+\textbf{RF-33}\label{req:33} & Estadísticas de sala & Cálculo de los porcentajes de acierto y fallo por enunciado para la detección automatizada de conceptos complejos. & Media \\ \hline
+\textbf{RF-34}\label{req:34} & Generación por IA & Procesamiento automatizado de textos introducidos por el docente para la sugerencia de borradores de preguntas mediante IA. & Media \\ \hline
+\textbf{RF-35}\label{req:35} & Asistente de ayuda & Resolución de dudas conceptuales y de uso del sistema mediante una interfaz de lenguaje natural integrada. & Baja \\ \hline
+\textbf{RF-36}\label{req:36} & Navegación por IA & Sistema de soporte inteligente encargado de detectar intenciones de uso y guiar al profesor en el entorno web. & Baja \\ \hline
+\textbf{RF-37}\label{req:37} & Revisión post IA & Interfaz de edición específica para la inspección manual, corección y aprobación de las preguntas sugeridas por la IA. & Media \\ \hline
+\textbf{RF-38}\label{req:38} & Crear clase & Agrupación e indexación de conjuntos estables de alumnos bajo etiquetas de grupo o clase académica. & Baja \\ \hline
+\textbf{RF-39}\label{req:39} & Exportación resultados & Generación y descarga local de las calificaciones oficiales y verificadas en formatos estandarizados PDF o CSV. & Alta \\ \hline
+\textbf{RF-40}\label{req:40} & Gestión de conexiones & Manejo de admisiones tardías, retención de estados por caída de red y flujos de reconexión adaptativa. & Media \\ \hline
+\textbf{RF-41}\label{req:41} & Filtros de búsqueda & Herramientas de filtrado avanzado en el catálogo de cuestionarios (activos, inactivos, recientes o etiquetas). & Media \\ \hline
+\textbf{RF-42}\label{req:42} & Bonificación por tiempo & Algoritmo de cálculo de puntuación adicional ponderada según la rapidez de respuesta del participante. & Baja \\ \hline
+\textbf{RF-43}\label{req:43} & Sistema de rachas & Concesión de multiplicadores de puntuación por el encadenamiento consecutivo de respuestas correctas. & Baja \\ \hline
+\textbf{RF-44}\label{req:44} & Modo de puntuación & Selección de las reglas de asignación de puntos (estándar o adaptativa) en los parámetros iniciales de la sala. & Baja \\ \hline
+\textbf{RF-45}\label{req:45} & Visibilidad de ranking & Opción para conmutar la presencia de la pantalla intermedia de clasificación global entre preguntas. & Baja \\ \hline
+\textbf{RF-46}\label{req:46} & Formulario avanzado & Inclusión de imágenes de soporte y gestión de etiquetas avanzadas (tags) en la edición del cuestionario, con hasta 8 opciones. & Baja \\ \hline
+\textbf{RF-47}\label{req:47} & Historial de salas & Acceso permanente al registro histórico de sesiones cerradas que hayan completado la fase de verificación presencial. & Alta \\ \hline
 
 \end{tabular}
 }
@@ -335,7 +336,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-01: Iniciar sesión como docente} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-01: Iniciar sesión como docente}\label{cu:01} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
 \textbf{Precondición} & El profesor debe estar registrado en la plataforma. \\ \hline
 \textbf{Flujo principal} & 
@@ -356,7 +357,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-02: Gestionar cuestionarios} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-02: Gestionar cuestionarios}\label{cu:02} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
 \textbf{Precondición} & El profesor ha iniciado sesión correctamente. \\ \hline
 \textbf{Flujo principal} & 
@@ -379,7 +380,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-03: Generar preguntas con IA} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-03: Generar preguntas con IA}\label{cu:03} \\ \hline
 \textbf{Actores} & Principal: Profesor. Secundario: Servicio de IA (API). \\ \hline
 \textbf{Precondición} & El profesor se encuentra dentro del editor de cuestionarios. \\ \hline
 \textbf{Flujo principal} & 
@@ -401,7 +402,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-04: Administrar sala en vivo} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-04: Administrar sala en vivo}\label{cu:04} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
 \textbf{Precondición} & El profesor está autenticado y ha seleccionado un cuestionario de su biblioteca. \\ \hline
 \textbf{Flujo principal} & 
@@ -424,7 +425,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-05: Unirse a sala y realizar test} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-05: Unirse a sala y realizar test}\label{cu:05} \\ \hline
 \textbf{Actor principal} & Alumno. \\ \hline
 \textbf{Precondición} & Existe una sala activa y el alumno posee el código PIN. \\ \hline
 \textbf{Flujo principal} & 
@@ -448,7 +449,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-06: Visualizar ranking en vivo} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-06: Visualizar ranking en vivo}\label{cu:06} \\ \hline
 \textbf{Actores} & Principal: Profesor / Alumno. \\ \hline
 \textbf{Precondición} & Se ha completado al menos una pregunta en una sala activa. \\ \hline
 \textbf{Flujo principal} & 
@@ -469,7 +470,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-07: Validar calificación mediante QR} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-07: Validar calificación mediante QR}\label{cu:07} \\ \hline
 \textbf{Actores} & Principal: Profesor. Secundario: Alumno. \\ \hline
 \textbf{Precondición} & La sala ha finalizado y el alumno muestra el QR generado por el sistema. \\ \hline
 \textbf{Flujo principal} & 
@@ -493,7 +494,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-08: Consultar estadísticas} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-08: Consultar estadísticas}\label{cu:08} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
 \textbf{Precondición} & Existen salas finalizadas con respuestas registradas. \\ \hline
 \textbf{Flujo principal} & 
@@ -514,7 +515,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-09: Exportar resultados} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-09: Exportar resultados}\label{cu:09} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
 \textbf{Precondición} & La sala ha finalizado y existen alumnos con estado "Verificado". \\ \hline
 \textbf{Flujo principal} & 
@@ -535,7 +536,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-10: Responder pregunta} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-10: Responder pregunta}\label{cu:10} \\ \hline
 \textbf{Actor principal} & Alumno. \\ \hline
 \textbf{Precondición} & El alumno está dentro de una sala activa y el profesor ha lanzado una pregunta. \\ \hline
 \textbf{Flujo principal} & 
@@ -561,7 +562,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \makebox[\textwidth][c]{
 \begin{tabular}{lp{12cm}}
 \hline
-\textbf{Caso de Uso} & \textbf{CU-11: Gestionar grupos} \\ \hline
+\textbf{Caso de Uso} & \textbf{CU-11: Gestionar grupos}\label{cu:11} \\ \hline
 \textbf{Actor principal} & Profesor. \\ \hline
 \textbf{Precondición} & El profesor ha iniciado sesión correctamente en el sistema. \\ \hline
 \textbf{Flujo principal} & 
@@ -591,27 +592,177 @@ Una vez analizados los requisitos funcionales, es imprescindible enfocar la aten
 \hline
 \textbf{Dimensión} & \textbf{ID} & \textbf{Definición del requisito} \\ \hline
 
-Rendimiento & \textbf{RNF-01} & \textbf{Sincronización:} Los eventos en tiempo real deben procesarse de forma óptima en el backend para garantizar la coherencia síncrona en el aula. \\ 
- & \textbf{RNF-02} & \textbf{Concurrencia:} Soporte mínimo de 100 alumnos interactuando de forma simultánea dentro de una misma sala sin degradación de los servicios básicos. \\ \hline
+Rendimiento & \textbf{RNF-01}\label{rnf:01} & \textbf{Sincronización:} Los eventos en tiempo real deben procesarse de forma óptima en el backend para garantizar la coherencia síncrona en el aula. \\ 
+ & \textbf{RNF-02}\label{rnf:02} & \textbf{Concurrencia:} Soporte mínimo de 100 alumnos interactuando de forma simultánea dentro de una misma sala sin degradación de los servicios básicos. \\ \hline
 
-Seguridad & \textbf{RNF-03} & \textbf{Integridad:} El token de validación presencial embebido en el QR del alumno debe ser criptográficamente seguro, firmado por el servidor y no falsificable. \\ 
- & \textbf{RNF-04} & \textbf{Privacidad:} Almacenamiento e inserción obligatoria de credenciales de acceso de profesores mediante algoritmos de \textit{hashing} seguro y unidireccional. \\ 
- & \textbf{RNF-05} & \textbf{Cifrado:} Uso estricto de canales de red protegidos bajo protocolos de comunicación seguros HTTPS y \textit{WebSockets} seguros (\texttt{WSS}). \\ \hline
+Seguridad & \textbf{RNF-03}\label{rnf:03} & \textbf{Integridad:} El token de validación presencial embebido en el QR del alumno debe ser criptográficamente seguro, firmado por el servidor y no falsificable. \\ 
+ & \textbf{RNF-04}\label{rnf:04} & \textbf{Privacidad:} Almacenamiento e inserción obligatoria de credenciales de acceso de profesores mediante algoritmos de \textit{hashing} seguro y unidireccional. \\ 
+ & \textbf{RNF-05}\label{rnf:05} & \textbf{Cifrado:} Uso estricto de canales de red protegidos bajo protocolos de comunicación seguros HTTPS y \textit{WebSockets} seguros (\texttt{WSS}). \\ \hline
 
-Usabilidad & \textbf{RNF-06} & \textbf{Responsividad:} Interfaz de usuario adaptativa (\textit{Responsive Design}) optimizada para una navegación fluida tanto en dispositivos móviles como en ordenadores. \\ 
- & \textbf{RNF-07} & \textbf{Eficiencia QR:} Optimización del flujo óptico para que el tiempo de lectura, decodificación y validación de la firma del código QR por la cámara sea inmediato. \\ \hline
+Usabilidad & \textbf{RNF-06}\label{rnf:06} & \textbf{Responsividad:} Interfaz de usuario adaptativa (\textit{Responsive Design}) optimizada para una navegación fluida tanto en dispositivos móviles como en ordenadores. \\ 
+ & \textbf{RNF-07}\label{rnf:07} & \textbf{Eficiencia QR:} Optimización del flujo óptico para que el tiempo de lectura, decodificación y validación de la firma del código QR por la cámara sea inmediato. \\ \hline
 
-Fiabilidad & \textbf{RNF-08} & \textbf{Reconexión:} Capacidad de retener y recuperar el estado lógico y la puntuación transitoria de un participante ante caídas o pérdidas accidentales de conectividad. \\ \hline
+Fiabilidad & \textbf{RNF-08}\label{rnf:08} & \textbf{Reconexión:} Capacidad de retener y recuperar el estado lógico y la puntuación transitoria de un participante ante caídas o pérdidas accidentales de conectividad. \\ \hline
 
-Disponibilidad & \textbf{RNF-09} & \textbf{Persistencia:} Mecanismo de salvaguarda y respaldo de los resultados provisionales en el backend ante interrupciones críticas o fallos imprevistos del servidor. \\ \hline
-
-Mantenibilidad & \textbf{RNF-10} & \textbf{Modularidad:} Separación clara de responsabilidades entre el servidor de base de datos, el backend y el cliente frontend para facilitar futuras actualizaciones. \\ \hline
+Disponibilidad & \textbf{RNF-09}\label{rnf:09} & \textbf{Persistencia:} Mecanismo de salvaguarda y respaldo de los resultados provisionales en el backend ante interrupciones críticas o fallos imprevistos del servidor. \\ \hline
+Mantenibilidad & \textbf{RNF-10}\label{rnf:10} & \textbf{Modularidad:} Separación clara de responsabilidades entre el servidor de base de datos, el backend y el cliente frontend para facilitar futuras actualizaciones. \\ \hline
 
 \end{tabular}
 }
-\caption{Requisitos no funcionales clasificados por dimensión de calidad.}
+\caption{Requisitos no funcionales clasificados por dimensión.}
 \label{tab:requisitos_no_funcionales}
 \end{table}
 
-\section{Trazabilidad de requisitos}
-Matriz de trazabilidad : Objetivos → Requisitos → Diseño → Pruebas → Resultados
+\section{Trazabilidad de requisitos}\label{sec:trazabilidad_de_requisitos}
+Para garantizar la integridad del desarrollo y demostrar el cumplimiento de las metas del proyecto, este apartado presenta la trazabilidad bidireccional del sistema. Este proceso permite certificar que cada decisión responde directamente a un fin práctico de la aplicación, evitando la existencia de elementos redundantes o injustificados. Las tres matrices que se muestran a continuación relacionan objetivos funcionales con requisitos de información, requisitos no funcionales y requisitos funcionales, respectivamente.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.25} 
+\setlength{\tabcolsep}{3.5pt}  
+\makebox[\textwidth][c]{
+\begin{tabular}{l*{12}{c}}
+\cline{2-13}
+\multicolumn{1}{c}{} & \hyperref[obj:01]{OBJ-01} & \hyperref[obj:02]{OBJ-02} & \hyperref[obj:03]{OBJ-03} & \hyperref[obj:04]{OBJ-04} & \hyperref[obj:05]{OBJ-05} & \hyperref[obj:06]{OBJ-06} & \hyperref[obj:07]{OBJ-07} & \hyperref[obj:08]{OBJ-08} & \hyperref[obj:09]{OBJ-09} & \hyperref[obj:10]{OBJ-10} & \hyperref[obj:11]{OBJ-11} & \hyperref[obj:12]{OBJ-12} \\ \hline
+\hyperref[ri:01]{RI-01} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[ri:02]{RI-02} &   & X &   &   &   &   &   &   & X &   &   &   \\ \hline
+\hyperref[ri:03]{RI-03} &   &   & X & X & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[ri:04]{RI-04} &   &   &   &   & X & X & X & X &   &   &   &   \\ \hline
+\hyperref[ri:05]{RI-05} &   &   &   &   &   &   & X & X &   &   &   & X \\ \hline
+\hyperref[ri:06]{RI-06} &   &   &   &   &   &   &   &   &   &   & X & X \\ \hline
+\end{tabular}
+}
+\caption{Matriz de trazabilidad RI-OBJ.}
+\label{tab:matriz_trazabilidad_ri_obj}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.25} 
+\setlength{\tabcolsep}{3.5pt}       
+\makebox[\textwidth][c]{
+\begin{tabular}{l*{12}{c}}
+\cline{2-13}
+\multicolumn{1}{c}{} & \hyperref[obj:01]{OBJ-01} & \hyperref[obj:02]{OBJ-02} & \hyperref[obj:03]{OBJ-03} & \hyperref[obj:04]{OBJ-04} & \hyperref[obj:05]{OBJ-05} & \hyperref[obj:06]{OBJ-06} & \hyperref[obj:07]{OBJ-07} & \hyperref[obj:08]{OBJ-08} & \hyperref[obj:09]{OBJ-09} & \hyperref[obj:10]{OBJ-10} & \hyperref[obj:11]{OBJ-11} & \hyperref[obj:12]{OBJ-12} \\ \hline
+\hyperref[rnf:01]{RNF-01} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[rnf:02]{RNF-02} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[rnf:03]{RNF-03} &   &   &   &   &   & X & X &   &   &   &   &   \\ \hline
+\hyperref[rnf:04]{RNF-04} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[rnf:05]{RNF-05} & X &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[rnf:06]{RNF-06} & X & X &   & X & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[rnf:07]{RNF-07} &   &   &   &   &   &   &   &   &   & X &   &   \\ \hline
+\hyperref[rnf:08]{RNF-08} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[rnf:09]{RNF-09} &   &   & X &   & X &   & X &   &   &   &   &   \\ \hline
+\hyperref[rnf:10]{RNF-10} & X & X & X & X & X & X & X & X & X & X & X & X \\ \hline
+\end{tabular}
+}
+\caption{Matriz de trazabilidad RNF-OBJ.}
+\label{tab:matriz_trazabilidad_rnf_obj}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.25} 
+\setlength{\tabcolsep}{3.5pt}       
+\makebox[\textwidth][c]{
+\begin{tabular}{l*{12}{c}}
+\cline{2-13}
+\multicolumn{1}{c}{} & \hyperref[obj:01]{OBJ-01} & \hyperref[obj:02]{OBJ-02} & \hyperref[obj:03]{OBJ-03} & \hyperref[obj:04]{OBJ-04} & \hyperref[obj:05]{OBJ-05} & \hyperref[obj:06]{OBJ-06} & \hyperref[obj:07]{OBJ-07} & \hyperref[obj:08]{OBJ-08} & \hyperref[obj:09]{OBJ-09} & \hyperref[obj:10]{OBJ-10} & \hyperref[obj:11]{OBJ-11} & \hyperref[obj:12]{OBJ-12} \\ \hline
+\hyperref[req:01]{RF-01} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:02]{RF-02} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:03]{RF-03} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:04]{RF-04} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:05]{RF-05} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:06]{RF-06} & X &   &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:07]{RF-07} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:08]{RF-08} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:09]{RF-09} &   &   &   &   &   &   &   & X &   &   &   &   \\ \hline
+\hyperref[req:10]{RF-10} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:11]{RF-11} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:12]{RF-12} &   &   &   &   &   &   &   &   &   &   &   & X \\ \hline
+\hyperref[req:13]{RF-13} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:14]{RF-14} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:15]{RF-15} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:16]{RF-16} &   &   &   & X &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:17]{RF-17} &   &   &   & X &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:18]{RF-18} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:19]{RF-19} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:20]{RF-20} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:21]{RF-21} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:22]{RF-22} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:23]{RF-23} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:24]{RF-24} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:25]{RF-25} &   &   &   &   &   &   & X &   &   &   &   &   \\ \hline
+\hyperref[req:26]{RF-26} &   &   &   &   &   & X &   &   &   &   &   &   \\ \hline
+\hyperref[req:27]{RF-27} &   &   &   &   &   &   &   &   &   & X &   &   \\ \hline
+\hyperref[req:28]{RF-28} &   &   &   &   &   &   &   &   &   & X &   &   \\ \hline
+\hyperref[req:29]{RF-29} &   &   &   &   &   & X &   &   &   &   &   &   \\ \hline
+\hyperref[req:30]{RF-30} &   &   &   &   &   &   & X &   &   &   &   &   \\ \hline
+\hyperref[req:31]{RF-31} &   &   &   &   &   &   & X &   &   &   &   &   \\ \hline
+\hyperref[req:32]{RF-32} &   &   &   &   &   &   &   & X &   &   &   &   \\ \hline
+\hyperref[req:33]{RF-33} &   &   &   &   &   &   &   & X &   &   &   &   \\ \hline
+\hyperref[req:34]{RF-34} &   &   &   &   &   &   &   &   & X &   &   &   \\ \hline
+\hyperref[req:35]{RF-35} &   &   &   &   &   &   &   &   & X &   &   &   \\ \hline
+\hyperref[req:36]{RF-36} &   &   &   &   &   &   &   &   & X &   &   &   \\ \hline
+\hyperref[req:37]{RF-37} &   &   &   &   &   &   &   &   & X &   &   &   \\ \hline
+\hyperref[req:38]{RF-38} &   &   &   &   &   &   &   &   &   &   & X &   \\ \hline
+\hyperref[req:39]{RF-39} &   &   &   &   &   &   &   &   &   &   &   & X \\ \hline
+\hyperref[req:40]{RF-40} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:41]{RF-41} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:42]{RF-42} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:43]{RF-43} &   &   &   &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:44]{RF-44} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:45]{RF-45} &   &   & X &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:46]{RF-46} &   & X &   &   &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[req:47]{RF-47} &   &   &   &   &   &   & X &   &   &   &   &   \\ \hline
+\end{tabular}
+}
+\caption{Matriz de trazabilidad RF-OBJ.}
+\label{tab:matriz_trazabilidad_rf_obj}
+\end{table}
+
+\newpage
+
+Por último, con el fin de unificar todo el ciclo de vida del desarrollo, se presenta la siguiente matriz de trazabilidad unificada. Este mapa conecta de manera jerárquica los módulos del sistema, los objetivos funcionales que persiguen, los casos de uso técnicos, y cómo estos se desglosan en las historias de usuario, compuestas por sus respectivos requisitos funcionales.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llllp{7cm}}
+\hline
+\textbf{Módulo} & \textbf{OBJ} & \textbf{CU} & \textbf{HU} & \textbf{RF} \\ \hline
+Contenido & \hyperref[obj:02]{OBJ-02} & \hyperref[cu:02]{CU-02} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:07]{RF-07}, \hyperref[req:08]{RF-08}, \hyperref[req:10]{RF-10}, \hyperref[req:12]{RF-12} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:13]{RF-13}, \hyperref[req:14]{RF-14}, \hyperref[req:41]{RF-41} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-13]{HU-PR-13} & \hyperref[req:46]{RF-46} \\ \cline{2-5} 
+          & \hyperref[obj:09]{OBJ-09} & \hyperref[cu:03]{CU-03} & \hyperref[hu:pr-09]{HU-PR-09} & \hyperref[req:34]{RF-34}, \hyperref[req:35]{RF-35}, \hyperref[req:36]{RF-36}, \hyperref[req:37]{RF-37} \\ \hline
+Salas     & \hyperref[obj:03]{OBJ-03} & \hyperref[cu:04]{CU-04} & \hyperref[hu:pr-03]{HU-PR-03} & \hyperref[req:11]{RF-11}, \hyperref[req:15]{RF-15}, \hyperref[req:18]{RF-18}, \hyperref[req:22]{RF-22} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-05]{HU-PR-05} & \hyperref[req:19]{RF-19} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-11]{HU-PR-11} & \hyperref[req:42]{RF-42}, \hyperref[req:43]{RF-43}, \hyperref[req:44]{RF-44} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-12]{HU-PR-12} & \hyperref[req:45]{RF-45} \\ \cline{2-5} 
+          & \hyperref[obj:04]{OBJ-04} & \hyperref[cu:05]{CU-05} & \hyperref[hu:al-01]{HU-AL-01} & \hyperref[req:16]{RF-16}, \hyperref[req:17]{RF-17}, \hyperref[req:40]{RF-40} \\ \cline{2-5} 
+          & \hyperref[obj:05]{OBJ-05} & \hyperref[cu:05]{CU-05} & \hyperref[hu:al-01]{HU-AL-01} & \hyperref[req:16]{RF-16}, \hyperref[req:17]{RF-17}, \hyperref[req:40]{RF-40} \\ \cline{3-5} 
+          &                           & \hyperref[cu:10]{CU-10} & \hyperref[hu:al-02]{HU-AL-02} & \hyperref[req:20]{RF-20}, \hyperref[req:21]{RF-21} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:al-03]{HU-AL-03} & \hyperref[req:23]{RF-23}, \hyperref[req:24]{RF-24}, \hyperref[req:42]{RF-42}, \hyperref[req:43]{RF-43} \\ \cline{2-5} 
+          & \hyperref[obj:06]{OBJ-06} & \hyperref[cu:07]{CU-07} & \hyperref[hu:pr-06]{HU-PR-06} & \hyperref[req:27]{RF-27}, \hyperref[req:28]{RF-28}, \hyperref[req:29]{RF-29}, \hyperref[req:30]{RF-30}, \hyperref[req:31]{RF-31} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:al-04]{HU-AL-04} & \hyperref[req:25]{RF-25}, \hyperref[req:26]{RF-26} \\ \cline{2-5} 
+          & \hyperref[obj:07]{OBJ-07} & \hyperref[cu:07]{CU-07} & \hyperref[hu:pr-06]{HU-PR-06} & \hyperref[req:27]{RF-27}, \hyperref[req:28]{RF-28}, \hyperref[req:29]{RF-29}, \hyperref[req:30]{RF-30}, \hyperref[req:31]{RF-31} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:al-04]{HU-AL-04} & \hyperref[req:25]{RF-25}, \hyperref[req:26]{RF-26} \\ \cline{2-5} 
+          & \hyperref[obj:08]{OBJ-08} & \hyperref[cu:06]{CU-06} & \hyperref[hu:pr-04]{HU-PR-04} & \hyperref[req:32]{RF-32} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-12]{HU-PR-12} & \hyperref[req:09]{RF-09} \\ \cline{3-5} 
+          &                           & \hyperref[cu:08]{CU-08} & \hyperref[hu:pr-08]{HU-PR-08} & \hyperref[req:33]{RF-33} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:pr-14]{HU-PR-14} & \hyperref[req:47]{RF-47} \\ \cline{2-5} 
+          & \hyperref[obj:10]{OBJ-10} & \hyperref[cu:07]{CU-07} & \hyperref[hu:pr-06]{HU-PR-06} & \hyperref[req:27]{RF-27}, \hyperref[req:28]{RF-28}, \hyperref[req:29]{RF-29}, \hyperref[req:30]{RF-30}, \hyperref[req:31]{RF-31} \\ \cline{4-5} 
+          &                           &                           & \hyperref[hu:al-04]{HU-AL-04} & \hyperref[req:25]{RF-25}, \hyperref[req:26]{RF-26} \\ \cline{2-5} 
+          & \hyperref[obj:12]{OBJ-12} & \hyperref[cu:09]{CU-09} & \hyperref[hu:pr-10]{HU-PR-10} & \hyperref[req:39]{RF-39} \\ \hline
+Usuarios  & \hyperref[obj:01]{OBJ-01} & \hyperref[cu:01]{CU-01} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:01]{RF-01}, \hyperref[req:02]{RF-02}, \hyperref[req:03]{RF-03}, \hyperref[req:04]{RF-04}, \hyperref[req:05]{RF-05}, \hyperref[req:06]{RF-06} \\ \cline{2-5} 
+          & \hyperref[obj:11]{OBJ-11} & \hyperref[cu:11]{CU-11} & \hyperref[hu:pr-07]{HU-PR-07} & \hyperref[req:38]{RF-38} \\ \hline
+\end{tabular}
+}
+\caption{Matriz de trazabilidad unificada del sistema.}
+\label{tab:matriz_trazabilidad}
+\end{table}
