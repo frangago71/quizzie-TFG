@@ -14,3 +14,18 @@ class TeacherCreate(BaseModel):
 
 class DeleteAccountRequest(BaseModel):
     password: str
+
+
+class VerifyEmailRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    code: str
+    new_password: str = Field(..., min_length=6, examples=["123456"])

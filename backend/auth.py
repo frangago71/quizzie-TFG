@@ -14,7 +14,7 @@ from pwdlib import PasswordHash
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-load_dotenv()
+load_dotenv(override=True)
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")

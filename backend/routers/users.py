@@ -12,7 +12,14 @@ from models.stage import RoomStatus
 from models.users import Group, Student, Teacher, TeacherRead
 from routers.content import Quiz
 from schemas.content import QuizListRead
-from schemas.users import DeleteAccountRequest, LoginRequest, TeacherCreate
+from schemas.users import (
+    DeleteAccountRequest,
+    ForgotPasswordRequest,
+    LoginRequest,
+    ResetPasswordRequest,
+    TeacherCreate,
+    VerifyEmailRequest,
+)
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -29,6 +36,11 @@ async def login(login_data: LoginRequest, session: Annotated[Session, Depends(ge
             status_code=401,
             detail="Email o contraseña incorrectos",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+    if not teacher.is_verified:
+        raise HTTPException(
+            status_code=403,
+            detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
         )
     teacher_id_str = str(teacher.id)
     access_token = create_access_token(data={"sub": teacher_id_str})
@@ -64,19 +76,53 @@ async def register(teacher_data: TeacherCreate, session: Annotated[Session, Depe
         )
 
     try:
+        import random
+        from datetime import datetime, timedelta, timezone
+
+        from email_service import send_email
+
         hashed_password = get_password_hash(teacher_data.password)
+        verification_code = f"{random.randint(100000, 999999)}"
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
+
         new_teacher = Teacher(
             username=teacher_data.username,
             email=teacher_data.email,
             hashed_password=hashed_password,
+            is_verified=False,
+            verification_code=verification_code,
+            verification_code_expires_at=expires_at,
         )
         session.add(new_teacher)
         session.commit()
         session.refresh(new_teacher)
+
+        email_body = f"""
+        <html>
+            <body>
+                <h2>¡Hola, {new_teacher.username}!</h2>
+                <p>Gracias por registrarte en Quizzie. Para activar tu cuenta,</p>
+                <p>por favor introduce el siguiente código de verificación en la aplicación:</p>
+                <h1 style="color: #55ccaa; font-size: 32px; letter-spacing: 5px;">
+                    {verification_code}
+                </h1>
+                <p>Este código expira en 24 horas.</p>
+                <p>Si no te has registrado en Quizzie, puedes ignorar este correo.</p>
+            </body>
+        </html>
+        """
+        send_email(
+            to_email=new_teacher.email,
+            subject="Verificación de cuenta en Quizzie",
+            html_content=email_body,
+        )
+
         return new_teacher
-    except Exception:
+    except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=500, detail="Error interno al registrar el profesor.")
+        raise HTTPException(
+            status_code=500, detail=f"Error interno al registrar el profesor: {str(e)}"
+        )
 
 
 @router.get("/teachers", response_model=List[TeacherRead])
@@ -176,6 +222,11 @@ def get_me(
     teacher = session.get(Teacher, teacher_id)
     if not teacher:
         raise HTTPException(status_code=404, detail="Profesor no encontrado")
+    if not teacher.is_verified:
+        raise HTTPException(
+            status_code=403,
+            detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
+        )
     return teacher
 
 
@@ -197,3 +248,179 @@ def delete_me(
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"Error al eliminar la cuenta: {str(e)}")
+
+
+@router.post("/verify-email")
+def verify_email(
+    verify_data: VerifyEmailRequest,
+    session: Annotated[Session, Depends(get_session)],
+):
+    from datetime import datetime, timezone
+
+    teacher = session.exec(select(Teacher).where(Teacher.email == verify_data.email)).first()
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+
+    if teacher.is_verified:
+        access_token = create_access_token(data={"sub": str(teacher.id)})
+        return {
+            "message": "La cuenta ya está verificada.",
+            "access_token": access_token,
+            "token_type": "bearer",
+        }
+
+    if not teacher.verification_code or teacher.verification_code != verify_data.code:
+        raise HTTPException(status_code=400, detail="Código de verificación incorrecto.")
+
+    now = datetime.now(timezone.utc)
+    expires_at = teacher.verification_code_expires_at
+    if expires_at:
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if now > expires_at:
+            raise HTTPException(
+                status_code=400,
+                detail="El código de verificación ha expirado. Por favor, solicita uno nuevo.",
+            )
+
+    teacher.is_verified = True
+    teacher.verification_code = None
+    teacher.verification_code_expires_at = None
+    session.add(teacher)
+    session.commit()
+
+    access_token = create_access_token(data={"sub": str(teacher.id)})
+    return {
+        "message": "Cuenta verificada exitosamente.",
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
+
+
+@router.post("/resend-verification")
+def resend_verification(
+    request_data: ForgotPasswordRequest,
+    session: Annotated[Session, Depends(get_session)],
+):
+    import random
+    from datetime import datetime, timedelta, timezone
+
+    from email_service import send_email
+
+    teacher = session.exec(select(Teacher).where(Teacher.email == request_data.email)).first()
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+
+    if teacher.is_verified:
+        return {"message": "La cuenta ya está verificada."}
+
+    verification_code = f"{random.randint(100000, 999999)}"
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
+
+    teacher.verification_code = verification_code
+    teacher.verification_code_expires_at = expires_at
+    session.add(teacher)
+    session.commit()
+
+    email_body = f"""
+    <html>
+        <body>
+            <h2>¡Hola, {teacher.username}!</h2>
+            <p>Aquí tienes tu nuevo código para activar tu cuenta de Quizzie:</p>
+            <h1 style="color: #55ccaa; font-size: 32px; letter-spacing: 5px;">
+                {verification_code}
+            </h1>
+            <p>Este código expira en 24 horas.</p>
+        </body>
+    </html>
+    """
+    send_email(
+        to_email=teacher.email,
+        subject="Nuevo código de verificación - Quizzie",
+        html_content=email_body,
+    )
+    return {"message": "Nuevo código enviado."}
+
+
+@router.post("/forgot-password")
+def forgot_password(
+    request_data: ForgotPasswordRequest,
+    session: Annotated[Session, Depends(get_session)],
+):
+    import random
+    from datetime import datetime, timedelta, timezone
+
+    from email_service import send_email
+
+    teacher = session.exec(select(Teacher).where(Teacher.email == request_data.email)).first()
+    if not teacher:
+        raise HTTPException(
+            status_code=404,
+            detail="No existe ninguna cuenta asociada a este correo electrónico.",
+        )
+
+    reset_code = f"{random.randint(100000, 999999)}"
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
+
+    teacher.reset_code = reset_code
+    teacher.reset_code_expires_at = expires_at
+    session.add(teacher)
+    session.commit()
+
+    email_body = f"""
+    <html>
+        <body>
+            <h2>Restablecimiento de contraseña</h2>
+            <p>Hemos recibido una solicitud para restablecer la contraseña</p>
+            <p>de tu cuenta en Quizzie.</p>
+            <p>Introduce el siguiente código de 6 dígitos para continuar:</p>
+            <h1 style="color: #a946ab; font-size: 32px; letter-spacing: 5px;">{reset_code}</h1>
+            <p>Este código expira en 15 minutos.</p>
+            <p>Si no has solicitado este cambio, puedes ignorar este mensaje.</p>
+        </body>
+    </html>
+    """
+    send_email(
+        to_email=teacher.email,
+        subject="Recuperación de contraseña - Quizzie",
+        html_content=email_body,
+    )
+    return {"message": "Código de restablecimiento enviado."}
+
+
+@router.post("/reset-password")
+def reset_password(
+    reset_data: ResetPasswordRequest,
+    session: Annotated[Session, Depends(get_session)],
+):
+    from datetime import datetime, timezone
+
+    teacher = session.exec(select(Teacher).where(Teacher.email == reset_data.email)).first()
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+
+    if not teacher.reset_code or teacher.reset_code != reset_data.code:
+        raise HTTPException(status_code=400, detail="Código de restablecimiento incorrecto.")
+
+    now = datetime.now(timezone.utc)
+    expires_at = teacher.reset_code_expires_at
+    if expires_at:
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if now > expires_at:
+            raise HTTPException(
+                status_code=400, detail="El código ha expirado. Solicita uno nuevo."
+            )
+
+    teacher.hashed_password = get_password_hash(reset_data.new_password)
+    teacher.reset_code = None
+    teacher.reset_code_expires_at = None
+    session.add(teacher)
+    session.commit()
+
+    access_token = create_access_token(data={"sub": str(teacher.id)})
+    return {
+        "message": "Contraseña restablecida exitosamente.",
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
