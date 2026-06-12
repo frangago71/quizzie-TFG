@@ -48,13 +48,8 @@ export const Register: React.FC = () => {
     try {
       await authService.register(formData);
 
-      await authService.login({
-        email: formData.email,
-        password: formData.password,
-      });
-
-      sessionStorage.setItem("toast_success", "¡Registro completado con éxito!");
-      globalThis.location.href = "/quizzes";
+      toast.success("¡Registro completado! Por favor, introduce el código enviado a tu correo.");
+      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       const errMsg = errorObj.message || "Error al registrar la cuenta";

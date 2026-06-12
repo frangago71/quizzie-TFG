@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "./authService";
 import { type LoginRequest } from "../types";
+import { useToast } from "../context/ToastContext";
 import "./Login.css";
 
 export const Login: React.FC = () => {
@@ -12,6 +13,7 @@ export const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (authService.isLoggedIn()) {
@@ -31,8 +33,13 @@ export const Login: React.FC = () => {
       await authService.login(credentials);
       globalThis.location.href = "/quizzes";
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      setError(error.message || "Error al iniciar sesión");
+      const errorObj = err as { status?: number; message?: string };
+      if (errorObj.status === 403) {
+        toast.warning(errorObj.message || "Tu cuenta no está verificada. Por favor, verifica tu correo.");
+        navigate(`/verify-email?email=${encodeURIComponent(credentials.email)}`);
+      } else {
+        setError(errorObj.message || "Error al iniciar sesión");
+      }
     } finally {
       setLoading(false);
     }
@@ -88,14 +95,23 @@ export const Login: React.FC = () => {
         </form>
         <div className="login-footer-action">
           <button
+            onClick={() => navigate("/forgot-password")}
+            className="back-link-text"
+            type="button"
+          >
+            ¿Has olvidado tu contraseña?
+          </button>
+          <button
             onClick={() => navigate("/register")}
             className="back-link-text"
+            type="button"
           >
             ¿No tienes cuenta? Regístrate
           </button>
           <button
             onClick={() => globalThis.history.back()}
             className="back-link-text"
+            type="button"
           >
             Ir a zona de alumnos
           </button>

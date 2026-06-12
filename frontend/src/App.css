@@ -234,7 +234,11 @@ body {
 }
 
 .btn-main.big {
-  width: 205px;
+  width: 207px;
+}
+
+.btn-main.wide {
+  width: 245px;
 }
 
 .btn-main.magenta {

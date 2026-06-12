@@ -5,6 +5,9 @@ import { authService } from "./auth/authService";
 import { Login } from "./auth/Login.tsx";
 import { Register } from "./auth/Register.tsx";
 import { Profile } from "./auth/Profile.tsx";
+import { VerifyEmail } from "./auth/VerifyEmail.tsx";
+import { ForgotPassword } from "./auth/ForgotPassword.tsx";
+import { ResetPassword } from "./auth/ResetPassword.tsx";
 
 import Sidebar from "./layouts/Sidebar.tsx";
 import ToastContainer from "./layouts/ToastContainer.tsx";
@@ -121,6 +124,30 @@ function App() {
                   element={
                     <PublicRoute isLoggedIn={isLoggedIn}>
                       <Register />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/verify-email"
+                  element={
+                    <PublicRoute isLoggedIn={isLoggedIn}>
+                      <VerifyEmail />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/forgot-password"
+                  element={
+                    <PublicRoute isLoggedIn={isLoggedIn}>
+                      <ForgotPassword />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/reset-password"
+                  element={
+                    <PublicRoute isLoggedIn={isLoggedIn}>
+                      <ResetPassword />
                     </PublicRoute>
                   }
                 />

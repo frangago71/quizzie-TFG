@@ -3,6 +3,15 @@ import { type LoginRequest, type LoginResponse, type RegisterRequest, type Regis
 const API_URL: string =
   (import.meta.env.VITE_API_URL as string) || "http://localhost:8000";
 
+export class AuthError extends Error {
+  status?: number;
+  constructor(message: string, status?: number) {
+    super(message);
+    this.name = "AuthError";
+    this.status = status;
+  }
+}
+
 export const authService = {
   async register(data: RegisterRequest): Promise<RegisterResponse> {
     const response = await fetch(`${API_URL}/users/register`, {
@@ -14,7 +23,7 @@ export const authService = {
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || "Error en el registro");
+      throw new AuthError(errorData.detail || "Error en el registro", response.status);
     }
     return response.json();
   },
@@ -29,7 +38,7 @@ export const authService = {
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || "Error de autenticación");
+      throw new AuthError(errorData.detail || "Error de autenticación", response.status);
     }
     const data: LoginResponse = await response.json();
     sessionStorage.setItem("token", data.access_token);
