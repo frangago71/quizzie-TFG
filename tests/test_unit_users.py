@@ -12,9 +12,9 @@ class TestUsersUnit:
         teacher_data = {
             "id": 1,
             "username": "profesor_test",
-            "email": "test@uca.es"
+            "email": "test@uca.es",
+            "is_verified": False
         }
-        # Creamos el objeto de lectura
         teacher_read = TeacherRead(**teacher_data)
         assert teacher_read.masked_password == "****"
         assert teacher_read.model_dump(by_alias=True)["hashed_password"] == "****"

@@ -14,7 +14,7 @@ class TestTeacherIntegration:
         """
         pwd = "password123"
         hashed = get_password_hash(pwd)
-        teacher = Teacher(username="prof_login", email="login@test.com", hashed_password=hashed)
+        teacher = Teacher(username="prof_login", email="login@test.com", hashed_password=hashed, is_verified=True)
         session.add(teacher)
         session.commit()
 
@@ -33,7 +33,7 @@ class TestTeacherIntegration:
         assert client.post("/users/login", json={"email": "no@existo.com", "password": "x"}).status_code == 401
 
         # Contraseña incorrecta
-        teacher = Teacher(username="prof_fail", email="fail@test.com", hashed_password=get_password_hash("real"))
+        teacher = Teacher(username="prof_fail", email="fail@test.com", hashed_password=get_password_hash("real"), is_verified=True)
         session.add(teacher)
         session.commit()
         assert client.post("/users/login", json={"email": "fail@test.com", "password": "wrong"}).status_code == 401
