@@ -73,6 +73,12 @@
   transform: translateY(-2px);
 }
 
+.code-box.cyan:focus {
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 10px var(--primary-cyan);
+  transform: translateY(-2px);
+}
+
 .play-icon {
   font-size: 0.8rem;
 }
