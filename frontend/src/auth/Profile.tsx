@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { authService } from "./authService";
 import { useToast } from "../context/ToastContext";
-import { User, Mail, Trash2, ShieldAlert } from "lucide-react";
+import { User, Mail, Trash2, ShieldAlert, KeyRound } from "lucide-react";
 import "./Profile.css";
 import "./Modal.css";
 
@@ -17,6 +17,7 @@ export const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [recoverLoading, setRecoverLoading] = useState(false);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -36,6 +37,25 @@ export const Profile: React.FC = () => {
 
     fetchProfile();
   }, []);
+
+  const handleRecoverPassword = async () => {
+    if (!profile?.email) return;
+    setRecoverLoading(true);
+    try {
+      await api.post("/users/forgot-password", { email: profile.email });
+      authService.logout();
+      sessionStorage.setItem("toast_success", "Código de recuperación enviado. Revisa tu correo electrónico.");
+      globalThis.location.href = `/reset-password?email=${encodeURIComponent(profile.email)}`;
+    } catch (err: unknown) {
+      console.error("Error al iniciar recuperación:", err);
+      const error = err as { response?: { data?: { detail?: string } } };
+      toast.error(
+        error.response?.data?.detail ||
+        "Error al solicitar el código de recuperación."
+      );
+      setRecoverLoading(false);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     if (!password.trim()) {
@@ -111,6 +131,23 @@ export const Profile: React.FC = () => {
               <p>{profile.email}</p>
             </div>
           </div>
+        </div>
+
+        <div className="profile-security-section">
+          <h3>Seguridad</h3>
+          <p>
+            ¿Quieres restablecer tu contraseña? Te enviaremos un código de recuperación
+            a tu correo electrónico para que puedas crear una nueva clave.
+          </p>
+          <button
+            type="button"
+            className="btn-main cyan max"
+            onClick={handleRecoverPassword}
+            disabled={recoverLoading}
+          >
+            <KeyRound size={18} />
+            {recoverLoading ? "Enviando código..." : "Restablecer mi contraseña"}
+          </button>
         </div>
 
         <div className="profile-danger-zone">

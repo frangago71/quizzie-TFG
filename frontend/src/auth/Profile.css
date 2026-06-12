@@ -134,8 +134,31 @@
   margin: 2px 0 0 0;
 }
 
+.profile-security-section {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1.5px dashed rgba(85, 204, 170, 0.3);
+  background-color: rgba(85, 204, 170, 0.02);
+  text-align: left;
+}
+
+.profile-security-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--secondary-cyan);
+  margin: 0 0 8px 0;
+}
+
+.profile-security-section p {
+  font-size: 0.9rem;
+  color: var(--text-gray-light);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
 .profile-danger-zone {
-  margin-top: 10px;
+  margin-top: 24px;
   padding: 24px;
   border-radius: 16px;
   border: 1.5px dashed rgba(195, 3, 6, 0.2);
@@ -157,7 +180,6 @@
   margin-bottom: 20px;
 }
 
-/* Modal Custom Styles */
 .modal-warning-icon-container {
   display: flex;
   justify-content: center;
