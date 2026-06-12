@@ -18,6 +18,11 @@ class Teacher(SQLModel, table=True):
     username: str = Field(index=True, unique=True)
     email: str = Field(unique=True)
     hashed_password: str
+    is_verified: bool = Field(default=False)
+    verification_code: Optional[str] = Field(default=None)
+    verification_code_expires_at: Optional[datetime] = Field(default=None)
+    reset_code: Optional[str] = Field(default=None)
+    reset_code_expires_at: Optional[datetime] = Field(default=None)
 
     quizzes: List["Quiz"] = Relationship(
         back_populates="teacher", sa_relationship_kwargs={"cascade": "all, delete-orphan"}
@@ -34,6 +39,7 @@ class TeacherRead(SQLModel):
     id: int
     username: str
     email: str
+    is_verified: bool = False
 
     @computed_field(alias="hashed_password")
     @property

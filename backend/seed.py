@@ -19,15 +19,29 @@ def clear_database():
 def _seed_teachers(session: Session, password: str):
     # --- 1. PROFESORES ---
     t1 = Teacher(
-        username="Miguel de Cervantes", email="cervantes@quizzie.com", hashed_password=password
+        username="Miguel de Cervantes",
+        email="cervantes@quizzie.com",
+        hashed_password=password,
+        is_verified=True,
     )
     t2 = Teacher(
         username="Santiago Ramon y Cajal",
         email="ramonycajal@quizzie.com",
         hashed_password=password,
+        is_verified=True,
     )
-    t3 = Teacher(username="Andres Iniesta", email="iniesta@quizzie.com", hashed_password=password)
-    t4 = Teacher(username="Chema Alonso", email="alonso@quizzie.com", hashed_password=password)
+    t3 = Teacher(
+        username="Andres Iniesta",
+        email="iniesta@quizzie.com",
+        hashed_password=password,
+        is_verified=True,
+    )
+    t4 = Teacher(
+        username="Chema Alonso",
+        email="alonso@quizzie.com",
+        hashed_password=password,
+        is_verified=True,
+    )
     session.add_all([t1, t2, t3, t4])
     session.commit()
     for t in [t1, t2, t3, t4]:

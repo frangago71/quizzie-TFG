@@ -159,6 +159,11 @@ classDiagram
 | | username | str | Nombre de usuario (Único e Indexado). |
 | | email | str | Correo electrónico único de contacto. |
 | | hashed_password | str | Contraseña cifrada (Censurada en lecturas API). |
+| | is_verified | bool | Indica si el correo del profesor está verificado. |
+| | verification_code | Optional[str] | Código de verificación de 6 dígitos enviado por correo. |
+| | verification_code_expires_at | Optional[datetime] | Fecha de expiración del código de verificación. |
+| | reset_code | Optional[str] | Código de recuperación de contraseña de 6 dígitos. |
+| | reset_code_expires_at | Optional[datetime] | Fecha de expiración del código de recuperación. |
 | **Group** | id | int (PK) | Identificador único de la clase o grupo. |
 | | name | str | Nombre descriptivo del grupo. |
 | | teacher_id | int (FK) | Relación con el profesor propietario. |
@@ -174,6 +179,11 @@ classDiagram
         +string username (Unique)
         +string email (Unique)
         +string hashed_password
+        +bool is_verified
+        +string? verification_code
+        +datetime? verification_code_expires_at
+        +string? reset_code
+        +datetime? reset_code_expires_at
     }
 
     class Group {
