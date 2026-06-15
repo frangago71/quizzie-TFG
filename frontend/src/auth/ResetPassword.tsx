@@ -72,16 +72,25 @@ export const ResetPassword: React.FC = () => {
 
       if (response.data.access_token) {
         sessionStorage.setItem("token", response.data.access_token);
-        sessionStorage.setItem("toast_success", "¡Contraseña restablecida con éxito! Has iniciado sesión automáticamente.");
+        sessionStorage.setItem(
+          "toast_success",
+          "¡Contraseña restablecida con éxito! Has iniciado sesión automáticamente.",
+        );
         globalThis.location.href = "/quizzes";
       } else {
-        sessionStorage.setItem("toast_success", "¡Contraseña restablecida con éxito! Ya puedes iniciar sesión.");
+        sessionStorage.setItem(
+          "toast_success",
+          "¡Contraseña restablecida con éxito! Ya puedes iniciar sesión.",
+        );
         globalThis.location.href = "/login";
       }
     } catch (err: unknown) {
       console.error(err);
       const errorObj = err as { response?: { data?: { detail?: string } } };
-      toast.error(errorObj.response?.data?.detail || "Error al restablecer la contraseña.");
+      toast.error(
+        errorObj.response?.data?.detail ||
+          "Error al restablecer la contraseña.",
+      );
     } finally {
       setLoading(false);
     }
@@ -91,7 +100,10 @@ export const ResetPassword: React.FC = () => {
     <div className="join-container">
       <div className="join-header-text">
         <h2>Restablece tu Contraseña</h2>
-        <p>Introduce tu correo, el código de 6 dígitos recibido y tu nueva contraseña.</p>
+        <p>
+          Introduce tu correo, el código de 6 dígitos recibido y tu nueva
+          contraseña.
+        </p>
       </div>
 
       <div className="join-card">
@@ -113,9 +125,7 @@ export const ResetPassword: React.FC = () => {
           </div>
 
           <div className="input-field-group">
-            <label className="code-label">
-              CÓDIGO DE RECUPERACIÓN
-            </label>
+            <label className="code-label">CÓDIGO DE RECUPERACIÓN</label>
             <div className="code-inputs-group">
               {code.map((digit, index) => (
                 <input

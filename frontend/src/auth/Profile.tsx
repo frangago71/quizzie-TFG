@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { authService } from "./authService";
 import { useToast } from "../context/ToastContext";
-import { User, Mail, Trash2, ShieldAlert, KeyRound, Pencil } from "lucide-react";
+import {
+  User,
+  Mail,
+  Trash2,
+  ShieldAlert,
+  KeyRound,
+  Pencil,
+} from "lucide-react";
 import "./Profile.css";
 import "./Modal.css";
 
@@ -40,7 +47,7 @@ export const Profile: React.FC = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [toast]);
 
   const handleStartEditing = () => {
     if (profile) {
@@ -78,7 +85,7 @@ export const Profile: React.FC = () => {
       console.error("Error al actualizar perfil:", err);
       const error = err as { response?: { data?: { detail?: string } } };
       toast.error(
-        error.response?.data?.detail || "No se pudo actualizar el perfil."
+        error.response?.data?.detail || "No se pudo actualizar el perfil.",
       );
     } finally {
       setSaveLoading(false);
@@ -91,14 +98,17 @@ export const Profile: React.FC = () => {
     try {
       await api.post("/users/forgot-password", { email: profile.email });
       authService.logout();
-      sessionStorage.setItem("toast_success", "Código de recuperación enviado. Revisa tu correo electrónico.");
+      sessionStorage.setItem(
+        "toast_success",
+        "Código de recuperación enviado. Revisa tu correo electrónico.",
+      );
       globalThis.location.href = `/reset-password?email=${encodeURIComponent(profile.email)}`;
     } catch (err: unknown) {
       console.error("Error al iniciar recuperación:", err);
       const error = err as { response?: { data?: { detail?: string } } };
       toast.error(
         error.response?.data?.detail ||
-        "Error al solicitar el código de recuperación."
+          "Error al solicitar el código de recuperación.",
       );
       setRecoverLoading(false);
     }
@@ -113,14 +123,17 @@ export const Profile: React.FC = () => {
     try {
       await api.delete("/users/me", { data: { password } });
       authService.logout();
-      sessionStorage.setItem("toast_success", "Tu cuenta ha sido eliminada permanentemente.");
+      sessionStorage.setItem(
+        "toast_success",
+        "Tu cuenta ha sido eliminada permanentemente.",
+      );
       globalThis.location.href = "/login";
     } catch (err: unknown) {
       console.error("Error al eliminar cuenta:", err);
       const error = err as { response?: { data?: { detail?: string } } };
       toast.error(
         error.response?.data?.detail ||
-        "Hubo un error al eliminar tu cuenta. Inténtalo de nuevo."
+          "Hubo un error al eliminar tu cuenta. Inténtalo de nuevo.",
       );
       setDeleteLoading(false);
     }
@@ -172,7 +185,9 @@ export const Profile: React.FC = () => {
                     <User size={20} />
                   </div>
                   <div className="info-details">
-                    <label htmlFor="edit-username-input">NOMBRE DE USUARIO</label>
+                    <label htmlFor="edit-username-input">
+                      NOMBRE DE USUARIO
+                    </label>
                     <input
                       id="edit-username-input"
                       type="text"
@@ -254,12 +269,12 @@ export const Profile: React.FC = () => {
           )}
         </div>
 
-
         <div className="profile-security-section">
           <h3>Seguridad</h3>
           <p>
-            ¿Quieres restablecer tu contraseña? Te enviaremos un código de recuperación
-            a tu correo electrónico para que puedas crear una nueva clave.
+            ¿Quieres restablecer tu contraseña? Te enviaremos un código de
+            recuperación a tu correo electrónico para que puedas crear una nueva
+            clave.
           </p>
           <button
             type="button"
@@ -268,15 +283,18 @@ export const Profile: React.FC = () => {
             disabled={recoverLoading}
           >
             <KeyRound size={18} />
-            {recoverLoading ? "Enviando código..." : "Restablecer mi contraseña"}
+            {recoverLoading
+              ? "Enviando código..."
+              : "Restablecer mi contraseña"}
           </button>
         </div>
 
         <div className="profile-danger-zone">
           <h3>Zona de peligro</h3>
           <p>
-            Al eliminar tu cuenta se borrarán permanentemente todos tus cuestionarios,
-            salas, grupos, estudiantes y datos de juego. Esta acción no se puede deshacer.
+            Al eliminar tu cuenta se borrarán permanentemente todos tus
+            cuestionarios, salas, grupos, estudiantes y datos de juego. Esta
+            acción no se puede deshacer.
           </p>
           <button
             type="button"
@@ -309,15 +327,21 @@ export const Profile: React.FC = () => {
             }}
             aria-label="Cerrar ventana emergente"
           />
-          <div className="modal-card" role="dialog" aria-modal="true" tabIndex={-1}>
+          <div
+            className="modal-card"
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+          >
             <div className="modal-header">
               <div className="modal-warning-icon-container">
                 <ShieldAlert size={36} color="var(--color-red)" />
               </div>
               <h2>¿Eliminar cuenta permanentemente?</h2>
               <p>
-                Esta acción es definitiva. Se borrarán todos tus datos en cumplimiento con el RGPD.
-                Por favor, introduce tu contraseña para confirmar.
+                Esta acción es definitiva. Se borrarán todos tus datos en
+                cumplimiento con el RGPD. Por favor, introduce tu contraseña
+                para confirmar.
               </p>
             </div>
             <div className="modal-input-group">

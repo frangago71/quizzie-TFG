@@ -35,8 +35,13 @@ export const Login: React.FC = () => {
     } catch (err: unknown) {
       const errorObj = err as { status?: number; message?: string };
       if (errorObj.status === 403) {
-        toast.warning(errorObj.message || "Tu cuenta no está verificada. Por favor, verifica tu correo.");
-        navigate(`/verify-email?email=${encodeURIComponent(credentials.email)}`);
+        toast.warning(
+          errorObj.message ||
+            "Tu cuenta no está verificada. Por favor, verifica tu correo.",
+        );
+        navigate(
+          `/verify-email?email=${encodeURIComponent(credentials.email)}`,
+        );
       } else {
         setError(errorObj.message || "Error al iniciar sesión");
       }

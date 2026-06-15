@@ -20,12 +20,17 @@ export const ForgotPassword: React.FC = () => {
     setLoading(true);
     try {
       await api.post("/users/forgot-password", { email });
-      toast.success("Código de recuperación enviado. Revisa tu bandeja de entrada.");
+      toast.success(
+        "Código de recuperación enviado. Revisa tu bandeja de entrada.",
+      );
       navigate(`/reset-password?email=${encodeURIComponent(email)}`);
     } catch (err: unknown) {
       console.error(err);
       const errorObj = err as { response?: { data?: { detail?: string } } };
-      toast.error(errorObj.response?.data?.detail || "Error al solicitar la recuperación.");
+      toast.error(
+        errorObj.response?.data?.detail ||
+          "Error al solicitar la recuperación.",
+      );
     } finally {
       setLoading(false);
     }
@@ -35,7 +40,10 @@ export const ForgotPassword: React.FC = () => {
     <div className="join-container">
       <div className="join-header-text">
         <h2>¿Olvidaste tu contraseña?</h2>
-        <p>Introduce tu correo para recibir un código de recuperación de 6 dígitos.</p>
+        <p>
+          Introduce tu correo para recibir un código de recuperación de 6
+          dígitos.
+        </p>
       </div>
 
       <div className="join-card">
@@ -56,7 +64,11 @@ export const ForgotPassword: React.FC = () => {
             />
           </div>
 
-          <button type="submit" className="btn-main cyan wide" disabled={loading}>
+          <button
+            type="submit"
+            className="btn-main cyan wide"
+            disabled={loading}
+          >
             <span>{loading ? "..." : "▶"}</span>
             {loading ? " Enviando..." : " Solicitar código"}
           </button>

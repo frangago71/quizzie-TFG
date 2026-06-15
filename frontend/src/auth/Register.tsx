@@ -48,7 +48,9 @@ export const Register: React.FC = () => {
     try {
       await authService.register(formData);
 
-      toast.success("¡Registro completado! Por favor, introduce el código enviado a tu correo.");
+      toast.success(
+        "¡Registro completado! Por favor, introduce el código enviado a tu correo.",
+      );
       navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -64,7 +66,9 @@ export const Register: React.FC = () => {
     <div className="join-container register-container">
       <div className="join-header-text register-header">
         <h2>Registro de Profesores</h2>
-        <p>Crea tu cuenta de profesor para empezar a gestionar tus cuestionarios.</p>
+        <p>
+          Crea tu cuenta de profesor para empezar a gestionar tus cuestionarios.
+        </p>
       </div>
 
       <div className="join-card register-card">
@@ -141,10 +145,7 @@ export const Register: React.FC = () => {
           </button>
         </form>
         <div className="login-footer-action">
-          <button
-            onClick={() => navigate("/login")}
-            className="back-link-text"
-          >
+          <button onClick={() => navigate("/login")} className="back-link-text">
             ¿Ya tienes cuenta? Inicia sesión
           </button>
           <button

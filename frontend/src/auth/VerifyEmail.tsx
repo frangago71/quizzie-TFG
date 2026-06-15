@@ -55,20 +55,32 @@ export const VerifyEmail: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await api.post("/users/verify-email", { email, code: fullCode });
+      const response = await api.post("/users/verify-email", {
+        email,
+        code: fullCode,
+      });
 
       if (response.data.access_token) {
         sessionStorage.setItem("token", response.data.access_token);
-        sessionStorage.setItem("toast_success", "¡Cuenta verificada con éxito! Has iniciado sesión automáticamente.");
+        sessionStorage.setItem(
+          "toast_success",
+          "¡Cuenta verificada con éxito! Has iniciado sesión automáticamente.",
+        );
         globalThis.location.href = "/quizzes";
       } else {
-        sessionStorage.setItem("toast_success", "¡Cuenta verificada con éxito! Ya puedes iniciar sesión.");
+        sessionStorage.setItem(
+          "toast_success",
+          "¡Cuenta verificada con éxito! Ya puedes iniciar sesión.",
+        );
         globalThis.location.href = "/login";
       }
     } catch (err: unknown) {
       console.error(err);
       const errorObj = err as { response?: { data?: { detail?: string } } };
-      toast.error(errorObj.response?.data?.detail || "Error al verificar el correo electrónico.");
+      toast.error(
+        errorObj.response?.data?.detail ||
+          "Error al verificar el correo electrónico.",
+      );
     } finally {
       setLoading(false);
     }
@@ -87,7 +99,9 @@ export const VerifyEmail: React.FC = () => {
     } catch (err: unknown) {
       console.error(err);
       const errorObj = err as { response?: { data?: { detail?: string } } };
-      toast.error(errorObj.response?.data?.detail || "Error al reenviar el código.");
+      toast.error(
+        errorObj.response?.data?.detail || "Error al reenviar el código.",
+      );
     } finally {
       setResendLoading(false);
     }
@@ -158,7 +172,9 @@ export const VerifyEmail: React.FC = () => {
             disabled={resendLoading || loading}
             type="button"
           >
-            {resendLoading ? "Enviando..." : "¿No has recibido el código? Reenviar"}
+            {resendLoading
+              ? "Enviando..."
+              : "¿No has recibido el código? Reenviar"}
           </button>
           <button
             onClick={() => navigate("/login")}

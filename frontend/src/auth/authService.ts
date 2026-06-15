@@ -1,4 +1,9 @@
-import { type LoginRequest, type LoginResponse, type RegisterRequest, type RegisterResponse } from "../types";
+import {
+  type LoginRequest,
+  type LoginResponse,
+  type RegisterRequest,
+  type RegisterResponse,
+} from "../types";
 
 const API_URL: string =
   (import.meta.env.VITE_API_URL as string) || "http://localhost:8000";
@@ -23,7 +28,10 @@ export const authService = {
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new AuthError(errorData.detail || "Error en el registro", response.status);
+      throw new AuthError(
+        errorData.detail || "Error en el registro",
+        response.status,
+      );
     }
     return response.json();
   },
@@ -38,7 +46,10 @@ export const authService = {
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new AuthError(errorData.detail || "Error de autenticación", response.status);
+      throw new AuthError(
+        errorData.detail || "Error de autenticación",
+        response.status,
+      );
     }
     const data: LoginResponse = await response.json();
     sessionStorage.setItem("token", data.access_token);

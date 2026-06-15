@@ -401,15 +401,15 @@ const ListQuizzes: React.FC = () => {
               {activeTab === "nuevos"
                 ? "No hay cuestionarios nuevos"
                 : activeTab === "inactivos"
-                ? "No hay cuestionarios inactivos"
-                : "No tienes cuestionarios creados"}
+                  ? "No hay cuestionarios inactivos"
+                  : "No tienes cuestionarios creados"}
             </h3>
             <p>
               {activeTab === "nuevos"
                 ? `No has creado ningún cuestionario en los últimos ${NEW_DAYS_THRESHOLD} días.`
                 : activeTab === "inactivos"
-                ? "No hay cuestionarios inactivos en este momento."
-                : "Crea tu primer cuestionario."}
+                  ? "No hay cuestionarios inactivos en este momento."
+                  : "Crea tu primer cuestionario."}
             </p>
           </div>
         )}
