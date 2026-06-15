@@ -16,6 +16,7 @@ from schemas.users import (
     DeleteAccountRequest,
     ForgotPasswordRequest,
     LoginRequest,
+    ProfileUpdateRequest,
     ResetPasswordRequest,
     TeacherCreate,
     VerifyEmailRequest,
@@ -227,6 +228,39 @@ def get_me(
             status_code=403,
             detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
         )
+    return teacher
+
+
+@router.put("/me", response_model=TeacherRead)
+def update_me(
+    profile_data: ProfileUpdateRequest,
+    teacher_id: Annotated[int, Depends(get_current_teacher_id)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    teacher = session.get(Teacher, teacher_id)
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+    if not teacher.is_verified:
+        raise HTTPException(
+            status_code=403,
+            detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
+        )
+
+    existing_username = session.exec(
+        select(Teacher)
+        .where(Teacher.username == profile_data.username)
+        .where(Teacher.id != teacher_id)
+    ).first()
+    if existing_username:
+        raise HTTPException(
+            status_code=400,
+            detail="El nombre de usuario ya está registrado.",
+        )
+
+    teacher.username = profile_data.username
+    session.add(teacher)
+    session.commit()
+    session.refresh(teacher)
     return teacher
 
 

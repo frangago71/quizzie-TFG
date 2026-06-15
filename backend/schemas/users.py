@@ -29,3 +29,7 @@ class ResetPasswordRequest(BaseModel):
     email: EmailStr
     code: str
     new_password: str = Field(..., min_length=6, examples=["123456"])
+
+
+class ProfileUpdateRequest(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50, examples=["Manuel Losada"])

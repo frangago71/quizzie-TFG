@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { authService } from "./authService";
 import { useToast } from "../context/ToastContext";
-import { User, Mail, Trash2, ShieldAlert, KeyRound } from "lucide-react";
+import { User, Mail, Trash2, ShieldAlert, KeyRound, Pencil } from "lucide-react";
 import "./Profile.css";
 import "./Modal.css";
 
@@ -19,6 +19,9 @@ export const Profile: React.FC = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [recoverLoading, setRecoverLoading] = useState(false);
   const [password, setPassword] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editUsername, setEditUsername] = useState("");
+  const [saveLoading, setSaveLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -27,6 +30,7 @@ export const Profile: React.FC = () => {
       try {
         const response = await api.get<TeacherProfile>("/users/me");
         setProfile(response.data);
+        setEditUsername(response.data.username);
       } catch (err) {
         console.error("Error al obtener perfil:", err);
         toast.error("No se pudo cargar el perfil del profesor.");
@@ -37,6 +41,49 @@ export const Profile: React.FC = () => {
 
     fetchProfile();
   }, []);
+
+  const handleStartEditing = () => {
+    if (profile) {
+      setEditUsername(profile.username);
+      setIsEditing(true);
+    }
+  };
+
+  const handleCancelEditing = () => {
+    setIsEditing(false);
+    if (profile) {
+      setEditUsername(profile.username);
+    }
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editUsername.trim()) {
+      toast.error("El nombre de usuario no puede estar vacío.");
+      return;
+    }
+    if (editUsername.trim().length < 3) {
+      toast.error("El nombre de usuario debe tener al menos 3 caracteres.");
+      return;
+    }
+    setSaveLoading(true);
+    try {
+      const response = await api.put<TeacherProfile>("/users/me", {
+        username: editUsername.trim(),
+      });
+      setProfile(response.data);
+      setIsEditing(false);
+      toast.success("Perfil actualizado con éxito.");
+    } catch (err: unknown) {
+      console.error("Error al actualizar perfil:", err);
+      const error = err as { response?: { data?: { detail?: string } } };
+      toast.error(
+        error.response?.data?.detail || "No se pudo actualizar el perfil."
+      );
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   const handleRecoverPassword = async () => {
     if (!profile?.email) return;
@@ -111,27 +158,102 @@ export const Profile: React.FC = () => {
           <span className="profile-badge">Profesor</span>
         </div>
 
-        <div className="profile-info-section">
-          <div className="profile-info-row">
-            <div className="info-icon-container">
-              <User size={20} />
-            </div>
-            <div className="info-details">
-              <label>NOMBRE DE USUARIO</label>
-              <p>{profile.username}</p>
-            </div>
-          </div>
+        <div className="profile-details-section">
+          <h3>Datos personales</h3>
+          <p className="section-desc">
+            Gestiona tu nombre de usuario y tu dirección de correo electrónico.
+          </p>
 
-          <div className="profile-info-row">
-            <div className="info-icon-container">
-              <Mail size={20} />
+          {isEditing ? (
+            <form onSubmit={handleSaveProfile} className="profile-edit-form">
+              <div className="profile-info-section">
+                <div className="profile-info-row editing">
+                  <div className="info-icon-container">
+                    <User size={20} />
+                  </div>
+                  <div className="info-details">
+                    <label htmlFor="edit-username-input">NOMBRE DE USUARIO</label>
+                    <input
+                      id="edit-username-input"
+                      type="text"
+                      value={editUsername}
+                      onChange={(e) => setEditUsername(e.target.value)}
+                      className="profile-edit-input"
+                      disabled={saveLoading}
+                      maxLength={50}
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                <div className="profile-info-row">
+                  <div className="info-icon-container">
+                    <Mail size={20} />
+                  </div>
+                  <div className="info-details">
+                    <label>CORREO ELECTRÓNICO</label>
+                    <p>{profile.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="profile-edit-actions">
+                <button
+                  type="submit"
+                  className="btn-main magenta max"
+                  disabled={saveLoading}
+                >
+                  {saveLoading ? "Guardando..." : "Guardar"}
+                </button>
+                <button
+                  type="button"
+                  className="btn-profile-cancel"
+                  onClick={handleCancelEditing}
+                  disabled={saveLoading}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="profile-edit-form">
+              <div className="profile-info-section">
+                <div className="profile-info-row">
+                  <div className="info-icon-container">
+                    <User size={20} />
+                  </div>
+                  <div className="info-details">
+                    <label>NOMBRE DE USUARIO</label>
+                    <p>{profile.username}</p>
+                  </div>
+                </div>
+
+                <div className="profile-info-row">
+                  <div className="info-icon-container">
+                    <Mail size={20} />
+                  </div>
+                  <div className="info-details">
+                    <label>CORREO ELECTRÓNICO</label>
+                    <p>{profile.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="profile-edit-actions">
+                <button
+                  type="button"
+                  className="btn-main magenta max"
+                  onClick={handleStartEditing}
+                >
+                  <Pencil size={18} />
+                  Editar Perfil
+                </button>
+              </div>
             </div>
-            <div className="info-details">
-              <label>CORREO ELECTRÓNICO</label>
-              <p>{profile.email}</p>
-            </div>
-          </div>
+          )}
         </div>
+
 
         <div className="profile-security-section">
           <h3>Seguridad</h3>
