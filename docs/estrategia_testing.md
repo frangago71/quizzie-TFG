@@ -17,26 +17,30 @@ Se adopta un enfoque de "Pirámide de pruebas" para equilibrar velocidad de ejec
 
 ## 3. Alcance del plan de pruebas
 
-### 3.1. Pruebas por dominio de entidad
-El plan de pruebas se organiza en suites independientes por **entidad** (en lugar de por módulos generales), lo que garantiza un aislamiento superior y una trazabilidad directa con los requisitos funcionales. En el backend, esto se traduce en archivos de integración específicos para cada entidad principal:
+### 3.1. Pruebas unitarias y de integración por módulos y etapas
+Las pruebas unitarias y de integración se estructuran por **módulos** y se organizan internamente según las **etapas del ciclo de vida del proyecto**, garantizando una trazabilidad completa con el diseño y los requisitos:
 
-* **Dominio de contenido (Entidades `Quiz`, `Question` y `Option`):**
-    * **Integración:** Validación de reglas de integridad en modelos y persistencia en DB.
-    * **Frontend:** Pruebas de componentes para la gestión y renderización de preguntas.
-* **Dominio de sesiones (Entidades `Room`, `Participant` y `Answer`):**
-    * **Integración:** Archivos de prueba separados por entidad (`test_integration_room.py`, `test_integration_participant.py`, `test_integration_answer.py`) para cubrir el ciclo de vida, estados y validaciones de forma aislada.
-    * **Backend:** Lógica de estados de sala, algoritmos de generación de PIN único y sincronización.
-* **Dominio de usuarios (Entidades `Teacher` y `Student`):**
-    * **Integración:** Ciclo de registro, login y protección de rutas mediante JWT.
-    * **Seguridad:** Validación de formatos de credenciales y lógica de roles.
+* **Organización por módulos:** Tanto las pruebas unitarias como las de integración se dividen en archivos correspondientes a cada módulo funcional principal del sistema (un archivo de pruebas específico para cada módulo):
+  * **Contenido:** Gestión de cuestionarios, preguntas y opciones (`contenido`).
+  * **Sesiones:** Control de salas de juego, participantes y respuestas en tiempo real (`sesiones`).
+  * **Usuarios:** Registro, autenticación y gestión de profesores y alumnos (`usuarios`).
+
+* **División por etapas (dentro de cada archivo):** Dentro de cada uno de los archivos de prueba de los módulos, los tests se agrupan y estructuran según la fase de desarrollo correspondiente:
+  * **MVP:** Funcionalidad mínima esencial (por ejemplo: login básico, creación de cuestionario simple, entrada a sala).
+  * **Core:** Lógica de negocio principal y flujos estándar (por ejemplo: sincronización de juego, juego en vivo, estadísticas).
+  * **Final Release:** Características avanzadas, optimizaciones, seguridad reforzada y control de errores del entregable final.
+
+* **Trazabilidad:**
+  * **Pruebas unitarias:** Tienen trazabilidad directa con los **Requisitos Funcionales (RF)**.
+  * **Pruebas de integración:** Tienen trazabilidad directa con las **Historias de Usuario (HU)**.
 
 ### 3.2. Interacción en tiempo real y sockets
 * **Sincronización:** Pruebas de integración para la actualización en tiempo real de la lista de participantes y estados de espera.
-* **Motor de Juego:** Verificación de la emisión de preguntas y recepción masiva de eventos bajo el protocolo WebSocket.
+* **Motor de juego:** Verificación de la emisión de preguntas y recepción masiva de eventos bajo el protocolo WebSocket.
 
 ### 3.3. Seguridad, verificación y estadísticas
 * **Verificación QR:** Tests unitarios para la lógica de validación de tokens y tests de integración para el acceso autenticado mediante escaneo.
-* **Detección de Fraude:** Validación de triggers y alertas ante pérdida de foco o comportamientos sospechosos en el cliente.
+* **Detección de fraude:** Validación de triggers y alertas ante pérdida de foco o comportamientos sospechosos en el cliente.
 * **Analítica:** Validación de la integridad de los cálculos estadísticos (Unitario) y de la correcta generación de archivos de exportación (CSV/Excel).
 
 ## 4. Pruebas de rendimiento y carga (Locust)
