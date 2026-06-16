@@ -110,17 +110,17 @@ Permite verificar de forma directa cómo los objetivos estratégicos del sistema
 
 | Caso de uso (CU) general | Historias de usuario (HU) amparadas |
 | :--- | :--- |
-| **CU-01:** Iniciar sesión como docente | **HU-01:** (Docente) Gestión de cuenta (Registro, acceso y perfil) |
-| **CU-02:** Gestionar cuestionarios | **HU-01:** (Docente) Crear y organizar cuestionarios personalizados <br><br> **HU-02:** (Docente) Editar cuestionarios existentes <br><br> **HU-13:** (Docente) Añadir etiquetas e imágenes avanzados |
-| **CU-03:** Generar preguntas con IA | **HU-09:** (Docente) Generar borradores de preguntas mediante IA |
-| **CU-04:** Administrar sala en vivo | **HU-03:** (Docente) Crear y administrar sala con PIN único <br><br> **HU-05:** (Docente) Cerrar la sala una vez iniciada la actividad <br><br> **HU-11:** (Docente) Configurar puntos extra por rapidez o racha <br><br> **HU-12:** (Docente) Decidir visibilidad intermedia del ranking |
-| **CU-05:** Unirse a sala y realizar test | **HU-15:** (Alumno) Unirse a sala con PIN y apodo sin necesidad de registro |
-| **CU-06:** Visualizar ranking en vivo | **HU-04:** (Docente) Ver en tiempo real quién se conecta y progresa <br><br> **HU-12:** (Docente) Mostrar pantalla global de ranking |
-| **CU-07:** Validar calificación mediante QR | **HU-06:** (Docente) Escanear móvil del alumno para validar nota <br><br> **HU-18:** (Alumno) Generación de código QR único al finalizar |
-| **CU-08:** Consultar estadísticas | **HU-08:** (Docente) Visualizar estadísticas de acierto por pregunta <br><br> **HU-14:** (Docente) Acceder al historial de salas pasadas |
-| **CU-09:** Exportar resultados | **HU-10:** (Docente) Exportar resultados verificados a CSV |
-| **CU-10:** Responder pregunta | **HU-16:** (Alumno) Recibir preguntas y opciones síncronas <br><br> **HU-17:** (Alumno) Saber si la respuesta es correcta (Feedback) |
-| **CU-11:** Gestionar grupos | **HU-07:** (Docente) Crear grupos o clases estructuradas |
+| **CU-01:** Iniciar sesión como docente | **HU-PR-01:** (Docente) Gestión de cuenta (Registro, acceso y perfil) |
+| **CU-02:** Gestionar cuestionarios | **HU-PR-01:** (Docente) Crear y organizar cuestionarios personalizados <br><br> **HU-PR-02:** (Docente) Editar cuestionarios existentes <br><br> **HU-PR-13:** (Docente) Añadir etiquetas e imágenes avanzados |
+| **CU-03:** Generar preguntas con IA | **HU-PR-09:** (Docente) Generar borradores de preguntas mediante IA |
+| **CU-04:** Administrar sala en vivo | **HU-PR-03:** (Docente) Crear y administrar sala con PIN único <br><br> **HU-PR-05:** (Docente) Cerrar la sala una vez iniciada la actividad <br><br> **HU-PR-11:** (Docente) Configurar puntos extra por rapidez o racha <br><br> **HU-PR-12:** (Docente) Decidir visibilidad intermedia del ranking |
+| **CU-05:** Unirse a sala y realizar test | **HU-AL-01:** (Alumno) Unirse a sala con PIN y apodo sin necesidad de registro |
+| **CU-06:** Visualizar ranking en vivo | **HU-PR-04:** (Docente) Ver en tiempo real quién se conecta y progresa <br><br> **HU-PR-12:** (Docente) Mostrar pantalla global de ranking |
+| **CU-07:** Validar calificación mediante QR | **HU-PR-06:** (Docente) Escanear móvil del alumno para validar nota <br><br> **HU-AL-04:** (Alumno) Generación de código QR único al finalizar |
+| **CU-08:** Consultar estadísticas | **HU-PR-08:** (Docente) Visualizar estadísticas de acierto por pregunta <br><br> **HU-PR-14:** (Docente) Acceder al historial de salas pasadas |
+| **CU-09:** Exportar resultados | **HU-PR-10:** (Docente) Exportar resultados verificados a CSV |
+| **CU-10:** Responder pregunta | **HU-AL-02:** (Alumno) Recibir preguntas y opciones síncronas <br><br> **HU-AL-03:** (Alumno) Saber si la respuesta es correcta (Feedback) |
+| **CU-11:** Gestionar grupos | **HU-PR-07:** (Docente) Crear grupos o clases estructuradas |
 
 ---
 
@@ -130,17 +130,17 @@ Vincula el desarrollo bajo metodologías ágiles (*backlog* de usuario) con las 
 
 | Historia de usuario / Épica (HU) | Requisitos funcionales (RF) asociados |
 | :--- | :--- |
-| **HU-01: Gestión de cuenta docente** | RF-01, RF-02, RF-03, RF-04, RF-05, RF-06 |
-| **HU-02: Creación manual de cuestionarios** | RF-07, RF-08, RF-10, RF-13, RF-14, RF-41, RF-46 |
-| **HU-03: Generación asistida con IA** | RF-34, RF-35, RF-36, RF-37 |
-| **HU-04: Control de sala en vivo** | RF-11, RF-15, RF-18, RF-19, RF-20, RF-22, RF-44, RF-45 |
-| **HU-05: Participación del estudiante** | RF-16, RF-17, RF-40 |
-| **HU-06: Ejecución de la prueba interactiva** | RF-21, RF-23, RF-24, RF-42, RF-43 |
-| **HU-07: Identificación criptográfica por QR** | RF-25, RF-26 |
-| **HU-08: Verificación presencial docente** | RF-27, RF-28, RF-29, RF-30, RF-31 |
-| **HU-09: Analítica de sesión en tiempo real** | RF-09, RF-32, RF-33 |
-| **HU-10: Organización académica de clases** | RF-38 |
-| **HU-11: Explotación y descarga de datos** | RF-12, RF-39, RF-47 |
+| **HU-PR-01: Gestión de cuenta docente** | RF-01, RF-02, RF-03, RF-04, RF-05, RF-06 |
+| **HU-PR-02: Creación manual de cuestionarios** | RF-07, RF-08, RF-10, RF-13, RF-14, RF-41, RF-46 |
+| **HU-PR-03: Generación asistida con IA** | RF-34, RF-35, RF-36, RF-37 |
+| **HU-PR-04: Control de sala en vivo** | RF-11, RF-15, RF-18, RF-19, RF-20, RF-22, RF-44, RF-45 |
+| **HU-AL-01: Participación del estudiante** | RF-16, RF-17, RF-40 |
+| **HU-AL-02: Ejecución de la prueba interactiva** | RF-21, RF-23, RF-24, RF-42, RF-43 |
+| **HU-AL-03: Identificación criptográfica por QR** | RF-25, RF-26 |
+| **HU-PR-05: Verificación presencial docente** | RF-27, RF-28, RF-29, RF-30, RF-31 |
+| **HU-PR-06: Analítica de sesión en tiempo real** | RF-09, RF-32, RF-33 |
+| **HU-PR-07: Organización académica de clases** | RF-38 |
+| **HU-PR-08: Explotación y descarga de datos** | RF-12, RF-39, RF-47 |
 
 ---
 
@@ -148,28 +148,28 @@ Vincula el desarrollo bajo metodologías ágiles (*backlog* de usuario) con las 
 
 | Grupo de entidades (Módulo de datos) | Objetivos funcionales (OBJ) | Casos de uso (CU) asociados | Historias de usuario (HU) asociadas | Requisitos funcionales (RF) asociados |
 | :--- | :--- | :--- | :--- | :--- |
-| **Módulo de contenido** | **OBJ-02:** Gestión de cuestionarios | **CU-02:** Gestionar cuestionarios | **HU-01:** Crear y organizar cuestionarios personalizados | RF-07, RF-08, RF-10, RF-12 |
-| | | | **HU-02:** Editar cuestionarios existentes | RF-13, RF-14, RF-41 |
-| | | | **HU-13:** Añadir etiquetas e imágenes avanzados | RF-46 |
-| | **OBJ-03:** Creación de salas | **CU-04:** Administrar sala en vivo | **HU-03:** Crear y administrar sala con PIN único | RF-11, RF-15, RF-18, RF-22 |
-| | | | **HU-05:** Cerrar la sala una vez iniciada la actividad | RF-19 |
-| | | | **HU-11:** Configurar puntos extra por rapidez o racha | RF-42, RF-43, RF-44 |
-| | | | **HU-12:** Decidir visibilidad intermedia del ranking | RF-45 |
-| | **OBJ-04:** Acceso rápido | **CU-05:** Unirse a sala y realizar test | **HU-15:** Unirse a sala con PIN y apodo sin necesidad de registro | RF-16, RF-17, RF-40 |
-| | **OBJ-05:** Interacción en tiempo real | **CU-05:** Unirse a sala y realizar test | **HU-15:** Unirse a sala con PIN y apodo sin necesidad de registro | RF-16, RF-17, RF-40 |
-| | | **CU-10:** Responder pregunta | **HU-16:** Recibir preguntas y opciones síncronas | RF-20, RF-21 |
-| | | | **HU-17:** Saber si la respuesta es correcta (Feedback) | RF-23, RF-24, RF-42, RF-43 |
-| | **OBJ-06:** Verificación QR | **CU-07:** Validar calificación mediante QR | **HU-06:** Escanear móvil del alumno para validar nota | RF-27, RF-28, RF-29, RF-30, RF-31 |
-| | | | **HU-18:** Generación de código QR único al finalizar | RF-25, RF-26 |
-| | **OBJ-07:** Persistencia validada | **CU-07:** Validar calificación mediante QR | **HU-06:** Escanear móvil del alumno para validar nota | RF-27, RF-28, RF-29, RF-30, RF-31 |
-| | | | **HU-18:** Generación de código QR único al finalizar | RF-25, RF-26 |
-| | **OBJ-08:** Estadísticas y análisis | **CU-06:** Visualizar ranking en vivo | **HU-04:** Ver en tiempo real quién se conecta y progresa | RF-32 |
-| | | | **HU-12:** Mostrar pantalla global de ranking | RF-09 |
-| | | **CU-08:** Consultar estadísticas | **HU-08:** Visualizar estadísticas de acierto por pregunta | RF-33 |
-| | | | **HU-14:** Acceder al historial de salas pasadas | RF-47 |
-| | **OBJ-09:** Asistente IA | **CU-03:** Generar preguntas con IA | **HU-09:** Generar borradores de preguntas mediante IA | RF-34, RF-35, RF-36, RF-37 |
-| | **OBJ-10:** Escaneo de código QR | **CU-07:** Validar calificación mediante QR | **HU-06:** Escanear móvil del alumno para validar nota | RF-27, RF-28, RF-29, RF-30, RF-31 |
-| | | | **HU-18:** Generación de código QR único al finalizar | RF-25, RF-26 |
-| | **OBJ-12:** Exportación de datos | **CU-09:** Exportar resultados | **HU-10:** Exportar resultados verificados a CSV | RF-39 |
-| **Módulo de usuarios** | **OBJ-01:** Módulo de usuario y autenticación | **CU-01:** Iniciar sesión como docente | **HU-01:** Gestión de cuenta docente (Registro, acceso y perfil) | RF-01, RF-02, RF-03, RF-04, RF-05, RF-06 |
-| | **OBJ-11:** Gestión de grupos | **CU-11:** Gestionar grupos | **HU-07:** Crear grupos o clases estructuradas | RF-38 |
+| **Módulo de contenido** | **OBJ-02:** Gestión de cuestionarios | **CU-02:** Gestionar cuestionarios | **HU-PR-01:** Crear y organizar cuestionarios personalizados | RF-07, RF-08, RF-10, RF-12 |
+| | | | **HU-PR-02:** Editar cuestionarios existentes | RF-13, RF-14, RF-41 |
+| | | | **HU-PR-13:** Añadir etiquetas e imágenes avanzados | RF-46 |
+| | **OBJ-03:** Creación de salas | **CU-04:** Administrar sala en vivo | **HU-PR-03:** Crear y administrar sala con PIN único | RF-11, RF-15, RF-18, RF-22 |
+| | | | **HU-PR-05:** Cerrar la sala una vez iniciada la actividad | RF-19 |
+| | | | **HU-PR-11:** Configurar puntos extra por rapidez o racha | RF-42, RF-43, RF-44 |
+| | | | **HU-PR-12:** Decidir visibilidad intermedia del ranking | RF-45 |
+| | **OBJ-04:** Acceso rápido | **CU-05:** Unirse a sala y realizar test | **HU-AL-01:** Unirse a sala con PIN y apodo sin necesidad de registro | RF-16, RF-17, RF-40 |
+| | **OBJ-05:** Interacción en tiempo real | **CU-05:** Unirse a sala y realizar test | **HU-AL-01:** Unirse a sala con PIN y apodo sin necesidad de registro | RF-16, RF-17, RF-40 |
+| | | **CU-10:** Responder pregunta | **HU-AL-02:** Recibir preguntas y opciones síncronas | RF-20, RF-21 |
+| | | | **HU-AL-03:** Saber si la respuesta es correcta (Feedback) | RF-23, RF-24, RF-42, RF-43 |
+| | **OBJ-06:** Verificación QR | **CU-07:** Validar calificación mediante QR | **HU-PR-06:** Escanear móvil del alumno para validar nota | RF-27, RF-28, RF-29, RF-30, RF-31 |
+| | | | **HU-AL-04:** Generación de código QR único al finalizar | RF-25, RF-26 |
+| | **OBJ-07:** Persistencia validada | **CU-07:** Validar calificación mediante QR | **HU-PR-06:** Escanear móvil del alumno para validar nota | RF-27, RF-28, RF-29, RF-30, RF-31 |
+| | | | **HU-AL-04:** Generación de código QR único al finalizar | RF-25, RF-26 |
+| | **OBJ-08:** Estadísticas y análisis | **CU-06:** Visualizar ranking en vivo | **HU-PR-04:** Ver en tiempo real quién se conecta y progresa | RF-32 |
+| | | | **HU-PR-12:** Mostrar pantalla global de ranking | RF-09 |
+| | | **CU-08:** Consultar estadísticas | **HU-PR-08:** Visualizar estadísticas de acierto por pregunta | RF-33 |
+| | | | **HU-PR-14:** Acceder al historial de salas pasadas | RF-47 |
+| | **OBJ-09:** Asistente IA | **CU-03:** Generar preguntas con IA | **HU-PR-09:** Generar borradores de preguntas mediante IA | RF-34, RF-35, RF-36, RF-37 |
+| | **OBJ-10:** Escaneo de código QR | **CU-07:** Validar calificación mediante QR | **HU-PR-06:** Escanear móvil del alumno para validar nota | RF-27, RF-28, RF-29, RF-30, RF-31 |
+| | | | **HU-AL-04:** Generación de código QR único al finalizar | RF-25, RF-26 |
+| | **OBJ-12:** Exportación de datos | **CU-09:** Exportar resultados | **HU-PR-10:** Exportar resultados verificados a CSV | RF-39 |
+| **Módulo de usuarios** | **OBJ-01:** Módulo de usuario y autenticación | **CU-01:** Iniciar sesión como docente | **HU-PR-01:** Gestión de cuenta docente (Registro, acceso y perfil) | RF-01, RF-02, RF-03, RF-04, RF-05, RF-06 |
+| | **OBJ-11:** Gestión de grupos | **CU-11:** Gestionar grupos | **HU-PR-07:** Crear grupos o clases estructuradas | RF-38 |
