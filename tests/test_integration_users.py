@@ -4,6 +4,10 @@ from models.users import Teacher, Student
 from models.content import Quiz
 from models.stage import Room, RoomStatus
 from auth import create_access_token, get_password_hash
+from sqlmodel import select
+from models.users import Teacher
+from models.content import Quiz
+from models.stage import Room
 
 class TestUsersIntegration:
     # ==========================================
@@ -140,3 +144,66 @@ class TestUsersIntegration:
 
         # Simular el cierre de sesión descartando el token en el cliente (RF-06)
         assert client.get("/users/me").status_code == 401
+
+    # ==========================================
+    # Final Release / QA
+    # ==========================================
+
+    def test_teacher_account_qa_flow(self, client: TestClient, session):
+        """
+        HU-PR-01: Gestión de cuenta docente avanzada (RF-01, RF-03, RF-04, RF-05)
+        Flujo integrado para la fase Final Release: registro con validación, edición de perfil,
+        recuperación de contraseña con código expirado/correcto y baja del usuario con comprobación de cascada.
+        """
+        # 1. Registro de cuenta (RF-01)
+        payload = {
+            "username": "docente_qa",
+            "email": "docente_qa@us.es",
+            "password": "secure_password_qa"
+        }
+        res = client.post("/users/register", json=payload)
+        assert res.status_code == 201
+        assert res.json()["username"] == "docente_qa"
+
+        # Recuperar código para verificar (RF-01)
+        teacher_db = session.exec(select(Teacher).where(Teacher.email == "docente_qa@us.es")).first()
+        assert teacher_db is not None
+
+        # Verificar email (RF-01)
+        res_v = client.post("/users/verify-email", json={"email": "docente_qa@us.es", "code": teacher_db.verification_code})
+        assert res_v.status_code == 200
+        token = res_v.json()["access_token"]
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 2. Edición de perfil (RF-05)
+        res_profile = client.put("/users/me", json={"username": "qa_updated"}, headers=headers)
+        assert res_profile.status_code == 200
+        assert res_profile.json()["username"] == "qa_updated"
+
+        # 3. Recuperación de contraseña (RF-04)
+        client.post("/users/forgot-password", json={"email": "docente_qa@us.es"})
+        session.refresh(teacher_db)
+        assert teacher_db.reset_code is not None
+
+        # Resetear contraseña (RF-04)
+        res_reset = client.post("/users/reset-password", json={
+            "email": "docente_qa@us.es",
+            "code": teacher_db.reset_code,
+            "new_password": "new_secure_password_qa"
+        })
+        assert res_reset.status_code == 200
+        new_token = res_reset.json()["access_token"]
+        new_headers = {"Authorization": f"Bearer {new_token}"}
+
+        # 4. Creación de recursos y baja del usuario (RF-03)
+        quiz = Quiz(title="Quiz QA", description="Desc QA", teacher_id=teacher_db.id)
+        session.add(quiz)
+        session.commit()
+
+        # Dar de baja (RF-03)
+        res_del = client.request("DELETE", "/users/me", json={"password": "new_secure_password_qa"}, headers=new_headers)
+        assert res_del.status_code == 204
+
+        # Verificar cascada (RF-03)
+        assert session.get(Teacher, teacher_db.id) is None
+        assert session.exec(select(Quiz).where(Quiz.id == quiz.id)).first() is None
