@@ -1,8 +1,13 @@
 import pytest
-from datetime import datetime, timezone
+import re
+from datetime import datetime, timezone, timedelta
+from pydantic import ValidationError
+from fastapi import HTTPException
+from fastapi.security import HTTPAuthorizationCredentials
 from models.users import Teacher, TeacherRead, Student
 from schemas.content import QuizListRead
-import re
+from schemas.users import TeacherCreate, ResetPasswordRequest, ProfileUpdateRequest
+from auth import get_current_teacher_id, get_password_hash, verify_password
 
 class TestUsersUnit:
     """
@@ -85,7 +90,7 @@ class TestUsersUnit:
         teacher_data = {
             "id": 1,
             "username": "profesor_test",
-            "email": "test@uca.es",
+            "email": "test@us.es",
             "is_verified": False
         }
         teacher_read = TeacherRead(**teacher_data)
@@ -99,7 +104,7 @@ class TestUsersUnit:
         """
         teacher = Teacher(
             username="lucia_user",
-            email="lucia@uca.es",
+            email="lucia@us.es",
             hashed_password="password_muy_seguro"
         )
         assert teacher.username == "lucia_user"
@@ -110,12 +115,93 @@ class TestUsersUnit:
         RF-06. Cierre de sesión
         Verificar que al recibir credenciales inválidas (como un token descartado), se lanza un error 401 que fuerza la redirección.
         """
-        from fastapi import HTTPException
-        from fastapi.security import HTTPAuthorizationCredentials
-        from auth import get_current_teacher_id
-
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="invalid_token_value")
         with pytest.raises(HTTPException) as exc_info:
             get_current_teacher_id(credentials)
         assert exc_info.value.status_code == 401
         assert "inicia sesión de nuevo" in exc_info.value.detail
+
+    # ==========================================
+    # Final Release / QA
+    # ==========================================
+
+    def test_teacher_registration_validation(self):
+        """
+        RF-01. Gestión de registro
+        Verificar la validación de campos del docente al registrarse y el hashing seguro de la contraseña.
+        """
+        # Validaciones de email, username y password (RF-01)
+        with pytest.raises(ValidationError):
+            TeacherCreate(username="TeacherValid", email="invalid-email", password="password123")
+
+        with pytest.raises(ValidationError):
+            TeacherCreate(username="TeacherValid", email="test@us.es", password="123")
+
+        with pytest.raises(ValidationError):
+            TeacherCreate(username="Te", email="test@us.es", password="password123")
+
+        # Hashing de contraseña seguro (RF-01)
+        raw_password = "SecurePassword123"
+        hashed = get_password_hash(raw_password)
+        assert hashed != raw_password
+        assert verify_password(raw_password, hashed)
+        assert not verify_password("wrong_password", hashed)
+
+    def test_teacher_cascade_delete_relationship(self):
+        """
+        RF-03. Baja de usuarios
+        Validar que las relaciones de cascada estén configuradas para borrar quizzes, grupos y salas del docente.
+        """
+        # Relaciones en cascada del Docente (RF-03)
+        teacher_relation_quizzes = Teacher.__sqlmodel_relationships__["quizzes"]
+        assert "delete-orphan" in teacher_relation_quizzes.sa_relationship_kwargs.get("cascade", "")
+
+        teacher_relation_groups = Teacher.__sqlmodel_relationships__["groups"]
+        assert "delete-orphan" in teacher_relation_groups.sa_relationship_kwargs.get("cascade", "")
+
+        teacher_relation_rooms = Teacher.__sqlmodel_relationships__["rooms"]
+        assert "delete-orphan" in teacher_relation_rooms.sa_relationship_kwargs.get("cascade", "")
+
+    def test_teacher_password_reset_validation(self):
+        """
+        RF-04. Recuperación contraseña
+        Verificar que el esquema ResetPasswordRequest valida los campos y que la entidad almacena y expira el código.
+        """
+        # Validación del esquema ResetPasswordRequest (RF-04)
+        req = ResetPasswordRequest(email="test@us.es", code="123456", new_password="newsecurepassword")
+        assert req.new_password == "newsecurepassword"
+
+        with pytest.raises(ValidationError):
+            ResetPasswordRequest(email="test@us.es", code="123456", new_password="123")
+
+        with pytest.raises(ValidationError):
+            ResetPasswordRequest(email="invalid-email", code="123456", new_password="newsecurepassword")
+
+        # Atributos de expiración de código (RF-04)
+        now = datetime.now(timezone.utc)
+        teacher = Teacher(
+            username="teacher_reset",
+            email="reset@us.es",
+            hashed_password="x",
+            reset_code="999999",
+            reset_code_expires_at=now + timedelta(minutes=15)
+        )
+        assert teacher.reset_code == "999999"
+        assert teacher.reset_code_expires_at > now
+
+    def test_teacher_profile_update_validation(self):
+        """
+        RF-05. Edición perfil
+        Verificar que el esquema ProfileUpdateRequest valida la longitud correcta del nombre de usuario.
+        """
+        # Username válido (RF-05)
+        req = ProfileUpdateRequest(username="New Username")
+        assert req.username == "New Username"
+
+        # Username demasiado corto (RF-05)
+        with pytest.raises(ValidationError):
+            ProfileUpdateRequest(username="Ab")
+
+        # Username demasiado largo (RF-05)
+        with pytest.raises(ValidationError):
+            ProfileUpdateRequest(username="a" * 51)
