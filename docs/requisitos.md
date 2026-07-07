@@ -23,17 +23,17 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 
 | ID | Issue | Nombre | Descripción | Prioridad | Objetivo | Fase |
 | :--- | :---: | :--- | :--- | :---: | :---: | :--- |
-| **RF-01** | #58 | Gestión de registro | Registro de nuevos profesores con validación de email y hash de contraseña. | Alta | OBJ-01 |  |
+| **RF-01** | #58 | Gestión de registro | Registro de nuevos profesores con validación de email y hash de contraseña. | Alta | OBJ-01 | QA |
 | **RF-02** | #37 | Inicio de sesión | Autenticación mediante email y contraseña cifrada (JWT). | Alta | OBJ-01 | Core |
-| **RF-03** | #59 | Baja de usuarios | Eliminación de cuenta y datos asociados de forma permanente. | Media | OBJ-01 |  |
-| **RF-04** | #60 | Recuperación contraseña | Solicitud de reseteo de contraseña vía email. | Baja | OBJ-01 |  |
-| **RF-05** | #61 | Edición perfil | Modificación de nombre visible y contraseña. | Media | OBJ-01 |  |
+| **RF-03** | #59 | Baja de usuarios | Eliminación de cuenta y datos asociados de forma permanente. | Media | OBJ-01 | QA |
+| **RF-04** | #60 | Recuperación contraseña | Solicitud de reseteo de contraseña vía email. | Baja | OBJ-01 | QA  |
+| **RF-05** | #61 | Edición perfil | Modificación de nombre visible y contraseña. | Media | OBJ-01 | QA |
 | **RF-06** | #38 | Cierre de sesión | Invalidación del token y redirección al login. | Alta | OBJ-01 | Core |
 | **RF-07** | #1 | Crear cuestionario | Creación de cuestionarios de preguntas sin límite de cantidad. | Alta | OBJ-02 | MVP |
 | **RF-08** | #2 | Listar cuestionarios | Visualización de cuestionarios ordenados por fecha. | Alta | OBJ-02 | MVP |
 | **RF-09** | #39 | Mostrar ranking | Ranking de alumnos después de cada pregunta y al final. | Media | OBJ-08 | Core |
-| **RF-10** | #62 | Aleatoriedad | Opción para cambiar el orden de preguntas y respuestas. | Baja | OBJ-02 | |
-| **RF-11** | #63 | Configurar tiempo | Definición del tiempo de respuesta al crear la sala. | Media | OBJ-03 |  |
+| **RF-10** | #62 | Aleatoriedad | Opción para cambiar el orden de preguntas y respuestas. | Baja | OBJ-02 | QA |
+| **RF-11** | #63 | Configurar tiempo | Definición del tiempo de respuesta al crear la sala. | Media | OBJ-03 | QA |
 | **RF-12** | # | Importación | Carga de preguntas y respuestas desde archivos .txt o .csv. | Media | OBJ-12 | |
 | **RF-13** | #51 | Edición de cuestionarios y preguntas | Permitir editar el título, descripción, preguntas y opciones. | Media | OBJ-02 |Core |
 | **RF-14** | #40 | Eliminación de datos | Borrado lógico de cuestionarios o preguntas. | Media | OBJ-02 | Core |
@@ -61,15 +61,15 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 | **RF-36** | # | Navegación y tutorial por IA | Detección de intenciones de navegación y explicación del funcionamiento de la app vía IA. | Baja | OBJ-09 | |
 | **RF-37** | # | Revisión post IA | Presentación de contenido generado por IA para validación manual. | Media | OBJ-09 | |
 | **RF-38** | # | Crear clase | Agrupación de alumnos o resultados bajo etiqueta de clase. | Baja | OBJ-11 | |
-| **RF-39** | #64 | Exportación CSV | Generación de archivo descargable con los resultados. | Alta | OBJ-12 | |
+| **RF-39** | #64 | Exportación CSV | Generación de archivo descargable con los resultados. | Alta | OBJ-12 | QA |
 | **RF-40** | #49 | Gestión de desconexiones y reconexiones | Manejo de unirse tarde, desconexiones y borrado al abandonar. | Media | OBJ-05 | Core |
 | **RF-41** | #50 | Filtros en listar cuestionarios | Filtrado por inactivos, nuevos o todos. | Media | OBJ-02 | Core |
 | **RF-42** | # | Bonificación por tiempo | Cálculo de puntos extra en función del tiempo empleado en responder. | Baja | OBJ-05 | |
 | **RF-43** | # | Sistema de rachas | Bonificación de puntos por encadenar respuestas correctas consecutivas. | Baja | OBJ-05 | |
 | **RF-44** | # | Configuración de puntuación | Elección del modo de puntuación (estándar o con bonificaciones) al crear la sala. | Baja | OBJ-03 | |
-| **RF-45** | #65 | Visibilidad del ranking | Opción para activar o desactivar la visualización del ranking entre preguntas. | Baja | OBJ-03 | |
+| **RF-45** | #65 | Visibilidad del ranking | Opción para activar o desactivar la visualización del ranking entre preguntas. | Baja | OBJ-03 | QA |
 | **RF-46** | # | Creación/edición de cuestionarios avanzada | Inclusión de etiquetas (tags) e imágenes en el formulario de creación y edición. | Baja | OBJ-02 | |
-| **RF-47** | #66| Historial de salas | Registro de salas finalizadas con acceso a los resultados y estadísticas históricas. | Alta | OBJ-07 | Core |
+| **RF-47** | #66| Historial de salas | Registro de salas finalizadas con acceso a los resultados y estadísticas históricas. | Alta | OBJ-07 | QA |
 
 ## 3. Requisitos No Funcionales (RNF)
 Definen los atributos de calidad y restricciones técnicas del sistema.
