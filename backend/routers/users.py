@@ -1,4 +1,6 @@
 import re
+import secrets
+from datetime import datetime, timedelta, timezone
 from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -8,6 +10,7 @@ from sqlmodel import Session, select
 
 from auth import create_access_token, get_current_teacher_id, get_password_hash, verify_password
 from database import get_session
+from email_service import send_email
 from models.stage import RoomStatus
 from models.users import Group, Student, Teacher, TeacherRead
 from routers.content import Quiz
@@ -24,10 +27,17 @@ from schemas.users import (
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+NOT_VERIFIED_DETAIL = "Tu cuenta no está verificada. Por favor, verifica tu correo primero."
+TEACHER_NOT_FOUND_DETAIL = "Profesor no encontrado"
+USER_NOT_FOUND_DETAIL = "Usuario no encontrado."
+
 
 @router.post(
     "/login",
-    responses={401: {"description": "Email o contraseña incorrectos"}},
+    responses={
+        401: {"description": "Email o contraseña incorrectos"},
+        403: {"description": NOT_VERIFIED_DETAIL},
+    },
 )
 async def login(login_data: LoginRequest, session: Annotated[Session, Depends(get_session)]):
     statement = select(Teacher).where(Teacher.email == login_data.email)
@@ -41,7 +51,7 @@ async def login(login_data: LoginRequest, session: Annotated[Session, Depends(ge
     if not teacher.is_verified:
         raise HTTPException(
             status_code=403,
-            detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
+            detail=NOT_VERIFIED_DETAIL,
         )
     teacher_id_str = str(teacher.id)
     access_token = create_access_token(data={"sub": teacher_id_str})
@@ -77,13 +87,8 @@ async def register(teacher_data: TeacherCreate, session: Annotated[Session, Depe
         )
 
     try:
-        import random
-        from datetime import datetime, timedelta, timezone
-
-        from email_service import send_email
-
         hashed_password = get_password_hash(teacher_data.password)
-        verification_code = f"{random.randint(100000, 999999)}"
+        verification_code = f"{secrets.SystemRandom().randint(100000, 999999)}"
         expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
         new_teacher = Teacher(
@@ -215,23 +220,38 @@ def create_student(nickname: str, session: Annotated[Session, Depends(get_sessio
         raise HTTPException(status_code=500, detail="Error interno al crear el estudiante.")
 
 
-@router.get("/me", response_model=TeacherRead)
+@router.get(
+    "/me",
+    response_model=TeacherRead,
+    responses={
+        403: {"description": NOT_VERIFIED_DETAIL},
+        404: {"description": TEACHER_NOT_FOUND_DETAIL},
+    },
+)
 def get_me(
     teacher_id: Annotated[int, Depends(get_current_teacher_id)],
     session: Annotated[Session, Depends(get_session)],
 ):
     teacher = session.get(Teacher, teacher_id)
     if not teacher:
-        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+        raise HTTPException(status_code=404, detail=TEACHER_NOT_FOUND_DETAIL)
     if not teacher.is_verified:
         raise HTTPException(
             status_code=403,
-            detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
+            detail=NOT_VERIFIED_DETAIL,
         )
     return teacher
 
 
-@router.put("/me", response_model=TeacherRead)
+@router.put(
+    "/me",
+    response_model=TeacherRead,
+    responses={
+        400: {"description": "El nombre de usuario ya está registrado."},
+        403: {"description": NOT_VERIFIED_DETAIL},
+        404: {"description": TEACHER_NOT_FOUND_DETAIL},
+    },
+)
 def update_me(
     profile_data: ProfileUpdateRequest,
     teacher_id: Annotated[int, Depends(get_current_teacher_id)],
@@ -239,11 +259,11 @@ def update_me(
 ):
     teacher = session.get(Teacher, teacher_id)
     if not teacher:
-        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+        raise HTTPException(status_code=404, detail=TEACHER_NOT_FOUND_DETAIL)
     if not teacher.is_verified:
         raise HTTPException(
             status_code=403,
-            detail="Tu cuenta no está verificada. Por favor, verifica tu correo primero.",
+            detail=NOT_VERIFIED_DETAIL,
         )
 
     existing_username = session.exec(
@@ -264,7 +284,15 @@ def update_me(
     return teacher
 
 
-@router.delete("/me", status_code=204)
+@router.delete(
+    "/me",
+    status_code=204,
+    responses={
+        400: {"description": "La contraseña introducida es incorrecta."},
+        404: {"description": TEACHER_NOT_FOUND_DETAIL},
+        500: {"description": "Error al eliminar la cuenta."},
+    },
+)
 def delete_me(
     delete_data: DeleteAccountRequest,
     teacher_id: Annotated[int, Depends(get_current_teacher_id)],
@@ -272,7 +300,7 @@ def delete_me(
 ):
     teacher = session.get(Teacher, teacher_id)
     if not teacher:
-        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+        raise HTTPException(status_code=404, detail=TEACHER_NOT_FOUND_DETAIL)
     if not verify_password(delete_data.password, teacher.hashed_password):
         raise HTTPException(status_code=400, detail="La contraseña introducida es incorrecta.")
     try:
@@ -284,16 +312,20 @@ def delete_me(
         raise HTTPException(status_code=500, detail=f"Error al eliminar la cuenta: {str(e)}")
 
 
-@router.post("/verify-email")
+@router.post(
+    "/verify-email",
+    responses={
+        400: {"description": "Código de verificación incorrecto o expirado."},
+        404: {"description": USER_NOT_FOUND_DETAIL},
+    },
+)
 def verify_email(
     verify_data: VerifyEmailRequest,
     session: Annotated[Session, Depends(get_session)],
 ):
-    from datetime import datetime, timezone
-
     teacher = session.exec(select(Teacher).where(Teacher.email == verify_data.email)).first()
     if not teacher:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+        raise HTTPException(status_code=404, detail=USER_NOT_FOUND_DETAIL)
 
     if teacher.is_verified:
         access_token = create_access_token(data={"sub": str(teacher.id)})
@@ -331,24 +363,24 @@ def verify_email(
     }
 
 
-@router.post("/resend-verification")
+@router.post(
+    "/resend-verification",
+    responses={
+        404: {"description": USER_NOT_FOUND_DETAIL},
+    },
+)
 def resend_verification(
     request_data: ForgotPasswordRequest,
     session: Annotated[Session, Depends(get_session)],
 ):
-    import random
-    from datetime import datetime, timedelta, timezone
-
-    from email_service import send_email
-
     teacher = session.exec(select(Teacher).where(Teacher.email == request_data.email)).first()
     if not teacher:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+        raise HTTPException(status_code=404, detail=USER_NOT_FOUND_DETAIL)
 
     if teacher.is_verified:
         return {"message": "La cuenta ya está verificada."}
 
-    verification_code = f"{random.randint(100000, 999999)}"
+    verification_code = f"{secrets.SystemRandom().randint(100000, 999999)}"
     expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
     teacher.verification_code = verification_code
@@ -376,16 +408,16 @@ def resend_verification(
     return {"message": "Nuevo código enviado."}
 
 
-@router.post("/forgot-password")
+@router.post(
+    "/forgot-password",
+    responses={
+        404: {"description": "No existe ninguna cuenta asociada a este correo electrónico."},
+    },
+)
 def forgot_password(
     request_data: ForgotPasswordRequest,
     session: Annotated[Session, Depends(get_session)],
 ):
-    import random
-    from datetime import datetime, timedelta, timezone
-
-    from email_service import send_email
-
     teacher = session.exec(select(Teacher).where(Teacher.email == request_data.email)).first()
     if not teacher:
         raise HTTPException(
@@ -393,7 +425,7 @@ def forgot_password(
             detail="No existe ninguna cuenta asociada a este correo electrónico.",
         )
 
-    reset_code = f"{random.randint(100000, 999999)}"
+    reset_code = f"{secrets.SystemRandom().randint(100000, 999999)}"
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
 
     teacher.reset_code = reset_code
@@ -422,16 +454,20 @@ def forgot_password(
     return {"message": "Código de restablecimiento enviado."}
 
 
-@router.post("/reset-password")
+@router.post(
+    "/reset-password",
+    responses={
+        400: {"description": "Código de restablecimiento incorrecto o expirado."},
+        404: {"description": USER_NOT_FOUND_DETAIL},
+    },
+)
 def reset_password(
     reset_data: ResetPasswordRequest,
     session: Annotated[Session, Depends(get_session)],
 ):
-    from datetime import datetime, timezone
-
     teacher = session.exec(select(Teacher).where(Teacher.email == reset_data.email)).first()
     if not teacher:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+        raise HTTPException(status_code=404, detail=USER_NOT_FOUND_DETAIL)
 
     if not teacher.reset_code or teacher.reset_code != reset_data.code:
         raise HTTPException(status_code=400, detail="Código de restablecimiento incorrecto.")
