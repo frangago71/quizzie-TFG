@@ -4,6 +4,7 @@ import api from "../api";
 import { useToast } from "../context/ToastContext";
 import "./Login.css";
 import "../room-access/RoomCode.css";
+import { CodeInputGrid } from "./CodeInputGrid";
 
 export const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -11,14 +12,6 @@ export const ResetPassword: React.FC = () => {
 
   const [email, setEmail] = useState(emailParam);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const digitKeys = [
-    "reset-digit-0",
-    "reset-digit-1",
-    "reset-digit-2",
-    "reset-digit-3",
-    "reset-digit-4",
-    "reset-digit-5",
-  ];
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -134,23 +127,13 @@ export const ResetPassword: React.FC = () => {
 
           <div className="input-field-group">
             <span className="code-label">CÓDIGO DE RECUPERACIÓN</span>
-            <div className="code-inputs-group">
-              {code.map((digit, index) => (
-                <input
-                  key={digitKeys[index]}
-                  ref={(el) => {
-                    inputsRef.current[index] = el;
-                  }}
-                  type="text"
-                  inputMode="numeric"
-                  value={digit}
-                  onChange={(e) => handleChange(e.target.value, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="code-box cyan"
-                  disabled={loading}
-                />
-              ))}
-            </div>
+            <CodeInputGrid
+              code={code}
+              inputsRef={inputsRef}
+              handleChange={handleChange}
+              handleKeyDown={handleKeyDown}
+              loading={loading}
+            />
           </div>
 
           <div className="input-field-group">

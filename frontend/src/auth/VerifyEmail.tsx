@@ -4,6 +4,7 @@ import api from "../api";
 import { useToast } from "../context/ToastContext";
 import "./Login.css";
 import "../room-access/RoomCode.css";
+import { CodeInputGrid } from "./CodeInputGrid";
 
 export const VerifyEmail: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -11,14 +12,6 @@ export const VerifyEmail: React.FC = () => {
 
   const [email, setEmail] = useState(emailParam);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const digitKeys = [
-    "verify-digit-0",
-    "verify-digit-1",
-    "verify-digit-2",
-    "verify-digit-3",
-    "verify-digit-4",
-    "verify-digit-5",
-  ];
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
@@ -144,23 +137,13 @@ export const VerifyEmail: React.FC = () => {
             <span className="code-label">
               CÓDIGO DE VERIFICACIÓN (6 DÍGITOS)
             </span>
-            <div className="code-inputs-group">
-              {code.map((digit, index) => (
-                <input
-                  key={digitKeys[index]}
-                  ref={(el) => {
-                    inputsRef.current[index] = el;
-                  }}
-                  type="text"
-                  inputMode="numeric"
-                  value={digit}
-                  onChange={(e) => handleChange(e.target.value, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="code-box cyan"
-                  disabled={loading}
-                />
-              ))}
-            </div>
+            <CodeInputGrid
+              code={code}
+              inputsRef={inputsRef}
+              handleChange={handleChange}
+              handleKeyDown={handleKeyDown}
+              loading={loading}
+            />
           </div>
 
           <button
