@@ -11,7 +11,14 @@ export const VerifyEmail: React.FC = () => {
 
   const [email, setEmail] = useState(emailParam);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const digitKeys = ["verify-digit-0", "verify-digit-1", "verify-digit-2", "verify-digit-3", "verify-digit-4", "verify-digit-5"];
+  const digitKeys = [
+    "verify-digit-0",
+    "verify-digit-1",
+    "verify-digit-2",
+    "verify-digit-3",
+    "verify-digit-4",
+    "verify-digit-5",
+  ];
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);

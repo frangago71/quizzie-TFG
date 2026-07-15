@@ -11,7 +11,14 @@ export const ResetPassword: React.FC = () => {
 
   const [email, setEmail] = useState(emailParam);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const digitKeys = ["reset-digit-0", "reset-digit-1", "reset-digit-2", "reset-digit-3", "reset-digit-4", "reset-digit-5"];
+  const digitKeys = [
+    "reset-digit-0",
+    "reset-digit-1",
+    "reset-digit-2",
+    "reset-digit-3",
+    "reset-digit-4",
+    "reset-digit-5",
+  ];
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
