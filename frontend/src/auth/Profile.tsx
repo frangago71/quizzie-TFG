@@ -207,7 +207,7 @@ export const Profile: React.FC = () => {
                     <Mail size={20} />
                   </div>
                   <div className="info-details">
-                    <label>CORREO ELECTRÓNICO</label>
+                    <span className="info-label">CORREO ELECTRÓNICO</span>
                     <p>{profile.email}</p>
                   </div>
                 </div>
@@ -239,7 +239,7 @@ export const Profile: React.FC = () => {
                     <User size={20} />
                   </div>
                   <div className="info-details">
-                    <label>NOMBRE DE USUARIO</label>
+                    <span className="info-label">NOMBRE DE USUARIO</span>
                     <p>{profile.username}</p>
                   </div>
                 </div>
@@ -249,7 +249,7 @@ export const Profile: React.FC = () => {
                     <Mail size={20} />
                   </div>
                   <div className="info-details">
-                    <label>CORREO ELECTRÓNICO</label>
+                    <span className="info-label">CORREO ELECTRÓNICO</span>
                     <p>{profile.email}</p>
                   </div>
                 </div>
@@ -308,15 +308,7 @@ export const Profile: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <div
-          className="modal-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget && !deleteLoading) {
-              setIsModalOpen(false);
-              setPassword("");
-            }
-          }}
-        >
+        <div className="modal-overlay">
           <button
             className="modal-backdrop-button"
             onClick={() => {

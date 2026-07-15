@@ -88,7 +88,7 @@ async def register(teacher_data: TeacherCreate, session: Annotated[Session, Depe
 
     try:
         hashed_password = get_password_hash(teacher_data.password)
-        verification_code = f"{secrets.SystemRandom().randint(100000, 999999)}"
+        verification_code = f"{secrets.randbelow(900000) + 100000}"
         expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
         new_teacher = Teacher(
@@ -380,7 +380,7 @@ def resend_verification(
     if teacher.is_verified:
         return {"message": "La cuenta ya está verificada."}
 
-    verification_code = f"{secrets.SystemRandom().randint(100000, 999999)}"
+    verification_code = f"{secrets.randbelow(900000) + 100000}"
     expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
 
     teacher.verification_code = verification_code
@@ -425,7 +425,7 @@ def forgot_password(
             detail="No existe ninguna cuenta asociada a este correo electrónico.",
         )
 
-    reset_code = f"{secrets.SystemRandom().randint(100000, 999999)}"
+    reset_code = f"{secrets.randbelow(900000) + 100000}"
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
 
     teacher.reset_code = reset_code

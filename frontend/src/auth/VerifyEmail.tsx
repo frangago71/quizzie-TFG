@@ -11,6 +11,7 @@ export const VerifyEmail: React.FC = () => {
 
   const [email, setEmail] = useState(emailParam);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const digitKeys = ["verify-digit-0", "verify-digit-1", "verify-digit-2", "verify-digit-3", "verify-digit-4", "verify-digit-5"];
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
@@ -133,13 +134,13 @@ export const VerifyEmail: React.FC = () => {
           </div>
 
           <div className="input-field-group">
-            <label className="code-label">
+            <span className="code-label">
               CÓDIGO DE VERIFICACIÓN (6 DÍGITOS)
-            </label>
+            </span>
             <div className="code-inputs-group">
               {code.map((digit, index) => (
                 <input
-                  key={index}
+                  key={digitKeys[index]}
                   ref={(el) => {
                     inputsRef.current[index] = el;
                   }}
@@ -158,7 +159,7 @@ export const VerifyEmail: React.FC = () => {
           <button
             type="submit"
             className="btn-main cyan"
-            disabled={loading || code.some((d) => d === "")}
+            disabled={loading || code.includes("")}
           >
             <span>{loading ? "..." : "▶"}</span>
             {loading ? " Verificando..." : " Activar Cuenta"}

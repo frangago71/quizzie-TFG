@@ -127,7 +127,8 @@
   text-align: left;
 }
 
-.info-details label {
+.info-details label,
+.info-details .info-label {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-gray-light);

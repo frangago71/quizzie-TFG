@@ -11,6 +11,7 @@ export const ResetPassword: React.FC = () => {
 
   const [email, setEmail] = useState(emailParam);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const digitKeys = ["reset-digit-0", "reset-digit-1", "reset-digit-2", "reset-digit-3", "reset-digit-4", "reset-digit-5"];
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -125,11 +126,11 @@ export const ResetPassword: React.FC = () => {
           </div>
 
           <div className="input-field-group">
-            <label className="code-label">CÓDIGO DE RECUPERACIÓN</label>
+            <span className="code-label">CÓDIGO DE RECUPERACIÓN</span>
             <div className="code-inputs-group">
               {code.map((digit, index) => (
                 <input
-                  key={index}
+                  key={digitKeys[index]}
                   ref={(el) => {
                     inputsRef.current[index] = el;
                   }}
@@ -180,7 +181,7 @@ export const ResetPassword: React.FC = () => {
           <button
             type="submit"
             className="btn-main cyan wide"
-            disabled={loading || code.some((d) => d === "")}
+            disabled={loading || code.includes("")}
           >
             <span>{loading ? "..." : "▶"}</span>
             {loading ? " Restableciendo..." : " Cambiar contraseña"}
