@@ -26,7 +26,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 ||
+      (error.response?.status === 404 && error.config?.url?.includes("/users/me"))
+    ) {
       sessionStorage.removeItem("token");
       globalThis.location.href = "/login";
     }

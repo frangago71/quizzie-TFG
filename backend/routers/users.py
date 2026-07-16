@@ -3,7 +3,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
@@ -67,7 +67,11 @@ async def login(login_data: LoginRequest, session: Annotated[Session, Depends(ge
         500: {"description": "Error interno al registrar el profesor."},
     },
 )
-async def register(teacher_data: TeacherCreate, session: Annotated[Session, Depends(get_session)]):
+async def register(
+    teacher_data: TeacherCreate,
+    session: Annotated[Session, Depends(get_session)],
+    background_tasks: BackgroundTasks,
+):
     existing_email = session.exec(
         select(Teacher).where(Teacher.email == teacher_data.email)
     ).first()
@@ -117,7 +121,8 @@ async def register(teacher_data: TeacherCreate, session: Annotated[Session, Depe
             </body>
         </html>
         """
-        send_email(
+        background_tasks.add_task(
+            send_email,
             to_email=new_teacher.email,
             subject="Verificación de cuenta en Quizzie",
             html_content=email_body,
@@ -372,6 +377,7 @@ def verify_email(
 def resend_verification(
     request_data: ForgotPasswordRequest,
     session: Annotated[Session, Depends(get_session)],
+    background_tasks: BackgroundTasks,
 ):
     teacher = session.exec(select(Teacher).where(Teacher.email == request_data.email)).first()
     if not teacher:
@@ -400,7 +406,8 @@ def resend_verification(
         </body>
     </html>
     """
-    send_email(
+    background_tasks.add_task(
+        send_email,
         to_email=teacher.email,
         subject="Nuevo código de verificación - Quizzie",
         html_content=email_body,
@@ -417,6 +424,7 @@ def resend_verification(
 def forgot_password(
     request_data: ForgotPasswordRequest,
     session: Annotated[Session, Depends(get_session)],
+    background_tasks: BackgroundTasks,
 ):
     teacher = session.exec(select(Teacher).where(Teacher.email == request_data.email)).first()
     if not teacher:
@@ -446,7 +454,8 @@ def forgot_password(
         </body>
     </html>
     """
-    send_email(
+    background_tasks.add_task(
+        send_email,
         to_email=teacher.email,
         subject="Recuperación de contraseña - Quizzie",
         html_content=email_body,

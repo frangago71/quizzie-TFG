@@ -39,8 +39,8 @@ El despliegue se apoya en la infraestructura nativa de las plataformas elegidas:
 * **Condición:** Solo se activa si los checks de GitHub pasan correctamente.
 
 ### B. Despliegue del Backend (Render)
-* **Trigger:** Sincronización con la rama `main`.
-* **Seguridad:** Está configurado para esperar el éxito de los "Status Checks" de GitHub antes de reiniciar el servicio de FastAPI.
+* **Trigger:** Sincronización con la rama `main` mediante el disparo de un Deploy Hook.
+* **Seguridad:** El despliegue automático nativo de Render está desactivado en favor de un disparo controlado mediante GitHub Actions. El Deploy Hook solo se ejecuta si los trabajos de `backend-ci` (tests, linter, seguridad) y `frontend-ci` (compilación, linter) pasan con éxito.
 
 ## 4. Resumen del flujo técnico
 
@@ -48,5 +48,7 @@ El despliegue se apoya en la infraestructura nativa de las plataformas elegidas:
 1.  **Job Backend:** Instalación (uv) → Ruff Check & Format → pip-audit → Pytest → Upload Coverage.
 2.  **Job Frontend:** Instalación (npm ci) → ESLint → Build.
 
-### Solo en rama `main` (via `sonar.yml`):
-3.  **Job Sonarqube (autocontenido):** Instalación (uv) → Pytest (generación de cobertura) → SonarCloud Scan.
+
+### Solo en rama `main`:
+3.  **Job Deploy:** Petición GET al Deploy Hook de Render para iniciar la construcción.
+4.  **Job Sonarqube (via `sonar.yml`):** Instalación (uv) → Pytest (generación de cobertura) → SonarCloud Scan.
