@@ -371,3 +371,70 @@
     text-align: center;
   }
 }
+
+/* Duration setting-control layout modifications */
+.setting-control.duration-control {
+  cursor: default;
+}
+
+.setting-control.duration-control:hover {
+  border-color: var(--border-input);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Inline Time Adjuster styling */
+.time-adjuster-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .time-adjuster-inline {
+    margin-right: -10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .time-adjuster-inline {
+    margin-right: -2px;
+  }
+}
+
+.adjust-inline-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border-input);
+  background: var(--color-white);
+  color: var(--text-dark);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.adjust-inline-btn:hover:not(:disabled) {
+  border-color: var(--primary-magenta);
+  color: var(--primary-magenta);
+  background: rgba(224, 30, 90, 0.05);
+}
+
+.adjust-inline-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.time-inline-value {
+  font-weight: 700;
+  color: var(--primary-magenta);
+  font-size: 0.95rem;
+  min-width: 36px;
+  text-align: center;
+}

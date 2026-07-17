@@ -10,6 +10,7 @@ import {
   Trophy,
   ChevronLeft,
   Rocket,
+  Clock,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRoom } from "../context/RoomContext.tsx";
@@ -22,6 +23,7 @@ const SetupRoom: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [shuffleQuestions, setShuffleQuestions] = useState(false);
   const [shuffleOptions, setShuffleOptions] = useState(false);
+  const [answerTime, setAnswerTime] = useState(45);
   const { id: quizId } = useParams();
   const navigate = useNavigate();
   const { setRoomCode, setRoomId } = useRoom();
@@ -60,6 +62,7 @@ const SetupRoom: React.FC = () => {
           quiz_id: quizId,
           shuffle_questions: shuffleQuestions,
           shuffle_options: shuffleOptions,
+          answer_time: answerTime,
         },
       });
       const room = response.data;
@@ -215,6 +218,39 @@ const SetupRoom: React.FC = () => {
                 </div>
               </div>
               <div className="switch-mock off"></div>
+            </div>
+
+            <div className="setting-control duration-control">
+              <div className="setting-left">
+                <div className="setting-icon-wrapper">
+                  <Clock size={20} color="var(--primary-magenta)" />
+                </div>
+                <div className="setting-info-text">
+                  <span className="setting-title">Tiempo de respuesta</span>
+                  <span className="setting-desc">
+                    Elige los segundos disponibles para responder
+                  </span>
+                </div>
+              </div>
+              <div className="time-adjuster-inline">
+                <button
+                  className="adjust-inline-btn"
+                  onClick={() => setAnswerTime((prev) => Math.max(15, prev - 5))}
+                  disabled={answerTime <= 15}
+                  aria-label="Disminuir tiempo"
+                >
+                  -
+                </button>
+                <span className="time-inline-value">{answerTime}s</span>
+                <button
+                  className="adjust-inline-btn"
+                  onClick={() => setAnswerTime((prev) => Math.min(60, prev + 5))}
+                  disabled={answerTime >= 60}
+                  aria-label="Aumentar tiempo"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </section>
         </div>
