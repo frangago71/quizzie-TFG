@@ -20,6 +20,8 @@ const SetupRoom: React.FC = () => {
 
   const [isCreating, setIsCreating] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [shuffleQuestions, setShuffleQuestions] = useState(false);
+  const [shuffleOptions, setShuffleOptions] = useState(false);
   const { id: quizId } = useParams();
   const navigate = useNavigate();
   const { setRoomCode, setRoomId } = useRoom();
@@ -54,7 +56,11 @@ const SetupRoom: React.FC = () => {
     setIsCreating(true);
     try {
       const response = await api.post(`/stage/rooms`, null, {
-        params: { quiz_id: quizId },
+        params: {
+          quiz_id: quizId,
+          shuffle_questions: shuffleQuestions,
+          shuffle_options: shuffleOptions,
+        },
       });
       const room = response.data;
       setRoomCode(room.join_code);
@@ -144,7 +150,18 @@ const SetupRoom: React.FC = () => {
               Configuración de la partida
             </h3>
 
-            <div className="setting-control locked">
+            <div
+              className="setting-control"
+              onClick={() => setShuffleQuestions(!shuffleQuestions)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setShuffleQuestions(!shuffleQuestions);
+                }
+              }}
+              aria-label="Alternar preguntas aleatorias"
+            >
               <div className="setting-left">
                 <div className="setting-icon-wrapper">
                   <Shuffle size={20} color="var(--primary-magenta)" />
@@ -152,14 +169,25 @@ const SetupRoom: React.FC = () => {
                 <div className="setting-info-text">
                   <span className="setting-title">Preguntas aleatorias</span>
                   <span className="setting-desc">
-                    Cambia el orden de las preguntas para cada alumno
+                    Cambia el orden de las preguntas
                   </span>
                 </div>
               </div>
-              <div className="switch-mock off"></div>
+              <div className={`switch-mock ${shuffleQuestions ? "on" : "off"}`}></div>
             </div>
 
-            <div className="setting-control locked">
+            <div
+              className="setting-control"
+              onClick={() => setShuffleOptions(!shuffleOptions)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setShuffleOptions(!shuffleOptions);
+                }
+              }}
+              aria-label="Alternar opciones aleatorias"
+            >
               <div className="setting-left">
                 <div className="setting-icon-wrapper">
                   <ListTree size={20} color="var(--primary-magenta)" />
@@ -167,11 +195,11 @@ const SetupRoom: React.FC = () => {
                 <div className="setting-info-text">
                   <span className="setting-title">Opciones aleatorias</span>
                   <span className="setting-desc">
-                    Desordena las respuestas (A, B, C, D)
+                    Desordena las respuestas
                   </span>
                 </div>
               </div>
-              <div className="switch-mock off"></div>
+              <div className={`switch-mock ${shuffleOptions ? "on" : "off"}`}></div>
             </div>
 
             <div className="setting-control locked">
