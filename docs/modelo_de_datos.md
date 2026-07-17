@@ -92,6 +92,9 @@ classDiagram
 | | teacher_id | int (FK) | Profesor que administra la sala. |
 | | quiz_id | int (FK) | Cuestionario asociado a la sesión. |
 | | group_id | Optional[int] (FK) | Grupo vinculado a la sala. |
+| | shuffle_questions | bool | Indica si las preguntas se presentan en orden aleatorio. |
+| | shuffle_options | bool | Indica si las opciones de respuesta se presentan en orden aleatorio. |
+| | question_order | Optional[str] | Lista ordenada de IDs de preguntas separados por comas para persistir la secuencia aleatoria. |
 | **Participant** | id | int (PK) | Identificador único de participación. |
 | | joined_at | datetime | Momento exacto de unión a la sala. |
 | | score | int | Puntuación acumulada de las preguntas acertadas. |
@@ -124,6 +127,9 @@ classDiagram
             +int remaining_time_at_pause
             +datetime? timer_started_at
             +bool is_paused
+            +bool shuffle_questions
+            +bool shuffle_options
+            +string? question_order
             +int teacher_id (FK)
             +int quiz_id (FK)
             +int? group_id (FK)

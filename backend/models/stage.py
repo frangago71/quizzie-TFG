@@ -39,6 +39,9 @@ class Room(SQLModel, table=True):
     remaining_time_at_pause: int = Field(default=0)
     timer_started_at: Optional[datetime] = Field(default=None)
     is_paused: bool = Field(default=True)
+    shuffle_questions: bool = Field(default=False)
+    shuffle_options: bool = Field(default=False)
+    question_order: Optional[str] = Field(default=None)
 
     teacher_id: int = Field(foreign_key="teacher.id")
     teacher: "Teacher" = Relationship(back_populates="rooms")
