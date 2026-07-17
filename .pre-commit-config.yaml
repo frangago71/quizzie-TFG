@@ -20,7 +20,7 @@ repos:
     hooks:
       - id: eslint
         args: [ --fix ]
-        files: \.(js|jsx|ts|tsx)$
+        types_or: [javascript, jsx, ts, tsx]
         additional_dependencies:
           - eslint@latest
           - typescript@latest

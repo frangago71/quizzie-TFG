@@ -176,7 +176,9 @@ const SetupRoom: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className={`switch-mock ${shuffleQuestions ? "on" : "off"}`}></div>
+              <div
+                className={`switch-mock ${shuffleQuestions ? "on" : "off"}`}
+              ></div>
             </div>
 
             <div
@@ -197,12 +199,12 @@ const SetupRoom: React.FC = () => {
                 </div>
                 <div className="setting-info-text">
                   <span className="setting-title">Opciones aleatorias</span>
-                  <span className="setting-desc">
-                    Desordena las respuestas
-                  </span>
+                  <span className="setting-desc">Desordena las respuestas</span>
                 </div>
               </div>
-              <div className={`switch-mock ${shuffleOptions ? "on" : "off"}`}></div>
+              <div
+                className={`switch-mock ${shuffleOptions ? "on" : "off"}`}
+              ></div>
             </div>
 
             <div className="setting-control locked">
@@ -235,7 +237,9 @@ const SetupRoom: React.FC = () => {
               <div className="time-adjuster-inline">
                 <button
                   className="adjust-inline-btn"
-                  onClick={() => setAnswerTime((prev) => Math.max(15, prev - 5))}
+                  onClick={() =>
+                    setAnswerTime((prev) => Math.max(15, prev - 5))
+                  }
                   disabled={answerTime <= 15}
                   aria-label="Disminuir tiempo"
                 >
@@ -244,7 +248,9 @@ const SetupRoom: React.FC = () => {
                 <span className="time-inline-value">{answerTime}s</span>
                 <button
                   className="adjust-inline-btn"
-                  onClick={() => setAnswerTime((prev) => Math.min(60, prev + 5))}
+                  onClick={() =>
+                    setAnswerTime((prev) => Math.min(60, prev + 5))
+                  }
                   disabled={answerTime >= 60}
                   aria-label="Aumentar tiempo"
                 >

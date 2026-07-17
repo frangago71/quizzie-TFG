@@ -76,6 +76,7 @@ const Lobby: React.FC = () => {
         ws.close();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlRoomId, setRoomData, setRoomCode]);
 
   const room = roomData && !Array.isArray(roomData) ? roomData : null;
