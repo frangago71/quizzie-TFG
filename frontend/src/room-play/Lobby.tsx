@@ -39,35 +39,44 @@ const Lobby: React.FC = () => {
     };
     fetchInitialData();
 
-    const ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${validatedId}/ws`);
+    let ws: WebSocket | null = null;
+    const timer = setTimeout(() => {
+      ws = new WebSocket(`${WS_BASE_URL}/stage/rooms/${validatedId}/ws`);
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Mensaje WS recibido:", data);
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Mensaje WS recibido:", data);
 
-      if (data.type === "participants_update") {
-        setRoomData(data.list);
-      } else if (data.data && data.type) {
-        setRoomData((prev) => {
-          if (
-            typeof prev !== "object" ||
-            prev === null ||
-            Array.isArray(prev)
-          ) {
-            return { ...data.data, type: data.type } as RoomData;
-          }
-          return { ...prev, ...data.data, type: data.type } as RoomData;
-        });
-      }
-    };
+        if (data.type === "participants_update") {
+          setRoomData(data.list);
+        } else if (data.data && data.type) {
+          setRoomData((prev) => {
+            if (
+              typeof prev !== "object" ||
+              prev === null ||
+              Array.isArray(prev)
+            ) {
+              return { ...data.data, type: data.type } as RoomData;
+            }
+            return { ...prev, ...data.data, type: data.type } as RoomData;
+          });
+        }
+      };
 
-    ws.onclose = () => console.log("WebSocket desconectado");
-    ws.onerror = (err) => console.error("Error en WebSocket:", err);
+      ws.onclose = () => console.log("WebSocket desconectado");
+      ws.onerror = (err) => console.error("Error en WebSocket:", err);
+    }, 50);
 
     return () => {
-      ws.close();
+      clearTimeout(timer);
+      if (ws) {
+        ws.onmessage = null;
+        ws.onclose = null;
+        ws.onerror = null;
+        ws.close();
+      }
     };
-  }, [roomId, urlRoomId, setRoomData, setRoomCode]);
+  }, [urlRoomId, setRoomData, setRoomCode]);
 
   const room = roomData && !Array.isArray(roomData) ? roomData : null;
 
