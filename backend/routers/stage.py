@@ -1,4 +1,5 @@
 import asyncio
+import random
 import secrets
 import string
 from datetime import timedelta
@@ -158,7 +159,11 @@ def get_rooms(session: Annotated[Session, Depends(get_session)]):
     },
 )
 def create_room(
-    quiz_id: int, session: Annotated[Session, Depends(get_session)], answer_time: int = 45
+    quiz_id: int,
+    session: Annotated[Session, Depends(get_session)],
+    answer_time: int = 45,
+    shuffle_questions: bool = False,
+    shuffle_options: bool = False,
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
@@ -185,6 +190,8 @@ def create_room(
         status=RoomStatus.WAITING,
         teacher_id=quiz.teacher_id,
         answer_time=answer_time,
+        shuffle_questions=shuffle_questions,
+        shuffle_options=shuffle_options,
     )
     session.add(new_room)
     session.commit()
@@ -231,47 +238,53 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
     if not room:
         raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
-    total_questions = session.exec(
-        select(func.count(Question.id)).where(Question.quiz_id == room.quiz_id)
-    ).one()
+    q_ids = []
+    if room.question_order:
+        q_ids = [int(x) for x in room.question_order.split(",") if x]
+    else:
+        q_ids = session.exec(
+            select(Question.id).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
+        ).all()
+
+    total_questions = len(q_ids)
 
     current_q_data = None
     time_left = 0
     calculated_phase = room.phase or "waiting"
+    q = None
 
     if room.status == RoomStatus.LIVE and room.current_question_index > 0:
-        statement = select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
-        questions = session.exec(statement).all()
+        if 0 < room.current_question_index <= len(q_ids):
+            q_id = q_ids[room.current_question_index - 1]
+            q = session.get(Question, q_id)
+            if q:
+                options_list = [{"id": opt.id, "text": opt.text} for opt in q.options]
+                if room.shuffle_options:
+                    import random
 
-        if 0 < room.current_question_index <= len(questions):
-            q = questions[room.current_question_index - 1]
-            current_q_data = {
-                "text": q.text,
-                "current_question_index": room.current_question_index,
-                "question_id": q.id,
-                "options": [{"id": opt.id, "text": opt.text} for opt in q.options],
-            }
+                    r = random.Random(f"{room.id}_{q.id}")
+                    r.shuffle(options_list)
 
-            time_left = get_calculated_time_left(room)
-            calculated_phase = room.phase or RoomPhase.ANSWERING
+                current_q_data = {
+                    "text": q.text,
+                    "current_question_index": room.current_question_index,
+                    "question_id": q.id,
+                    "options": options_list,
+                }
+
+                time_left = get_calculated_time_left(room)
+                calculated_phase = room.phase or RoomPhase.ANSWERING
 
     extra_data = {}
-    if calculated_phase == RoomPhase.RESULTS:
+    if calculated_phase == RoomPhase.RESULTS and q:
         stats_dict = {}
-        for opt in room.quiz.questions[room.current_question_index - 1].options:
+        for opt in q.options:
             count = session.exec(
                 select(func.count(Answer.id)).where(Answer.option_id == opt.id)
             ).one()
             stats_dict[str(opt.id)] = count
 
-        correct_option = next(
-            (
-                opt
-                for opt in room.quiz.questions[room.current_question_index - 1].options
-                if opt.is_correct
-            ),
-            None,
-        )
+        correct_option = next((opt for opt in q.options if opt.is_correct), None)
         extra_data["statistics"] = stats_dict
         extra_data["correct_option_id"] = correct_option.id if correct_option else None
 
@@ -320,7 +333,16 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
 
     statement = select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
     questions = session.exec(statement).all()
-    first_question = questions[0]
+
+    q_ids = [q.id for q in questions]
+    if room.shuffle_questions:
+        import random
+
+        random.shuffle(q_ids)
+
+    room.question_order = ",".join(map(str, q_ids))
+    first_q_id = q_ids[0]
+    first_question = next(q for q in questions if q.id == first_q_id)
 
     room.status = RoomStatus.LIVE
     room.current_question_index = 1
@@ -331,13 +353,20 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
     room.is_paused = False
     session.commit()
 
+    options_list = [{"id": opt.id, "text": opt.text} for opt in first_question.options]
+    if room.shuffle_options:
+        import random
+
+        r = random.Random(f"{room.id}_{first_question.id}")
+        r.shuffle(options_list)
+
     data = {
         "status": room.status,
         "current_question_index": 1,
         "total_questions": len(questions),
         "question_id": first_question.id,
         "text": first_question.text,
-        "options": [{"id": opt.id, "text": opt.text} for opt in first_question.options],
+        "options": options_list,
     }
 
     await manager.broadcast_to_room(room_id, {"type": "room_start", "data": data})
@@ -358,13 +387,27 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
     if room.status != RoomStatus.LIVE:
         raise HTTPException(status_code=400, detail="Sala no disponible")
 
-    questions = db.exec(
-        select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
-    ).all()
+    q_ids = []
+    if room.question_order:
+        q_ids = [int(x) for x in room.question_order.split(",") if x]
+    else:
+        q_ids = [
+            q.id
+            for q in db.exec(
+                select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
+            ).all()
+        ]
+        room.question_order = ",".join(map(str, q_ids))
+        db.add(room)
+        db.commit()
+
     next_index = room.current_question_index + 1
 
-    if next_index <= len(questions):
-        next_q = questions[next_index - 1]
+    if next_index <= len(q_ids):
+        next_q_id = q_ids[next_index - 1]
+        next_q = db.get(Question, next_q_id)
+        if not next_q:
+            raise HTTPException(status_code=404, detail="Pregunta no encontrada")
         room.current_question_index = next_index
         room.phase = RoomPhase.ANSWERING
         room.phase_start_time = get_utc_now()
@@ -373,12 +416,17 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
         room.is_paused = False
         db.commit()
 
+        options_list = [{"id": opt.id, "text": opt.text} for opt in next_q.options]
+        if room.shuffle_options:
+            r = random.Random(f"{room.id}_{next_q.id}")
+            r.shuffle(options_list)
+
         data = {
             "current_question_index": next_index,
-            "total_questions": len(questions),
+            "total_questions": len(q_ids),
             "question_id": next_q.id,
             "text": next_q.text,
-            "options": [{"id": opt.id, "text": opt.text} for opt in next_q.options],
+            "options": options_list,
         }
         await manager.broadcast_to_room(room_id, {"type": "next_question", "data": data})
         return data
@@ -396,7 +444,7 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
             room_id,
             {
                 "type": "room_verifying",
-                "data": {"status": "VERIFYING", "total_questions": len(questions)},
+                "data": {"status": "VERIFYING", "total_questions": len(q_ids)},
             },
         )
         return {"status": "VERIFYING"}
