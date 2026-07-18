@@ -26,7 +26,7 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
 
   return (
     <>
-      <button className="sidebar-toggle-btn" onClick={toggle}>
+      <button type="button" className="sidebar-toggle-btn" onClick={toggle}>
         {isOpen ? <ChevronLeft size={18} /> : <Menu size={20} />}
       </button>
 
@@ -86,6 +86,7 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
 
             <div className="nav-menu-bottom">
               <button
+                type="button"
                 className="nav-item logout-btn"
                 onClick={(e) => {
                   e.preventDefault();

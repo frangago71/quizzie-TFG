@@ -109,6 +109,7 @@ const StudentView: React.FC<StudentViewProps> = ({
       )}
 
       <button
+        type="button"
         className="btn-main magenta final-button"
         onClick={() => {
           if (status === "verifying" && !stats?.is_verified) {
@@ -132,12 +133,14 @@ const StudentView: React.FC<StudentViewProps> = ({
             </p>
             <div className="modal-actions">
               <button
+                type="button"
                 className="btn-main cyan"
                 onClick={() => setShowExitModal(false)}
               >
                 Permanecer
               </button>
               <button
+                type="button"
                 className="btn-main magenta"
                 onClick={() => navigate("/")}
               >
@@ -273,6 +276,7 @@ const HostView: React.FC<HostViewProps> = ({
             }}
           >
             <button
+              type="button"
               className="btn-main cyan big"
               onClick={() => setShowScanner(true)}
             >
@@ -281,6 +285,7 @@ const HostView: React.FC<HostViewProps> = ({
             </button>
 
             <button
+              type="button"
               className="btn-main magenta big"
               onClick={async () => {
                 if (
@@ -304,6 +309,7 @@ const HostView: React.FC<HostViewProps> = ({
           </div>
         ) : (
           <button
+            type="button"
             className="btn-main cyan big"
             onClick={() => navigate("/dashboard")}
           >

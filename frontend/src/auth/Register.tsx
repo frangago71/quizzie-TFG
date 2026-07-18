@@ -145,10 +145,15 @@ export const Register: React.FC = () => {
           </button>
         </form>
         <div className="login-footer-action">
-          <button onClick={() => navigate("/login")} className="back-link-text">
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="back-link-text"
+          >
             ¿Ya tienes cuenta? Inicia sesión
           </button>
           <button
+            type="button"
             onClick={() => globalThis.history.back()}
             className="back-link-text"
           >

@@ -141,7 +141,11 @@ const Lobby: React.FC = () => {
             </div>
           </div>
           {isHost && (
-            <button className="btn-start-game" onClick={handleStartRoom}>
+            <button
+              type="button"
+              className="btn-start-game"
+              onClick={handleStartRoom}
+            >
               <PlayCircle size={18} />
               Empezar
             </button>

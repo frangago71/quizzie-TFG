@@ -37,7 +37,7 @@ const ScannerModal: React.FC<Props> = ({ onScan, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content scanner-modal">
-        <button className="modal-close" onClick={onClose}>
+        <button type="button" className="modal-close" onClick={onClose}>
           <X />
         </button>
         <h2 className="modal-title">Escanear QR de Alumno</h2>

@@ -58,11 +58,15 @@ const HostTimerControls: React.FC<HostTimerControlsProps> = ({
 }) => (
   <div className="host-timer-controls">
     {timeLeft > 0 ? (
-      <button className="lr-btn-finish" onClick={handleStopTimer}>
+      <button type="button" className="lr-btn-finish" onClick={handleStopTimer}>
         Terminar tiempo
       </button>
     ) : (
-      <button className="lr-btn-finish" onClick={handleShowResults}>
+      <button
+        type="button"
+        className="lr-btn-finish"
+        onClick={handleShowResults}
+      >
         <Eye size={18} /> Ver estadísticas
       </button>
     )}
@@ -85,6 +89,7 @@ const OptionButton: React.FC<OptionButtonProps> = ({
   onClick,
 }) => (
   <button
+    type="button"
     disabled={disabled}
     className={`lr-option-item ${isSelected ? "active" : ""}`}
     onClick={onClick}
@@ -115,6 +120,7 @@ const StudentActionBar: React.FC<StudentActionBarProps> = ({
   return (
     <div className="action-bar">
       <button
+        type="button"
         className={`btn-send-answer ${isNotSelected ? "not-selected" : ""} ${isSent ? "is-sent" : ""}`}
         onClick={handleSubmitAnswer}
         disabled={isDisabled}
@@ -170,6 +176,7 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
             <div className="live-stat-badge">
               {isHost ? (
                 <button
+                  type="button"
                   className="eye-toggle-btn"
                   onClick={() => setShowAnswersCount(!showAnswersCount)}
                 >

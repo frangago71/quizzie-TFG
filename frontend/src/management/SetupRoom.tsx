@@ -110,7 +110,11 @@ const SetupRoom: React.FC = () => {
   return (
     <div className="setup-wrapper">
       {!isMobile && (
-        <button className="back-nav" onClick={() => navigate("/quizzes")}>
+        <button
+          type="button"
+          className="back-nav"
+          onClick={() => navigate("/quizzes")}
+        >
           <ChevronLeft size={20} /> Volver a cuestionarios
         </button>
       )}
@@ -236,6 +240,7 @@ const SetupRoom: React.FC = () => {
               </div>
               <div className="time-adjuster-inline">
                 <button
+                  type="button"
                   className="adjust-inline-btn"
                   onClick={() =>
                     setAnswerTime((prev) => Math.max(15, prev - 5))
@@ -247,6 +252,7 @@ const SetupRoom: React.FC = () => {
                 </button>
                 <span className="time-inline-value">{answerTime}s</span>
                 <button
+                  type="button"
                   className="adjust-inline-btn"
                   onClick={() =>
                     setAnswerTime((prev) => Math.min(60, prev + 5))
@@ -263,6 +269,7 @@ const SetupRoom: React.FC = () => {
       </div>
       <div className="setup-external-actions">
         <button
+          type="button"
           className={`btn-main big magenta ${isCreating ? "disabled" : ""}`}
           onClick={handleOpenSession}
           disabled={isCreating}
@@ -270,7 +277,11 @@ const SetupRoom: React.FC = () => {
           <Rocket size={20} /> {isCreating ? "Creando sala..." : "Crear sala"}
         </button>
         {isMobile && (
-          <button className="back-nav" onClick={() => navigate("/quizzes")}>
+          <button
+            type="button"
+            className="back-nav"
+            onClick={() => navigate("/quizzes")}
+          >
             <ChevronLeft size={20} /> Volver a cuestionarios
           </button>
         )}

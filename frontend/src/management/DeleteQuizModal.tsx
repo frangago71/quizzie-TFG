@@ -54,6 +54,7 @@ const DeleteQuizModal: React.FC<DeleteQuizModalProps> = ({
           style={{ flexDirection: "column", gap: "10px" }}
         >
           <button
+            type="button"
             className="btn-modal-primary cyan"
             onClick={() => onConfirm(false)}
             style={{ width: "100%" }}
@@ -62,6 +63,7 @@ const DeleteQuizModal: React.FC<DeleteQuizModalProps> = ({
           </button>
 
           <button
+            type="button"
             className="btn-modal-primary"
             onClick={() => onConfirm(true)}
             style={{
@@ -80,6 +82,7 @@ const DeleteQuizModal: React.FC<DeleteQuizModalProps> = ({
           </button>
 
           <button
+            type="button"
             className="btn-modal-secondary"
             onClick={onCancel}
             style={{ width: "100%" }}

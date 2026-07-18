@@ -72,6 +72,7 @@ function App() {
                 toggle={() => setSidebarOpen(!sidebarOpen)}
               />
               <button
+                type="button"
                 className="sidebar-toggle-btn"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
               >

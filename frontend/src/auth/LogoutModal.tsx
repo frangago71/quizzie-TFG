@@ -17,6 +17,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
   return (
     <div className="modal-overlay">
       <button
+        type="button"
         className="modal-backdrop-button"
         onClick={onCancel}
         aria-label="Cerrar ventana emergente"
@@ -31,10 +32,18 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
         </div>
 
         <div className="modal-actions">
-          <button className="btn-modal-primary" onClick={onConfirm}>
+          <button
+            type="button"
+            className="btn-modal-primary"
+            onClick={onConfirm}
+          >
             Cerrar sesión
           </button>
-          <button className="btn-modal-secondary" onClick={onCancel}>
+          <button
+            type="button"
+            className="btn-modal-secondary"
+            onClick={onCancel}
+          >
             Cancelar
           </button>
         </div>

@@ -60,6 +60,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({
 
         <div className="modal-actions">
           <button
+            type="button"
             className="btn-main max magenta"
             onClick={handleCreateAndJoin}
             disabled={loading}
@@ -68,6 +69,7 @@ const NewNickname: React.FC<NewNicknameProps> = ({
           </button>
 
           <button
+            type="button"
             className="btn-back-link"
             onClick={onCancel}
             disabled={loading}

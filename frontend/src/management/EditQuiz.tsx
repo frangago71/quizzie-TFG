@@ -500,6 +500,7 @@ const EditQuiz: React.FC = () => {
               style={{ flexDirection: "column", gap: "10px" }}
             >
               <button
+                type="button"
                 className="btn-modal-primary cyan"
                 onClick={confirmSubmit}
                 style={{ width: "100%" }}
@@ -507,6 +508,7 @@ const EditQuiz: React.FC = () => {
                 Guardar cambios
               </button>
               <button
+                type="button"
                 className="btn-modal-secondary"
                 onClick={() => setIsModalOpen(false)}
                 style={{ width: "100%" }}

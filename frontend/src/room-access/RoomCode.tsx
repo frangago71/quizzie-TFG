@@ -86,6 +86,7 @@ const RoomCode: React.FC = () => {
         </div>
 
         <button
+          type="button"
           className="btn-main max magenta"
           onClick={handleVerifyCode}
           disabled={code.some((d) => d === "")}

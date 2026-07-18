@@ -19,6 +19,7 @@ export default function ToastContainer() {
           <span className="toast-icon">{ICONS[t.type]}</span>
           <span className="toast-message">{t.message}</span>
           <button
+            type="button"
             className="toast-close"
             onClick={() => dismiss(t.id)}
             aria-label="Cerrar notificación"

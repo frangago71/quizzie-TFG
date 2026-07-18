@@ -107,6 +107,7 @@ const LeaderboardPhase: React.FC<Props> = ({
       {isHost && handleNextQuestion && (
         <div className="podium-actions">
           <button
+            type="button"
             className={`btn-main ${isLastQuestion ? "cyan" : "magenta"}`}
             onClick={handleNextQuestion}
           >

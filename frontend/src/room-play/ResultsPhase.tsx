@@ -239,6 +239,7 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
         {isHost && (
           <div className="results-actions">
             <button
+              type="button"
               className="btn-continue-host"
               onClick={handleShowLeaderboard}
             >

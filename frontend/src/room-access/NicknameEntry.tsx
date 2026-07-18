@@ -124,6 +124,7 @@ const NicknameEntry: React.FC = () => {
 
         <div className="action-buttons">
           <button
+            type="button"
             className="btn-main max magenta"
             onClick={handleVerifyNickname}
             disabled={!nickname.trim() || isProcessing}
@@ -131,6 +132,7 @@ const NicknameEntry: React.FC = () => {
             {isProcessing ? "Procesando..." : "Siguiente"}
           </button>
           <button
+            type="button"
             className="btn-back-link"
             onClick={() => navigate("/")}
             disabled={isProcessing}

@@ -78,6 +78,7 @@ const QuizActionButtons: React.FC<QuizActionButtonsProps> = ({
 }) => (
   <div className="action-icons">
     <button
+      type="button"
       className="icon-btn"
       title="Editar"
       onClick={() => onNavigate(`/quizzes/edit/${quiz.id}`)}
@@ -85,13 +86,14 @@ const QuizActionButtons: React.FC<QuizActionButtonsProps> = ({
       <Pencil size={18} />
     </button>
     <button
+      type="button"
       className="icon-btn"
       title="Eliminar"
       onClick={() => onPrepareDelete(quiz)}
     >
       <Trash2 size={18} />
     </button>
-    <button className="icon-btn" title="Ver">
+    <button type="button" className="icon-btn" title="Ver">
       <Eye size={18} />
     </button>
   </div>
@@ -119,10 +121,15 @@ const QuizRoomControls: React.FC<QuizRoomControlsProps> = ({
   if (quiz.active_room_status) {
     return (
       <div className="btn-group">
-        <button className={`${btnClass} cyan`} onClick={onReconnect}>
+        <button
+          type="button"
+          className={`${btnClass} cyan`}
+          onClick={onReconnect}
+        >
           Reconectar
         </button>
         <button
+          type="button"
           className={`${btnClass} danger`}
           onClick={() => onForceFinish(quiz.active_room_id ?? null)}
         >
@@ -134,6 +141,7 @@ const QuizRoomControls: React.FC<QuizRoomControlsProps> = ({
 
   return (
     <button
+      type="button"
       className={`${btnClass} ${isSmall ? "" : "big"} magenta`}
       disabled={hasActiveRoom}
       title={hasActiveRoom ? "Ya tienes una sala activa" : ""}
@@ -373,18 +381,21 @@ const ListQuizzes: React.FC = () => {
         </div>
         <div className="filter-tabs">
           <button
+            type="button"
             className={`tab${activeTab === "todos" ? " active" : ""}`}
             onClick={() => setActiveTab("todos")}
           >
             Todos
           </button>
           <button
+            type="button"
             className={`tab${activeTab === "nuevos" ? " active" : ""}`}
             onClick={() => setActiveTab("nuevos")}
           >
             Nuevos
           </button>
           <button
+            type="button"
             className={`tab${activeTab === "inactivos" ? " active" : ""}`}
             onClick={() => setActiveTab("inactivos")}
           >

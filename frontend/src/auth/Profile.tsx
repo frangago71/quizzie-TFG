@@ -148,7 +148,11 @@ export const Profile: React.FC = () => {
       <div className="profile-error-container">
         <h3>Error al cargar el perfil</h3>
         <p>Por favor, intenta iniciar sesión de nuevo.</p>
-        <button className="btn-main cyan" onClick={() => navigate("/login")}>
+        <button
+          type="button"
+          className="btn-main cyan"
+          onClick={() => navigate("/login")}
+        >
           Ir a Login
         </button>
       </div>
@@ -310,6 +314,7 @@ export const Profile: React.FC = () => {
       {isModalOpen && (
         <div className="modal-overlay">
           <button
+            type="button"
             className="modal-backdrop-button"
             onClick={() => {
               if (!deleteLoading) {
@@ -350,6 +355,7 @@ export const Profile: React.FC = () => {
             </div>
             <div className="modal-actions">
               <button
+                type="button"
                 className="btn-modal-primary danger-btn"
                 onClick={handleDeleteAccount}
                 disabled={deleteLoading || !password}
@@ -357,6 +363,7 @@ export const Profile: React.FC = () => {
                 {deleteLoading ? "Eliminando..." : "Eliminar cuenta"}
               </button>
               <button
+                type="button"
                 className="btn-modal-secondary danger-cancel-btn"
                 onClick={() => {
                   setIsModalOpen(false);
