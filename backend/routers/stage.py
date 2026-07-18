@@ -1,10 +1,10 @@
 import asyncio
-import random
+import hashlib
 import secrets
 import string
 from datetime import timedelta
 from datetime import timezone as tz
-from typing import Annotated, Dict, List
+from typing import Annotated, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
@@ -229,25 +229,25 @@ def get_participants_names_by_room(room_id: int, session: Annotated[Session, Dep
     return list(participants)
 
 
-@router.get(
-    "/rooms/{room_id}",
-    responses={404: {"description": ROOM_NOT_FOUND}},
-)
-def get_room_details(room_id: int, session: Annotated[Session, Depends(get_session)]):
-    room = session.get(Room, room_id)
-    if not room:
-        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
+def deterministic_shuffle(items: List[dict], room_id: int, question_id: int) -> List[dict]:
+    def sort_key(item):
+        seed_str = f"{room_id}_{question_id}_{item['id']}"
+        return hashlib.sha256(seed_str.encode("utf-8")).hexdigest()
 
-    q_ids = []
+    return sorted(items, key=sort_key)
+
+
+def _get_question_ids(room: Room, session: Session) -> List[int]:
     if room.question_order:
-        q_ids = [int(x) for x in room.question_order.split(",") if x]
-    else:
-        q_ids = session.exec(
-            select(Question.id).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
-        ).all()
+        return [int(x) for x in room.question_order.split(",") if x]
+    return session.exec(
+        select(Question.id).where(Question.quiz_id == room.quiz_id).order_by(Question.id)
+    ).all()
 
-    total_questions = len(q_ids)
 
+def _get_current_question_data(
+    room: Room, q_ids: List[int], session: Session
+) -> tuple[Optional[dict], Optional[Question], int, str]:
     current_q_data = None
     time_left = 0
     calculated_phase = room.phase or "waiting"
@@ -260,10 +260,7 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
             if q:
                 options_list = [{"id": opt.id, "text": opt.text} for opt in q.options]
                 if room.shuffle_options:
-                    import random
-
-                    r = random.Random(f"{room.id}_{q.id}")
-                    r.shuffle(options_list)
+                    options_list = deterministic_shuffle(options_list, room.id, q.id)
 
                 current_q_data = {
                     "text": q.text,
@@ -275,8 +272,12 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
                 time_left = get_calculated_time_left(room)
                 calculated_phase = room.phase or RoomPhase.ANSWERING
 
+    return current_q_data, q, time_left, calculated_phase
+
+
+def _get_extra_data(room: Room, phase: str, q: Optional[Question], session: Session) -> dict:
     extra_data = {}
-    if calculated_phase == RoomPhase.RESULTS and q:
+    if phase == RoomPhase.RESULTS and q:
         stats_dict = {}
         for opt in q.options:
             count = session.exec(
@@ -288,7 +289,7 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
         extra_data["statistics"] = stats_dict
         extra_data["correct_option_id"] = correct_option.id if correct_option else None
 
-    if calculated_phase == RoomPhase.LEADERBOARD or room.status in [
+    if phase == RoomPhase.LEADERBOARD or room.status in [
         RoomStatus.VERIFYING,
         RoomStatus.FINISHED,
     ]:
@@ -301,6 +302,27 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
         )
         lb_results = session.exec(lb_statement).all()
         extra_data["leaderboard"] = [{"name": r[0], "score": r[1]} for r in lb_results]
+
+    return extra_data
+
+
+@router.get(
+    "/rooms/{room_id}",
+    responses={404: {"description": ROOM_NOT_FOUND}},
+)
+def get_room_details(room_id: int, session: Annotated[Session, Depends(get_session)]):
+    room = session.get(Room, room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
+
+    q_ids = _get_question_ids(room, session)
+    total_questions = len(q_ids)
+
+    current_q_data, q, time_left, calculated_phase = _get_current_question_data(
+        room, q_ids, session
+    )
+
+    extra_data = _get_extra_data(room, calculated_phase, q, session)
 
     return {
         "id": room.id,
@@ -338,7 +360,7 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
     if room.shuffle_questions:
         import random
 
-        random.shuffle(q_ids)
+        random.SystemRandom().shuffle(q_ids)
 
     room.question_order = ",".join(map(str, q_ids))
     first_q_id = q_ids[0]
@@ -355,10 +377,7 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
 
     options_list = [{"id": opt.id, "text": opt.text} for opt in first_question.options]
     if room.shuffle_options:
-        import random
-
-        r = random.Random(f"{room.id}_{first_question.id}")
-        r.shuffle(options_list)
+        options_list = deterministic_shuffle(options_list, room.id, first_question.id)
 
     data = {
         "status": room.status,
@@ -418,8 +437,7 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
 
         options_list = [{"id": opt.id, "text": opt.text} for opt in next_q.options]
         if room.shuffle_options:
-            r = random.Random(f"{room.id}_{next_q.id}")
-            r.shuffle(options_list)
+            options_list = deterministic_shuffle(options_list, room.id, next_q.id)
 
         data = {
             "current_question_index": next_index,
