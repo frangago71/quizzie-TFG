@@ -208,7 +208,9 @@ def create_room(
     },
 )
 def verify_room_code(fullcode: str, session: Annotated[Session, Depends(get_session)]):
-    room = session.exec(select(Room).where(Room.join_code == fullcode)).first()
+    room = session.exec(
+        select(Room).where(Room.join_code == fullcode, Room.status != RoomStatus.FINISHED)
+    ).first()
     if not room:
         raise HTTPException(status_code=404, detail="No hay ninguna sala con ese código.")
     if room.status == RoomStatus.FINISHED:
@@ -552,8 +554,14 @@ async def finish_room(room_id: int, db: Annotated[Session, Depends(get_session)]
             status_code=400, detail="La sala no está en fase de verificación o ya ha finalizado"
         )
 
+    unverified = db.exec(
+        select(Participant).where(
+            Participant.room_id == room_id, Participant.is_verified.is_(False)
+        )
+    ).all()
+    for p in unverified:
+        db.delete(p)
     room.status = RoomStatus.FINISHED
-    room.join_code = None
     db.commit()
 
     await manager.broadcast_to_room(
@@ -576,8 +584,14 @@ async def force_finish_room(room_id: int, db: Annotated[Session, Depends(get_ses
     if room.status == RoomStatus.FINISHED:
         raise HTTPException(status_code=400, detail="La sala ya está finalizada")
 
+    unverified = db.exec(
+        select(Participant).where(
+            Participant.room_id == room_id, Participant.is_verified.is_(False)
+        )
+    ).all()
+    for p in unverified:
+        db.delete(p)
     room.status = RoomStatus.FINISHED
-    room.join_code = None
     db.commit()
 
     await manager.broadcast_to_room(
@@ -828,3 +842,82 @@ def get_participant_stats(
         "verification_token": participant.verification_token,
         "is_verified": participant.is_verified,
     }
+
+
+@router.get(
+    "/quizzes/{quiz_id}/history",
+    responses={404: {"description": QUIZ_NOT_FOUND}},
+)
+def get_quiz_history(quiz_id: int, session: Annotated[Session, Depends(get_session)]):
+    quiz = session.get(Quiz, quiz_id)
+    if not quiz:
+        raise HTTPException(status_code=404, detail=QUIZ_NOT_FOUND)
+
+    rooms = session.exec(
+        select(Room)
+        .where(Room.quiz_id == quiz_id, Room.status == RoomStatus.FINISHED)
+        .order_by(Room.created_at.desc())
+    ).all()
+
+    history = []
+    for r in rooms:
+        verified_count = session.exec(
+            select(func.count(Participant.id)).where(
+                Participant.room_id == r.id, Participant.is_verified.is_(True)
+            )
+        ).one()
+
+        history.append(
+            {
+                "id": r.id,
+                "join_code": r.join_code or "N/A",
+                "date": r.created_at.isoformat(),
+                "participants_count": verified_count,
+            }
+        )
+
+    return history
+
+
+@router.get(
+    "/rooms/{room_id}/results",
+    responses={404: {"description": ROOM_NOT_FOUND}},
+)
+def get_room_results(room_id: int, session: Annotated[Session, Depends(get_session)]):
+    room = session.get(Room, room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
+
+    total_questions = 0
+    if room.quiz_id:
+        total_questions = session.exec(
+            select(func.count(Question.id)).where(Question.quiz_id == room.quiz_id)
+        ).one()
+
+    statement = (
+        select(Student.name, Participant.score, Participant.id)
+        .join(Participant, Participant.student_id == Student.id)
+        .where(Participant.room_id == room_id, Participant.is_verified.is_(True))
+        .order_by(Participant.score.desc())
+    )
+    results = session.exec(statement).all()
+
+    formatted_results = []
+    for name, score, participant_id in results:
+        correct_statement = (
+            select(func.count(Answer.id))
+            .join(Option, Answer.option_id == Option.id)
+            .where(Answer.participant_id == participant_id)
+            .where(Option.is_correct)
+        )
+        correct_count = session.exec(correct_statement).one()
+        formatted_results.append(
+            {
+                "name": name,
+                "score": score,
+                "correct_answers": correct_count,
+                "total_questions": total_questions,
+            }
+        )
+
+    return formatted_results
