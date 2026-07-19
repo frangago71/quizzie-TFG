@@ -5,6 +5,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Pencil, Trash2, Eye, Play, Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteQuizModal, { type Room } from "./DeleteQuizModal.tsx";
+import RoomHistoryModal from "./RoomHistoryModal.tsx";
 
 import { useRoom } from "../context/RoomContext.tsx";
 import { useToast } from "../context/ToastContext.tsx";
@@ -63,18 +64,21 @@ interface QuizCardProps {
   onSetRoomId: (id: number | null) => void;
   onPrepareDelete: (quiz: Quiz) => void;
   onForceFinish: (roomId: number | null) => void;
+  onViewHistory: (quiz: Quiz) => void;
 }
 
 interface QuizActionButtonsProps {
   quiz: Quiz;
   onNavigate: (path: string) => void;
   onPrepareDelete: (quiz: Quiz) => void;
+  onViewHistory: (quiz: Quiz) => void;
 }
 
 const QuizActionButtons: React.FC<QuizActionButtonsProps> = ({
   quiz,
   onNavigate,
   onPrepareDelete,
+  onViewHistory,
 }) => (
   <div className="action-icons">
     <button
@@ -93,7 +97,12 @@ const QuizActionButtons: React.FC<QuizActionButtonsProps> = ({
     >
       <Trash2 size={18} />
     </button>
-    <button type="button" className="icon-btn" title="Ver">
+    <button
+      type="button"
+      className="icon-btn"
+      title="Ver"
+      onClick={() => onViewHistory(quiz)}
+    >
       <Eye size={18} />
     </button>
   </div>
@@ -161,6 +170,7 @@ const QuizCard: React.FC<QuizCardProps> = ({
   onSetRoomId,
   onPrepareDelete,
   onForceFinish,
+  onViewHistory,
 }) => {
   const parseDate = (dateStr: string | undefined) => {
     if (!dateStr) return "N/A";
@@ -226,6 +236,7 @@ const QuizCard: React.FC<QuizCardProps> = ({
               quiz={quiz}
               onNavigate={onNavigate}
               onPrepareDelete={onPrepareDelete}
+              onViewHistory={onViewHistory}
             />
           </>
         ) : (
@@ -245,6 +256,7 @@ const QuizCard: React.FC<QuizCardProps> = ({
                 quiz={quiz}
                 onNavigate={onNavigate}
                 onPrepareDelete={onPrepareDelete}
+                onViewHistory={onViewHistory}
               />
             </div>
             <p className="quiz-description">{quiz.description}</p>
@@ -275,6 +287,7 @@ const ListQuizzes: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
   const [quizRooms, setQuizRooms] = useState<Room[]>([]);
+  const [historyQuiz, setHistoryQuiz] = useState<Quiz | null>(null);
 
   const [activeTab, setActiveTab] = useState<FilterTab>("todos");
   const navigate = useNavigate();
@@ -434,6 +447,7 @@ const ListQuizzes: React.FC = () => {
             onSetRoomId={setRoomId}
             onPrepareDelete={handlePrepareDelete}
             onForceFinish={handleForceFinish}
+            onViewHistory={(q) => setHistoryQuiz(q)}
           />
         ))}
 
@@ -460,6 +474,13 @@ const ListQuizzes: React.FC = () => {
           setQuizRooms([]);
         }}
         rooms={quizRooms}
+      />
+
+      <RoomHistoryModal
+        isOpen={!!historyQuiz}
+        onClose={() => setHistoryQuiz(null)}
+        quizId={historyQuiz?.id ?? 0}
+        quizTitle={historyQuiz?.title ?? ""}
       />
     </div>
   );

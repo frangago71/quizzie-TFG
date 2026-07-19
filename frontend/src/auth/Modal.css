@@ -122,3 +122,25 @@
   padding: 0;
   margin: 0;
 }
+
+.modal-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-gray-light);
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.modal-close-btn:hover {
+  color: var(--color-red, #c30306);
+  opacity: 1;
+  transform: scale(1.2);
+}
