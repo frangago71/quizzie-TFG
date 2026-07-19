@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import TYPE_CHECKING, List, Optional
 
+from sqlalchemy import Index, text
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -28,8 +29,17 @@ class RoomPhase(str, Enum):
 
 
 class Room(SQLModel, table=True):
+    __table_args__ = (
+        Index(
+            "idx_active_room_join_code",
+            "join_code",
+            unique=True,
+            sqlite_where=text("status != 'finished'"),
+        ),
+    )
+
     id: Optional[int] = Field(default=None, primary_key=True)
-    join_code: Optional[str] = Field(default=123456, unique=True)
+    join_code: Optional[str] = Field(default=123456)
     status: RoomStatus = Field(default=RoomStatus.WAITING)
     created_at: datetime = Field(default_factory=get_utc_now)
     current_question_index: int = Field(default=0)

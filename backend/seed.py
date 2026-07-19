@@ -431,7 +431,10 @@ def _seed_rooms(
         current_question_index=1,
     )
     r_finished = Room(
-        join_code="444444", status=RoomStatus.FINISHED, teacher_id=t1.id, quiz_id=quiz_lengua.id
+        join_code="444444",
+        status=RoomStatus.FINISHED,
+        teacher_id=t1.id,
+        quiz_id=quiz_lengua.id,
     )
     r_verifying = Room(
         join_code="555555",
