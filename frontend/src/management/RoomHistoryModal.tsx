@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Users, Trophy, X, ChevronRight } from "lucide-react";
+import { ArrowLeft, Users, Trophy, X, ChevronRight, Download } from "lucide-react";
 import api from "../api";
 import "../auth/Modal.css";
 import "./RoomHistoryModal.css";
@@ -79,7 +79,47 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
       setLoading(false);
     }
   };
+  const downloadCSV = () => {
+    if (!selectedRoom || results.length === 0) return;
 
+    const headers = ["uvus", "nota", "aciertos"];
+    const rows = results.map((student) => [
+      student.name,
+      student.score,
+      student.correct_answers,
+    ]);
+
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map((row) =>
+        row
+          .map((val) => `"${String(val).replace(/"/g, '""')}"`)
+          .join(";"),
+      ),
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+
+    const sanitizedDate = formatDate(selectedRoom.date).replace(
+      /[\/\s:]/g,
+      "_",
+    );
+    link.setAttribute(
+      "download",
+      `resultados_sala_${selectedRoom.join_code}_${sanitizedDate}.csv`,
+    );
+
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   if (!isOpen) return null;
 
   const formatDate = (dateStr: string) => {
@@ -192,7 +232,20 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
                 <ArrowLeft size={24} />
               </button>
               <div>
-                <h2>Clasificación final</h2>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <h2>Clasificación final</h2>
+                  {results.length > 0 && (
+                    <button
+                      type="button"
+                      className="btn-download-csv"
+                      onClick={downloadCSV}
+                      title="Descargar CSV"
+                      aria-label="Descargar CSV"
+                    >
+                      <Download size={20} />
+                    </button>
+                  )}
+                </div>
                 <p>{selectedRoom && formatDate(selectedRoom.date)}</p>
               </div>
             </div>
