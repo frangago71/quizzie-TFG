@@ -164,6 +164,7 @@ def create_room(
     answer_time: int = 45,
     shuffle_questions: bool = False,
     shuffle_options: bool = False,
+    show_ranking: bool = True,
 ):
     quiz = session.get(Quiz, quiz_id)
     if not quiz:
@@ -192,6 +193,7 @@ def create_room(
         answer_time=answer_time,
         shuffle_questions=shuffle_questions,
         shuffle_options=shuffle_options,
+        show_ranking=show_ranking,
     )
     session.add(new_room)
     session.commit()
@@ -336,8 +338,9 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
         "time_left": time_left,
         "answer_time": room.answer_time,
         "is_paused": room.is_paused,
+        "show_ranking": room.show_ranking,
         **extra_data,
-        **(current_q_data or {"text": "Sala inactiva", "options": []}),
+        **(current_q_data or {"text": "", "options": []}),
     }
 
 
@@ -388,6 +391,7 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
         "question_id": first_question.id,
         "text": first_question.text,
         "options": options_list,
+        "show_ranking": room.show_ranking,
     }
 
     await manager.broadcast_to_room(room_id, {"type": "room_start", "data": data})
@@ -447,6 +451,7 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
             "question_id": next_q.id,
             "text": next_q.text,
             "options": options_list,
+            "show_ranking": room.show_ranking,
         }
         await manager.broadcast_to_room(room_id, {"type": "next_question", "data": data})
         return data
@@ -749,6 +754,12 @@ async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_sess
     if not room:
         raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
 
+    if not room.show_ranking and room.status == RoomStatus.LIVE:
+        raise HTTPException(
+            status_code=400,
+            detail="El ranking entre preguntas está desactivado para esta sala.",
+        )
+
     room.phase = "leaderboard"
     room.phase_start_time = get_utc_now()
     db.commit()
@@ -764,7 +775,14 @@ async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_sess
     leaderboard = [{"name": r[0], "score": r[1]} for r in lb_results]
 
     await manager.broadcast_to_room(
-        room_id, {"type": "show_leaderboard", "data": {"leaderboard": leaderboard}}
+        room_id,
+        {
+            "type": "show_leaderboard",
+            "data": {
+                "leaderboard": leaderboard,
+                "show_ranking": room.show_ranking,
+            },
+        },
     )
     return {"status": "success"}
 
@@ -805,6 +823,7 @@ async def finish_question(
                 "statistics": stats_dict,
                 "question_id": question_id,
                 "correct_option_id": correct_option.id,
+                "show_ranking": room.show_ranking,
             },
         },
     )

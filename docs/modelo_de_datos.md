@@ -94,6 +94,7 @@ classDiagram
 | | group_id | Optional[int] (FK) | Grupo vinculado a la sala. |
 | | shuffle_questions | bool | Indica si las preguntas se presentan en orden aleatorio. |
 | | shuffle_options | bool | Indica si las opciones de respuesta se presentan en orden aleatorio. |
+| | show_ranking | bool | Indica si se muestra la clasificación en vivo entre preguntas. |
 | | question_order | Optional[str] | Lista ordenada de IDs de preguntas separados por comas para persistir la secuencia aleatoria. |
 | **Participant** | id | int (PK) | Identificador único de participación. |
 | | joined_at | datetime | Momento exacto de unión a la sala. |
@@ -129,6 +130,7 @@ classDiagram
             +bool is_paused
             +bool shuffle_questions
             +bool shuffle_options
+            +bool show_ranking
             +string? question_order
             +int teacher_id (FK)
             +int quiz_id (FK)

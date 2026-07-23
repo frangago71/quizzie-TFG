@@ -51,6 +51,7 @@ export interface RoomData {
   answer_time?: number;
   time_left?: number;
   is_paused?: boolean;
+  show_ranking?: boolean;
   statistics?: Record<string, number>;
   correct_option_id?: number;
   leaderboard?: { name: string; score: number }[];
