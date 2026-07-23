@@ -322,5 +322,254 @@ class TestStageIntegration:
             pass
 
         # Provocar excepción en la conexión del ConnectionManager para cobertura (RF-40)
-        manager.active_connections[room.id] = [type('F', (), {'send_json': lambda x: exec('raise Exception()')})()]
+        manager.active_connections[room.id] = [
+            type("F", (), {"send_json": lambda x: exec("raise Exception()")})()
+        ]
         asyncio.run(manager.broadcast_to_room(room.id, {"t": "p"}))
+
+    # ==========================================
+    # FINAL RELEASE & QA
+    # ==========================================
+
+    def test_manual_quiz_creation_and_room_config(
+        self, client: TestClient, session
+    ):
+        """
+        HU-PR-02: Creación manual de cuestionarios y configuración de sala (RF-10, RF-11)
+        Prueba de integración de configuración de sala: aleatoriedad de preguntas/opciones, orden dinámico y límite de tiempo.
+        """
+        q, qu1, qu2, o1, t, s = self.setup_entities(session)
+
+        # Crear sala enviando opciones de tiempo y aleatoriedad sin question_order explícito (RF-10, RF-11)
+        res_c = client.post(
+            "/stage/rooms",
+            params={
+                "quiz_id": q.id,
+                "answer_time": 60,
+                "shuffle_questions": True,
+                "shuffle_options": True,
+                "show_ranking": False,
+            },
+        )
+        assert res_c.status_code == 201
+        data = res_c.json()
+        r_id = data["id"]
+        assert data["answer_time"] == 60
+        assert data["shuffle_questions"] is True
+        assert data["shuffle_options"] is True
+
+        # Iniciar la sala (RF-20)
+        res_start = client.post(f"/stage/rooms/{r_id}/start")
+        assert res_start.status_code == 200
+
+        # Avanzar pregunta ejercitando generación de question_order dinámico cuando no existe previo y barajado de opciones
+        room_db = session.get(Room, r_id)
+        room_db.question_order = None
+        session.add(room_db)
+        session.commit()
+
+        res_nq = client.patch(f"/stage/rooms/{r_id}/next-question")
+        assert res_nq.status_code == 200
+        room_db_after = session.get(Room, r_id)
+        assert room_db_after.question_order is not None
+
+        # Obtener detalles de la sala (RF-11)
+        res_det = client.get(f"/stage/rooms/{r_id}")
+        assert res_det.status_code == 200
+        assert res_det.json()["answer_time"] == 60
+
+        # Finalizar sala
+        client.post(f"/stage/rooms/{r_id}/force-finish")
+
+    def test_live_room_control_with_ranking_toggle(
+        self, client: TestClient, session
+    ):
+        """
+        HU-PR-04: Control de sala en vivo y visibilidad de ranking (RF-45)
+        Prueba de integración del flujo de sala en vivo: toggle de ranking, fase RESULTS con estadísticas y gestión de errores.
+        """
+        q, qu1, qu2, o1, t, s = self.setup_entities(session)
+
+        # Crear sala con ranking desactivado (RF-45)
+        res_c = client.post(
+            "/stage/rooms",
+            params={"quiz_id": q.id, "show_ranking": False},
+        )
+        r_id = res_c.json()["id"]
+
+        # Iniciar sala (RF-20)
+        client.post(f"/stage/rooms/{r_id}/start")
+
+        # Intentar mostrar leaderboard cuando show_ranking=False devuelve error 400 (RF-45)
+        res_lb_err = client.post(f"/stage/rooms/{r_id}/leaderboard/show")
+        assert res_lb_err.status_code == 400
+        assert "desactivado" in res_lb_err.json()["detail"]
+
+        # Finalizar pregunta y verificar emisión de resultados parciales (RF-45)
+        res_fin_q = client.post(
+            f"/stage/rooms/{r_id}/questions/{qu1.id}/finish"
+        )
+        assert res_fin_q.status_code == 200
+        assert res_fin_q.json()["question_id"] == qu1.id
+
+        # Error 404 al finalizar pregunta en sala inexistente
+        assert (
+            client.post(
+                f"/stage/rooms/99999/questions/{qu1.id}/finish"
+            ).status_code
+            == 404
+        )
+
+        # Verificar desglose de estadísticas en fase de resultados
+        room = session.get(Room, r_id)
+        room.phase = RoomPhase.RESULTS
+        session.add(room)
+        session.commit()
+        res_det_res = client.get(f"/stage/rooms/{r_id}")
+        assert res_det_res.status_code == 200
+        assert "statistics" in res_det_res.json()
+
+        # Excepción 404 al avanzar pregunta con ID de pregunta inexistente en question_order
+        room.phase = RoomPhase.ANSWERING
+        room.question_order = "999999"
+        room.current_question_index = 0
+        session.add(room)
+        session.commit()
+        res_nq_bad = client.patch(f"/stage/rooms/{r_id}/next-question")
+        assert res_nq_bad.status_code == 404
+        assert "Pregunta no encontrada" in res_nq_bad.json()["detail"]
+
+        # Finalizar sala
+        client.post(f"/stage/rooms/{r_id}/force-finish")
+
+        # Excepción 400 al forzar finalización de una sala que ya está finalizada
+        res_ff_err = client.post(f"/stage/rooms/{r_id}/force-finish")
+        assert res_ff_err.status_code == 400
+        assert "ya está finalizada" in res_ff_err.json()["detail"]
+
+    def test_data_exploitation_history_and_csv_download(
+        self, client: TestClient, session
+    ):
+        """
+        HU-PR-08: Explotación y descarga de datos (RF-39, RF-47)
+        Prueba de integración de consulta de historial de salas finalizadas, exportación CSV y tratamiento de excepciones de participantes.
+        """
+        from unittest.mock import patch
+
+        q, qu1, qu2, o1, t, s = self.setup_entities(session)
+
+        # Crear sala base (RF-15)
+        res_c = client.post("/stage/rooms", params={"quiz_id": q.id})
+        r_id = res_c.json()["id"]
+
+        # Excepción 500 al fallar commit en la base de datos al unir participante
+        with patch(
+            "sqlmodel.orm.session.Session.commit",
+            side_effect=Exception("Error simulado de BD"),
+        ):
+            res_p_exc = client.post(
+                "/stage/participants",
+                params={"student_id": s.id, "room_id": r_id},
+            )
+            assert res_p_exc.status_code == 500
+            assert "Error al vincular" in res_p_exc.json()["detail"]
+
+        # Unir participante correctamente (RF-17)
+        res_p = client.post(
+            "/stage/participants", params={"student_id": s.id, "room_id": r_id}
+        )
+        p_id = res_p.json()["participant_id"]
+
+        # Cambiar visibilidad de contador de respuestas (RF-45)
+        res_toggle = client.post(
+            f"/stage/rooms/{r_id}/toggle-answers-visibility"
+        )
+        assert res_toggle.status_code == 200
+        assert "show_answers_count" in res_toggle.json()
+
+        # Error 404 en toggle de visibilidad para sala inexistente
+        assert (
+            client.post(
+                "/stage/rooms/99999/toggle-answers-visibility"
+            ).status_code
+            == 404
+        )
+
+        # Pasar sala a LIVE, responder, avanzar a VERIFYING y verificar alumno con recálculo de puntuación
+        client.post(f"/stage/rooms/{r_id}/start")
+        client.post(
+            "/stage/answers",
+            params={
+                "participant_id": p_id,
+                "option_id": o1.id,
+                "question_id": qu1.id,
+            },
+        )
+        client.patch(f"/stage/rooms/{r_id}/next-question")
+        client.patch(f"/stage/rooms/{r_id}/next-question")
+
+        p = session.get(Participant, p_id)
+        p.score = 99  # Desajuste intencionado para ejercitar recálculo en verificación
+        session.add(p)
+        session.commit()
+
+        res_v1 = client.post(
+            f"/stage/rooms/{r_id}/verify-participant",
+            json={"nickname": s.name, "token": p.verification_token},
+        )
+        assert res_v1.status_code == 200
+        p_updated = session.get(Participant, p_id)
+        assert p_updated.score == 10  # Recalculado correctamente
+
+        # Excepción 409 al re-verificar participante ya verificado
+        res_v_dup = client.post(
+            f"/stage/rooms/{r_id}/verify-participant",
+            json={"nickname": s.name, "token": p.verification_token},
+        )
+        assert res_v_dup.status_code == 409
+        assert "verificado anteriormente" in res_v_dup.json()["detail"]
+
+        # Añadir participante no verificado a la sala para probar su borrado al finalizar
+        s2 = Student(name="S2_Unverified")
+        session.add(s2)
+        session.commit()
+        p_unverified = Participant(student_id=s2.id, room_id=r_id)
+        session.add(p_unverified)
+        session.commit()
+
+        # Finalizar la sala (RF-19) - elimina participantes no verificados
+        res_fin = client.post(f"/stage/rooms/{r_id}/finish")
+        assert res_fin.status_code == 200
+        assert res_fin.json()["status"] == "FINISHED"
+
+        # Excepción 400 al intentar unirse a una sala ya finalizada
+        res_p_closed = client.post(
+            "/stage/participants",
+            params={"student_id": s.id, "room_id": r_id},
+        )
+        assert res_p_closed.status_code == 400
+        assert "sala está cerrada" in res_p_closed.json()["detail"]
+
+        # Consultar historial de salas del cuestionario (RF-47)
+        res_hist = client.get(f"/stage/quizzes/{q.id}/history")
+        assert res_hist.status_code == 200
+        history_list = res_hist.json()
+        assert len(history_list) >= 1
+        assert history_list[0]["id"] == r_id
+        assert history_list[0]["participants_count"] == 1
+
+        # Error 404 al consultar historial de cuestionario inexistente (RF-47)
+        assert client.get("/stage/quizzes/99999/history").status_code == 404
+
+        # Consultar resultados formateados de la sala para descarga CSV (RF-39)
+        res_results = client.get(f"/stage/rooms/{r_id}/results")
+        assert res_results.status_code == 200
+        results_list = res_results.json()
+        assert len(results_list) == 1
+        assert results_list[0]["name"] == s.name
+        assert results_list[0]["score"] == 10
+        assert results_list[0]["correct_answers"] == 1
+        assert results_list[0]["total_questions"] == 2
+
+        # Error 404 al consultar resultados de sala inexistente (RF-39)
+        assert client.get("/stage/rooms/99999/results").status_code == 404
