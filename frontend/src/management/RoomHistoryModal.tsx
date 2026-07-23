@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Users, Trophy, X, ChevronRight, Download } from "lucide-react";
+import {
+  ArrowLeft,
+  Users,
+  Trophy,
+  X,
+  ChevronRight,
+  Download,
+} from "lucide-react";
 import api from "../api";
 import "../auth/Modal.css";
 import "./RoomHistoryModal.css";
@@ -92,9 +99,7 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
     const csvContent = [
       headers.join(";"),
       ...rows.map((row) =>
-        row
-          .map((val) => `"${String(val).replace(/"/g, '""')}"`)
-          .join(";"),
+        row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(";"),
       ),
     ].join("\n");
 
@@ -106,10 +111,7 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
     const link = document.createElement("a");
     link.setAttribute("href", url);
 
-    const sanitizedDate = formatDate(selectedRoom.date).replace(
-      /[\/\s:]/g,
-      "_",
-    );
+    const sanitizedDate = formatDate(selectedRoom.date).replace(/[/\s:]/g, "_");
     link.setAttribute(
       "download",
       `resultados_sala_${selectedRoom.join_code}_${sanitizedDate}.csv`,
@@ -232,7 +234,9 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
                 <ArrowLeft size={24} />
               </button>
               <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
                   <h2>Clasificación final</h2>
                   {results.length > 0 && (
                     <button

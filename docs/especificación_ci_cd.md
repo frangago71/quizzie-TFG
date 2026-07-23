@@ -3,52 +3,61 @@
 Este documento detalla el flujo de trabajo automatizado diseñado para **Quizzie**, con el fin de garantizar la calidad del software, la seguridad de las dependencias y la disponibilidad continua del servicio mediante un proceso de entrega profesional.
 
 ## 1. Ciclo de vida y flujo de trabajo (Workflow)
-El proyecto implementa un flujo de trabajo automatizado que garantiza la entrega de código fiable mediante una ejecución secuencial de etapas. El orden técnico de ejecución del sistema es el siguiente:
+El proyecto implementa un flujo de trabajo secuencial que abarca desde el desarrollo local hasta la puesta en producción:
 
-1.  **Etapa de verificación (CI):** Se activa tras un `push` a la rama de desarrollo (`develop`). El sistema ejecuta de forma aislada las auditorías de seguridad, el linting y la suite de pruebas unitarias/integración.
-2.  **Etapa de consolidación:** Al integrar los cambios en la rama principal (`main`), el sistema ejecuta nuevamente el workflow completo. Esta redundancia asegura la integridad total tras la consolidación de ramas.
-3.  **Etapa de despliegue (CD):** Una vez que el código validado llega a `main`, las plataformas de hosting disparan el despliegue automático.
+1. **Etapa 1 - Verificación Local (Pre-commit hooks):** Antes de registrar cualquier commit, se ejecutan comprobaciones automáticas en el entorno local (linting y formateo para backend y frontend).
+2. **Etapa 2 - Integración Continua (CI):** Tras realizar `push` o `pull request` hacia las ramas `develop` o `main`, GitHub Actions ejecuta los flujos aislados de calidad, linter, seguridad y pruebas unitarias/integración.
+3. **Etapa 3 - Análisis de Calidad Continuo (SonarQube):** Tras consolidar cambios en `main`, se ejecuta el análisis estático de código en SonarCloud.
+4. **Etapa 4 - Despliegue Continuo (CD):** Al superar con éxito todas las validaciones en `main`, las plataformas de hosting (Vercel y Render) despliegan el servicio automáticamente.
 
-## 2. Pipeline de Integración Continua (CI)
-El flujo de CI se divide en dos workflows independientes gestionados mediante **GitHub Actions**:
+## 2. Verificación Local (Pre-commit hooks)
+Para evitar que los commits fallen posteriormente en la etapa de CI en remoto, el archivo `.pre-commit-config.yaml` intercepta la creación de commits y aplica comprobaciones y correcciones automáticas:
+
+* **Backend (Python):**
+  * **Ruff Check:** Ejecuta `ruff check --fix` para detectar y corregir errores estáticos.
+  * **Ruff Format:** Formatea el código de Python respetando las reglas de estilo del proyecto (`ruff-format`).
+* **Frontend (TypeScript / React):**
+  * **ESLint Local:** Ejecuta `npx eslint --config frontend/eslint.config.js --fix` sobre los archivos modificados bajo `frontend/src/`, asegurando que las reglas de ESLint y Prettier se apliquen con la misma configuración exacta que en la integración continua.
+* **Utilidades Generales:**
+  * `trailing-whitespace`: Elimina espacios innecesarios al final de cada línea.
+  * `end-of-file-fixer`: Asegura que todos los archivos terminen con una línea en blanco.
+  * `check-yaml`: Valida la sintaxis de los archivos YAML.
+  * `check-added-large-files`: Evita incluir accidentalmente archivos de gran tamaño.
+
+## 3. Pipeline de Integración Continua (CI)
+El flujo de CI se gestiona mediante dos workflows independientes en **GitHub Actions**:
 
 ### A. CI - Quality & Security (`quality_and_security.yml`)
-Este workflow se ejecuta en cada `push` o `pull_request` a las ramas `main` y `develop`, y se compone de dos trabajos paralelos:
+Se ejecuta en cada `push` o `pull_request` a las ramas `main` y `develop`, y se compone de dos trabajos paralelos:
 
-*   **Backend CI (`backend-ci`):**
-    *   **Instalación:** Se utiliza el gestor de paquetes **uv** (`uv sync --all-groups`) para una instalación ultra-rápida y reproducible.
-    *   **Calidad de Código:** Ejecución de **Ruff** para linting (`uvx ruff check .`) y formateo (`uvx ruff format . --check`).
-    *   **Seguridad:** Auditoría de vulnerabilidades conocidas con `uvx pip-audit`.
-    *   **Pruebas:** Ejecución de tests con `pytest`, generando y subiendo el reporte de cobertura (`coverage.xml`).
-*   **Frontend CI (`frontend-ci`):**
-    *   **Instalación:** `npm ci` en el directorio `frontend` para un árbol de dependencias exacto y limpio.
-    *   **Linting:** Ejecución de **ESLint** (`npm run lint`) para validar reglas de React y tipado.
-    *   **Compilación:** Compilación del proyecto (`npm run build`) para asegurar la ausencia de errores de tipado antes de producción.
+* **Backend CI (`backend-ci`):**
+  * **Instalación:** Gestor de paquetes **uv** (`uv sync --all-groups`) para instalaciones reproducibles.
+  * **Calidad de Código:** Verificación con **Ruff** (`uvx ruff check .`) y comprobación de formato (`uvx ruff format . --check`).
+  * **Seguridad:** Auditoría de vulnerabilidades conocidas con `uvx pip-audit`.
+  * **Pruebas:** Ejecución de tests con `pytest`, generando y subiendo el reporte de cobertura (`coverage.xml`).
+* **Frontend CI (`frontend-ci`):**
+  * **Instalación:** `npm ci` en el directorio `frontend` para un árbol de dependencias exacto y limpio.
+  * **Linting:** Validación con **ESLint** (`npm run lint`).
+  * **Compilación:** Compilación del proyecto (`npm run build`) para garantizar la ausencia de errores de tipado antes de producción.
 
 ### B. Code Quality - SonarQube (`sonar.yml`)
-Para optimizar el uso de recursos y garantizar el desacoplamiento total entre ramas, el análisis estático se gestiona en este workflow autocontenido.
-*   **Trigger:** Se ejecuta únicamente ante un `push` en la rama principal (`main`). No se ejecuta en `develop` ni en Pull Requests, de modo que en `develop` solo se visualizarán los checks de calidad básicos.
-*   **Diseño autocontenido:** Para evitar dependencias cruzadas entre archivos de workflow (las cuales impiden el correcto funcionamiento en GitHub Actions), este workflow realiza la instalación de dependencias y la suite de pruebas de forma independiente para generar el informe de cobertura (`coverage.xml`).
-*   **Análisis estático (SonarCloud):** Se ejecuta en un runner de **ubuntu-latest** para consistencia de rutas.
+Workflow autocontenido para el análisis estático en SonarCloud:
+* **Trigger:** Ejecución exclusiva ante `push` en la rama principal (`main`).
+* **Análisis estático:** Generación de métricas de cobertura y mantenibilidad enviadas a SonarCloud.
 
-## 3. Estrategia de Despliegue Continuo (CD)
-El despliegue se apoya en la infraestructura nativa de las plataformas elegidas:
+## 4. Estrategia de Despliegue Continuo (CD)
 
 ### A. Despliegue del Frontend (Vercel)
-* **Trigger:** Nuevo commit en `main`.
-* **Condición:** Solo se activa si los checks de GitHub pasan correctamente.
+* **Trigger:** Nuevos commits en la rama `main`.
+* **Condición:** Activación condicionada al éxito previo de las pruebas de CI.
 
 ### B. Despliegue del Backend (Render)
-* **Trigger:** Sincronización con la rama `main` mediante el disparo de un Deploy Hook.
-* **Seguridad:** El despliegue automático nativo de Render está desactivado en favor de un disparo controlado mediante GitHub Actions. El Deploy Hook solo se ejecuta si los trabajos de `backend-ci` (tests, linter, seguridad) y `frontend-ci` (compilación, linter) pasan con éxito.
+* **Trigger:** Invocación controlada del Deploy Hook mediante GitHub Actions tras la aprobación de los trabajos de `backend-ci` y `frontend-ci` en la rama `main`.
 
-## 4. Resumen del flujo técnico
+## 5. Resumen del flujo técnico (Orden cronológico)
 
-### En ramas `develop` y `main` (via `quality_and_security.yml`):
-1.  **Job Backend:** Instalación (uv) → Ruff Check & Format → pip-audit → Pytest → Upload Coverage.
-2.  **Job Frontend:** Instalación (npm ci) → ESLint → Build.
-
-
-### Solo en rama `main`:
-3.  **Job Deploy:** Petición GET al Deploy Hook de Render para iniciar la construcción.
-4.  **Job Sonarqube (via `sonar.yml`):** Instalación (uv) → Pytest (generación de cobertura) → SonarCloud Scan.
+1. **[Desarrollo Local]** ──> Pre-commit Hooks (Ruff + ESLint local con `frontend/eslint.config.js`)
+2. **[Push / PR]** ─────────> GitHub Actions (`quality_and_security.yml`):
+                              * **Backend CI:** Ruff Check & Format + pip-audit + Pytest
+                              * **Frontend CI:** ESLint + npm run build
+3. **[Merge a main]** ──────> SonarQube Scan (`sonar.yml`) + CD Deploy Hook (Vercel & Render)
