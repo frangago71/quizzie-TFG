@@ -6,7 +6,7 @@ import FinalScreen from "./FinalScreen";
 import "./LiveRoom.css";
 import api, { WS_BASE_URL } from "../api";
 import { useRoom } from "../context/RoomContext.tsx";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 import type { RoomData } from "../types.ts";
 
@@ -47,11 +47,23 @@ const LiveRoom: React.FC = () => {
   const room: RoomData | null =
     roomData && !Array.isArray(roomData) ? roomData : null;
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (urlRoomId && !roomId) {
       setRoomId(Number(urlRoomId));
     }
   }, [urlRoomId, roomId, setRoomId]);
+
+  useEffect(() => {
+    const validatedId = Number(urlRoomId || roomId);
+    if (
+      room?.status?.toLowerCase() === "waiting" &&
+      !Number.isNaN(validatedId)
+    ) {
+      navigate(`/lobby/${validatedId}`);
+    }
+  }, [room?.status, navigate, urlRoomId, roomId]);
 
   const updateRoomStatus = useCallback(
     (data: RoomData) => {
@@ -90,14 +102,30 @@ const LiveRoom: React.FC = () => {
           setStatistics(data.statistics);
           setCorrectOptionId(data.correct_option_id);
           setRoomData((prev) =>
-            prev && !Array.isArray(prev) ? { ...prev, phase: "results" } : prev,
+            prev && !Array.isArray(prev)
+              ? {
+                  ...prev,
+                  phase: "results",
+                  show_ranking:
+                    data.show_ranking !== undefined
+                      ? data.show_ranking
+                      : prev.show_ranking,
+                }
+              : prev,
           );
           break;
         case "show_leaderboard":
           setLeaderboardData(data.leaderboard);
           setRoomData((prev) =>
             prev && !Array.isArray(prev)
-              ? { ...prev, phase: "leaderboard" }
+              ? {
+                  ...prev,
+                  phase: "leaderboard",
+                  show_ranking:
+                    data.show_ranking !== undefined
+                      ? data.show_ranking
+                      : prev.show_ranking,
+                }
               : prev,
           );
           break;
@@ -170,7 +198,13 @@ const LiveRoom: React.FC = () => {
 
   const handleShowLeaderboard = async () => {
     const vRoomId = Number(roomId || urlRoomId);
-    if (vRoomId) await api.post(`/stage/rooms/${vRoomId}/leaderboard/show`);
+    if (!vRoomId) return;
+    try {
+      await api.post(`/stage/rooms/${vRoomId}/leaderboard/show`);
+    } catch (error) {
+      console.error("Error al mostrar ranking:", error);
+      toast.error("No se pudo mostrar el ranking.");
+    }
   };
 
   const handleNextQuestion = async () => {
@@ -264,6 +298,7 @@ const LiveRoom: React.FC = () => {
           selectedOptionId={selectedOptionId}
           isHost={isHost}
           handleShowLeaderboard={handleShowLeaderboard}
+          handleNextQuestion={handleNextQuestion}
         />
       );
     }

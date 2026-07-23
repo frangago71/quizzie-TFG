@@ -33,6 +33,9 @@ const Lobby: React.FC = () => {
         if (roomDetails.data.join_code) {
           setRoomCode(roomDetails.data.join_code);
         }
+        if (roomDetails.data.status?.toLowerCase() === "live") {
+          navigate(`/live/${validatedId}`);
+        }
       } catch (err) {
         console.error("Error al obtener los detalles de la sala:", err);
       }
@@ -89,7 +92,7 @@ const Lobby: React.FC = () => {
   }, [room?.status, navigate, urlRoomId, roomId]);
 
   const handleStartRoom = async () => {
-    const vRoomId = Number(roomId);
+    const vRoomId = Number(urlRoomId || roomId);
     if (!vRoomId || Number.isNaN(vRoomId)) return;
     try {
       await api.post(`/stage/rooms/${vRoomId}/start`);

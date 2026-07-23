@@ -20,6 +20,7 @@ interface ResultsPhaseProps {
   selectedOptionId: number | null;
   isHost: boolean;
   handleShowLeaderboard: () => void;
+  handleNextQuestion?: () => void;
 }
 
 interface ResultsChartProps {
@@ -183,6 +184,7 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
   selectedOptionId,
   isHost,
   handleShowLeaderboard,
+  handleNextQuestion,
 }) => {
   const totalVotes = Object.values(statistics).reduce((a, b) => a + b, 0);
   const maxVotes = Math.max(...Object.values(statistics), 0);
@@ -238,13 +240,26 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
 
         {isHost && (
           <div className="results-actions">
-            <button
-              type="button"
-              className="btn-continue-host"
-              onClick={handleShowLeaderboard}
-            >
-              Ver Ranking <ChevronRight size={22} />
-            </button>
+            {roomData.show_ranking === false ? (
+              <button
+                type="button"
+                className="btn-continue-host"
+                onClick={handleNextQuestion}
+              >
+                {roomData.current_question_index === roomData.total_questions
+                  ? "Finalizar cuestionario"
+                  : "Siguiente pregunta"}{" "}
+                <ChevronRight size={22} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn-continue-host"
+                onClick={handleShowLeaderboard}
+              >
+                Ver Ranking <ChevronRight size={22} />
+              </button>
+            )}
           </div>
         )}
       </div>

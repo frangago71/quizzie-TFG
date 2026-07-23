@@ -23,6 +23,7 @@ const SetupRoom: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [shuffleQuestions, setShuffleQuestions] = useState(false);
   const [shuffleOptions, setShuffleOptions] = useState(false);
+  const [showRanking, setShowRanking] = useState(true);
   const [answerTime, setAnswerTime] = useState(45);
   const { id: quizId } = useParams();
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const SetupRoom: React.FC = () => {
           quiz_id: quizId,
           shuffle_questions: shuffleQuestions,
           shuffle_options: shuffleOptions,
+          show_ranking: showRanking,
           answer_time: answerTime,
         },
       });
@@ -211,7 +213,18 @@ const SetupRoom: React.FC = () => {
               ></div>
             </div>
 
-            <div className="setting-control locked">
+            <div
+              className="setting-control"
+              onClick={() => setShowRanking(!showRanking)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setShowRanking(!showRanking);
+                }
+              }}
+              aria-label="Alternar mostrar ranking tras cada pregunta"
+            >
               <div className="setting-left">
                 <div className="setting-icon-wrapper">
                   <Trophy size={20} color="var(--primary-magenta)" />
@@ -223,7 +236,9 @@ const SetupRoom: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="switch-mock off"></div>
+              <div
+                className={`switch-mock ${showRanking ? "on" : "off"}`}
+              ></div>
             </div>
 
             <div className="setting-control duration-control">
