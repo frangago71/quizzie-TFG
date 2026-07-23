@@ -15,7 +15,8 @@ const LiveRoom: React.FC = () => {
   const [count, setCount] = useState(3);
   const [timeLeft, setTimeLeft] = useState(5);
   const [quizTitle, setQuizTitle] = useState("");
-  const [showAnswersCount, setShowAnswersCount] = useState(false);
+  const [showAnswersCount, setShowAnswersCount] = useState(true);
+  const [answersCount, setAnswersCount] = useState(0);
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [isSent, setIsSent] = useState(false);
 
@@ -67,11 +68,19 @@ const LiveRoom: React.FC = () => {
 
   const updateRoomStatus = useCallback(
     (data: RoomData) => {
-      setRoomData(data);
+      setRoomData((prev) => {
+        if (typeof prev !== "object" || prev === null || Array.isArray(prev)) {
+          return data;
+        }
+        return { ...prev, ...data };
+      });
       if (data.join_code) {
         setRoomCode(data.join_code);
       }
-      if (data.status === "live") {
+      const isLive =
+        data.status === "live" || data.status?.toLowerCase() === "live";
+
+      if (isLive) {
         const isFirstStart =
           data.current_question_index === 1 &&
           data.time_left !== undefined &&
@@ -83,6 +92,11 @@ const LiveRoom: React.FC = () => {
         if (data.correct_option_id) setCorrectOptionId(data.correct_option_id);
         if (data.leaderboard) setLeaderboardData(data.leaderboard);
         if (data.time_left !== undefined) setTimeLeft(data.time_left);
+        if (data.answers_count !== undefined)
+          setAnswersCount(data.answers_count);
+        if (data.show_answers_count !== undefined)
+          setShowAnswersCount(data.show_answers_count);
+        if (data.is_paused !== undefined) setIsPaused(data.is_paused);
       } else if (data.status === "verifying" || data.status === "finished") {
         if (data.leaderboard) setLeaderboardData(data.leaderboard);
       }
@@ -97,6 +111,18 @@ const LiveRoom: React.FC = () => {
         case "room_start":
         case "room_update":
           updateRoomStatus(data);
+          if (data.answers_count !== undefined)
+            setAnswersCount(data.answers_count);
+          if (data.show_answers_count !== undefined)
+            setShowAnswersCount(data.show_answers_count);
+          break;
+        case "answer_submitted":
+          if (data.answers_count !== undefined)
+            setAnswersCount(data.answers_count);
+          break;
+        case "answers_visibility_updated":
+          if (data.show_answers_count !== undefined)
+            setShowAnswersCount(data.show_answers_count);
           break;
         case "show_results":
           setStatistics(data.statistics);
@@ -180,8 +206,13 @@ const LiveRoom: React.FC = () => {
     queueMicrotask(() => {
       setIsSent(false);
       setSelectedOptionId(null);
+      if (room?.answers_count !== undefined) {
+        setAnswersCount(room.answers_count);
+      } else {
+        setAnswersCount(0);
+      }
     });
-  }, [room?.question_id]);
+  }, [room?.question_id, room?.answers_count]);
 
   const handleShowResults = async () => {
     const vRoomId = Number(roomId || urlRoomId);
@@ -204,6 +235,17 @@ const LiveRoom: React.FC = () => {
     } catch (error) {
       console.error("Error al mostrar ranking:", error);
       toast.error("No se pudo mostrar el ranking.");
+    }
+  };
+
+  const handleToggleAnswersVisibility = async () => {
+    const vRoomId = Number(roomId || urlRoomId);
+    if (!vRoomId) return;
+    try {
+      await api.post(`/stage/rooms/${vRoomId}/toggle-answers-visibility`);
+    } catch (error) {
+      console.error("Error al alternar visibilidad de respuestas:", error);
+      toast.error("Error al alternar visibilidad de respuestas.");
     }
   };
 
@@ -264,6 +306,15 @@ const LiveRoom: React.FC = () => {
     }
   }, [count, phase, room?.answer_time]);
 
+  useEffect(() => {
+    if (phase === "playing" && !isPaused) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => Math.max(0, prev - 1));
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [phase, isPaused]);
+
   const totalTime = room?.answer_time || 45;
   const answeringProgress = Math.min(
     100,
@@ -321,9 +372,9 @@ const LiveRoom: React.FC = () => {
         roomCode={roomCode}
         quizTitle={quizTitle}
         showAnswersCount={showAnswersCount}
-        setShowAnswersCount={setShowAnswersCount}
+        handleToggleAnswersVisibility={handleToggleAnswersVisibility}
+        answersCount={answersCount}
         isHost={isHost}
-        statistics={statistics}
         timeLeft={timeLeft}
         answeringProgress={answeringProgress}
         isPaused={isPaused}

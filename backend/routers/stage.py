@@ -74,7 +74,10 @@ async def timer_sync_loop():
     while True:
         await asyncio.sleep(1)
         with Session(engine) as session:
-            statement = select(Room).where(Room.status == RoomStatus.LIVE)
+            statement = select(Room).where(
+                Room.status == RoomStatus.LIVE,
+                Room.phase == RoomPhase.ANSWERING,
+            )
             rooms = session.exec(statement).all()
             for room in rooms:
                 time_left = get_calculated_time_left(room)
@@ -266,11 +269,18 @@ def _get_current_question_data(
                 if room.shuffle_options:
                     options_list = deterministic_shuffle(options_list, room.id, q.id)
 
+                answers_count = session.exec(
+                    select(func.count(Answer.id))
+                    .join(Participant, Answer.participant_id == Participant.id)
+                    .where(Participant.room_id == room.id, Answer.question_id == q.id)
+                ).one()
+
                 current_q_data = {
                     "text": q.text,
                     "current_question_index": room.current_question_index,
                     "question_id": q.id,
                     "options": options_list,
+                    "answers_count": answers_count,
                 }
 
                 time_left = get_calculated_time_left(room)
@@ -339,6 +349,7 @@ def get_room_details(room_id: int, session: Annotated[Session, Depends(get_sessi
         "answer_time": room.answer_time,
         "is_paused": room.is_paused,
         "show_ranking": room.show_ranking,
+        "show_answers_count": room.show_answers_count,
         **extra_data,
         **(current_q_data or {"text": "", "options": []}),
     }
@@ -386,12 +397,18 @@ async def start_quiz(room_id: int, session: Annotated[Session, Depends(get_sessi
 
     data = {
         "status": room.status,
+        "phase": room.phase,
         "current_question_index": 1,
         "total_questions": len(questions),
         "question_id": first_question.id,
         "text": first_question.text,
         "options": options_list,
+        "time_left": room.remaining_time_at_pause,
+        "answer_time": room.answer_time,
+        "is_paused": room.is_paused,
         "show_ranking": room.show_ranking,
+        "show_answers_count": room.show_answers_count,
+        "answers_count": 0,
     }
 
     await manager.broadcast_to_room(room_id, {"type": "room_start", "data": data})
@@ -446,12 +463,19 @@ async def next_question(room_id: int, db: Annotated[Session, Depends(get_session
             options_list = deterministic_shuffle(options_list, room.id, next_q.id)
 
         data = {
+            "status": room.status,
+            "phase": room.phase,
             "current_question_index": next_index,
             "total_questions": len(q_ids),
             "question_id": next_q.id,
             "text": next_q.text,
             "options": options_list,
+            "time_left": room.answer_time,
+            "answer_time": room.answer_time,
+            "is_paused": room.is_paused,
             "show_ranking": room.show_ranking,
+            "show_answers_count": room.show_answers_count,
+            "answers_count": 0,
         }
         await manager.broadcast_to_room(room_id, {"type": "next_question", "data": data})
         return data
@@ -693,7 +717,7 @@ def get_answers(session: Annotated[Session, Depends(get_session)]):
         400: {"description": "Ya has respondido a esta pregunta."},
     },
 )
-def submit_answer(
+async def submit_answer(
     participant_id: int,
     option_id: int,
     question_id: int,
@@ -729,7 +753,25 @@ def submit_answer(
     )
     session.add(new_answer)
     session.commit()
-    return {"success": True}
+
+    answers_count = session.exec(
+        select(func.count(Answer.id))
+        .join(Participant, Answer.participant_id == Participant.id)
+        .where(Participant.room_id == participant.room_id, Answer.question_id == question_id)
+    ).one()
+
+    await manager.broadcast_to_room(
+        participant.room_id,
+        {
+            "type": "answer_submitted",
+            "data": {
+                "answers_count": answers_count,
+                "question_id": question_id,
+            },
+        },
+    )
+
+    return {"success": True, "answers_count": answers_count}
 
 
 @router.get("/rooms/{room_id}/leaderboard")
@@ -785,6 +827,29 @@ async def show_leaderboard(room_id: int, db: Annotated[Session, Depends(get_sess
         },
     )
     return {"status": "success"}
+
+
+@router.post(
+    "/rooms/{room_id}/toggle-answers-visibility",
+    responses={404: {"description": ROOM_NOT_FOUND}},
+)
+async def toggle_answers_visibility(room_id: int, db: Annotated[Session, Depends(get_session)]):
+    room = db.get(Room, room_id)
+    if not room:
+        raise HTTPException(status_code=404, detail=ROOM_NOT_FOUND)
+
+    room.show_answers_count = not room.show_answers_count
+    db.add(room)
+    db.commit()
+
+    await manager.broadcast_to_room(
+        room_id,
+        {
+            "type": "answers_visibility_updated",
+            "data": {"show_answers_count": room.show_answers_count},
+        },
+    )
+    return {"status": "success", "show_answers_count": room.show_answers_count}
 
 
 @router.post(

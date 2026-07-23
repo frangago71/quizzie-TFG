@@ -52,6 +52,7 @@ class Room(SQLModel, table=True):
     shuffle_questions: bool = Field(default=False)
     shuffle_options: bool = Field(default=False)
     show_ranking: bool = Field(default=True)
+    show_answers_count: bool = Field(default=True)
     question_order: Optional[str] = Field(default=None)
 
     teacher_id: int = Field(foreign_key="teacher.id")

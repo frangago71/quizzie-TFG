@@ -18,9 +18,9 @@ interface AnsweringPhaseProps {
   roomCode: string;
   quizTitle: string;
   showAnswersCount: boolean;
-  setShowAnswersCount: (val: boolean) => void;
+  handleToggleAnswersVisibility: () => void;
+  answersCount: number;
   isHost: boolean;
-  statistics: Record<string, number>;
   timeLeft: number;
   isPaused: boolean;
 
@@ -138,9 +138,9 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
   roomCode,
   quizTitle,
   showAnswersCount,
-  setShowAnswersCount,
+  handleToggleAnswersVisibility,
+  answersCount,
   isHost,
-  statistics,
   timeLeft,
   isPaused,
   answeringProgress,
@@ -157,11 +157,6 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
     return <CountdownScreen count={count} />;
   }
 
-  const answersCountText =
-    isHost && showAnswersCount
-      ? Object.values(statistics).reduce((a, b) => a + b, 0)
-      : "••";
-
   return (
     <div className="live-room-wrapper answering-mode">
       <div className="live-content-layout">
@@ -173,23 +168,36 @@ const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
             </h1>
           </div>
           <div className="header-right-stats">
-            <div className="live-stat-badge">
-              {isHost ? (
+            {isHost ? (
+              <div className="live-stat-badge">
                 <button
                   type="button"
                   className="eye-toggle-btn"
-                  onClick={() => setShowAnswersCount(!showAnswersCount)}
+                  onClick={handleToggleAnswersVisibility}
+                  title={
+                    showAnswersCount
+                      ? "Ocultar contador a alumnos"
+                      : "Mostrar contador a alumnos"
+                  }
                 >
                   {showAnswersCount ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
-              ) : (
-                <Users size={20} className="icon-magenta" />
-              )}
-              <div className="stat-texts">
-                <span className="stat-label">RESPUESTAS</span>
-                <span className="stat-number">{answersCountText}</span>
+                <div className="stat-texts">
+                  <span className="stat-label">RESPUESTAS</span>
+                  <span className="stat-number">
+                    {showAnswersCount ? answersCount : "••"}
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : showAnswersCount ? (
+              <div className="live-stat-badge">
+                <Users size={20} className="icon-magenta" />
+                <div className="stat-texts">
+                  <span className="stat-label">RESPUESTAS</span>
+                  <span className="stat-number">{answersCount}</span>
+                </div>
+              </div>
+            ) : null}
           </div>
         </header>
 
