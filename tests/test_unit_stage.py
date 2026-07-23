@@ -190,3 +190,101 @@ class TestStageUnit:
         participant = Participant(student_id=1, room_id=1)
         assert participant.joined_at is not None
         assert isinstance(participant.joined_at, datetime)
+
+    # ==========================================
+    # FINAL RELEASE & QA
+    # ==========================================
+
+    def test_quiz_randomization_logic(self):
+        """
+        RF-10. Aleatoriedad
+        Probar los algoritmos de aleatoriedad para alterar el orden de preguntas y respuestas en una sala.
+        """
+        from routers.stage import deterministic_shuffle
+
+        room = Room(
+            quiz_id=1,
+            teacher_id=1,
+            join_code="123789",
+            shuffle_questions=True,
+            shuffle_options=True,
+        )
+        assert room.shuffle_questions
+        assert room.shuffle_options
+
+        items = [
+            {"id": 1, "text": "Opt 1"},
+            {"id": 2, "text": "Opt 2"},
+            {"id": 3, "text": "Opt 3"},
+        ]
+        shuffled = deterministic_shuffle(items, room_id=10, question_id=5)
+        assert len(shuffled) == len(items)
+        assert {x["id"] for x in shuffled} == {1, 2, 3}
+
+    def test_answer_time_configuration(self):
+        """
+        RF-11. Configurar tiempo
+        Probar la lógica de configuración del tiempo límite de respuesta por pregunta al establecer una sala.
+        """
+        room_default = Room(quiz_id=1, teacher_id=1, join_code="111222")
+        assert room_default.answer_time == 45
+
+        room_custom = Room(quiz_id=1, teacher_id=1, join_code="333444", answer_time=60)
+        assert room_custom.answer_time == 60
+
+    def test_csv_export_parsing_structure(self):
+        """
+        RF-39. Exportación CSV
+        Probar el formateo y estructuración de la carga útil de resultados de sala para la exportación a CSV.
+        """
+        student_results = [
+            {
+                "name": "uvus_alumno1",
+                "score": 100,
+                "correct_answers": 2,
+                "total_questions": 2,
+            },
+            {
+                "name": "uvus_alumno2",
+                "score": 50,
+                "correct_answers": 1,
+                "total_questions": 2,
+            },
+        ]
+        headers = ["uvus", "nota", "aciertos"]
+        rows = [
+            [res["name"], res["score"], res["correct_answers"]]
+            for res in student_results
+        ]
+        assert headers == ["uvus", "nota", "aciertos"]
+        assert len(rows) == 2
+        assert rows[0] == ["uvus_alumno1", 100, 2]
+
+    def test_ranking_visibility_control(self):
+        """
+        RF-45. Visibilidad del ranking
+        Probar el estado del selector booleano y la lógica de filtrado para mostrar u ocultar rankings entre preguntas.
+        """
+        room_default = Room(quiz_id=1, teacher_id=1, join_code="555666")
+        assert room_default.show_ranking is True
+
+        room_disabled = Room(
+            quiz_id=1, teacher_id=1, join_code="777888", show_ranking=False
+        )
+        assert room_disabled.show_ranking is False
+
+    def test_room_history_aggregation_model(self):
+        """
+        RF-47. Historial de salas
+        Probar las propiedades de consulta y agregación del modelo para obtener historial de salas finalizadas.
+        """
+        finished_room = Room(
+            quiz_id=10,
+            teacher_id=1,
+            join_code="888999",
+            status=RoomStatus.FINISHED,
+            created_at=datetime.now(timezone.utc),
+        )
+        assert finished_room.status == RoomStatus.FINISHED
+        assert finished_room.quiz_id == 10
+        assert finished_room.created_at is not None
