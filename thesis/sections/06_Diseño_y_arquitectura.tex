@@ -76,15 +76,69 @@ La combinación de los tres patrones previamente descritos se consolida en una e
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{figures/arquitectura_global.png}
+    \includegraphics[width=0.95\textwidth]{figures/arquitectura_global.png}
     \caption{Esquema de la arquitectura global del sistema.}
     \label{fig:arquitectura_global}
 \end{figure}
 
-\section{Estructura modular del código}
-Organización del proyecto en módulos independientes tanto para el Frontend (React) como para el Backend (FastAPI), facilitando la escalabilidad y el mantenimiento
+\newpage
 
-Hablar de la organización del código en módulos independientes, explicando cómo se han estructurado y por qué es importante para la escalabilidad y el mantenimiento del proyecto.
+\section{Estructura modular del código}
+
+Para trasladar los patrones arquitectónicos descritos a la fase de diseño, el sistema se organiza conceptualmente en torno a una estructura monorepo dividida en dos grandes módulos independientes (\texttt{backend/} y \texttt{frontend/}). Esta organización delimita claramente las responsabilidades y facilita el desarrollo desacoplado de ambos componentes.
+
+A continuación se presenta el esquema preliminar de la jerarquía de directorios y componentes principales del proyecto:
+
+\begin{figure}[H]
+\centering
+\small
+\dirtree{%
+.1 quizzie-tfg/\DTcomment{Raíz del proyecto}.
+.2 backend/\DTcomment{Servidor de aplicación y API REST/\textit{WebSockets}}.
+.3 main.py\DTcomment{Punto de entrada de la API y orquestación de servicios}.
+.3 database.py\DTcomment{Configuración del motor de base de datos y sesiones}.
+.3 seed.py\DTcomment{Poblado inicial de datos y configuraciones base}.
+.3 models/\DTcomment{Capa de entidades y modelo relacional (ORM)}.
+.3 routers/\DTcomment{Capa de controladores y endpoints}.
+.3 schemas/\DTcomment{Capa de objetos de transferencia de datos (DTO)}.
+.2 frontend/\DTcomment{Cliente web (Single Page Application)}.
+.3 src/\DTcomment{Código fuente del \textit{frontend}}.
+.4 main.tsx\DTcomment{Punto de entrada e inicialización de la SPA}.
+.4 App.tsx\DTcomment{Enrutamiento principal y estructura base de la aplicación}.
+.4 auth/\DTcomment{Módulo de autenticación de usuarios}.
+.4 management/\DTcomment{Módulo de gestión docente (cuestionarios y grupos)}.
+.4 room-access/\DTcomment{Módulo de acceso y salas de espera}.
+.4 room-play/\DTcomment{Módulo de ejecución de partida en tiempo real}.
+.4 context/\DTcomment{Gestión del estado global de la aplicación}.
+.4 hooks/\DTcomment{Lógica reutilizable de estado e interacción}.
+.4 layouts/\DTcomment{Estructura y plantillas visuales del cliente}.
+.2 docs/\DTcomment{Documentación y especificaciones de diseño}.
+.2 tests/\DTcomment{Batería de pruebas del sistema}.
+}
+\caption{Estructura preliminar de módulos y componentes del proyecto.}
+\label{fig:estructura_codigo}
+\end{figure}
+
+\subsection{Organización del backend}
+
+En el servidor, la estructura abstrae la lógica en tres archivos clave de inicialización y tres paquetes fundamentales que responden a la arquitectura en capas:
+
+\begin{itemize}
+    \item \textbf{Servicios base de arranque:} Los módulos \texttt{main.py}, \texttt{database.py} y \texttt{seed.py} se encargan del punto de entrada del servidor, la gestión del motor de conexión a la base de datos y la siembra inicial de información necesaria para la ejecución.
+    \item \textbf{Capa de controladores (\texttt{routers/}):} Define los puntos de entrada para las peticiones HTTP REST y gestiona las conexiones bidireccionales mediante WebSockets.
+    \item \textbf{Capa de modelos (\texttt{models/}):} Define la representación de las entidades del dominio y sus relaciones en la base de datos relacional.
+    \item \textbf{Capa de validación y DTOs (\texttt{schemas/}):} Define los contratos de datos para la entrada y salida de la API, garantizando el filtrado y la validación de la información.
+\end{itemize}
+
+\subsection{Organización del frontend}
+
+En el cliente, el directorio \texttt{src/} agrupa los componentes organizados por dominios funcionales y capas de soporte:
+
+\begin{itemize}
+    \item \textbf{Puntos de entrada y enrutamiento:} Los archivos \texttt{main.tsx} y \texttt{App.tsx} inicializan la aplicación cliente y configuran las rutas dinámicas de navegación.
+    \item \textbf{Módulos de dominio funcional:} Las carpetas \texttt{auth/}, \texttt{management/}, \texttt{room-access/} y \texttt{room-play/} encapsulan de forma independiente las distintas pantallas y flujos de trabajo de la aplicación.
+    \item \textbf{Módulos de soporte e infraestructura:} Las carpetas \texttt{context/}, \texttt{hooks/} y \texttt{layouts/} proporcionan los servicios comunes de gestión del estado global, ganchos de lógica reutilizable y la estructura visual compartida.
+\end{itemize}
 
 \section{Modelo de datos}
 Diagrama de dominio
