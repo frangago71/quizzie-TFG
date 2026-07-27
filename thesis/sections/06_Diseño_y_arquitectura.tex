@@ -34,7 +34,7 @@ Tanto en el servidor como en el cliente, el sistema se estructura internamente e
 
 En el \textit{backend}, la lógica se organiza en cuatro capas conceptuales:
 \begin{enumerate}
-    \item \textbf{Capa de presentación y controladores:} Expone los puntos de entrada HTTP (endpoints REST) y los canales WebSocket. Valida las peticiones de entrada, gestiona las respuestas de la API y coordina la autenticación.
+    \item \textbf{Capa de presentación y controladores:} Expone los puntos de entrada HTTP (endpoints REST) y los canales \textit{WebSocket}. Valida las peticiones de entrada, gestiona las respuestas de la API y coordina la autenticación.
     \item \textbf{Capa de lógica de negocio y servicios:} Implementa las reglas del dominio:  suma de puntuaciones por respuesta, transiciones de estado de las salas, opciones de cuestionario en vivo y lógica de verificación.
     \item \textbf{Capa de acceso a datos y modelado (ORM):} Mapea las entidades de negocio del dominio con el modelo relacional, garantizando las restricciones de integridad y las relaciones entre entidades.
     \item \textbf{Capa de persistencia:} Administra la conexión con el motor de base de datos relacional y gestiona las transacciones de lectura y escritura.
@@ -125,9 +125,9 @@ En el servidor, la estructura abstrae la lógica en tres archivos clave de inici
 
 \begin{itemize}
     \item \textbf{Servicios base de arranque:} Los módulos \texttt{main.py}, \texttt{database.py} y \texttt{seed.py} se encargan del punto de entrada del servidor, la gestión del motor de conexión a la base de datos y la siembra inicial de información necesaria para la ejecución.
-    \item \textbf{Capa de controladores (\texttt{routers/}):} Define los puntos de entrada para las peticiones HTTP REST y gestiona las conexiones bidireccionales mediante WebSockets.
+    \item \textbf{Capa de controladores (\texttt{routers/}):} Define los puntos de entrada para las peticiones HTTP REST y gestiona las conexiones bidireccionales mediante \textit{WebSocket}.
     \item \textbf{Capa de modelos (\texttt{models/}):} Define la representación de las entidades del dominio y sus relaciones en la base de datos relacional.
-    \item \textbf{Capa de validación y DTOs (\texttt{schemas/}):} Define los contratos de datos para la entrada y salida de la API, garantizando el filtrado y la validación de la información.
+    \item \textbf{Capa de validación y DTOs (\texttt{schemas/}):} Define el manejo de datos para la entrada y salida de la API, garantizando el filtrado y la validación de la información.
 \end{itemize}
 
 \subsection{Organización del frontend}
@@ -135,15 +135,78 @@ En el servidor, la estructura abstrae la lógica en tres archivos clave de inici
 En el cliente, el directorio \texttt{src/} agrupa los componentes organizados por dominios funcionales y capas de soporte:
 
 \begin{itemize}
-    \item \textbf{Puntos de entrada y enrutamiento:} Los archivos \texttt{main.tsx} y \texttt{App.tsx} inicializan la aplicación cliente y configuran las rutas dinámicas de navegación.
+    \item \textbf{Puntos de entrada y enrutamiento:} Los archivos \texttt{main.tsx} y \texttt{App.tsx} inicializan la aplicación cliente y configuran las rutas de navegación.
     \item \textbf{Módulos de dominio funcional:} Las carpetas \texttt{auth/}, \texttt{management/}, \texttt{room-access/} y \texttt{room-play/} encapsulan de forma independiente las distintas pantallas y flujos de trabajo de la aplicación.
     \item \textbf{Módulos de soporte e infraestructura:} Las carpetas \texttt{context/}, \texttt{hooks/} y \texttt{layouts/} proporcionan los servicios comunes de gestión del estado global, ganchos de lógica reutilizable y la estructura visual compartida.
 \end{itemize}
 
 \section{Modelo de datos}
-Diagrama de dominio
 
-Incluir el código mermaid y el diagrama
+El diseño de la capa de persistencia se articula en torno a la definición de las entidades del dominio, sus relaciones y las restricciones de integridad necesarias para soportar la ejecución del sistema. En el \hyperref[fig:modelo_conceptual]{diagrama de clases} se ilustra la estructura general y la interacción entre las distintas entidades previstas para la aplicación.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=1.13\textwidth]{figures/diagrama_modelo_conceptual.png}%
+    }
+    \caption{Diagrama de clases conceptual y relaciones globales del dominio.}
+    \label{fig:modelo_conceptual}
+\end{figure}
+
+Las entidades del sistema se organizan conceptualmente en tres módulos funcionales: \textbf{usuarios}, \textbf{contenido} y \textbf{sesiones}. A continuación se analiza cada uno de estos bloques.
+
+\subsection{Módulo de gestión de usuarios}
+
+Este módulo administra la identidad de los actores del sistema y la articulación del aula:
+
+\begin{itemize}
+    \item \textbf{\texttt{Teacher}:} Modela al docente y sus credenciales de acceso, actuando como el propietario principal de los recursos creados (cuestionarios, salas y grupos).
+    \item \textbf{\texttt{Student}:} Representa el registro persistente del alumno en la base de datos mediante su identificador o credencial de usuario (\textit{nickname}/UVUS), el cual se vincula a las salas mediante la entidad intermedia de participación.
+    \item \textbf{\texttt{Group}:} Articula a los estudiantes en conjuntos académicos para facilitar la asignación y seguimiento de partidas dirigidas.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/entidades_usuarios.png}
+    \caption{Entidades y atributos del módulo de usuarios.}
+    \label{fig:entidades_usuarios}
+\end{figure}
+
+\subsection{Módulo de contenido}
+
+Comprende las entidades que estructuran el material de evaluación generado por el profesorado, vinculadas por relaciones de composición estricta:
+
+\begin{itemize}
+    \item \textbf{\texttt{Quiz}:} Entidad raíz de la evaluación. Agrupa la información contextual del cuestionario e incluye metadatos visuales y de categorización.
+    \item \textbf{\texttt{Question}:} Define cada ítem evaluable perteneciente a un cuestionario, determinando su enunciado y el peso en puntuación.
+    \item \textbf{\texttt{Option}:} Contiene las alternativas de respuesta propuestas por ítem, marcando mediante un booleano cuál es la opción correcta para la validación automática.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/entidades_contenido.png}
+    \caption{Entidades y atributos del módulo de contenido.}
+    \label{fig:entidades_contenido}
+\end{figure}
+
+\subsection{Módulo de sesiones}
+
+Engloba la lógica persistente encargada de soportar las partidas síncronas en tiempo real y el registro de la actividad de los estudiantes:
+
+\begin{itemize}
+    \item \textbf{\texttt{Room}:} Gestiona la instancia activa de un cuestionario en vivo, controlando el acceso mediante un código de acceso y su disponibilidad.
+    \item \textbf{\texttt{Participant}:} Actúa como entidad intermedia para resolver la relación de muchos a muchos entre \texttt{Student} y \texttt{Room}, registrando la incorporación del alumno a la partida en una marca de tiempo específica.
+    \item \textbf{\texttt{Answer}:} Almacena los eventos de respuesta enviados por los participantes, registrando la opción elegida, los puntos calculados y el instante exacto de recepción.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/entidades_sesiones.png}
+    \caption{Entidades y atributos del módulo de sesiones.}
+    \label{fig:entidades_sesiones}
+\end{figure}
+
+
 
 \section{Diseño de interfaces}
 Mockups y resultado final
