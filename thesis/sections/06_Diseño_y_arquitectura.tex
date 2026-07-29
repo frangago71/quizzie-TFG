@@ -207,11 +207,40 @@ Engloba la lógica persistente encargada de soportar las partidas síncronas en 
 \end{figure}
 
 
+\section{Diseño de interfaz de usuario}\label{sec:diseno_ui_ux}
 
-\section{Diseño de interfaces}
-Mockups y resultado final
+El diseño de las interfaces de usuario (UI) y la experiencia de usuario (UX) constituye una fase crítica dentro del desarrollo de la plataforma, ya que condiciona la adopción, la facilidad de uso y la fluidez interactiva durante las sesiones de \textit{tests}. 
 
-Mostrar los mockups iniciales y compararlos con el resultado final, explicando las decisiones de diseño tomadas y cómo se han implementado en la interfaz de usuario.
+Para satisfacer las necesidades del sistema, el diseño ha considerado de manera diferenciada dos perfiles de usuario principales: el \textbf{profesorado}, que requiere herramientas de gestión, control de salas y análisis de resultados con baja latencia visual; y el \textbf{alumnado}, para el cual prima una interfaz limpia, altamente intuitiva y libre de distracciones, orientada al envío rápido de respuestas en entornos móviles o de escritorio.
+
+\subsection{Principios de diseño y guía de estilo}
+
+Las interfaces han sido diseñadas siguiendo principios consolidados de usabilidad y diseño centrado en el usuario (\textit{User-Centered Design}):
+
+\begin{itemize}
+    \item \textbf{Consistencia e identidad visual:} Se ha mantenido una estructura coherente en el maquetado de formularios, botones de acción y distribución de contenedores. Para facilitar la identificación inmediata del rol durante el análisis de las pantallas del sistema, los prototipos incorporan una codificación por color en su barra lateral:
+    \begin{itemize}
+        \item \textbf{Borde magenta:} Asociado a la interfaz del perfil del profesor.
+        \item \textbf{Borde cian:} Asociado a la interfaz del perfil del estudiante.
+    \end{itemize}
+    \item \textbf{Simplicidad y claridad cognitiva:} Durante las partidas en vivo, se reduce al mínimo el texto explicativo y los elementos estéticos para enfocar la atención del estudiante exclusivamente en las preguntas, opciones y temporizadores.
+    \item \textbf{Diseño adaptable y accesibilidad:} La interfaz del estudiante está optimizada para una interacción táctil ágil, empleando áreas de pulsación amplias y garantizando un diseño plenamente adaptativo (\textit{responsive}).
+\end{itemize}
+
+\subsection{Flujos funcionales y prototipos}
+
+La arquitectura de navegación y la interacción visual de la plataforma se han organizado en cuatro secuencias funcionales principales. Estos escenarios se han maquetado en prototipos de alta fidelidad \textit{(mockups)} y se encuentran detallados en el \hyperref[anexo:prototipos_interfaz_usuario]{\textbf{Anexo A: Prototipos de interfaz de usuario}}. 
+
+Los cuatro flujos cubren el ciclo de vida completo de una sesión interactiva, estructurándose según el momento operativo de la actividad:
+
+\begin{enumerate}
+    \item \textbf{\hyperref[anexo:flujo_registro_autenticacion]{Registro y autenticación de usuarios}}: Módulo administrativo de control de acceso y alta del perfil docente mediante credenciales institucionales.
+    \item \textbf{\hyperref[anexo:flujo_creacion_cuestionarios_gestion_salas]{Creación de cuestionarios y gestión de salas}}: Entorno de preparación previa donde el profesorado gestiona los contenidos, configura los parámetros de la sesión y habilita la sala de espera.
+    \item \textbf{\hyperref[anexo:flujo_incorporacion_estudiante_sala]{Incorporación del estudiante a la sala}}: Proceso simplificado de acceso en tiempo real para el alumnado mediante código PIN e identificación por UVUS o apodo, diseñado para minimizar la fricción de entrada.
+    \item \textbf{\hyperref[anexo:flujo_ejecucion_partida_vivo]{Ejecución de la partida en vivo}}: Núcleo dinámico del sistema que coordina la experiencia síncrona entre ambos perfiles durante el desarrollo del cuestionario, abarcando la sincronización de tiempos, el envío de respuestas, la retroalimentación inmediata y la presentación de clasificaciones.
+\end{enumerate}
+
+El diseño integrado de estos cuatro módulos responde a una lógica de interacción continua. Mientras que los dos primeros proporcionan la infraestructura de gestión previa a la clase, los dos últimos coordinan la sesión interactiva en directo.
 
 \section{Seguridad}
 Autenticación JWT,  gestión de roles y tokens de verificación para participantes
