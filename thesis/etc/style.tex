@@ -64,6 +64,19 @@
 \renewcommand{\lstlistingname}{Extracto de código}
 \renewcommand*{\lstlistlistingname}{Índice de extractos de código}
 
+% Definición de colores personalizados para los enlaces
+\definecolor{primaryCyan}{RGB}{85, 204, 170}
+\definecolor{primaryMagenta}{RGB}{169, 70, 171}
+\definecolor{secondaryCyan}{RGB}{0, 121, 118}
+\definecolor{secondaryMagenta}{RGB}{102, 20, 101}
+
+\hypersetup{
+    colorlinks=true,       
+    linkcolor=primaryMagenta,   % Color para referencias internas 
+    citecolor=secondaryCyan,   % Color para citas bibliográficas 
+    urlcolor=primaryCyan      % Color para direcciones web 
+}
+
 % Comandos para establecer variables
 \newcommand{\setTitle}[1]{\def\tfgTitle {#1}}
 \newcommand{\setAuthor}[1]{\def\tfgAuthors {#1}}
