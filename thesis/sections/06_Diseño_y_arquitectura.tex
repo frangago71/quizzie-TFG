@@ -243,7 +243,49 @@ Los cuatro flujos cubren el ciclo de vida completo de una sesión interactiva, e
 El diseño integrado de estos cuatro módulos responde a una lógica de interacción continua. Mientras que los dos primeros proporcionan la infraestructura de gestión previa a la clase, los dos últimos coordinan la sesión interactiva en directo.
 
 \section{Seguridad}
-Autenticación JWT,  gestión de roles y tokens de verificación para participantes
+\label{sec:seguridad}
+
+La seguridad de la plataforma se ha diseñado atendiendo a la naturaleza diferenciada de sus dos perfiles de usuario: los profesores (usuarios registrados que requieren acceso persistente mediante credenciales) y los alumnos (usuarios efímeros que acceden a las partidas en vivo mediante un PIN y un alias, sin necesidad de registro previo).
+
+\subsection{Autenticación síncrona mediante JWT}
+\label{sec:autenticacion_jwt}
+
+Para la gestión de accesos del perfil docente se ha optado por un esquema sin estado (\textit{stateless}) basado en \textit{JSON Web Tokens} (JWT). Este enfoque evita almacenar el estado de las sesiones en el servidor para la API REST, permitiendo un diseño desacoplado.
+
+El token se genera tras verificar las credenciales del usuario (cuyas contraseñas se almacenan de forma segura mediante algoritmos de \textit{hashing} y derivación de claves) y se adjunta en el encabezado estándar \texttt{Authorization: Bearer <token>} para validar las solicitudes posteriores. A continuación se ilustra la secuencia de emisión y validación del token.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/diagrama_autenticacion_jwt.png}
+    \caption{Flujo de autenticación del profesor mediante JWT.}
+    \label{fig:diagrama_autenticacion_jwt}
+\end{figure}
+
+\subsection{Gestión de roles y control de acceso (RBAC)}
+\label{sec:gestion_roles}
+
+El control de acceso se fundamenta en un modelo RBAC (\textit{Role-Based Access Control}), definiendo dos niveles de autorización claramente delimitados:
+
+\begin{itemize}
+    \item \textbf{Rol de profesor (Autenticado):} Protegido mediante la validación del JWT, otorga privilegios para la gestión integral de cuestionarios, la creación de salas en vivo, el control del flujo del juego y la consulta de informes.
+    \item \textbf{Rol de participante (Efímero / No autenticado):} Asignado temporalmente a la sala activa sin requerir registro previo, restringe los permisos exclusivamente al envío de respuestas a las preguntas habilitadas en ese instante.
+\end{itemize}
+
+Bajo una arquitectura con autoridad en el servidor (\textit{Server-Authoritative Architecture}), toda la lógica de validación, la temporización de la partida y la corrección de respuestas residen exclusivamente en el \textit{backend}. El servidor actúa así como la única fuente de verdad (\textit{Single Source of Truth}, SSOT) del sistema, garantizando la integridad del proceso de evaluación y previniendo la manipulación de datos desde el cliente (\textit{anti-cheat}).
+
+\subsection{Tokens de verificación para participantes}
+\label{sec:tokens_verificacion}
+
+Para consolidar las calificaciones de forma presencial y asegurar que el resultado pertenece al estudiante correspondiente, la plataforma incluye un mecanismo de verificación mediante códigos QR. El docente escanea en el aula el código presentado por el alumno, el cual contiene su alias y su token de verificación temporal (\texttt{verification\_token}).
+
+Como se resume en el siguiente diagrama, al realizar el escaneo la aplicación solicita al \textit{backend} la verificación del participante. El servidor valida la correspondencia del token con la sala activa, confirma la actualización del estado del participante inscribiendo la nota en la base de datos y difunde la actualización a la sala mediante la conexión en tiempo real por \textit{WebSocket}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/diagrama_token_participante.png}
+    \caption{Diagrama del proceso de verificación del participante.}
+    \label{fig:diagrama_token_participante}
+\end{figure}
 
 \section{Documentación de la API}
 Descripción de los endpoints principales de la API, detallando las peticiones, respuestas y la integración con el estándar OpenAPI
