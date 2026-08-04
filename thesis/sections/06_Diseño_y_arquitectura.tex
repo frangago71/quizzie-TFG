@@ -140,7 +140,7 @@ En el cliente, el directorio \texttt{src/} agrupa los componentes organizados po
     \item \textbf{Módulos de soporte e infraestructura:} Las carpetas \texttt{context/}, \texttt{hooks/} y \texttt{layouts/} proporcionan los servicios comunes de gestión del estado global, ganchos de lógica reutilizable y la estructura visual compartida.
 \end{itemize}
 
-\section{Modelo de datos}
+\section{Modelo de datos}\label{sec:modelado_datos}
 
 El diseño de la capa de persistencia se articula en torno a la definición de las entidades del dominio, sus relaciones y las restricciones de integridad necesarias para soportar la ejecución del sistema. En el \hyperref[fig:modelo_conceptual]{diagrama de clases} se ilustra la estructura general y la interacción entre las distintas entidades previstas para la aplicación.
 
@@ -287,7 +287,63 @@ Como se resume en el siguiente diagrama, al realizar el escaneo la aplicación s
     \label{fig:diagrama_token_participante}
 \end{figure}
 
-\section{Documentación de la API}
-Descripción de los endpoints principales de la API, detallando las peticiones, respuestas y la integración con el estándar OpenAPI
+\section{Documentación de la API}\label{sec:documentacion_api}
 
-Aquí exprimiría el Swagger
+Para garantizar un desarrollo desacoplado entre el \textit{frontend} y el \textit{backend}, así como facilitar la mantenibilidad y evolución del sistema, la \textit{API} de Quizzie se ha diseñado bajo el estándar OpenAPI. 
+
+\subsection{Integración con OpenAPI y Swagger}\label{sec:integracion_openapi}
+
+La generación automatizada de la documentación se fundamenta en el uso de modelos de datos estrictos mediante Pydantic. Al definir las estructuras de solicitud (\textit{request bodies}), parámetros de consulta (\textit{query parameters}) y respuestas esperadas mediante esquemas fuertemente tipados, el servidor compila y expone dinámicamente la especificación en formato JSON (\texttt{openapi.json}).
+
+Esta integración proporciona dos interfaces gráficas de documentación accesibles desde el propio navegador:
+
+\begin{itemize}
+    \item \textbf{Swagger UI (\texttt{/docs}):} Entorno interactivo para probar y explorar los endpoints en tiempo real.
+    \item \textbf{ReDoc (\texttt{/redoc}):} Vista estructurada orientada a especificación técnica de producción.
+\end{itemize}
+
+Como se ilustra en la siguiente figura, cualquier validación de tipo o código de estado HTTP se refleja en la documentación.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/diagrama_openapi.png}
+    \caption{Flujo de generación de documentación OpenAPI desde los esquemas Pydantic.}
+    \label{fig:diagrama_openapi}
+\end{figure}
+
+\subsection{Especificación de rutas fundamentales}
+\label{sec:rutas_fundamentales}
+
+La API traslada de forma directa los módulos conceptuales definidos en la \hyperref[sec:modelado_datos]{sección de modelado de datos}. Esta separación de responsabilidades se materializa en el código fuente dividiendo los enrutadores (\texttt{routers/}) y los modelos de datos (\texttt{models/}) en tres bloques principales: \texttt{users}, \texttt{content} y \texttt{stage}.
+
+A continuación se resumen las rutas proyectadas más representativas para cada uno de estos módulos:
+
+\paragraph{Usuarios (\texttt{routers/users.py})}
+\begin{itemize}
+    \item \texttt{POST /users/login}: Autentica las credenciales del docente y emite el token de acceso para autorizar sus peticiones posteriores.
+    \item \texttt{POST /users/register}: Registra a un nuevo profesor en la plataforma e inicia el proceso de verificación por correo electrónico.
+\end{itemize}
+
+\paragraph{Contenido (\texttt{routers/content.py})}
+\begin{itemize}
+    \item \texttt{POST /content/quizzes}: Permite al profesor crear un cuestionario completo con su conjunto de preguntas y opciones de respuesta.
+\end{itemize}
+
+\paragraph{Sesiones (\texttt{routers/stage.py})}
+
+Combina peticiones REST para la gestión del estado de la sala y un canal WebSocket para la comunicación en tiempo real:
+
+\begin{itemize}
+    \item \texttt{POST /stage/rooms}: Crea e inicializa una nueva sala de juego asociada a un cuestionario y aplica su configuración inicial.
+    \item \texttt{POST /stage/participants}: Permite el acceso efímero de los estudiantes a una sala activa mediante un PIN y un alias.
+    \item \texttt{POST /stage/answers}: Almacena la respuesta enviada por un alumno a la pregunta activa.
+    \item \texttt{POST} \path{/stage/rooms/{room_id}/verify-participant}: Permite al docente verificar presencialmente el resultado de un estudiante en el aula, según se describe en la \hyperref[sec:tokens_verificacion]{sección de verificación de seguridad}.
+    \item \texttt{WS} \path{/stage/rooms/{room_id}/ws}: Mantiene la conexión en tiempo real para sincronizar el avance del juego, los temporizadores y la clasificación entre todos los participantes.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/diagrama_ws_sala.png}
+    \caption{Secuencia del intercambio de eventos durante la sesión en tiempo real.}
+    \label{fig:diagrama_ws_sala}
+\end{figure}
