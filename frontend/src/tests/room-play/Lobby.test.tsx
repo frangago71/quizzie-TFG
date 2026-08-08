@@ -22,17 +22,17 @@ vi.mock("../../api", () => ({
 }));
 
 class MockWebSocket {
+  static mockInstance: MockWebSocket | null = null;
   onopen: ((...args: unknown[]) => void) | null = null;
   onclose: ((...args: unknown[]) => void) | null = null;
   onmessage: ((...args: unknown[]) => void) | null = null;
   send = vi.fn();
   close = vi.fn();
   constructor() {
-    (globalThis as unknown as Record<string, unknown>).WebSocket.mockInstance =
-      this;
+    MockWebSocket.mockInstance = this;
   }
 }
-(globalThis as unknown as Record<string, unknown>).WebSocket = MockWebSocket;
+(globalThis as unknown as { WebSocket: unknown }).WebSocket = MockWebSocket;
 
 const LobbyHostSetup: React.FC = () => {
   const { setRoomCode, setUserNickname } = useRoom();
@@ -181,12 +181,12 @@ describe("Lobby Component", () => {
     await new Promise((resolve) => setTimeout(resolve, 60));
 
     // Mock an event from WS
-    const wsInstance = (globalThis as unknown as Record<string, unknown>)
-      .WebSocket.mockInstance;
-    if (wsInstance && wsInstance.onmessage) {
+    const wsInstance = MockWebSocket.mockInstance;
+    const onMessage = wsInstance?.onmessage;
+    if (onMessage) {
       // test participants_update
       act(() => {
-        wsInstance.onmessage({
+        onMessage({
           data: JSON.stringify({
             type: "participants_update",
             list: ["Alice", "Bob"],
@@ -200,10 +200,10 @@ describe("Lobby Component", () => {
       expect(screen.getByText("Bob")).toBeInTheDocument();
     });
 
-    if (wsInstance && wsInstance.onmessage) {
+    if (onMessage) {
       // test data object with type
       act(() => {
-        wsInstance.onmessage({
+        onMessage({
           data: JSON.stringify({
             type: "room_update",
             data: { status: "live" },
