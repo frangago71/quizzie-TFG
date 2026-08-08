@@ -89,24 +89,42 @@ npm run dev
 * **Aplicación Web:** `http://localhost:5173` (o la URL que indique la terminal)
 
 ### 4. Testing y cobertura
-El proyecto incluye una suite de pruebas automatizadas para garantizar la integridad del código y la lógica de negocio.
+El proyecto incluye suites de pruebas automatizadas tanto para el backend como para el frontend para garantizar la calidad y estabilidad de la aplicación.
 
-#### Ejecutar los tests
+#### Backend (pytest)
+* **Ejecutar los tests del backend:**
 Desde la raíz, utiliza `uv` para lanzar las pruebas:
+  ```bash
+  uv run pytest
+  ```
 
-```bash
-uv run pytest
-```
-
-#### Reporte de cobertura (Coverage)
+* **Reporte de cobertura en terminal:**
 Para generar un informe detallado sobre qué porcentaje del código está cubierto por los tests, ejecuta:
+  ```bash
+  uv run pytest --cov=backend --cov-report=term-missing
+  ```
 
-```bash
-uv run pytest --cov=backend --cov-report=term-missing
-```
+  * **`--cov=backend`:** Indica el directorio del código fuente a analizar.
+  * **`--cov-report=term-missing`:** Muestra en la terminal las líneas exactas que no están cubiertas por ninguna prueba.
 
-* **`--cov=backend`:** Indica el directorio del código fuente a analizar.
-* **`--cov-report=term-missing`:** Muestra en la terminal las líneas exactas que no están cubiertas por ninguna prueba.
+#### Frontend (Vitest + React Testing Library)
+
+* **Ejecutar los tests de componentes:**
+Navega a la carpeta frontend y lanza las pruebas de interfaz:
+  ```bash
+  cd frontend
+  npm run test
+  ```
+
+* **Reporte de cobertura en consola y HTML:**
+Para analizar el porcentaje de código del frontend cubierto por las pruebas, ejecuta:
+  ```bash
+  cd frontend
+  npm run test:coverage
+  ```
+
+  * **`npm run test:coverage`:** Genera un resumen de la cobertura en la terminal y construye un informe completo en formato web.
+  * **Visualización en navegador:** Abre el archivo `frontend/coverage/index.html` en para revisar visualmente las líneas e interacciones probadas.
 
 ---
 
@@ -118,8 +136,8 @@ Puedes acceder a las versiones en la nube a través de los siguientes enlaces:
     *Desplegado en **Vercel**.*
 * **Backend (API REST):** [https://quizzie-tfg.onrender.com](https://quizzie-tfg.onrender.com)
     *Desplegado en **Render**.*
-* **Documentación Interactiva (Swagger):** [https://quizzie-tfg.onrender.com/docs](https://quizzie-tfg.onrender.com/docs)
-
+* **Documentación interactiva (Swagger):** [https://quizzie-tfg.onrender.com/docs](https://quizzie-tfg.onrender.com/docs)
+* **Documentación interactiva (ReDoc):** [https://quizzie-tfg.onrender.com/redoc](https://quizzie-tfg.onrender.com/redoc)
 
 > **Nota sobre el rendimiento:** Debido al uso del plan gratuito de Render, el servidor puede entrar en estado de "hibernación" tras un periodo de inactividad. Si es la primera vez que accedes, la carga inicial de datos puede demorar entre **30 y 50 segundos** mientras el backend se reinicia automáticamente.
 
