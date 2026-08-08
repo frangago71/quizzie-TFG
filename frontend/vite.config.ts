@@ -26,4 +26,4 @@ export default defineConfig({
       },
     },
   },
-} as Record<string, any>);
+} as Record<string, unknown>);
