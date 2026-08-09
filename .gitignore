@@ -45,6 +45,10 @@ coverage.xml
 # Playwright reports
 playwright-report/
 test-results/
+coverage-e2e/
+coverage-reports/
+frontend/coverage-e2e/
+frontend/coverage-reports/
 
 
 # Thesis documents
