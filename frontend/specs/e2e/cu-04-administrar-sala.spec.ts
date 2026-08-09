@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("CU-04: Room Management Flow", () => {
   test.beforeEach(async ({ page }) => {

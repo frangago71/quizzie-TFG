@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("CU-10: Question Answering Flow", () => {
   test("question answering lifecycle: student selects option within time limit and receives score", async ({

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("CU-06: Live Leaderboard Flow", () => {
   test("live ranking lifecycle: retrieve active room leaderboard and score progression", async ({

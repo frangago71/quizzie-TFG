@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("CU-09: Export Results Flow", () => {
   test.beforeEach(async ({ page }) => {

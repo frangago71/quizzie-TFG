@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("CU-05: Student Join Room Flow", () => {
   test("student room join lifecycle: PIN validation, nickname entry, and waiting room access", async ({

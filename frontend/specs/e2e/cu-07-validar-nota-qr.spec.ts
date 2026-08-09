@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 
 test.describe("CU-07: QR Grade Verification Flow", () => {
   test("presencial QR validation lifecycle: token rendering and teacher token verification", async ({
