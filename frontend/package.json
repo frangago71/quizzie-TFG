@@ -9,9 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:frontend": "vitest run",
+    "test:frontend:watch": "vitest",
+    "test:frontend:coverage": "vitest run --coverage",
+    "cov-report:frontend": "vite preview --outDir coverage --port 4173",
+    "test:e2e": "playwright test",
+    "cov-report:e2e": "vite preview --outDir coverage-e2e --port 4174"
   },
   "dependencies": {
     "axios": "^1.13.6",
@@ -41,6 +44,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^29.1.1",
+    "monocart-coverage-reports": "^2.12.12",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
