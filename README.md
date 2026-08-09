@@ -91,56 +91,65 @@ npm run dev
 ### 4. Testing y cobertura
 El proyecto incluye suites de pruebas automatizadas tanto para el backend como para el frontend para garantizar la calidad y estabilidad de la aplicación.
 
-#### Backend (pytest)
+#### Backend (pytest + pytest-cov)
 * **Ejecutar los tests del backend:**
-Desde la raíz, utiliza `uv` para lanzar las pruebas:
+Desde la raíz del proyecto, utiliza `uv` para lanzar las pruebas:
   ```bash
   uv run pytest
   ```
 
 * **Reporte de cobertura en terminal:**
-Para generar un informe detallado sobre qué porcentaje del código está cubierto por los tests, ejecuta:
+Para generar un informe detallado sobre qué porcentaje del código backend está cubierto por los tests, ejecuta:
   ```bash
   uv run pytest --cov=backend --cov-report=term-missing
   ```
-
   * **`--cov=backend`:** Indica el directorio del código fuente a analizar.
   * **`--cov-report=term-missing`:** Muestra en la terminal las líneas exactas que no están cubiertas por ninguna prueba.
 
-#### Frontend (Vitest + React Testing Library)
+#### Frontend (Vitest + React Testing Library + @vitest/coverage-v8)
 
 * **Ejecutar los tests de componentes:**
-Navega a la carpeta frontend y lanza las pruebas de interfaz:
+Navega a la carpeta frontend y lanza las pruebas de interfaz (o `npm run test:watch` para desarrollo interactivo):
   ```bash
   cd frontend
   npm run test
   ```
 
-* **Reporte de cobertura en consola y HTML:**
-Para analizar el porcentaje de código del frontend cubierto por las pruebas, ejecuta:
+* **Reporte de cobertura en consola:**
+Para analizar el porcentaje de código del frontend cubierto por las pruebas unitarias (acotado a `auth`, `management`, `room-access` y `room-play`), ejecuta:
   ```bash
   cd frontend
-  npm run test:coverage
+  npm run test:frontend:coverage
   ```
 
-  * **`npm run test:coverage`:** Genera un resumen de la cobertura en la terminal y construye un informe completo en formato web.
-  * **Visualización en navegador:** Abre el archivo `frontend/coverage/index.html` para revisar visualmente las líneas e interacciones probadas.
+* **Ver el informe de cobertura unitaria (HTML):**
+Para previsualizar en el navegador el mapa de cobertura HTML generado por Vitest (`frontend/coverage/index.html`):
+  ```bash
+  cd frontend
+  npm run cov-report:frontend
+  ```
 
-#### Pruebas End-to-End (Playwright)
+#### Pruebas End-to-End y Cobertura E2E (Playwright + monocart-coverage-reports)
 
-* **Ejecutar la suite de pruebas E2E:**
-Para lanzar la batería completa de pruebas de extremo a extremo que validan los Casos de Uso (CU-01 a CU-10) simulando múltiples contextos de navegador (Profesor y Alumno):
+* **Ejecutar la suite de pruebas E2E con captura de cobertura V8:**
+Para lanzar la batería completa de pruebas de extremo a extremo que validan los Casos de Uso (CU-01 a CU-10) sobre la build de producción y registrar la cobertura nativa V8:
   ```bash
   cd frontend
   npm run test:e2e
   ```
-  *(o `npx playwright test --config=playwright.config.ts` dentro de `frontend/`).*
 
-* **Ver el informe HTML interactivo:**
-Para inspeccionar los resultados detallados de la ejecución de pruebas E2E:
+* **Ver el informe HTML de ejecución de Playwright:**
+Para inspeccionar los resultados detallados de la ejecución de pruebas E2E (trazas, capturas y pasos):
   ```bash
   cd frontend
   npx playwright show-report
+  ```
+
+* **Ver el informe de cobertura E2E (HTML de Monocart):**
+Para previsualizar en el navegador el mapa de cobertura interactivo V8 generado durante las pruebas E2E (`frontend/coverage-e2e/index.html`):
+  ```bash
+  cd frontend
+  npm run cov-report:e2e
   ```
 
 ---

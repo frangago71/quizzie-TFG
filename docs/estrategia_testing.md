@@ -5,15 +5,25 @@ Este documento define el marco de aseguramiento de la calidad (QA) para el proye
 
 ## 2. Niveles de prueba y herramientas seleccionadas
 
-Se adopta un enfoque de "Pirámide de pruebas" para equilibrar velocidad de ejecución y confianza en el sistema:
+Se adopta un enfoque de "Pirámide de pruebas" para equilibrar velocidad de ejecución y confianza en el sistema, separando las herramientas de ejecución de pruebas de las herramientas de análisis de cobertura:
 
-| Nivel | Objetivo | Herramienta |
+### 2.1. Herramientas de ejecución de pruebas
+
+| Nivel | Objetivo | Herramienta principal |
 | :--- | :--- | :--- |
-| **Pruebas unitarias** | Validar lógica de negocio aislada (puntuaciones, generación de PIN, validación de esquemas). | `pytest` |
-| **Pruebas de componentes** | Verificar el comportamiento de la UI (React) de forma aislada. | `Vitest` + `React Testing Library` |
-| **Pruebas de integración** | Verificar la comunicación entre la API, la Base de Datos y los eventos de Sockets. | `pytest` + `TestClient` |
-| **Pruebas E2E** | Simular flujos completos (Profesor y Alumno) con múltiples contextos de navegador. | `Playwright` |
-| **Pruebas de rendimiento** | Evaluar la estabilidad del servidor ante múltiples conexiones concurrentes. | `Locust` |
+| **Pruebas unitarias (Backend)** | Validar lógica de negocio aislada (puntuaciones, generación de PIN, esquemas). | `pytest` |
+| **Pruebas de componentes (Frontend)** | Verificar el comportamiento de la UI (React) de forma aislada. | `Vitest` + `React Testing Library` |
+| **Pruebas de integración** | Verificar la comunicación entre API, Base de Datos y WebSockets. | `pytest` + `TestClient` |
+| **Pruebas E2E** | Simular flujos completos (Profesor y Alumno) con navegación real. | `Playwright` |
+| **Pruebas de rendimiento** | Evaluar la estabilidad del servidor ante conexiones masivas concurrentes. | `Locust` |
+
+### 2.2. Herramientas de análisis de cobertura (Coverage)
+
+| Capa / Nivel | Herramienta de cobertura | Alcance / Módulos acotados |
+| :--- | :--- | :--- |
+| **Backend (Unitario/Integración)** | `pytest-cov` | Código backend (`backend/`), excluyendo scripts de desarrollo (`seed.py`). |
+| **Frontend - Componentes** | `@vitest/coverage-v8` | Módulos funcionales principales del frontend (`src/auth`, `src/management`, `src/room-access`, `src/room-play`). |
+| **Frontend - E2E** | `monocart-coverage-reports` | Cobertura V8 nativa sobre build de producción del frontend, delimitada a los módulos funcionales principales (`src/auth`, `src/management`, `src/room-access`, `src/room-play`). |
 
 ## 3. Alcance del plan de pruebas
 
@@ -50,19 +60,32 @@ Dada la alta densidad de requisitos de tiempo real (especialmente RF-21 y RF-32)
 * **Métricas:** Tiempo de respuesta (latencia de socket) y tasa de error en la recepción de respuestas masivas.
 
 ## 5. Métricas de cobertura (Coverage)
-Se utilizará **`pytest-cov`** para cuantificar la calidad del código:
+Se utilizan herramientas automáticas para cuantificar y auditar el nivel de cobertura en cada capa del sistema:
+
+### 5.1. Backend - Pruebas unitarias e integración (`pytest-cov`)
 * **Objetivos de cobertura:**
     * Mínimo del **90% en las rutas** (API endpoints).
     * Mínimo del **80% del total del código backend** (excluyendo scripts de desarrollo como `seed.py`).
-* **Control de regresión:** Cada nueva funcionalidad debe incluir sus propios tests para no bajar la métrica global.
+
+### 5.2. Frontend - Pruebas de componentes (`Vitest`)
+* **Módulos acotados:** Delimitados a los 4 módulos funcionales principales del cliente web (`src/auth`, `src/management`, `src/room-access` y `src/room-play`).
+* **Umbrales requeridos (*thresholds*):**
+    * **80%** en líneas (`lines`).
+    * **80%** en funciones (`functions`).
+    * **80%** en sentencias (`statements`).
+    * **75%** en ramas (`branches`).
+
+### 5.3. Frontend - Pruebas E2E (`Playwright`)
+* **Módulos acotados:** Mismo alcance acotado que las pruebas de componentes (`auth`, `management`, `room-access` y `room-play`).
+* **Objetivos de cobertura:** Mismos umbrales de referencia que las pruebas de componentes.
 
 ## 6. Automatización y CI/CD (GitHub Actions)
 La suite de pruebas se ejecutará automáticamente bajo las siguientes condiciones:
 * **Push/Pull Request a `main` y `develop`**.
 * **Fallo Crítico:** Si un test falla o la cobertura cae, se bloqueará el despliegue automático hacia producción.
 
-## 7. Entorno de Ejecución e Infraestructura
-* **Aislamiento de Datos:** Las pruebas se ejecutan contra una base de datos SQLite en memoria o una base de datos PostgreSQL temporal para garantizar la independencia de los resultados.
+## 7. Entorno de ejecución e infraestructura
+* **Aislamiento de datos:** Las pruebas se ejecutan contra una base de datos SQLite en memoria o una base de datos PostgreSQL temporal para garantizar la independencia de los resultados.
 * **Backend:** Gestión de entorno y dependencias mediante **uv** (Python 3.12+).
 * **Frontend:** Navegadores gestionados por Playwright (emulación móvil para alumnos) y Vitest para componentes.
 * **CI/CD:** Runners de GitHub Actions utilizando `setup-uv` y acciones oficiales de Playwright.
