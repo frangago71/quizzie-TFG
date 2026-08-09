@@ -1,0 +1,25 @@
+import type { CoverageReportOptions } from "monocart-coverage-reports";
+
+const config: CoverageReportOptions = {
+  name: "Playwright E2E Coverage Report",
+  outputDir: "./coverage-e2e",
+  reports: ["v8", "console-summary"],
+  entryFilter: (entry: { url: string }) =>
+    entry.url.includes("/assets/") ||
+    entry.url.includes("/src/") ||
+    entry.url.includes("@fs"),
+  sourceFilter: (sourcePath: string) => {
+    const isTargetDomain =
+      sourcePath.includes("src/auth/") ||
+      sourcePath.includes("src/management/") ||
+      sourcePath.includes("src/room-access/") ||
+      sourcePath.includes("src/room-play/");
+    const isTestFile =
+      sourcePath.includes(".test.") ||
+      sourcePath.includes(".spec.") ||
+      sourcePath.includes("node_modules");
+    return isTargetDomain && !isTestFile;
+  },
+};
+
+export default config;
