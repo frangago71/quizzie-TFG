@@ -124,7 +124,24 @@ Para analizar el porcentaje de código del frontend cubierto por las pruebas, ej
   ```
 
   * **`npm run test:coverage`:** Genera un resumen de la cobertura en la terminal y construye un informe completo en formato web.
-  * **Visualización en navegador:** Abre el archivo `frontend/coverage/index.html` en para revisar visualmente las líneas e interacciones probadas.
+  * **Visualización en navegador:** Abre el archivo `frontend/coverage/index.html` para revisar visualmente las líneas e interacciones probadas.
+
+#### Pruebas End-to-End (Playwright)
+
+* **Ejecutar la suite de pruebas E2E:**
+Para lanzar la batería completa de pruebas de extremo a extremo que validan los Casos de Uso (CU-01 a CU-10) simulando múltiples contextos de navegador (Profesor y Alumno):
+  ```bash
+  cd frontend
+  npm run test:e2e
+  ```
+  *(o `npx playwright test --config=playwright.config.ts` dentro de `frontend/`).*
+
+* **Ver el informe HTML interactivo:**
+Para inspeccionar los resultados detallados de la ejecución de pruebas E2E:
+  ```bash
+  cd frontend
+  npx playwright show-report
+  ```
 
 ---
 
