@@ -42,6 +42,10 @@ nosetests.xml
 coverage.xml
 *.cover
 
+# Playwright reports
+playwright-report/
+test-results/
+
 
 # Thesis documents
 /thesis/*
