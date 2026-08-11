@@ -6,6 +6,15 @@ export default defineConfig({
   plugins: [react()],
   build: {
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          icons: ["lucide-react"],
+          qr: ["html5-qrcode", "qrcode.react"],
+        },
+      },
+    },
   },
   test: {
     globals: true,
