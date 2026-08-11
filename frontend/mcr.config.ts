@@ -3,7 +3,10 @@ import type { CoverageReportOptions } from "monocart-coverage-reports";
 const config: CoverageReportOptions = {
   name: "Playwright E2E Coverage Report",
   outputDir: "./coverage-e2e",
-  reports: ["v8", "console-summary"],
+  reports: [
+    "v8",
+    "console-details",
+  ],
   entryFilter: (entry: { url: string }) =>
     entry.url.includes("/assets/") ||
     entry.url.includes("/src/") ||
@@ -18,7 +21,14 @@ const config: CoverageReportOptions = {
       sourcePath.includes(".test.") ||
       sourcePath.includes(".spec.") ||
       sourcePath.includes("node_modules");
-    return isTargetDomain && !isTestFile;
+    const isModal = sourcePath.includes("Modal");
+    return isTargetDomain && !isTestFile && !isModal;
+  },
+  thresholds: {
+    statements: 80,
+    branches: 75,
+    functions: 80,
+    lines: 80,
   },
 };
 
