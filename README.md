@@ -131,6 +131,8 @@ Para previsualizar en el navegador el mapa de cobertura HTML generado por Vitest
 
 #### Pruebas End-to-End y Cobertura E2E (Playwright + monocart-coverage-reports)
 
+* **Alcance de Cobertura E2E:** Centrada en las vistas y pantallas navegables de los Casos de Uso. Los diálogos/ventanas modales auxiliares (`LogoutModal.tsx`, `DeleteQuizModal.tsx`, etc.) se prueban en la capa de componentes con Vitest y quedan excluidos de las pruebas E2E, ya que son avisos temporales en pantalla que pueden provocar desviaciones en la medición de cobertura que no serían del todo acertadas.
+
 * **Ejecutar la suite de pruebas E2E con captura de cobertura V8:**
 Para lanzar la batería completa de pruebas de extremo a extremo que validan los Casos de Uso (CU-01 a CU-10) sobre la build de producción y registrar la cobertura nativa V8:
   ```bash
