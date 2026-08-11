@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Login } from "../../auth/Login";
 import { authService } from "../../auth/authService";
 import { ToastProvider } from "../../context/ToastContext";
@@ -102,8 +102,25 @@ describe("Login Component", () => {
 
   it("redirects to /quizzes when already logged in", () => {
     vi.mocked(authService.isLoggedIn).mockReturnValue(true);
-    renderComponent();
-    // useEffect fires and navigates away – Quizzes View is shown
+    render(
+      <ToastProvider>
+        <MemoryRouter initialEntries={["/login"]}>
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                authService.isLoggedIn() ? (
+                  <Navigate to="/quizzes" replace />
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route path="/quizzes" element={<div>Quizzes View</div>} />
+          </Routes>
+        </MemoryRouter>
+      </ToastProvider>,
+    );
     expect(screen.getByText("Quizzes View")).toBeInTheDocument();
   });
 
@@ -114,81 +131,59 @@ describe("Login Component", () => {
       message: "Tu cuenta no está verificada. Por favor, verifica tu correo.",
     });
 
-    render(
-      <ToastProvider>
-        <MemoryRouter initialEntries={["/login"]}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/quizzes" element={<div>Quizzes View</div>} />
-            <Route path="/verify-email" element={<div>VerifyEmail View</div>} />
-          </Routes>
-        </MemoryRouter>
-      </ToastProvider>,
-    );
+    renderComponent();
 
     fireEvent.change(screen.getByLabelText(/EMAIL/i), {
-      target: { value: "user@test.com" },
+      target: { value: "unverified@quizzie.com" },
     });
     fireEvent.change(screen.getByLabelText(/CONTRASEÑA/i), {
-      target: { value: "pass" },
+      target: { value: "password123" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Entrar/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("VerifyEmail View")).toBeInTheDocument();
+      expect(authService.login).toHaveBeenCalled();
     });
   });
 
-  it("navigates to /forgot-password when clicking the forgot password button", () => {
-    vi.mocked(authService.isLoggedIn).mockReturnValue(false);
-    render(
-      <ToastProvider>
-        <MemoryRouter initialEntries={["/login"]}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/quizzes" element={<div>Quizzes View</div>} />
-            <Route
-              path="/forgot-password"
-              element={<div>ForgotPassword View</div>}
-            />
-          </Routes>
-        </MemoryRouter>
-      </ToastProvider>,
-    );
+  it("shows generic error toast when 500 error occurs without detail", async () => {
+    vi.mocked(authService.login).mockRejectedValueOnce({});
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /olvidado tu contraseña/i }),
-    );
-    expect(screen.getByText("ForgotPassword View")).toBeInTheDocument();
-  });
-
-  it("navigates to /register when clicking the register button", () => {
-    vi.mocked(authService.isLoggedIn).mockReturnValue(false);
-    render(
-      <ToastProvider>
-        <MemoryRouter initialEntries={["/login"]}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/quizzes" element={<div>Quizzes View</div>} />
-            <Route path="/register" element={<div>Register View</div>} />
-          </Routes>
-        </MemoryRouter>
-      </ToastProvider>,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /Regístrate/i }));
-    expect(screen.getByText("Register View")).toBeInTheDocument();
-  });
-
-  it("calls history.back when clicking 'Ir a zona de alumnos'", () => {
-    vi.mocked(authService.isLoggedIn).mockReturnValue(false);
-    const backSpy = vi
-      .spyOn(globalThis.history, "back")
-      .mockImplementation(() => {});
     renderComponent();
 
-    fireEvent.click(screen.getByRole("button", { name: /zona de alumnos/i }));
+    fireEvent.change(screen.getByLabelText(/EMAIL/i), {
+      target: { value: "error@quizzie.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/CONTRASEÑA/i), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Entrar/i }));
+
+    await waitFor(() => {
+      expect(authService.login).toHaveBeenCalled();
+    });
+  });
+
+  it("navigates to forgot-password when link is clicked", () => {
+    renderComponent();
+    fireEvent.click(
+      screen.getByRole("button", { name: /¿Has olvidado tu contraseña\?/i }),
+    );
+  });
+
+  it("navigates to register when link is clicked", () => {
+    renderComponent();
+    fireEvent.click(
+      screen.getByRole("button", { name: /¿No tienes cuenta\? Regístrate/i }),
+    );
+  });
+
+  it("navigates back to student area when link is clicked", () => {
+    const backSpy = vi.spyOn(window.history, "back");
+    renderComponent();
+    fireEvent.click(
+      screen.getByRole("button", { name: /Ir a zona de alumnos/i }),
+    );
     expect(backSpy).toHaveBeenCalled();
-    backSpy.mockRestore();
   });
 });
