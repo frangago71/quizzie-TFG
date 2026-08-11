@@ -4,10 +4,10 @@ export default defineConfig({
   testDir: "./specs/e2e",
   testMatch: "**/*.spec.ts",
   globalTeardown: "./specs/e2e/teardown.ts",
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: 1,
+  workers: process.env.CI ? 1 : undefined,
   reporter: [
     ["list"],
     ["html", { open: "never" }],
