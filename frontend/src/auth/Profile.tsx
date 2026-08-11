@@ -102,7 +102,7 @@ export const Profile: React.FC = () => {
         "toast_success",
         "Código de recuperación enviado. Revisa tu correo electrónico.",
       );
-      globalThis.location.href = `/reset-password?email=${encodeURIComponent(profile.email)}`;
+      navigate(`/reset-password?email=${encodeURIComponent(profile.email)}`);
     } catch (err: unknown) {
       console.error("Error al iniciar recuperación:", err);
       const error = err as { response?: { data?: { detail?: string } } };
@@ -127,7 +127,7 @@ export const Profile: React.FC = () => {
         "toast_success",
         "Tu cuenta ha sido eliminada permanentemente.",
       );
-      globalThis.location.href = "/login";
+      navigate("/login");
     } catch (err: unknown) {
       console.error("Error al eliminar cuenta:", err);
       const error = err as { response?: { data?: { detail?: string } } };

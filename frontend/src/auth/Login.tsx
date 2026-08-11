@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "./authService";
 import { type LoginRequest } from "../types";
@@ -15,12 +15,6 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (authService.isLoggedIn()) {
-      navigate("/quizzes", { replace: true });
-    }
-  }, [navigate]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
@@ -31,23 +25,36 @@ export const Login: React.FC = () => {
     setLoading(true);
     try {
       await authService.login(credentials);
-      globalThis.location.href = "/quizzes";
+      navigate("/quizzes");
     } catch (err: unknown) {
       const errorObj = err as { status?: number; message?: string };
       if (errorObj.status === 403) {
-        toast.warning(
+        const msg =
           errorObj.message ||
-            "Tu cuenta no está verificada. Por favor, verifica tu correo.",
-        );
+          "Tu cuenta no está verificada. Por favor, verifica tu correo.";
+        toast.warning(msg);
         navigate(
           `/verify-email?email=${encodeURIComponent(credentials.email)}`,
         );
       } else {
-        setError(errorObj.message || "Error al iniciar sesión");
+        const msg = errorObj.message || "Error al iniciar sesión";
+        setError(msg);
       }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleForgotPassword = () => {
+    navigate("/forgot-password");
+  };
+
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
+  const handleBackToStudents = () => {
+    globalThis.history.back();
   };
 
   return (
@@ -100,21 +107,21 @@ export const Login: React.FC = () => {
         </form>
         <div className="login-footer-action">
           <button
-            onClick={() => navigate("/forgot-password")}
+            onClick={handleForgotPassword}
             className="back-link-text"
             type="button"
           >
             ¿Has olvidado tu contraseña?
           </button>
           <button
-            onClick={() => navigate("/register")}
+            onClick={handleRegister}
             className="back-link-text"
             type="button"
           >
             ¿No tienes cuenta? Regístrate
           </button>
           <button
-            onClick={() => globalThis.history.back()}
+            onClick={handleBackToStudents}
             className="back-link-text"
             type="button"
           >
@@ -125,3 +132,5 @@ export const Login: React.FC = () => {
     </div>
   );
 };
+
+export default Login;

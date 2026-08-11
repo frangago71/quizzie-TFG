@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { authService } from "./auth/authService";
 import { Login } from "./auth/Login.tsx";
 import { Register } from "./auth/Register.tsx";
@@ -52,6 +52,7 @@ const PublicRoute = ({
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
+  useLocation();
   const isLoggedIn = authService.isLoggedIn();
 
   const layoutClass = isLoggedIn
