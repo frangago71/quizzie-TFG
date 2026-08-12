@@ -9,6 +9,10 @@ interface Props {
 
 const ScannerModal: React.FC<Props> = ({ onScan, onClose }) => {
   useEffect(() => {
+    (window as unknown as { __e2eScan?: (text: string) => void }).__e2eScan = (
+      text: string,
+    ) => onScan(text);
+
     const scanner = new Html5QrcodeScanner(
       "reader",
       {
