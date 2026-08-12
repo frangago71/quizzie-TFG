@@ -77,7 +77,7 @@ Se utilizan herramientas automáticas para cuantificar y auditar el nivel de cob
 
 ### 5.3. Frontend - Pruebas E2E (`Playwright`)
 * **Módulos acotados:** Delimitados a los 4 módulos funcionales principales del cliente web (`src/auth`, `src/management`, `src/room-access` y `src/room-play`), enfocados en pantallas y vistas navegables completas.
-* **Exclusión de componentes modales:** Los diálogos y ventanas modales de interfaz (como `LogoutModal.tsx`, `DeleteQuizModal.tsx`, `ScannerModal.tsx` o `RoomHistoryModal.tsx`) se prueban a nivel unitario y de componentes con `Vitest` + `React Testing Library`, quedando excluidos de la métrica E2E de `monocart-coverage-reports`. Esto evita distorsiones en la cobertura V8 causadas por guardas de renderizado condicional (`return null` cuando el modal está cerrado) y centra el E2E en las vistas principales.
+* **Exclusión de componentes modales:** Los diálogos y ventanas modales de interfaz (como `LogoutModal.tsx`, `DeleteQuizModal.tsx` o `ScannerModal.tsx`) se prueban a nivel unitario y de componentes con `Vitest` + `React Testing Library`, quedando excluidos de la métrica E2E de `monocart-coverage-reports`. Esto evita distorsiones en la cobertura V8 causadas por guardas de renderizado condicional (`return null` cuando el modal está cerrado) y centra el E2E en las vistas principales.
 * **Objetivos de cobertura:** Mismos umbrales de referencia que las pruebas de componentes (80% en líneas, funciones y sentencias; 75% en ramas).
 
 ## 6. Automatización y CI/CD (GitHub Actions)

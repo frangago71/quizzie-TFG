@@ -5,7 +5,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Pencil, Trash2, Eye, Play, Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteQuizModal, { type Room } from "./DeleteQuizModal.tsx";
-import RoomHistoryModal from "./RoomHistoryModal.tsx";
+import RoomHistory from "./RoomHistory.tsx";
 
 import { useRoom } from "../context/RoomContext.tsx";
 import { useToast } from "../context/ToastContext.tsx";
@@ -476,7 +476,7 @@ const ListQuizzes: React.FC = () => {
         rooms={quizRooms}
       />
 
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={!!historyQuiz}
         onClose={() => setHistoryQuiz(null)}
         quizId={historyQuiz?.id ?? 0}

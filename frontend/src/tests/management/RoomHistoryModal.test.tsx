@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import RoomHistoryModal from "../../management/RoomHistoryModal";
+import RoomHistory from "../../management/RoomHistory";
 import api from "../../api";
 
 vi.mock("../../api", () => ({
@@ -9,14 +9,14 @@ vi.mock("../../api", () => ({
   },
 }));
 
-describe("RoomHistoryModal Component", () => {
+describe("RoomHistory Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("does not render when isOpen is false", () => {
     const { container } = render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={false}
         onClose={vi.fn()}
         quizId={1}
@@ -39,7 +39,7 @@ describe("RoomHistoryModal Component", () => {
     });
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -80,7 +80,7 @@ describe("RoomHistoryModal Component", () => {
       });
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -105,7 +105,7 @@ describe("RoomHistoryModal Component", () => {
     vi.mocked(api.get).mockRejectedValueOnce(new Error("Network Error"));
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -124,7 +124,7 @@ describe("RoomHistoryModal Component", () => {
     vi.mocked(api.get).mockResolvedValueOnce({ data: [] });
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -154,7 +154,7 @@ describe("RoomHistoryModal Component", () => {
       .mockRejectedValueOnce(new Error("Network Error"));
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -190,7 +190,7 @@ describe("RoomHistoryModal Component", () => {
       .mockResolvedValueOnce({ data: [] });
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -236,7 +236,7 @@ describe("RoomHistoryModal Component", () => {
       });
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}
@@ -274,7 +274,7 @@ describe("RoomHistoryModal Component", () => {
     vi.mocked(api.get).mockResolvedValueOnce({ data: [] });
 
     const { container } = render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={onClose}
         quizId={1}
@@ -316,7 +316,7 @@ describe("RoomHistoryModal Component", () => {
       });
 
     render(
-      <RoomHistoryModal
+      <RoomHistory
         isOpen={true}
         onClose={vi.fn()}
         quizId={1}

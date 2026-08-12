@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import api from "../api";
 import "../auth/Modal.css";
-import "./RoomHistoryModal.css";
+import "./RoomHistory.css";
 
 export interface PastRoom {
   id: number;
@@ -25,14 +25,14 @@ export interface StudentResult {
   total_questions: number;
 }
 
-interface RoomHistoryModalProps {
+interface RoomHistoryProps {
   isOpen: boolean;
   onClose: () => void;
   quizId: number;
   quizTitle: string;
 }
 
-const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
+const RoomHistory: React.FC<RoomHistoryProps> = ({
   isOpen,
   onClose,
   quizId,
@@ -86,6 +86,7 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
       setLoading(false);
     }
   };
+
   const downloadCSV = () => {
     if (!selectedRoom || results.length === 0) return;
 
@@ -122,6 +123,7 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
     link.click();
     document.body.removeChild(link);
   };
+
   if (!isOpen) return null;
 
   const formatDate = (dateStr: string) => {
@@ -328,4 +330,4 @@ const RoomHistoryModal: React.FC<RoomHistoryModalProps> = ({
   );
 };
 
-export default RoomHistoryModal;
+export default RoomHistory;
