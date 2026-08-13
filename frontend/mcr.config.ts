@@ -3,10 +3,7 @@ import type { CoverageReportOptions } from "monocart-coverage-reports";
 const config: CoverageReportOptions = {
   name: "Playwright E2E Coverage Report",
   outputDir: "./coverage-e2e",
-  reports: [
-    "v8",
-    "console-details",
-  ],
+  reports: ["v8", "console-summary"],
   entryFilter: (entry: { url: string }) =>
     entry.url.includes("/assets/") ||
     entry.url.includes("/src/") ||
