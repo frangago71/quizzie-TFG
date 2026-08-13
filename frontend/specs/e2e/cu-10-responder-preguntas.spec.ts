@@ -50,7 +50,9 @@ test.describe("CU-10: Responder Preguntas", () => {
     await page.goto("/live/10");
 
     // Verificar pregunta y opciones en AnsweringPhase
-    await expect(page.getByText("¿Cuál es la capital de España?")).toBeVisible();
+    await expect(
+      page.getByText("¿Cuál es la capital de España?"),
+    ).toBeVisible();
     await expect(page.getByText("Madrid")).toBeVisible();
 
     // Seleccionar opción Madrid (opción 2)
@@ -134,7 +136,6 @@ test.describe("CU-10: Responder Preguntas", () => {
     await page.goto("/live/10");
     await expect(page.getByText("¿Pregunta de prueba?")).toBeVisible();
   });
-
 
   test("2a. Gestión del profesor - Controlar temporizador y visibilidad de contador de respuestas", async ({
     page,
@@ -228,7 +229,9 @@ test.describe("CU-10: Responder Preguntas", () => {
     await expect(page.getByText("Pausa")).toBeVisible();
     await expect(page.getByText("••")).toBeVisible();
 
-    const showResultsBtn = page.getByRole("button", { name: /Ver estadísticas/i });
+    const showResultsBtn = page.getByRole("button", {
+      name: /Ver estadísticas/i,
+    });
     await expect(showResultsBtn).toBeVisible();
     await showResultsBtn.click();
   });
@@ -258,21 +261,27 @@ test.describe("CU-10: Responder Preguntas", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/toggle-answers-visibility", async (route) => {
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ detail: "Error" }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/toggle-answers-visibility",
+      async (route) => {
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ detail: "Error" }),
+        });
+      },
+    );
 
-    await page.route("**/stage/rooms/10/questions/102/finish", async (route) => {
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ detail: "Error" }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/questions/102/finish",
+      async (route) => {
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ detail: "Error" }),
+        });
+      },
+    );
 
     await page.addInitScript(() => {
       sessionStorage.clear();
@@ -285,10 +294,10 @@ test.describe("CU-10: Responder Preguntas", () => {
     // Alternar visibilidad (error toast)
     const toggleBtn = page.locator("button.eye-toggle-btn");
     await toggleBtn.click();
-    await expect(page.getByText(/Error al alternar visibilidad/i)).toBeVisible();
+    await expect(
+      page.getByText(/Error al alternar visibilidad/i),
+    ).toBeVisible();
   });
-
-
 
   test("3a. Sala en tiempo real - eventos WebSocket (show_results, show_leaderboard, room_finish, timer_update)", async ({
     page,

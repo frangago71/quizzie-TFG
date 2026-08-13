@@ -250,7 +250,9 @@ test.describe("CU-02: Content Management Flow", () => {
 
     // Pestaña "Inactivos" → vacía (el cuestionario tiene sala activa)
     await page.locator("button.tab", { hasText: "Inactivos" }).click();
-    await expect(page.getByText(/No hay cuestionarios inactivos/i).first()).toBeVisible();
+    await expect(
+      page.getByText(/No hay cuestionarios inactivos/i).first(),
+    ).toBeVisible();
   });
 
   test("1g. Listar Cuestionarios - confirmacion de finalizar sala con aceptar", async ({
@@ -277,7 +279,9 @@ test.describe("CU-02: Content Management Flow", () => {
     const finishBtn = page.getByRole("button", { name: "Finalizar" }).first();
     if (await finishBtn.isVisible()) {
       await finishBtn.click();
-      await expect(page.getByText(/Sala finalizada correctamente/i)).toBeVisible({ timeout: 6000 });
+      await expect(
+        page.getByText(/Sala finalizada correctamente/i),
+      ).toBeVisible({ timeout: 6000 });
     }
   });
 
@@ -306,7 +310,9 @@ test.describe("CU-02: Content Management Flow", () => {
     const finishBtn = page.getByRole("button", { name: "Finalizar" }).first();
     if (await finishBtn.isVisible()) {
       await finishBtn.click();
-      await expect(page.getByText(/Fallo al finalizar sala/i)).toBeVisible({ timeout: 6000 });
+      await expect(page.getByText(/Fallo al finalizar sala/i)).toBeVisible({
+        timeout: 6000,
+      });
     }
 
     // Abre el modal de eliminación para el cuestionario 1
@@ -334,7 +340,9 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes");
-    await expect(page.getByText(/No tienes cuestionarios creados/i)).toBeVisible();
+    await expect(
+      page.getByText(/No tienes cuestionarios creados/i),
+    ).toBeVisible();
   });
 
   test("1j. Listar Cuestionarios - soft delete cuestionario sin salas activas", async ({
@@ -376,10 +384,14 @@ test.describe("CU-02: Content Management Flow", () => {
     await expect(page.getByText(/¿Borrar cuestionario\?/i)).toBeVisible();
 
     // Confirma el borrado suave del cuestionario
-    const softDeleteBtn = page.locator(".modal-card button.btn-modal-primary.cyan");
+    const softDeleteBtn = page.locator(
+      ".modal-card button.btn-modal-primary.cyan",
+    );
     await expect(softDeleteBtn).toBeVisible();
     await softDeleteBtn.click();
-    await expect(page.getByText(/eliminado correctamente/i)).toBeVisible({ timeout: 6000 });
+    await expect(page.getByText(/eliminado correctamente/i)).toBeVisible({
+      timeout: 6000,
+    });
   });
 
   test("1k. Listar Cuestionarios - hard delete cuestionario con salas y error en servidor", async ({
@@ -422,10 +434,14 @@ test.describe("CU-02: Content Management Flow", () => {
     await expect(page.getByText(/¿Borrar cuestionario\?/i)).toBeVisible();
 
     // Confirma el borrado completo con salas
-    const hardDeleteBtn = page.locator(".modal-card").getByRole("button", { name: /sus salas/i });
+    const hardDeleteBtn = page
+      .locator(".modal-card")
+      .getByRole("button", { name: /sus salas/i });
     if (await hardDeleteBtn.isVisible()) {
       await hardDeleteBtn.click();
-      await expect(page.getByText(/Imposible eliminar cuestionario/i)).toBeVisible({ timeout: 6000 });
+      await expect(
+        page.getByText(/Imposible eliminar cuestionario/i),
+      ).toBeVisible({ timeout: 6000 });
     }
   });
 
@@ -434,7 +450,9 @@ test.describe("CU-02: Content Management Flow", () => {
   }) => {
     await page.goto("/quizzes/create");
     await page.evaluate(() => {
-      (globalThis as any).document.querySelectorAll("input, textarea").forEach((el: any) => el.removeAttribute("required"));
+      (globalThis as any).document
+        .querySelectorAll("input, textarea")
+        .forEach((el: any) => el.removeAttribute("required"));
     });
 
     const submitBtn = page.getByRole("button", { name: /Crear cuestionario/i });
@@ -448,19 +466,26 @@ test.describe("CU-02: Content Management Flow", () => {
     page,
   }) => {
     await page.goto("/quizzes/create");
-    await page.locator('input[placeholder*="enunciado"]').fill("Pregunta de 8 opciones");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("Pregunta de 8 opciones");
     const optionInputs = page.locator('.option-item input[type="text"]');
     await optionInputs.nth(0).fill("Opción 1");
     await optionInputs.nth(1).fill("Opción 2");
 
     const addGhostBtn = page.locator("button.btn-add-ghost");
     for (let i = 2; i < 8; i++) {
-      if (await addGhostBtn.isVisible() && await addGhostBtn.isEnabled()) {
+      if ((await addGhostBtn.isVisible()) && (await addGhostBtn.isEnabled())) {
         await addGhostBtn.click();
-        await page.locator('.option-item input[type="text"]').nth(i).fill(`Opción ${i + 1}`);
+        await page
+          .locator('.option-item input[type="text"]')
+          .nth(i)
+          .fill(`Opción ${i + 1}`);
       }
     }
-    await expect(page.locator('.option-item input[type="text"]')).toHaveCount(8);
+    await expect(page.locator('.option-item input[type="text"]')).toHaveCount(
+      8,
+    );
     // El botón de añadir opción está deshabilitado
     await expect(page.locator("button.btn-add-ghost")).toBeDisabled();
   });
@@ -494,7 +519,9 @@ test.describe("CU-02: Content Management Flow", () => {
     page,
   }) => {
     await page.goto("/quizzes/create");
-    await page.locator('input[placeholder*="enunciado"]').fill("Solo una pregunta");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("Solo una pregunta");
     const optionInputs = page.locator('.option-item input[type="text"]');
     await optionInputs.nth(0).fill("A");
     await optionInputs.nth(1).fill("B");
@@ -508,7 +535,9 @@ test.describe("CU-02: Content Management Flow", () => {
     page,
   }) => {
     await page.goto("/quizzes/create");
-    await page.locator('input[placeholder*="enunciado"]').fill("Pregunta Atajos");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("Pregunta Atajos");
     const optionInputs = page.locator('.option-item input[type="text"]');
     await optionInputs.nth(0).fill("Opción A");
     await optionInputs.nth(1).fill("Opción B");
@@ -517,7 +546,10 @@ test.describe("CU-02: Content Management Flow", () => {
     if (await addGhostBtn.isVisible()) {
       await addGhostBtn.focus();
       await page.keyboard.press("Enter");
-      await page.locator('.option-item input[type="text"]').nth(2).fill("Opción C");
+      await page
+        .locator('.option-item input[type="text"]')
+        .nth(2)
+        .fill("Opción C");
 
       await addGhostBtn.focus();
       await page.keyboard.press("Tab");
@@ -528,7 +560,9 @@ test.describe("CU-02: Content Management Flow", () => {
     page,
   }) => {
     await page.goto("/quizzes/create");
-    await page.locator('input[placeholder*="enunciado"]').fill("Pregunta Radio & Reasignacion");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("Pregunta Radio & Reasignacion");
     const optionInputs = page.locator('.option-item input[type="text"]');
     await optionInputs.nth(0).fill("Opción 1");
     await optionInputs.nth(1).fill("Opción 2 Correcta");
@@ -541,14 +575,19 @@ test.describe("CU-02: Content Management Flow", () => {
     const addGhostBtn = page.locator("button.btn-add-ghost");
     if (await addGhostBtn.isVisible()) {
       await addGhostBtn.click();
-      await page.locator('.option-item input[type="text"]').nth(2).fill("Opción 3");
+      await page
+        .locator('.option-item input[type="text"]')
+        .nth(2)
+        .fill("Opción 3");
     }
 
     // Elimina la opción correcta → la primera opción pasa a ser la correcta
     const deleteBtns = page.locator("button.btn-remove");
     if (await deleteBtns.nth(1).isVisible()) {
       await deleteBtns.nth(1).click();
-      await expect(page.locator('.option-item input[type="text"]')).toHaveCount(2);
+      await expect(page.locator('.option-item input[type="text"]')).toHaveCount(
+        2,
+      );
     }
   });
 
@@ -576,15 +615,21 @@ test.describe("CU-02: Content Management Flow", () => {
   }) => {
     await page.goto("/quizzes/create");
     await page.locator('input[placeholder="Título"]').fill("Título Completo");
-    await page.locator('textarea[placeholder*="descripción"]').fill("Descripción Completa");
+    await page
+      .locator('textarea[placeholder*="descripción"]')
+      .fill("Descripción Completa");
     // Deja en blanco el enunciado de la pregunta
 
     await page.evaluate(() => {
-      (globalThis as any).document.querySelectorAll("input, textarea").forEach((el: any) => el.removeAttribute("required"));
+      (globalThis as any).document
+        .querySelectorAll("input, textarea")
+        .forEach((el: any) => el.removeAttribute("required"));
     });
 
     await page.getByRole("button", { name: /Crear cuestionario/i }).click();
-    await expect(page.getByText(/La pregunta 1 no tiene enunciado/i)).toBeVisible();
+    await expect(
+      page.getByText(/La pregunta 1 no tiene enunciado/i),
+    ).toBeVisible();
   });
 
   test("2i. Crear Cuestionario - validacion de opcion en blanco al enviar", async ({
@@ -592,12 +637,18 @@ test.describe("CU-02: Content Management Flow", () => {
   }) => {
     await page.goto("/quizzes/create");
     await page.locator('input[placeholder="Título"]').fill("Título Completo");
-    await page.locator('textarea[placeholder*="descripción"]').fill("Descripción Completa");
-    await page.locator('input[placeholder*="enunciado"]').fill("Pregunta con opcion en blanco");
+    await page
+      .locator('textarea[placeholder*="descripción"]')
+      .fill("Descripción Completa");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("Pregunta con opcion en blanco");
     // Deja en blanco la opción 2
 
     await page.evaluate(() => {
-      (globalThis as any).document.querySelectorAll("input, textarea").forEach((el: any) => el.removeAttribute("required"));
+      (globalThis as any).document
+        .querySelectorAll("input, textarea")
+        .forEach((el: any) => el.removeAttribute("required"));
     });
 
     const optionInputs = page.locator('.option-item input[type="text"]');
@@ -611,7 +662,9 @@ test.describe("CU-02: Content Management Flow", () => {
     page,
   }) => {
     await page.goto("/quizzes/create");
-    await page.locator('input[placeholder*="enunciado"]').fill("Pregunta Unica");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("Pregunta Unica");
     const optionInputs = page.locator('.option-item input[type="text"]');
     await optionInputs.nth(0).fill("A");
     await optionInputs.nth(1).fill("B");
@@ -625,9 +678,7 @@ test.describe("CU-02: Content Management Flow", () => {
     }
   });
 
-  test("2k. Crear Cuestionario - error de red al crear", async ({
-    page,
-  }) => {
+  test("2k. Crear Cuestionario - error de red al crear", async ({ page }) => {
     await page.route("**/content/quizzes", async (route) => {
       if (route.request().method() === "POST") {
         await route.fulfill({
@@ -640,13 +691,17 @@ test.describe("CU-02: Content Management Flow", () => {
 
     await page.goto("/quizzes/create");
     await page.locator('input[placeholder="Título"]').fill("Test Error Quiz");
-    await page.locator('textarea[placeholder*="descripción"]').fill("Descripción Error");
+    await page
+      .locator('textarea[placeholder*="descripción"]')
+      .fill("Descripción Error");
     await page.locator('input[placeholder*="enunciado"]').fill("¿Pregunta?");
     await page.locator('.option-item input[type="text"]').nth(0).fill("Sí");
     await page.locator('.option-item input[type="text"]').nth(1).fill("No");
 
     await page.getByRole("button", { name: /Crear cuestionario/i }).click();
-    await expect(page.getByText(/Error al conectar con el servidor/i)).toBeVisible({ timeout: 6000 });
+    await expect(
+      page.getByText(/Error al conectar con el servidor/i),
+    ).toBeVisible({ timeout: 6000 });
   });
 
   test("2l. Crear Cuestionario - creacion exitosa y redireccion", async ({
@@ -671,10 +726,19 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/create");
-    await page.locator('input[placeholder="Título"]').fill("Examen E2E Exitoso");
-    await page.locator('textarea[placeholder*="descripción"]').fill("Descripción Completa");
-    await page.locator('input[placeholder*="enunciado"]').fill("¿Pregunta E2E?");
-    await page.locator('.option-item input[type="text"]').nth(0).fill("Verdadero");
+    await page
+      .locator('input[placeholder="Título"]')
+      .fill("Examen E2E Exitoso");
+    await page
+      .locator('textarea[placeholder*="descripción"]')
+      .fill("Descripción Completa");
+    await page
+      .locator('input[placeholder*="enunciado"]')
+      .fill("¿Pregunta E2E?");
+    await page
+      .locator('.option-item input[type="text"]')
+      .nth(0)
+      .fill("Verdadero");
     await page.locator('.option-item input[type="text"]').nth(1).fill("Falso");
 
     await page.getByRole("button", { name: /Crear cuestionario/i }).click();
@@ -694,10 +758,32 @@ test.describe("CU-02: Content Management Flow", () => {
       const card = (globalThis as any).document.querySelector(".question-card");
       if (!card) return;
       const g = globalThis as any;
-      const t1 = new g.Touch({ identifier: 2, target: card, clientX: 300, clientY: 100 });
-      const t2 = new g.Touch({ identifier: 2, target: card, clientX: 100, clientY: 100 });
-      card.dispatchEvent(new g.TouchEvent("touchstart", { bubbles: true, targetTouches: [t1], touches: [t1] }));
-      card.dispatchEvent(new g.TouchEvent("touchmove", { bubbles: true, targetTouches: [t2], touches: [t2] }));
+      const t1 = new g.Touch({
+        identifier: 2,
+        target: card,
+        clientX: 300,
+        clientY: 100,
+      });
+      const t2 = new g.Touch({
+        identifier: 2,
+        target: card,
+        clientX: 100,
+        clientY: 100,
+      });
+      card.dispatchEvent(
+        new g.TouchEvent("touchstart", {
+          bubbles: true,
+          targetTouches: [t1],
+          touches: [t1],
+        }),
+      );
+      card.dispatchEvent(
+        new g.TouchEvent("touchmove", {
+          bubbles: true,
+          targetTouches: [t2],
+          touches: [t2],
+        }),
+      );
       card.dispatchEvent(new g.TouchEvent("touchend", { bubbles: true }));
     });
 
@@ -743,7 +829,9 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/edit/1");
-    await expect(page.locator('input[placeholder="Título"]')).toHaveValue("Cuestionario de Matemáticas");
+    await expect(page.locator('input[placeholder="Título"]')).toHaveValue(
+      "Cuestionario de Matemáticas",
+    );
 
     // Navegación mediante puntos (el cuestionario tiene 2 preguntas)
     const dots = page.locator(".nav-dots button.dot");
@@ -762,10 +850,32 @@ test.describe("CU-02: Content Management Flow", () => {
       const card = (globalThis as any).document.querySelector(".question-card");
       if (!card) return;
       const g = globalThis as any;
-      const t1 = new g.Touch({ identifier: 3, target: card, clientX: 200, clientY: 100 });
-      const t2 = new g.Touch({ identifier: 3, target: card, clientX: 190, clientY: 100 });
-      card.dispatchEvent(new g.TouchEvent("touchstart", { bubbles: true, targetTouches: [t1], touches: [t1] }));
-      card.dispatchEvent(new g.TouchEvent("touchmove", { bubbles: true, targetTouches: [t2], touches: [t2] }));
+      const t1 = new g.Touch({
+        identifier: 3,
+        target: card,
+        clientX: 200,
+        clientY: 100,
+      });
+      const t2 = new g.Touch({
+        identifier: 3,
+        target: card,
+        clientX: 190,
+        clientY: 100,
+      });
+      card.dispatchEvent(
+        new g.TouchEvent("touchstart", {
+          bubbles: true,
+          targetTouches: [t1],
+          touches: [t1],
+        }),
+      );
+      card.dispatchEvent(
+        new g.TouchEvent("touchmove", {
+          bubbles: true,
+          targetTouches: [t2],
+          touches: [t2],
+        }),
+      );
       card.dispatchEvent(new g.TouchEvent("touchend", { bubbles: true }));
     });
   });
@@ -782,17 +892,19 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/edit/1");
-    await expect(page.locator('input[placeholder="Título"]')).toHaveValue("Cuestionario de Matemáticas");
+    await expect(page.locator('input[placeholder="Título"]')).toHaveValue(
+      "Cuestionario de Matemáticas",
+    );
 
     // Botones de navegación en escritorio (‹ ›)
     const nextBtn = page.locator("button.quiz-slider-btn.btn-pc-nav").nth(1);
-    if (await nextBtn.isVisible() && await nextBtn.isEnabled()) {
+    if ((await nextBtn.isVisible()) && (await nextBtn.isEnabled())) {
       await nextBtn.click();
       await expect(page.getByText(/PREGUNTA 2/i)).toBeVisible();
     }
 
     const prevBtn = page.locator("button.quiz-slider-btn.btn-pc-nav").first();
-    if (await prevBtn.isVisible() && await prevBtn.isEnabled()) {
+    if ((await prevBtn.isVisible()) && (await prevBtn.isEnabled())) {
       await prevBtn.click();
       await expect(page.getByText(/PREGUNTA 1/i)).toBeVisible();
     }
@@ -826,7 +938,9 @@ test.describe("CU-02: Content Management Flow", () => {
     const removeOptionBtns = page.locator("button.btn-remove");
     if (await removeOptionBtns.nth(1).isVisible()) {
       await removeOptionBtns.nth(1).click();
-      await expect(page.getByText(/al menos dos opciones/i)).toBeVisible({ timeout: 5000 });
+      await expect(page.getByText(/al menos dos opciones/i)).toBeVisible({
+        timeout: 5000,
+      });
     }
   });
 
@@ -842,7 +956,9 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/edit/1");
-    await expect(page.locator('input[placeholder="Título"]')).toHaveValue("Cuestionario de Matemáticas");
+    await expect(page.locator('input[placeholder="Título"]')).toHaveValue(
+      "Cuestionario de Matemáticas",
+    );
 
     const removeOptionBtns = page.locator("button.btn-remove");
     if (await removeOptionBtns.nth(1).isVisible()) {
@@ -872,7 +988,9 @@ test.describe("CU-02: Content Management Flow", () => {
     const removeOptionBtns = page.locator("button.btn-remove");
     if (await removeOptionBtns.first().isVisible()) {
       await removeOptionBtns.first().click();
-      await expect(page.getByText(/No puedes borrar la opción correcta/i)).toBeVisible();
+      await expect(
+        page.getByText(/No puedes borrar la opción correcta/i),
+      ).toBeVisible();
     }
   });
 
@@ -894,14 +1012,23 @@ test.describe("CU-02: Content Management Flow", () => {
     await questionInput.clear();
 
     await page.evaluate(() => {
-      (globalThis as any).document.querySelectorAll("input, textarea").forEach((el: any) => el.removeAttribute("required"));
+      (globalThis as any).document
+        .querySelectorAll("input, textarea")
+        .forEach((el: any) => el.removeAttribute("required"));
     });
 
-    await page.getByRole("button", { name: /Confirmar/i }).first().click();
-    const confirmBtn = page.locator(".modal-card button", { hasText: "Guardar cambios" });
+    await page
+      .getByRole("button", { name: /Confirmar/i })
+      .first()
+      .click();
+    const confirmBtn = page.locator(".modal-card button", {
+      hasText: "Guardar cambios",
+    });
     if (await confirmBtn.isVisible()) {
       await confirmBtn.click();
-      await expect(page.getByText(/no tiene enunciado/i)).toBeVisible({ timeout: 5000 });
+      await expect(page.getByText(/no tiene enunciado/i)).toBeVisible({
+        timeout: 5000,
+      });
     }
   });
 
@@ -931,18 +1058,29 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/edit/1");
-    await expect(page.locator('input[placeholder="Título"]')).toHaveValue("Cuestionario de Matemáticas");
+    await expect(page.locator('input[placeholder="Título"]')).toHaveValue(
+      "Cuestionario de Matemáticas",
+    );
 
     // Elimina atributo required para que el formulario no bloquee la validación nativa
     await page.evaluate(() => {
-      (globalThis as any).document.querySelectorAll("input, textarea").forEach((el: any) => el.removeAttribute("required"));
+      (globalThis as any).document
+        .querySelectorAll("input, textarea")
+        .forEach((el: any) => el.removeAttribute("required"));
     });
 
-    await page.getByRole("button", { name: /Confirmar/i }).first().click();
-    const confirmBtn = page.locator(".modal-card button", { hasText: "Guardar cambios" });
+    await page
+      .getByRole("button", { name: /Confirmar/i })
+      .first()
+      .click();
+    const confirmBtn = page.locator(".modal-card button", {
+      hasText: "Guardar cambios",
+    });
     if (await confirmBtn.isVisible()) {
       await confirmBtn.click();
-      await expect(page.getByText(/está en blanco/i)).toBeVisible({ timeout: 5000 });
+      await expect(page.getByText(/está en blanco/i)).toBeVisible({
+        timeout: 5000,
+      });
     }
   });
 
@@ -958,9 +1096,14 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/edit/1");
-    await page.getByRole("button", { name: /Confirmar/i }).first().click();
+    await page
+      .getByRole("button", { name: /Confirmar/i })
+      .first()
+      .click();
 
-    const cancelBtn = page.locator(".modal-card button", { hasText: "Cancelar" });
+    const cancelBtn = page.locator(".modal-card button", {
+      hasText: "Cancelar",
+    });
     if (await cancelBtn.isVisible()) {
       await cancelBtn.click();
       await expect(page.getByText(/Confirmar Cambios/i)).not.toBeVisible();
@@ -982,7 +1125,9 @@ test.describe("CU-02: Content Management Flow", () => {
         await route.fulfill({
           status: 500,
           contentType: "application/json",
-          body: JSON.stringify({ detail: "Error al actualizar cuestionario en servidor" }),
+          body: JSON.stringify({
+            detail: "Error al actualizar cuestionario en servidor",
+          }),
         });
       }
     });
@@ -990,11 +1135,18 @@ test.describe("CU-02: Content Management Flow", () => {
     await page.goto("/quizzes/edit/1");
     await page.locator('input[placeholder="Título"]').fill("Título Error");
 
-    await page.getByRole("button", { name: /Confirmar/i }).first().click();
-    const confirmBtn = page.locator(".modal-card button", { hasText: "Guardar cambios" });
+    await page
+      .getByRole("button", { name: /Confirmar/i })
+      .first()
+      .click();
+    const confirmBtn = page.locator(".modal-card button", {
+      hasText: "Guardar cambios",
+    });
     if (await confirmBtn.isVisible()) {
       await confirmBtn.click();
-      await expect(page.getByText(/Error al actualizar cuestionario en servidor/i)).toBeVisible({ timeout: 6000 });
+      await expect(
+        page.getByText(/Error al actualizar cuestionario en servidor/i),
+      ).toBeVisible({ timeout: 6000 });
     }
   });
 
@@ -1013,7 +1165,10 @@ test.describe("CU-02: Content Management Flow", () => {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ ...mockQuizzes[0], title: "Matemáticas Finales" }),
+          body: JSON.stringify({
+            ...mockQuizzes[0],
+            title: "Matemáticas Finales",
+          }),
         });
       }
     });
@@ -1027,10 +1182,17 @@ test.describe("CU-02: Content Management Flow", () => {
     });
 
     await page.goto("/quizzes/edit/1");
-    await page.locator('input[placeholder="Título"]').fill("Matemáticas Finales");
+    await page
+      .locator('input[placeholder="Título"]')
+      .fill("Matemáticas Finales");
 
-    await page.getByRole("button", { name: /Confirmar/i }).first().click();
-    const confirmBtn = page.locator(".modal-card button", { hasText: "Guardar cambios" });
+    await page
+      .getByRole("button", { name: /Confirmar/i })
+      .first()
+      .click();
+    const confirmBtn = page.locator(".modal-card button", {
+      hasText: "Guardar cambios",
+    });
     if (await confirmBtn.isVisible()) {
       await confirmBtn.click();
     }
@@ -1074,10 +1236,32 @@ test.describe("CU-02: Content Management Flow", () => {
       const card = (globalThis as any).document.querySelector(".question-card");
       if (!card) return;
       const g = globalThis as any;
-      const t1 = new g.Touch({ identifier: 1, target: card, clientX: 300, clientY: 100 });
-      const t2 = new g.Touch({ identifier: 1, target: card, clientX: 100, clientY: 100 });
-      card.dispatchEvent(new g.TouchEvent("touchstart", { bubbles: true, targetTouches: [t1], touches: [t1] }));
-      card.dispatchEvent(new g.TouchEvent("touchmove", { bubbles: true, targetTouches: [t2], touches: [t2] }));
+      const t1 = new g.Touch({
+        identifier: 1,
+        target: card,
+        clientX: 300,
+        clientY: 100,
+      });
+      const t2 = new g.Touch({
+        identifier: 1,
+        target: card,
+        clientX: 100,
+        clientY: 100,
+      });
+      card.dispatchEvent(
+        new g.TouchEvent("touchstart", {
+          bubbles: true,
+          targetTouches: [t1],
+          touches: [t1],
+        }),
+      );
+      card.dispatchEvent(
+        new g.TouchEvent("touchmove", {
+          bubbles: true,
+          targetTouches: [t2],
+          touches: [t2],
+        }),
+      );
       card.dispatchEvent(new g.TouchEvent("touchend", { bubbles: true }));
     });
   });

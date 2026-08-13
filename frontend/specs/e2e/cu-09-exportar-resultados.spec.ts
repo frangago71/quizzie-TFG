@@ -125,7 +125,9 @@ test.describe("CU-09: Export Results Flow", () => {
     const viewBtn = page.locator('.icon-btn[title="Ver"]').first();
     await viewBtn.click();
 
-    await expect(page.getByText(/Error al cargar el historial de salas/i)).toBeVisible();
+    await expect(
+      page.getByText(/Error al cargar el historial de salas/i),
+    ).toBeVisible();
 
     // Cambiar a respuesta vacía
     await page.route("**/stage/quizzes/1/history*", async (route) => {

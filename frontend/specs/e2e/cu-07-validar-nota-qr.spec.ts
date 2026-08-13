@@ -20,19 +20,22 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 850,
-          correct_answers: 4,
-          total_questions: 5,
-          verification_token: "qr-token-abc-123",
-          is_verified: false,
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 850,
+            correct_answers: 4,
+            total_questions: 5,
+            verification_token: "qr-token-abc-123",
+            is_verified: false,
+          }),
+        });
+      },
+    );
 
     await page.addInitScript(() => {
       sessionStorage.clear();
@@ -114,19 +117,22 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 850,
-          correct_answers: 4,
-          total_questions: 5,
-          verification_token: "qr-token-abc-123",
-          is_verified: false,
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 850,
+            correct_answers: 4,
+            total_questions: 5,
+            verification_token: "qr-token-abc-123",
+            is_verified: false,
+          }),
+        });
+      },
+    );
 
     await page.addInitScript(() => {
       sessionStorage.clear();
@@ -137,11 +143,15 @@ test.describe("CU-07: Validar Nota por QR", () => {
 
     await page.goto("/live/10");
     await page.getByRole("button", { name: "Salir", exact: true }).click();
-    await expect(page.getByText(/¿Estás seguro de que quieres salir?/i)).toBeVisible();
+    await expect(
+      page.getByText(/¿Estás seguro de que quieres salir?/i),
+    ).toBeVisible();
 
     // Clic en Permanecer (cierra modal)
     await page.getByRole("button", { name: "Permanecer" }).click();
-    await expect(page.getByText(/¿Estás seguro de que quieres salir?/i)).not.toBeVisible();
+    await expect(
+      page.getByText(/¿Estás seguro de que quieres salir?/i),
+    ).not.toBeVisible();
 
     // Clic en Salir de todos modos -> redirige a /
     await page.getByRole("button", { name: "Salir", exact: true }).click();
@@ -149,19 +159,22 @@ test.describe("CU-07: Validar Nota por QR", () => {
     await page.waitForURL(/\/$/);
 
     // 2. Alumno con nota ya verificada -> el botón Salir navega directamente a /
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 850,
-          correct_answers: 4,
-          total_questions: 5,
-          verification_token: "qr-token-abc-123",
-          is_verified: true,
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 850,
+            correct_answers: 4,
+            total_questions: 5,
+            verification_token: "qr-token-abc-123",
+            is_verified: true,
+          }),
+        });
+      },
+    );
 
     await page.goto("/live/10");
     await expect(page.getByText("Verificado")).toBeVisible();
@@ -201,14 +214,18 @@ test.describe("CU-07: Validar Nota por QR", () => {
     });
 
     await page.goto("/live/10");
-    await expect(page.getByText(/No hay participantes registrados/i)).toBeVisible();
+    await expect(
+      page.getByText(/No hay participantes registrados/i),
+    ).toBeVisible();
 
     // Profesor acepta confirmación de dialogo y hace clic en Finalizar verificación
     page.once("dialog", async (dialog) => {
       await dialog.accept();
     });
 
-    const finishBtn = page.getByRole("button", { name: /Finalizar verificación/i });
+    const finishBtn = page.getByRole("button", {
+      name: /Finalizar verificación/i,
+    });
     await finishBtn.click();
     await page.waitForURL(/\/quizzes/);
 
@@ -239,7 +256,9 @@ test.describe("CU-07: Validar Nota por QR", () => {
       await dialog.accept();
     });
     await page.getByRole("button", { name: /Finalizar verificación/i }).click();
-    await expect(page.getByText(/Error al cerrar la verificación/i)).toBeVisible();
+    await expect(
+      page.getByText(/Error al cerrar la verificación/i),
+    ).toBeVisible();
 
     // 3. Podio en sala finalizada -> Botón Volver al panel navega a /dashboard
     await page.route("**/stage/rooms/10", async (route) => {
@@ -256,13 +275,15 @@ test.describe("CU-07: Validar Nota por QR", () => {
     });
 
     await page.goto("/live/10");
-    await expect(page.getByText(/Fase de verificación finalizada/i)).toBeVisible();
+    await expect(
+      page.getByText(/Fase de verificación finalizada/i),
+    ).toBeVisible();
     const dashboardBtn = page.getByRole("button", { name: /Volver al panel/i });
     await dashboardBtn.click();
     await page.waitForURL(/\/dashboard/);
   });
 
-    test("2a. Verificación - Profesor escanea un QR invalido, uno de otra sala, uno valido y uno ya verificado", async ({
+  test("2a. Verificación - Profesor escanea un QR invalido, uno de otra sala, uno valido y uno ya verificado", async ({
     page,
   }) => {
     await page.route("**/stage/rooms/10", async (route) => {
@@ -362,23 +383,28 @@ test.describe("CU-07: Validar Nota por QR", () => {
 
     // 2. Subtítulo muestra estado verifying del profesor
     await expect(
-      page.getByRole("heading", { name: /Escanea los códigos QR de tus alumnos/i })
+      page.getByRole("heading", {
+        name: /Escanea los códigos QR de tus alumnos/i,
+      }),
     ).toBeVisible();
 
     // 3. Vista de alumno con nota verificada y QR visible (stats con is_verified: true)
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 950,
-          correct_answers: 5,
-          total_questions: 5,
-          verification_token: "token-test",
-          is_verified: true,
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 950,
+            correct_answers: 5,
+            total_questions: 5,
+            verification_token: "token-test",
+            is_verified: true,
+          }),
+        });
+      },
+    );
 
     await page.addInitScript(() => {
       sessionStorage.clear();
@@ -408,14 +434,17 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      // Devolver error para probar catch (console.error) y stats === null
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ detail: "Error interno" }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        // Devolver error para probar catch (console.error) y stats === null
+        await route.fulfill({
+          status: 500,
+          contentType: "application/json",
+          body: JSON.stringify({ detail: "Error interno" }),
+        });
+      },
+    );
 
     await page.addInitScript(() => {
       sessionStorage.clear();
@@ -440,20 +469,25 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 500,
-          correct_answers: 3,
-          total_questions: 5,
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 500,
+            correct_answers: 3,
+            total_questions: 5,
+          }),
+        });
+      },
+    );
 
     await page.goto("/live/10");
-    await expect(page.getByText("La fase de verificación ha terminado.")).toBeVisible();
+    await expect(
+      page.getByText("La fase de verificación ha terminado."),
+    ).toBeVisible();
 
     // 3. Estado verifying sin token de verificación -> Muestra "Próximamente se mostrará aquí tu código QR"
     await page.route("**/stage/rooms/10", async (route) => {
@@ -468,21 +502,26 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 500,
-          correct_answers: 3,
-          total_questions: 5,
-          // verification_token omitido a propósito
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 500,
+            correct_answers: 3,
+            total_questions: 5,
+            // verification_token omitido a propósito
+          }),
+        });
+      },
+    );
 
     await page.goto("/live/10");
-    await expect(page.getByText(/Próximamente se mostrará aquí tu código QR/i)).toBeVisible();
+    await expect(
+      page.getByText(/Próximamente se mostrará aquí tu código QR/i),
+    ).toBeVisible();
   });
 
   test("2d. Verificación - escaneo completo de QR en ScannerModal (otra sala, exito y 409 verificado)", async ({
@@ -514,7 +553,11 @@ test.describe("CU-07: Validar Nota por QR", () => {
     await expect(page.getByText("Escanear QR de Alumno")).toBeVisible();
 
     // 1. Escanear QR de otra sala (roomId === 99)
-    const otherRoomQr = JSON.stringify({ roomId: 99, nickname: "otro", token: "tok99" });
+    const otherRoomQr = JSON.stringify({
+      roomId: 99,
+      nickname: "otro",
+      token: "tok99",
+    });
     await page.evaluate((qrText) => {
       // @ts-ignore
       if (window.__e2eScan) {
@@ -522,7 +565,9 @@ test.describe("CU-07: Validar Nota por QR", () => {
         window.__e2eScan(qrText);
       }
     }, otherRoomQr);
-    await expect(page.getByText("Este código QR pertenece a otra sala.")).toBeVisible();
+    await expect(
+      page.getByText("Este código QR pertenece a otra sala."),
+    ).toBeVisible();
 
     // Reabrir escáner
     await scanBtn.click();
@@ -537,7 +582,11 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    const validQr = JSON.stringify({ roomId: 10, nickname: "AlumnoPrueba", token: "tok10" });
+    const validQr = JSON.stringify({
+      roomId: 10,
+      nickname: "AlumnoPrueba",
+      token: "tok10",
+    });
     await page.evaluate((qrText) => {
       // @ts-ignore
       if (window.__e2eScan) {
@@ -545,7 +594,9 @@ test.describe("CU-07: Validar Nota por QR", () => {
         window.__e2eScan(qrText);
       }
     }, validQr);
-    await expect(page.getByText(/¡AlumnoPrueba verificado con éxito!/i)).toBeVisible();
+    await expect(
+      page.getByText(/¡AlumnoPrueba verificado con éxito!/i),
+    ).toBeVisible();
 
     // Reabrir escáner
     await scanBtn.click();
@@ -586,19 +637,22 @@ test.describe("CU-07: Validar Nota por QR", () => {
       });
     });
 
-    await page.route("**/stage/rooms/10/participants/99/stats*", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          score: 500,
-          correct_answers: 3,
-          total_questions: 5,
-          verification_token: "tok-test-1j",
-          is_verified: false,
-        }),
-      });
-    });
+    await page.route(
+      "**/stage/rooms/10/participants/99/stats*",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            score: 500,
+            correct_answers: 3,
+            total_questions: 5,
+            verification_token: "tok-test-1j",
+            is_verified: false,
+          }),
+        });
+      },
+    );
 
     await page.addInitScript(() => {
       sessionStorage.clear();
@@ -613,16 +667,22 @@ test.describe("CU-07: Validar Nota por QR", () => {
     // Clic en Salir -> abre modal warning-modal
     const exitBtn = page.getByRole("button", { name: "Salir", exact: true });
     await exitBtn.click();
-    await expect(page.getByText("¿Estás seguro de que quieres salir?")).toBeVisible();
+    await expect(
+      page.getByText("¿Estás seguro de que quieres salir?"),
+    ).toBeVisible();
 
     // Clic en Permanecer -> cierra modal
     const stayBtn = page.getByRole("button", { name: "Permanecer" });
     await stayBtn.click();
-    await expect(page.getByText("¿Estás seguro de que quieres salir?")).not.toBeVisible();
+    await expect(
+      page.getByText("¿Estás seguro de que quieres salir?"),
+    ).not.toBeVisible();
 
     // Clic en Salir de nuevo -> Clic en Salir de todos modos
     await exitBtn.click();
-    const forceExitBtn = page.getByRole("button", { name: "Salir de todos modos" });
+    const forceExitBtn = page.getByRole("button", {
+      name: "Salir de todos modos",
+    });
     await forceExitBtn.click();
     await page.waitForURL(/\/$/);
 
@@ -659,8 +719,12 @@ test.describe("CU-07: Validar Nota por QR", () => {
       await dialog.accept();
     });
 
-    const finishBtn = page.getByRole("button", { name: "Finalizar verificación" });
+    const finishBtn = page.getByRole("button", {
+      name: "Finalizar verificación",
+    });
     await finishBtn.click();
-    await expect(page.getByText("Error al cerrar la verificación.")).toBeVisible();
+    await expect(
+      page.getByText("Error al cerrar la verificación."),
+    ).toBeVisible();
   });
 });

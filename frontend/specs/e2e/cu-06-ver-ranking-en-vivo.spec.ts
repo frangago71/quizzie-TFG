@@ -116,7 +116,9 @@ test.describe("CU-06: Ver Ranking en Vivo", () => {
 
     await page.goto("/live/10");
     await expect(page.getByText("Top 2")).toBeVisible();
-    await expect(page.getByRole("button", { name: /Finalizar cuestionario/i })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /Finalizar cuestionario/i }),
+    ).toBeVisible();
 
     // 2. Podio para 1 participante (Líder)
     await page.route("**/stage/rooms/10", async (route) => {

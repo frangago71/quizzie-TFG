@@ -157,7 +157,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     page,
   }) => {
     await page.goto("/register");
-    await expect(page.getByRole("heading", { name: "Registro de Profesores" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Registro de Profesores" }),
+    ).toBeVisible();
 
     // Validacion de nombre de usuario demasiado corto (menos de 3 caracteres)
     await page.locator("#username").fill("Ab");
@@ -165,13 +167,17 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await page.locator("#password").fill("Password123!");
     await page.locator("#confirmPassword").fill("Password123!");
     await page.locator('button[type="submit"]').click();
-    await expect(page.getByText("El nombre de usuario debe tener al menos 3 caracteres.")).toBeVisible();
+    await expect(
+      page.getByText("El nombre de usuario debe tener al menos 3 caracteres."),
+    ).toBeVisible();
 
     // Validacion de contraseña demasiado corta (menos de 6 caracteres)
     await page.locator("#username").fill("Profesor Quizzie");
     await page.locator("#password").fill("12345");
     await page.locator('button[type="submit"]').click();
-    await expect(page.getByText("La contraseña debe tener al menos 6 caracteres.")).toBeVisible();
+    await expect(
+      page.getByText("La contraseña debe tener al menos 6 caracteres."),
+    ).toBeVisible();
 
     // Validacion de contraseñas no coincidentes
     await page.locator("#password").fill("Password123!");
@@ -216,7 +222,11 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     // Comprobacion de enlace para volver a inicio de sesion
     await page.goto("/verify-email");
     await expect(page.getByText(/Verifica tu Cuenta/i)).toBeVisible();
-    await page.locator("button.back-link-text", { hasText: "Volver a inicio de sesión" }).click();
+    await page
+      .locator("button.back-link-text", {
+        hasText: "Volver a inicio de sesión",
+      })
+      .click();
     await expect(page).toHaveURL(/\/login/);
 
     // Entrada manual de correo cuando no viene como parametro en la URL
@@ -225,9 +235,13 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
 
     // Intento de reenvio de codigo con correo vacio
     await page.goto("/verify-email");
-    await page.evaluate('document.querySelector("#email")?.removeAttribute("required")');
+    await page.evaluate(
+      'document.querySelector("#email")?.removeAttribute("required")',
+    );
     await page.locator("#email").fill("");
-    await page.locator("button.back-link-text", { hasText: "Reenviar" }).click();
+    await page
+      .locator("button.back-link-text", { hasText: "Reenviar" })
+      .click();
 
     // Manejo de error de limite de peticiones al reenviar codigo (HTTP 400)
     await page.locator("#email").fill("profesor.e2e@quizzie.com");
@@ -236,10 +250,14 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
         status: 400,
         headers: { "access-control-allow-origin": "*" },
         contentType: "application/json",
-        body: JSON.stringify({ detail: "Demasiados intentos. Inténtalo más tarde." }),
+        body: JSON.stringify({
+          detail: "Demasiados intentos. Inténtalo más tarde.",
+        }),
       });
     });
-    await page.locator("button.back-link-text", { hasText: "Reenviar" }).click();
+    await page
+      .locator("button.back-link-text", { hasText: "Reenviar" })
+      .click();
 
     // Manejo de error de servidor sin mensaje detallado (HTTP 500)
     await page.route(/\/users\/resend-verification/, async (route) => {
@@ -250,7 +268,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
         body: JSON.stringify({}),
       });
     });
-    await page.locator("button.back-link-text", { hasText: "Reenviar" }).click();
+    await page
+      .locator("button.back-link-text", { hasText: "Reenviar" })
+      .click();
   });
 
   test("3b. Verificacion de correo - cuadricula de codigo y validaciones", async ({
@@ -258,7 +278,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
   }) => {
     // Validacion al enviar correo o codigo vacios
     await page.goto("/verify-email?email=profesor.e2e%40quizzie.com");
-    await page.evaluate('const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))');
+    await page.evaluate(
+      'const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))',
+    );
     await page.waitForTimeout(300);
 
     // Filtrado de caracteres no numericos y navegacion con la tecla de borrado
@@ -274,7 +296,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     for (let i = 0; i < 5; i++) {
       await codeBoxes.nth(i).fill(String(i + 1));
     }
-    await page.evaluate('const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))');
+    await page.evaluate(
+      'const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))',
+    );
     await page.waitForTimeout(300);
 
     // Manejo de error indeterminado del servidor al activar cuenta (HTTP 500)
@@ -335,12 +359,16 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
   }) => {
     // Validacion de campo de correo vacio
     await page.goto("/forgot-password");
-    await page.evaluate('document.querySelector("#email")?.removeAttribute("required")');
+    await page.evaluate(
+      'document.querySelector("#email")?.removeAttribute("required")',
+    );
     await page.locator('button[type="submit"]').click();
 
     // Comprobacion de enlace para volver a inicio de sesion
     await page.goto("/forgot-password");
-    await expect(page.getByRole("heading", { name: /¿Olvidaste tu contraseña\?/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /¿Olvidaste tu contraseña\?/i }),
+    ).toBeVisible();
     await page.locator("button.back-link-text").click();
     await expect(page).toHaveURL(/\/login/);
 
@@ -388,7 +416,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
   }) => {
     // Comprobacion de enlace para volver a inicio de sesion
     await page.goto("/reset-password");
-    await expect(page.getByRole("heading", { name: /Restablece tu Contraseña/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Restablece tu Contraseña/i }),
+    ).toBeVisible();
     await page.locator("button.back-link-text").click();
     await expect(page).toHaveURL(/\/login/);
 
@@ -397,7 +427,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await page.locator("#email").fill("profesor.e2e@quizzie.com");
 
     // Validacion de campos vacios
-    await page.evaluate('const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))');
+    await page.evaluate(
+      'const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))',
+    );
     await page.waitForTimeout(300);
 
     // Validacion de codigo incompleto y filtrado de caracteres no numericos
@@ -413,7 +445,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     }
     await page.locator("#newPassword").fill("NewPass123!");
     await page.locator("#confirmPassword").fill("NewPass123!");
-    await page.evaluate('const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))');
+    await page.evaluate(
+      'const f=document.querySelector("form"); if(f) f.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}))',
+    );
     await page.waitForTimeout(300);
 
     await codeBoxes.nth(5).fill("6");
@@ -485,9 +519,7 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await expect(page).toHaveURL(/\/quizzes/);
   });
 
-  test("6a. Login - redireccion de usuario autenticado", async ({
-    page,
-  }) => {
+  test("6a. Login - redireccion de usuario autenticado", async ({ page }) => {
     await page.addInitScript(() => {
       sessionStorage.setItem("token", "fake-jwt-login-token-12345");
     });
@@ -497,13 +529,17 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
 
   test("6b. Login - enlace a olvidar contraseña", async ({ page }) => {
     await page.goto("/login");
-    await page.getByRole("button", { name: /¿Has olvidado tu contraseña\?/i }).click();
+    await page
+      .getByRole("button", { name: /¿Has olvidado tu contraseña\?/i })
+      .click();
     await expect(page).toHaveURL(/\/forgot-password/);
   });
 
   test("6c. Login - enlace a registro", async ({ page }) => {
     await page.goto("/login");
-    await page.getByRole("button", { name: /¿No tienes cuenta\? Regístrate/i }).click();
+    await page
+      .getByRole("button", { name: /¿No tienes cuenta\? Regístrate/i })
+      .click();
     await expect(page).toHaveURL(/\/register/);
   });
 
@@ -514,7 +550,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
-  test("6e. Login - error de credenciales incorrectas (HTTP 401)", async ({ page }) => {
+  test("6e. Login - error de credenciales incorrectas (HTTP 401)", async ({
+    page,
+  }) => {
     await page.goto("/login");
     await page.route(/\/users\/login/, async (route) => {
       await route.fulfill({
@@ -528,26 +566,36 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await page.locator("#password").fill("WrongPass123!");
     await page.locator('button[type="submit"]').click();
     await expect(page.locator(".error-text")).toBeVisible();
-    await expect(page.locator(".error-text")).toHaveText("Credenciales incorrectas");
+    await expect(page.locator(".error-text")).toHaveText(
+      "Credenciales incorrectas",
+    );
   });
 
-  test("6f. Login - redireccion por cuenta no verificada con mensaje (HTTP 403)", async ({ page }) => {
+  test("6f. Login - redireccion por cuenta no verificada con mensaje (HTTP 403)", async ({
+    page,
+  }) => {
     await page.goto("/login");
     await page.route(/\/users\/login/, async (route) => {
       await route.fulfill({
         status: 403,
         headers: { "access-control-allow-origin": "*" },
         contentType: "application/json",
-        body: JSON.stringify({ detail: "Cuenta no verificada. Revisa tu correo." }),
+        body: JSON.stringify({
+          detail: "Cuenta no verificada. Revisa tu correo.",
+        }),
       });
     });
     await page.locator("#email").fill("unverified@quizzie.com");
     await page.locator("#password").fill("Password123!");
     await page.locator('button[type="submit"]').click();
-    await expect(page).toHaveURL(/\/verify-email\?email=unverified%40quizzie\.com/);
+    await expect(page).toHaveURL(
+      /\/verify-email\?email=unverified%40quizzie\.com/,
+    );
   });
 
-  test("6g. Login - redireccion por cuenta no verificada sin mensaje (HTTP 403)", async ({ page }) => {
+  test("6g. Login - redireccion por cuenta no verificada sin mensaje (HTTP 403)", async ({
+    page,
+  }) => {
     await page.goto("/login");
     await page.route(/\/users\/login/, async (route) => {
       await route.fulfill({
@@ -560,27 +608,37 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await page.locator("#email").fill("unverified2@quizzie.com");
     await page.locator("#password").fill("Password123!");
     await page.locator('button[type="submit"]').click();
-    await expect(page).toHaveURL(/\/verify-email\?email=unverified2%40quizzie\.com/);
+    await expect(page).toHaveURL(
+      /\/verify-email\?email=unverified2%40quizzie\.com/,
+    );
   });
 
-  test("6h. Login - error de servidor con mensaje detallado (HTTP 500)", async ({ page }) => {
+  test("6h. Login - error de servidor con mensaje detallado (HTTP 500)", async ({
+    page,
+  }) => {
     await page.goto("/login");
     await page.route(/\/users\/login/, async (route) => {
       await route.fulfill({
         status: 500,
         headers: { "access-control-allow-origin": "*" },
         contentType: "application/json",
-        body: JSON.stringify({ detail: "Error interno del servidor. Inténtalo de nuevo más tarde." }),
+        body: JSON.stringify({
+          detail: "Error interno del servidor. Inténtalo de nuevo más tarde.",
+        }),
       });
     });
     await page.locator("#email").fill("server.error@quizzie.com");
     await page.locator("#password").fill("Password123!");
     await page.locator('button[type="submit"]').click();
     await expect(page.locator(".error-text")).toBeVisible();
-    await expect(page.locator(".error-text")).toHaveText("Error interno del servidor. Inténtalo de nuevo más tarde.");
+    await expect(page.locator(".error-text")).toHaveText(
+      "Error interno del servidor. Inténtalo de nuevo más tarde.",
+    );
   });
 
-  test("6i. Login - error de servidor sin mensaje detallado (HTTP 500)", async ({ page }) => {
+  test("6i. Login - error de servidor sin mensaje detallado (HTTP 500)", async ({
+    page,
+  }) => {
     await page.goto("/login");
     await page.route(/\/users\/login/, async (route) => {
       await route.fulfill({
@@ -594,7 +652,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await page.locator("#password").fill("Password123!");
     await page.locator('button[type="submit"]').click();
     await expect(page.locator(".error-text")).toBeVisible();
-    await expect(page.locator(".error-text")).toHaveText("Error de autenticación");
+    await expect(page.locator(".error-text")).toHaveText(
+      "Error de autenticación",
+    );
   });
 
   test("6j. Login - inicio de sesion correcto y redireccion a cuestionarios", async ({
@@ -623,15 +683,22 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     page,
   }) => {
     await page.addInitScript(() =>
-      sessionStorage.setItem("token", "fake-jwt-login-token-12345")
+      sessionStorage.setItem("token", "fake-jwt-login-token-12345"),
     );
     await page.goto("/profile");
-    await page.waitForSelector("text=Editar Perfil", { state: "visible", timeout: 10000 });
-    await expect(page.getByRole("heading", { name: "Mi Perfil", exact: true })).toBeVisible();
+    await page.waitForSelector("text=Editar Perfil", {
+      state: "visible",
+      timeout: 10000,
+    });
+    await expect(
+      page.getByRole("heading", { name: "Mi Perfil", exact: true }),
+    ).toBeVisible();
 
     // Validacion de campo de usuario vacio
     await page.getByRole("button", { name: /Editar Perfil/i }).click();
-    await page.evaluate('document.querySelector("#edit-username-input")?.removeAttribute("required")');
+    await page.evaluate(
+      'document.querySelector("#edit-username-input")?.removeAttribute("required")',
+    );
     await page.locator("#edit-username-input").fill("");
     await page.getByRole("button", { name: /Guardar/i }).click();
 
@@ -651,7 +718,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
           status: 400,
           headers: { "access-control-allow-origin": "*" },
           contentType: "application/json",
-          body: JSON.stringify({ detail: "El nombre de usuario ya está registrado." }),
+          body: JSON.stringify({
+            detail: "El nombre de usuario ya está registrado.",
+          }),
         });
       } else {
         await route.continue();
@@ -679,7 +748,10 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await page.route(/\/users\/me/, async (route) => {
       const method = route.request().method();
       if (method === "OPTIONS") {
-        await route.fulfill({ status: 200, headers: { "access-control-allow-origin": "*" } });
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+        });
       } else if (method === "PUT") {
         await route.fulfill({
           status: 200,
@@ -703,7 +775,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
       }
     });
     await page.getByRole("button", { name: /Guardar/i }).click();
-    await expect(page.getByRole("heading", { name: "Profesor Quizzie E2E" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Profesor Quizzie E2E" }),
+    ).toBeVisible();
   });
 
   test("7b. Perfil - solicitud de recuperacion de contraseña", async ({
@@ -711,10 +785,13 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
   }) => {
     await page.goto("/login");
     await page.evaluate(() =>
-      sessionStorage.setItem("token", "fake-jwt-login-token-12345")
+      sessionStorage.setItem("token", "fake-jwt-login-token-12345"),
     );
     await page.goto("/profile");
-    await page.waitForSelector(".btn-main.cyan.max", { state: "visible", timeout: 10000 });
+    await page.waitForSelector(".btn-main.cyan.max", {
+      state: "visible",
+      timeout: 10000,
+    });
 
     // Manejo de error al solicitar codigo de recuperacion (HTTP 400)
     await page.route(/\/users\/forgot-password/, async (route) => {
@@ -758,21 +835,32 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
   }) => {
     await page.goto("/login");
     await page.evaluate(() =>
-      sessionStorage.setItem("token", "fake-jwt-login-token-12345")
+      sessionStorage.setItem("token", "fake-jwt-login-token-12345"),
     );
     await page.goto("/profile");
-    await page.waitForSelector(".btn-main.danger.max", { state: "visible", timeout: 10000 });
+    await page.waitForSelector(".btn-main.danger.max", {
+      state: "visible",
+      timeout: 10000,
+    });
 
     // Apertura y cierre de modal mediante clic en el fondo
     await page.locator(".btn-main.danger.max").click();
-    await expect(page.getByText(/¿Eliminar cuenta permanentemente\?/i)).toBeVisible();
-    await page.locator(".modal-backdrop-button").click({ position: { x: 10, y: 10 } });
-    await expect(page.getByText(/¿Eliminar cuenta permanentemente\?/i)).not.toBeVisible();
+    await expect(
+      page.getByText(/¿Eliminar cuenta permanentemente\?/i),
+    ).toBeVisible();
+    await page
+      .locator(".modal-backdrop-button")
+      .click({ position: { x: 10, y: 10 } });
+    await expect(
+      page.getByText(/¿Eliminar cuenta permanentemente\?/i),
+    ).not.toBeVisible();
 
     // Apertura y cierre de modal mediante boton de cancelar
     await page.locator(".btn-main.danger.max").click();
     await page.locator(".danger-cancel-btn").click();
-    await expect(page.getByText(/¿Eliminar cuenta permanentemente\?/i)).not.toBeVisible();
+    await expect(
+      page.getByText(/¿Eliminar cuenta permanentemente\?/i),
+    ).not.toBeVisible();
 
     // Bloqueo del boton de eliminar cuando la contraseña esta vacia
     await page.locator(".btn-main.danger.max").click();
@@ -793,7 +881,9 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
       }
     });
     await page.locator("#confirm-password").fill("WrongPass123!");
-    await expect(page.locator("#confirm-password")).toHaveValue("WrongPass123!");
+    await expect(page.locator("#confirm-password")).toHaveValue(
+      "WrongPass123!",
+    );
     await expect(page.locator(".danger-btn")).toBeEnabled();
     await page.locator(".danger-btn").click();
     await expect(page.locator(".danger-btn")).toBeEnabled();
@@ -816,24 +906,32 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
 
     // Cancelacion en el ultimo momento tras introducir la contraseña correcta
     await page.locator("#confirm-password").fill("CorrectPassword123!");
-    await expect(page.locator("#confirm-password")).toHaveValue("CorrectPassword123!");
+    await expect(page.locator("#confirm-password")).toHaveValue(
+      "CorrectPassword123!",
+    );
     await expect(page.locator(".danger-btn")).toBeEnabled();
     await page.locator(".danger-cancel-btn").click();
-    await expect(page.getByText(/¿Eliminar cuenta permanentemente\?/i)).not.toBeVisible();
+    await expect(
+      page.getByText(/¿Eliminar cuenta permanentemente\?/i),
+    ).not.toBeVisible();
     await expect(page).toHaveURL(/\/profile/);
 
     // Eliminacion efectiva de la cuenta y redireccion a inicio de sesion
     await page.locator(".btn-main.danger.max").click();
     await page.waitForSelector("#confirm-password", { state: "visible" });
     await page.locator("#confirm-password").fill("CorrectPassword123!");
-    await expect(page.locator("#confirm-password")).toHaveValue("CorrectPassword123!");
+    await expect(page.locator("#confirm-password")).toHaveValue(
+      "CorrectPassword123!",
+    );
     await page.route(/\/users\/me/, async (route) => {
       if (route.request().method() === "DELETE") {
         await route.fulfill({
           status: 200,
           headers: { "access-control-allow-origin": "*" },
           contentType: "application/json",
-          body: JSON.stringify({ message: "Tu cuenta ha sido eliminada permanentemente." }),
+          body: JSON.stringify({
+            message: "Tu cuenta ha sido eliminada permanentemente.",
+          }),
         });
       } else {
         await route.continue();
@@ -872,8 +970,12 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     await expect(page).toHaveURL(/\/login|\/quizzes/);
   });
 
-  test("8. AuthService - helpers de sesion y almacenamiento local", async ({ page }) => {
+  test("8. AuthService - helpers de sesion y almacenamiento local", async ({
+    page,
+  }) => {
     await page.goto("/login");
-    await page.evaluate('sessionStorage.removeItem("token"); sessionStorage.setItem("token", "test-token-val"); sessionStorage.removeItem("token");');
+    await page.evaluate(
+      'sessionStorage.removeItem("token"); sessionStorage.setItem("token", "test-token-val"); sessionStorage.removeItem("token");',
+    );
   });
 });

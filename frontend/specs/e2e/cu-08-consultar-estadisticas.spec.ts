@@ -74,9 +74,7 @@ test.describe("CU-08: Flujo de Consulta de Estadísticas", () => {
     }
   });
 
-  test("2a. Resultados - ver respuestas de alumnos", async ({
-    page,
-  }) => {
+  test("2a. Resultados - ver respuestas de alumnos", async ({ page }) => {
     await page.route("**/stage/rooms/10", async (route) => {
       await route.fulfill({
         status: 200,
@@ -118,7 +116,9 @@ test.describe("CU-08: Flujo de Consulta de Estadísticas", () => {
     await page.goto("/live/10");
 
     // Verificar desglose estadístico y opciones de respuesta
-    await expect(page.getByText("¿Cuál es el resultado de 10 / 2?")).toBeVisible();
+    await expect(
+      page.getByText("¿Cuál es el resultado de 10 / 2?"),
+    ).toBeVisible();
     await expect(page.getByText("PARTICIPACIÓN")).toBeVisible();
 
     const leaderboardBtn = page.getByRole("button", {
@@ -310,7 +310,9 @@ test.describe("CU-08: Flujo de Consulta de Estadísticas", () => {
     await page.goto("/live/10");
     await expect(page.getByText("0 alumnos")).toBeVisible();
     await expect(page.getByText("0%")).toBeVisible();
-    const finishQuizBtn = page.getByRole("button", { name: /Finalizar cuestionario/i });
+    const finishQuizBtn = page.getByRole("button", {
+      name: /Finalizar cuestionario/i,
+    });
     await expect(finishQuizBtn).toBeVisible();
     await finishQuizBtn.click();
   });

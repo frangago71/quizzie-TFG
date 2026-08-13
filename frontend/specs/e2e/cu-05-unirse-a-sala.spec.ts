@@ -91,7 +91,6 @@ test.describe("CU-05: Student Join Room", () => {
     await expect(page.getByText(/Error al verificar el código/i)).toBeVisible();
   });
 
-
   test("2a. Introducir UVUS - validacion de formato de UVUS invalido", async ({
     page,
   }) => {
@@ -331,7 +330,6 @@ test.describe("CU-05: Student Join Room", () => {
     await page.waitForURL(/\/lobby\/10/);
   });
 
-
   test("4a. Nuevo Estudiante - sala en vivo con nuevo estudiante y error generico de verificacion", async ({
     page,
   }) => {
@@ -342,7 +340,11 @@ test.describe("CU-05: Student Join Room", () => {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ success: true, room_id: 10, status: "waiting" }),
+          body: JSON.stringify({
+            success: true,
+            room_id: 10,
+            status: "waiting",
+          }),
         });
       } else {
         await route.fulfill({
@@ -420,7 +422,9 @@ test.describe("CU-05: Student Join Room", () => {
 
     // Clic en crear estudiante (falla con error genérico)
     await page.locator(".modal-content button.btn-main").click();
-    await expect(page.getByText(/Error al registrar: Error desconocido/i)).toBeVisible();
+    await expect(
+      page.getByText(/Error al registrar: Error desconocido/i),
+    ).toBeVisible();
 
     // Cambiar a éxito en creación y unirse a sala en vivo
     await page.route("**/users/students?nickname=xyz1234", async (route) => {
@@ -480,7 +484,9 @@ test.describe("CU-05: Student Join Room", () => {
     // Verificar vista de estudiante en el lobby
     await expect(page.getByText(/¡Estás dentro,/i)).toBeVisible();
     await expect(page.locator("span.accent-text")).toContainText("abc1234");
-    await expect(page.getByText(/Esperando a que comience el cuestionario/i)).toBeVisible();
+    await expect(
+      page.getByText(/Esperando a que comience el cuestionario/i),
+    ).toBeVisible();
   });
 
   test("5b. Sala de espera - alumno recibe lista de participantes y redireccion a live via WS", async ({
@@ -580,92 +586,91 @@ test.describe("CU-05: Student Join Room", () => {
 });
 
 test("5c. Sala de espera - redireccion automatica a lobby cuando el estado de la sala es waiting", async ({
-    page,
-  }) => {
-    await page.route("**/stage/rooms/10", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          room_id: 10,
-          join_code: "123456",
-          status: "waiting",
-        }),
-      });
+  page,
+}) => {
+  await page.route("**/stage/rooms/10", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        room_id: 10,
+        join_code: "123456",
+        status: "waiting",
+      }),
     });
-
-    await page.route("**/stage/rooms/10/participants", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify([]),
-      });
-    });
-
-    await page.addInitScript(() => {
-      sessionStorage.clear();
-      sessionStorage.setItem("roomId", "10");
-    });
-
-    await page.goto("/live/10");
-    await page.waitForURL(/\/lobby\/10/);
   });
 
-
-  test("5d. Sala de espera - manejo de fallos al sincronizar sala y UI de carga inicial", async ({
-    page,
-  }) => {
-    // 1. Error 500 al sincronizar la sala
-    await page.route("**/stage/rooms/10", async (route) => {
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ detail: "Fallo de conexión" }),
-      });
+  await page.route("**/stage/rooms/10/participants", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify([]),
     });
-
-    await page.addInitScript(() => {
-      sessionStorage.clear();
-      sessionStorage.setItem("roomId", "10");
-      sessionStorage.setItem("userNickname", "abc1234");
-    });
-
-    await page.goto("/live/10");
-    await expect(page.getByText("Sincronizando sala...")).toBeVisible();
   });
 
-  test("5e. Sala de espera - vista de alumno y error al cargar participantes", async ({
-    page,
-  }) => {
-    // 1. Lobby en vista de alumno (con userNickname)
-    await page.route("**/stage/rooms/10/participants", async (route) => {
-      await route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ detail: "Error" }),
-      });
-    });
-
-    await page.route("**/stage/rooms/10", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          room_id: 10,
-          join_code: "123456",
-          status: "waiting",
-        }),
-      });
-    });
-
-    await page.addInitScript(() => {
-      sessionStorage.clear();
-      sessionStorage.setItem("roomId", "10");
-      sessionStorage.setItem("userNickname", "abc1234");
-    });
-
-    await page.goto("/lobby/10");
-    // Error al cargar participants -> aun se muestra el lobby al alumno
-    await expect(page.getByText(/Esperando a que comience/i)).toBeVisible();
-    await expect(page.getByText(/Aún no hay nadie aquí/i)).toBeVisible();
+  await page.addInitScript(() => {
+    sessionStorage.clear();
+    sessionStorage.setItem("roomId", "10");
   });
+
+  await page.goto("/live/10");
+  await page.waitForURL(/\/lobby\/10/);
+});
+
+test("5d. Sala de espera - manejo de fallos al sincronizar sala y UI de carga inicial", async ({
+  page,
+}) => {
+  // 1. Error 500 al sincronizar la sala
+  await page.route("**/stage/rooms/10", async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: "application/json",
+      body: JSON.stringify({ detail: "Fallo de conexión" }),
+    });
+  });
+
+  await page.addInitScript(() => {
+    sessionStorage.clear();
+    sessionStorage.setItem("roomId", "10");
+    sessionStorage.setItem("userNickname", "abc1234");
+  });
+
+  await page.goto("/live/10");
+  await expect(page.getByText("Sincronizando sala...")).toBeVisible();
+});
+
+test("5e. Sala de espera - vista de alumno y error al cargar participantes", async ({
+  page,
+}) => {
+  // 1. Lobby en vista de alumno (con userNickname)
+  await page.route("**/stage/rooms/10/participants", async (route) => {
+    await route.fulfill({
+      status: 500,
+      contentType: "application/json",
+      body: JSON.stringify({ detail: "Error" }),
+    });
+  });
+
+  await page.route("**/stage/rooms/10", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        room_id: 10,
+        join_code: "123456",
+        status: "waiting",
+      }),
+    });
+  });
+
+  await page.addInitScript(() => {
+    sessionStorage.clear();
+    sessionStorage.setItem("roomId", "10");
+    sessionStorage.setItem("userNickname", "abc1234");
+  });
+
+  await page.goto("/lobby/10");
+  // Error al cargar participants -> aun se muestra el lobby al alumno
+  await expect(page.getByText(/Esperando a que comience/i)).toBeVisible();
+  await expect(page.getByText(/Aún no hay nadie aquí/i)).toBeVisible();
+});

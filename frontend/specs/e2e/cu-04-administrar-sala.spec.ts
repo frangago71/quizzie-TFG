@@ -71,7 +71,9 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
     }
 
     // Interruptor 3: Mostrar ranking tras cada pregunta (clic y teclado Enter/Espacio)
-    const ctrl3 = page.locator('[aria-label="Alternar mostrar ranking tras cada pregunta"]');
+    const ctrl3 = page.locator(
+      '[aria-label="Alternar mostrar ranking tras cada pregunta"]',
+    );
     if (await ctrl3.isVisible()) {
       await ctrl3.click();
       await ctrl3.focus();
@@ -81,13 +83,13 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
 
     // Botón para disminuir tiempo (-)
     const minusBtn = page.getByRole("button", { name: "Disminuir tiempo" });
-    if (await minusBtn.isVisible() && await minusBtn.isEnabled()) {
+    if ((await minusBtn.isVisible()) && (await minusBtn.isEnabled())) {
       await minusBtn.click();
     }
 
     // Botón para aumentar tiempo (+)
     const plusBtn = page.getByRole("button", { name: "Aumentar tiempo" });
-    if (await plusBtn.isVisible() && await plusBtn.isEnabled()) {
+    if ((await plusBtn.isVisible()) && (await plusBtn.isEnabled())) {
       await plusBtn.click();
     }
   });
@@ -111,7 +113,9 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
       (globalThis as any).window.dispatchEvent(new Event("resize"));
     });
 
-    const mobileBackBtn = page.locator(".setup-external-actions button.back-nav");
+    const mobileBackBtn = page.locator(
+      ".setup-external-actions button.back-nav",
+    );
     if (await mobileBackBtn.isVisible()) {
       await mobileBackBtn.click();
       await page.waitForURL(/\/quizzes/);
@@ -215,7 +219,6 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
     await expect(page.locator("body")).toBeVisible();
   });
 
-
   test("1h. Configurar Sala - manejo de error 400 con mensaje por defecto", async ({
     page,
   }) => {
@@ -239,9 +242,7 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
 
     await page.goto("/quizzes/setup/1");
     await page.getByRole("button", { name: /Crear sala/i }).click();
-    await expect(
-      page.getByText(/No se puede crear la sala/i),
-    ).toBeVisible();
+    await expect(page.getByText(/No se puede crear la sala/i)).toBeVisible();
   });
 
   test("2a. Sala de espera - apertura de sala en estado waiting y navegacion a lobby", async ({
@@ -277,7 +278,10 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
   test("2b. Sala de espera - vista de profesor, participantes y boton empezar", async ({
     page,
   }) => {
-    const mockParticipants = Array.from({ length: 16 }, (_, i) => `Alumno_${i + 1}`);
+    const mockParticipants = Array.from(
+      { length: 16 },
+      (_, i) => `Alumno_${i + 1}`,
+    );
 
     await page.route("**/stage/rooms/10/participants", async (route) => {
       await route.fulfill({
@@ -416,7 +420,6 @@ test.describe("CU-04: Flujo de Gestión de Sala", () => {
 
     await page.waitForURL(/\/live\/10/);
   });
-
 
   test("3a. Iniciar sala - apertura de sala en estado live y navegacion a live", async ({
     page,
