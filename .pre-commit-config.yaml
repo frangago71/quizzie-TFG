@@ -22,4 +22,4 @@ repos:
         entry: npx eslint --config frontend/eslint.config.js --fix
         language: system
         types_or: [javascript, jsx, ts, tsx]
-        files: ^frontend/src/
+        files: ^frontend/
