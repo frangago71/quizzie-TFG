@@ -50,6 +50,11 @@ coverage-reports/
 frontend/coverage-e2e/
 frontend/coverage-reports/
 
+# Performance benchmark results
+*benchmark_results*.csv
+
+
+
 
 # Thesis documents
 /thesis/*
