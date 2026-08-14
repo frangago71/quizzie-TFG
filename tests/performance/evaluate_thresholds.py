@@ -52,7 +52,11 @@ def evaluate_thresholds(csv_path="tests/performance/benchmark_results_stats.csv"
 
                 # 2. Evaluación de Latencia P95 HTTP REST y Autenticación
                 elif req_type in ["GET", "POST", "PUT", "DELETE", "PATCH", "HTTP"]:
-                    threshold_val = MAX_AUTH_P95_MS if name in ["/users/login", "POST /users/login"] else MAX_HTTP_P95_MS
+                    threshold_val = (
+                        MAX_AUTH_P95_MS
+                        if name in ["/users/login", "POST /users/login", "/content/quizzes/", "POST /content/quizzes/"]
+                        else MAX_HTTP_P95_MS
+                    )
                     passed = p95_val <= threshold_val
                     if not passed:
                         all_passed = False

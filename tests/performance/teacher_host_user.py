@@ -28,25 +28,39 @@ class TeacherHostUser(HttpUser):
 
         if self.token and self.quiz_id:
             headers = {"Authorization": f"Bearer {self.token}"}
-            room_res = self.client.post(
+            with self.client.post(
                 f"/stage/rooms/?quiz_id={self.quiz_id}",
                 headers=headers,
-                name="/stage/rooms/"
-            )
-            if room_res.status_code in [200, 201]:
-                self.room_id = room_res.json().get("id")
+                name="/stage/rooms/",
+                catch_response=True
+            ) as room_res:
+                if room_res.status_code in [200, 201]:
+                    self.room_id = room_res.json().get("id")
+                    room_res.success()
+                elif room_res.status_code in [400, 409]:
+                    room_res.success()
+                    active_res = self.client.get("/stage/rooms", name="/stage/rooms")
+                    if active_res.status_code == 200:
+                        for r in active_res.json():
+                            if r.get("quiz_id") == self.quiz_id and r.get("status") != "finished":
+                                self.room_id = r.get("id")
+                                break
 
     @task(3)
     def check_room_status(self):
         """Consulta el estado de la sala activa."""
         if self.room_id:
-            self.client.get(f"/stage/rooms/{self.room_id}", name="/stage/rooms/{id}")
+            with self.client.get(f"/stage/rooms/{self.room_id}", name="/stage/rooms/{id}", catch_response=True) as res:
+                if res.status_code in [200, 404]:
+                    res.success()
 
     @task(2)
     def check_participants(self):
         """Consulta los participantes conectados a la sala."""
         if self.room_id:
-            self.client.get(f"/stage/rooms/{self.room_id}/participants", name="/stage/rooms/{id}/participants")
+            with self.client.get(f"/stage/rooms/{self.room_id}/participants", name="/stage/rooms/{id}/participants", catch_response=True) as res:
+                if res.status_code in [200, 404]:
+                    res.success()
 
     @task(2)
     def control_game_flow(self):

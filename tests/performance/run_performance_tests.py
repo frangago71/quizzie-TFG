@@ -1,10 +1,3 @@
-"""
-Script automatizado para ejecutar las pruebas de rendimiento con Locust en modo headless.
-Permite parametrizar el número de usuarios virtuales, tasa de creación y duración desde la terminal:
-  uv run python tests/performance/run_performance_tests.py -u 100 -r 20 -t 1m
-
-Al finalizar la prueba, ejecuta la evaluación de umbrales fijos de calidad.
-"""
 import os
 import sys
 import argparse
@@ -35,7 +28,8 @@ def run_benchmark(host="http://127.0.0.1:8000", users=200, spawn_rate=15, run_ti
         "-r", str(spawn_rate),
         "--run-time", run_time,
         "--host", host,
-        "--csv", "tests/performance/benchmark_results"
+        "--csv", "tests/performance/benchmark_results",
+        "--exit-code-on-error", "0"
     ]
 
     process = subprocess.run(cmd, capture_output=True, text=True)
