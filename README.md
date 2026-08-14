@@ -193,11 +193,11 @@ Al ejecutar las pruebas en modo *headless*, Locust genera automáticamente infor
 - **`Request Count`:** Número total de peticiones procesadas por el endpoint.
 - **`Failure Count`:** Peticiones fallidas (debe ser 0 o muy bajo).
 - **`Median Response Time` (o `50%`):** Tiempo de respuesta mediano en ms (experiencia del 50% de los usuarios).
-- **`95%` (P95):** Latencia máxima experimentada por el 95% de las peticiones (métrica principal de calidad).
+- **`90%` (P90):** Latencia máxima experimentada por el 90% de las peticiones (métrica principal de calidad).
 - **`Requests/s` (RPS):** Peticiones por segundo procesadas por el servidor.
 
 * **Auditar umbrales fijos sobre los informes CSV generados:**
-  Si deseas verificar si las métricas del último reporte CSV superan los umbrales fijos de calidad (tasa de errores `< 1.0 %` y latencias P95 `<= 200 ms`), puedes ejecutar de forma independiente:
+  Si deseas verificar si las métricas del último reporte CSV superan los umbrales fijos de calidad en el percentil 90 (tasa de errores `< 1.0 %`, REST P90 `<= 200 ms` y auth/pesadas P90 `<= 500 ms`), puedes ejecutar de forma independiente:
   ```bash
   uv run python tests/performance/evaluate_thresholds.py
   ```

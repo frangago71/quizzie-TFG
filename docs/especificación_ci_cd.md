@@ -68,7 +68,7 @@ graph TD
 6. **`locust-performance-tests` (Pruebas de Carga y Evaluación de SLAs):**
    * **Dependencia:** `needs: [pytest-backend-tests]`
    * **Generación de métricas (Locust):** `uv run python tests/performance/run_performance_tests.py -u 200 -r 15 -t 1m` (ejecuta la simulación de carga headless para registrar y generar los artefactos de métricas en formato CSV).
-   * **Auditoría de SLAs (Control de Paso/Fallo):** `uv run python tests/performance/evaluate_thresholds.py` (audita el reporte CSV verificando que la tasa global de errores sea `< 1.0%` y las latencias P95 cumplan los límites, determinando en última instancia si el job se aprueba en verde o se rechaza en rojo).
+   * **Auditoría de SLAs (Control de Paso/Fallo):** `uv run python tests/performance/evaluate_thresholds.py` (audita el reporte CSV verificando que la tasa global de errores sea `< 1.0%` y las latencias P90 cumplan los límites definidos: REST `<= 200 ms` y auth/pesadas `<= 500 ms`, determinando en última instancia si el job se aprueba en verde o se rechaza en rojo).
 
 ### B. Pipeline de análisis de calidad continuo SonarQube (`sonar.yml`)
 Se activa automáticamente tras realizar un `push` o consolidar una Pull Request aprobada en la rama principal (`main`):
