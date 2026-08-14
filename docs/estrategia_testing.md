@@ -54,10 +54,37 @@ Las pruebas unitarias y de integración se estructuran por **módulos** y se org
 * **Analítica:** Validación de la integridad de los cálculos estadísticos (Unitario) y de la correcta generación de archivos de exportación (CSV/Excel).
 
 ## 4. Pruebas de rendimiento y carga (Locust)
-Dada la alta densidad de requisitos de tiempo real (especialmente RF-21 y RF-32), las pruebas de carga son críticas:
-* **Escenario de carga:** Simulación de una clase estándar (60 alumnos) respondiendo al unísono.
-* **Escenario de estrés:** Identificación del límite de conexiones concurrentes antes de degradar la latencia.
-* **Métricas:** Tiempo de respuesta (latencia de socket) y tasa de error en la recepción de respuestas masivas.
+Dada la alta densidad de requisitos en tiempo real, las pruebas de carga y estrés son críticas para garantizar el comportamiento estable del pool de conexiones a la base de datos y la retransmisión masiva mediante WebSockets.
+
+### 4.1. Escenarios de simulación y distribución realista de usuarios
+
+El conjunto de pruebas de rendimiento se implementa en Python con **Locust** (`tests/performance/`). La simulación estándar por defecto evalúa **200 usuarios virtuales simultáneos** incorporados a una tasa de **15 usuarios/segundo** durante **1 minuto** de ejecución continua. Por cada conjunto de usuarios, se aplica la siguiente distribución realista:
+
+1. **`TeacherManagerUser` (3%)**:
+   * **Alcance:** Profesores gestionando su contenido, explorando sus cuestionarios y consultando su perfil.
+   * **Objetivo:** Simular la carga ligera constante de gestión de contenido.
+
+2. **`TeacherHostUser` (2%)**:
+   * **Alcance:** Profesores administrando salas de juego activas en vivo.
+   * **Objetivo:** Simular la creación de salas, inicio de partidas, avance de preguntas y despliegue del leaderboard.
+
+3. **`StudentUser` (95%)**:
+   * **Alcance:** Alumnos conectados mediante WebSockets persistentemente, repartidos entre las salas de juego activas.
+   * **Comportamiento:** Escucha eventos de retransmisión, mantiene la conexión mediante pings y envía respuestas a las preguntas del cuestionario en tiempo real.
+   * **Objetivo:** Evaluar la latencia de WebSockets y verificar la capacidad del backend para procesar respuestas masivas concurrentes sin bloqueos.
+
+### 4.2. Métricas de evaluación y umbrales objetivo
+
+| Métrica | Umbral Objetivo / Criterio de Éxito |
+| :--- | :--- |
+| **Tasa de Errores Global (Error Rate)** | `< 1.0 %` en ejecuciones continuas de 200 usuarios concurrentes. |
+| **Latencia P95 (REST API Lectura/Escritura)** | `<= 200 ms` para endpoints de cuestionarios, salas y envío de respuestas (`POST /stage/answers`). |
+| **Latencia P95 (Autenticación - Bcrypt)** | `<= 500 ms` en `POST /users/login` (debido al cómputo intencionado de hashing de claves contra fuerza bruta). |
+| **Latencia P95 (Conexión WebSocket)** | `<= 200 ms` para el establecimiento de conexiones persistentes (`WS Connect`). |
+| **Picos de Respuestas (`POST /stage/answers`)** | `<= 200 ms` durante ráfagas sostenidas de respuestas masivas simultáneas. |
+
+> **Nota:** **Percentil 95 (P95)** indica que el 95% de las peticiones procesadas por el servidor obtienen un tiempo de respuesta igual o inferior al valor umbral especificado.
+
 
 ## 5. Métricas de cobertura (Coverage)
 Se utilizan herramientas automáticas para cuantificar y auditar el nivel de cobertura en cada capa del sistema:

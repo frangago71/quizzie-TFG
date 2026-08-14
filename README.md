@@ -129,7 +129,7 @@ Para previsualizar en el navegador el mapa de cobertura HTML generado por Vitest
   npm run cov-report:frontend
   ```
 
-#### Pruebas End-to-End y Cobertura E2E (Playwright + monocart-coverage-reports)
+#### Pruebas End-to-End y cobertura E2E (Playwright + monocart-coverage-reports)
 
 * **Alcance de Cobertura E2E:** Centrada en las vistas y pantallas navegables de los Casos de Uso. Los diálogos/ventanas modales auxiliares (`LogoutModal.tsx`, `DeleteQuizModal.tsx`, etc.) se prueban en la capa de componentes con Vitest y quedan excluidos de las pruebas E2E, ya que son avisos temporales en pantalla que pueden provocar desviaciones en la medición de cobertura que no serían del todo acertadas.
 
@@ -154,7 +154,54 @@ Para previsualizar en el navegador el mapa de cobertura interactivo V8 generado 
   npm run cov-report:e2e
   ```
 
----
+#### Pruebas de rendimiento y carga (Locust)
+
+> **Requisito previo:** El servidor Backend (FastAPI) **debe estar previamente iniciado** en `http://127.0.0.1:8000` (Terminal 1: `cd backend` -> `uv run fastapi dev`).
+
+* **Ejecutar script de benchmarking automatizado (con valores por defecto):**
+  Lanza la prueba de rendimiento sin interfaz gráfica utilizando el script preconfigurado (por defecto **200 usuarios**, tasa de **15 u/s** y **1 minuto** de duración):
+  ```bash
+  uv run python tests/performance/run_performance_tests.py
+  ```
+
+* **Ejecutar script personalizando parámetros de carga:**
+  Puedes especificar directamente el número de usuarios virtuales, la velocidad de incorporación y la duración desde la terminal:
+  ```bash
+  uv run python tests/performance/run_performance_tests.py -u 300 -r 25 -t 2m
+  ```
+  * **`-u 300` (`--users`):** Número total de usuarios virtuales simultáneos a simular (default: `200`).
+  * **`-r 25` (`--spawn-rate`):** Tasa de incorporación por segundo (default: `15`).
+  * **`-t 2m` (`--run-time`):** Duración total de la prueba, ej. `30s`, `1m`, `5m` (default: `1m`).
+  * **`--host http://127.0.0.1:8000`:** URL del backend objetivo (default: `http://127.0.0.1:8000`).
+
+
+* **Ejecutar en modo interactivo con interfaz web (Navegador):**
+  Abre la interfaz gráfica de monitoreo en tiempo real de Locust en `http://localhost:8089` para ajustar parámetros visualmente desde el navegador:
+  ```bash
+  uv run locust -f tests/performance/locustfile.py --host http://127.0.0.1:8000
+  ```
+
+#### Interpretación de informes CSV
+
+Al ejecutar las pruebas en modo *headless*, Locust genera automáticamente informes detallados en el directorio `tests/performance/`:
+* `tests/performance/benchmark_results_stats.csv`: Resumen cuantitativo por cada tipo de petición y endpoint.
+* `tests/performance/benchmark_results_failures.csv`: Registro específico de errores si alguna petición falló.
+* `tests/performance/benchmark_results_exceptions.csv`: Traceback de excepciones de Python ocurridas en los usuarios virtuales.
+* `tests/performance/benchmark_results_stats_history.csv`: Evolución temporal de las métricas segundo a segundo.
+
+**Columnas principales a revisar en `benchmark_results_stats.csv`:**
+- **`Request Count`:** Número total de peticiones procesadas por el endpoint.
+- **`Failure Count`:** Peticiones fallidas (debe ser 0 o muy bajo).
+- **`Median Response Time` (o `50%`):** Tiempo de respuesta mediano en ms (experiencia del 50% de los usuarios).
+- **`95%` (P95):** Latencia máxima experimentada por el 95% de las peticiones (métrica principal de calidad).
+- **`Requests/s` (RPS):** Peticiones por segundo procesadas por el servidor.
+
+* **Auditar umbrales fijos sobre los informes CSV generados:**
+  Si deseas verificar si las métricas del último reporte CSV superan los umbrales fijos de calidad (tasa de errores `< 1.0 %` y latencias P95 `<= 200 ms`), puedes ejecutar de forma independiente:
+  ```bash
+  uv run python tests/performance/evaluate_thresholds.py
+  ```
+
 
 ### 5. Despliegue
 
