@@ -53,10 +53,12 @@ questions = [
 dev = [
     "commitizen>=4.13.7",
     "httpx>=0.28.1",
+    "locust>=2.46.3",
     "pre-commit>=4.6.0",
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",
     "ruff>=0.15.12",
+    "websocket-client>=1.9.0",
 ]
 
 [tool.pytest.ini_options]
