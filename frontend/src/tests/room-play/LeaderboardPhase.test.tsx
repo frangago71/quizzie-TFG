@@ -14,7 +14,7 @@ describe("LeaderboardPhase Component", () => {
 
     expect(screen.getByText("Top 3")).toBeInTheDocument();
     expect(screen.getByText("Líder 1")).toBeInTheDocument();
-    expect(screen.getByText(/1000/i)).toBeInTheDocument();
+    expect(screen.getByText(/1[,.]?000/i)).toBeInTheDocument();
   });
 
   it("renders host action button and triggers callback", () => {

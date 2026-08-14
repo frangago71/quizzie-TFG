@@ -135,6 +135,7 @@ jobs:
       ALGORITHM: ${{ secrets.ALGORITHM }}
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
       PLAYWRIGHT_BASE_URL: "http://localhost:5173"
+      PYTHONPATH: "backend:."
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -194,6 +195,8 @@ jobs:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       ALGORITHM: ${{ secrets.ALGORITHM }}
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      PYTHONPATH: "backend:."
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
