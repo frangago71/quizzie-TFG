@@ -548,15 +548,17 @@ test.describe("CU-05: Student Join Room", () => {
     // Inyectar actualización WS con nuevo participante
     await page.evaluate(() => {
       // @ts-ignore
-      const ws = window.__mockWSInstances[0];
-      if (ws && ws.onmessage) {
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "participants_update",
-            list: ["AlumnoOriginal", "NuevoCompañero"],
-          }),
-        });
-      }
+      const instances = window.__mockWSInstances || [];
+      instances.forEach((ws: any) => {
+        if (ws && ws.onmessage) {
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "participants_update",
+              list: ["AlumnoOriginal", "NuevoCompañero"],
+            }),
+          });
+        }
+      });
     });
 
     await expect(page.locator("span.stat-number")).toHaveText("2");
@@ -565,20 +567,22 @@ test.describe("CU-05: Student Join Room", () => {
     // Inyectar evento WS room_update notificando que la sala pasa a LIVE
     await page.evaluate(() => {
       // @ts-ignore
-      const ws = window.__mockWSInstances[0];
-      if (ws && ws.onmessage) {
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "room_update",
-            data: {
-              status: "LIVE",
-              phase: "playing",
-              current_question_index: 1,
-              total_questions: 3,
-            },
-          }),
-        });
-      }
+      const instances = window.__mockWSInstances || [];
+      instances.forEach((ws: any) => {
+        if (ws && ws.onmessage) {
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "room_update",
+              data: {
+                status: "LIVE",
+                phase: "playing",
+                current_question_index: 1,
+                total_questions: 3,
+              },
+            }),
+          });
+        }
+      });
     });
 
     await page.waitForURL(/\/live\/10/);

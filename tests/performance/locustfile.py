@@ -1,10 +1,10 @@
 from locust import events
 from tests.performance.teacher_manager_user import TeacherManagerUser
 from tests.performance.teacher_host_user import TeacherHostUser
-from tests.performance.student_user import StudentWSUser
+from tests.performance.student_user import StudentUser
 
 # Definición de clases expuestas para Locust con sus ponderaciones
-__all__ = ["TeacherManagerUser", "TeacherHostUser", "StudentWSUser"]
+__all__ = ["TeacherManagerUser", "TeacherHostUser", "StudentUser"]
 
 @events.init.add_listener
 def on_locust_init(environment, **_kwargs):

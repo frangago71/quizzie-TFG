@@ -713,7 +713,13 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     // Manejo de error por nombre de usuario duplicado en API (HTTP 400)
     await page.getByRole("button", { name: /Editar Perfil/i }).click();
     await page.route(/\/users\/me/, async (route) => {
-      if (route.request().method() === "PUT") {
+      const method = route.request().method();
+      if (method === "OPTIONS") {
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+        });
+      } else if (method === "PUT") {
         await route.fulfill({
           status: 400,
           headers: { "access-control-allow-origin": "*" },
@@ -723,7 +729,15 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
           }),
         });
       } else {
-        await route.continue();
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+          contentType: "application/json",
+          body: JSON.stringify({
+            username: "Profesor Quizzie",
+            email: "profesor.e2e@quizzie.com",
+          }),
+        });
       }
     });
     await page.locator("#edit-username-input").fill("Profesor Quizzie E2E");
@@ -731,7 +745,13 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
 
     // Manejo de error indeterminado del servidor al guardar perfil (HTTP 500)
     await page.route(/\/users\/me/, async (route) => {
-      if (route.request().method() === "PUT") {
+      const method = route.request().method();
+      if (method === "OPTIONS") {
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+        });
+      } else if (method === "PUT") {
         await route.fulfill({
           status: 500,
           headers: { "access-control-allow-origin": "*" },
@@ -739,7 +759,15 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
           body: JSON.stringify({}),
         });
       } else {
-        await route.continue();
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+          contentType: "application/json",
+          body: JSON.stringify({
+            username: "Profesor Quizzie",
+            email: "profesor.e2e@quizzie.com",
+          }),
+        });
       }
     });
     await page.getByRole("button", { name: /Guardar/i }).click();
@@ -869,7 +897,13 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
 
     // Manejo de error por contraseña incorrecta al eliminar cuenta (HTTP 400)
     await page.route(/\/users\/me/, async (route) => {
-      if (route.request().method() === "DELETE") {
+      const method = route.request().method();
+      if (method === "OPTIONS") {
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+        });
+      } else if (method === "DELETE") {
         await route.fulfill({
           status: 400,
           headers: { "access-control-allow-origin": "*" },
@@ -877,7 +911,15 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
           body: JSON.stringify({ detail: "Contraseña incorrecta" }),
         });
       } else {
-        await route.continue();
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+          contentType: "application/json",
+          body: JSON.stringify({
+            username: "Profesor Quizzie",
+            email: "profesor.e2e@quizzie.com",
+          }),
+        });
       }
     });
     await page.locator("#confirm-password").fill("WrongPass123!");
@@ -886,11 +928,18 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
     );
     await expect(page.locator(".danger-btn")).toBeEnabled();
     await page.locator(".danger-btn").click();
+    await expect(page.locator(".danger-btn")).toHaveText("Eliminar cuenta");
     await expect(page.locator(".danger-btn")).toBeEnabled();
 
     // Manejo de error indeterminado del servidor al eliminar (HTTP 500)
     await page.route(/\/users\/me/, async (route) => {
-      if (route.request().method() === "DELETE") {
+      const method = route.request().method();
+      if (method === "OPTIONS") {
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+        });
+      } else if (method === "DELETE") {
         await route.fulfill({
           status: 500,
           headers: { "access-control-allow-origin": "*" },
@@ -898,10 +947,19 @@ test.describe("CU-01: Teacher Authentication & Account Management Flow", () => {
           body: JSON.stringify({}),
         });
       } else {
-        await route.continue();
+        await route.fulfill({
+          status: 200,
+          headers: { "access-control-allow-origin": "*" },
+          contentType: "application/json",
+          body: JSON.stringify({
+            username: "Profesor Quizzie",
+            email: "profesor.e2e@quizzie.com",
+          }),
+        });
       }
     });
     await page.locator(".danger-btn").click();
+    await expect(page.locator(".danger-btn")).toHaveText("Eliminar cuenta");
     await expect(page.locator(".danger-btn")).toBeEnabled();
 
     // Cancelacion en el ultimo momento tras introducir la contraseña correcta
