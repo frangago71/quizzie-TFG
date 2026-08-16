@@ -136,10 +136,10 @@ La lógica de negocio exige un entorno que soporte una alta concurrencia interac
 \hline
 \textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
 \multicolumn{3}{l}{\textbf{Opción elegida}} \\
-\hspace{0.3cm} FastAPI & Rendimiento asíncrono nativo (\textit{async/await}) ideal para sockets. & Estructura menos guiada en comparación con frameworks monolíticos. \\ \hline
+\hspace{0.3cm} FastAPI & Rendimiento asíncrono nativo (\textit{async/await}) según los principios de aplicaciones web modernas de Fox y Patterson \cite{fox2014engineering}, ideal para mantener conexiones WebSocket concurrentes. & Estructura menos guiada en comparación con frameworks monolíticos. \\ \hline
 \multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
-\hspace{0.3cm} Node.js (Express / NestJS) & Estándar tradicional para WebSockets; unifica el lenguaje del proyecto a JavaScript. & Se descartó para priorizar el uso de Python debido a su ecosistema de IA. \\ 
-\hspace{0.3cm} Django & Framework muy robusto, maduro y con arquitectura \textit{batteries-included}. & Estructura fundamentalmente síncrona por defecto y peso excesivo para una API REST. \\ 
+\hspace{0.3cm} Node.js & Estándar tradicional para WebSockets; unifica el lenguaje del proyecto a JavaScript. & Se descartó para priorizar el uso de Python debido a su ecosistema de IA. \\ 
+\hspace{0.3cm} Django & Framework muy robusto, maduro y con arquitectura \textit{batteries-included} basada en patrones empresariales de Fowler \cite{fowler2002patterns}. & Estructura fundamentalmente síncrona por defecto y peso excesivo para una API REST. \\
 \hspace{0.3cm} Flask & Microframework extremadamente simple, minimalista y rápido de configurar. & Carece de herramientas nativas de validación y de soporte asíncrono integrado. \\ \hline
 \end{tabularx}
 }
@@ -182,7 +182,7 @@ Se analiza la arquitectura de las interfaces y la velocidad en la compilación d
 \hline
 \textbf{Tecnología} & \textbf{Ventajas} & \textbf{Desventajas} \\ \hline
 \multicolumn{3}{l}{\textbf{Opción elegida}} \\
-\hspace{0.3cm} React + Vite & \textit{Virtual DOM} reactivo, ecosistema masivo y ciclos de compilación HMR instantáneos. & Curva de aprendizaje inicial superior frente a opciones más básicas. \\ \hline
+\hspace{0.3cm} React + Vite & \textit{Virtual DOM} reactivo siguiendo las pautas de React de Porcello y Banks \cite{porcello2020learning}, patrones de interfaz según MacDonald \cite{macdonald2019practical} y compilación HMR instantánea. & Curva de aprendizaje inicial superior frente a opciones más básicas. \\ \hline
 \multicolumn{3}{l}{\textbf{Alternativas valoradas}} \\
 \hspace{0.3cm} Angular & Framework corporativo muy sólido, estructurado y altamente escalable. & Curva de aprendizaje muy empinada y verbosidad excesiva para el alcance del TFG. \\ 
 \hspace{0.3cm} Vue.js & Alternativa equilibrada con un sistema de reactividad sencillo y progresivo. & Ecosistema y penetración en el mercado laboral inferior en comparación con React. \\ 
@@ -254,7 +254,9 @@ A pesar de la idoneidad del stack seleccionado, se han identificado las siguient
 La robustez del sistema y el cumplimiento de los estándares de calidad se articulan mediante las siguientes herramientas de soporte:
 
 \begin{itemize}
-    \item \textbf{Control de versiones y gestión del proyecto:} Se utiliza \textbf{Git} como sistema de control de versiones local y \textbf{GitHub} como plataforma de alojamiento remoto. Para la organización y planificación de las tareas del cronograma, se emplea \textbf{GitHub Projects} estructurado como un tablero \textit{Kanban}, asegurando la trazabilidad del desarrollo mediante la vinculación de \textit{issues} basadas en plantillas personalizadas (\textit{issue templates}) para la apertura de errores o nuevas características.
+    \item \textbf{Control de versiones y flujo de trabajo:} Se utiliza \textbf{Git} como sistema de control local y \textbf{GitHub} como repositorio remoto. La gestión de ramas aplica el modelo de ramificación de Driessen \cite{driessen2010git} (\textit{Git Flow}), manteniendo una rama estable (\texttt{main}), una de integración (\texttt{develop}) y ramas de características (\texttt{feat/*}). Siguiendo las pautas de organización de Westby \cite{westby2015git}, cada funcionalidad se desarrolla de forma aislada en su propia rama antes de fusionarse directamente en \texttt{develop}.
+    \item \textbf{Gestión de tareas y proyectos:} Para el seguimiento del cronograma se utiliza \textbf{GitHub Projects} estructurado como un tablero \textit{Kanban}. Esto garantiza la trazabilidad del trabajo al asociar los \textit{commits} y ramas de desarrollo con su correspondiente tarea (\textit{issue}) e hito (\textit{milestone}).
+    \item \textbf{Gestión de tareas y proyectos:} Para el seguimiento del cronograma se utiliza \textbf{GitHub Projects} estructurado como un tablero \textit{Kanban}. Esto garantiza la trazabilidad del desarrollo al vincular cada \textit{pull request} con su correspondiente tarea (\textit{issue}) e hito (\textit{milestone}).
     \item \textbf{Estandarización de commits:} Para garantizar un historial de Git limpio, semántico y legible, se integra \textbf{Commitizen}. Esta herramienta obliga al autor a seguir la convención de \textit{Conventional Commits}, categorizando de forma estricta cada cambio (por ejemplo, \textit{feat}, \textit{fix}, \textit{docs} o \textit{refactor}), lo que facilita la auditoría del código y la futura generación automatizada de diarios de cambios (\textit{changelogs}).
     \item \textbf{Entorno de desarrollo integrado (IDE):} El entorno principal de trabajo es \textbf{Visual Studio Code}, seleccionado por su ligereza y su ecosistema de extensiones. Entre ellas, se ha configurado \textbf{LaTeX Workshop} para centralizar la composición y compilación local de la memoria académica mediante los motores de \textbf{MiKTeX} y \textbf{Strawberry Perl}.
     \item \textbf{Gestión de entornos y dependencias:} En el entorno de backend se ha adoptado \textbf{uv}, una herramienta de gestión de paquetes y entornos virtuales para Python extremadamente rápida escrita en Rust, que sustituye de forma eficiente a herramientas tradicionales como \textit{pip} y \textit{poetry}. Para el entorno frontend se utiliza \textbf{npm} como gestor de paquetes estándar de Node.js.
@@ -263,7 +265,7 @@ La robustez del sistema y el cumplimiento de los estándares de calidad se artic
     \item \textbf{Pre-commit hooks:} Con la librería \textbf{pre-commit}, se interceptan los \textit{commits} locales para garantizar que solo se sube código limpio que supere de forma automatizada las reglas de formato, tipado y análisis estático antes de salir del entorno local.
     \item \textbf{Pruebas unitarias y de integración:} Se utiliza \textbf{pytest} en el backend junto a \textbf{pytest-cov} para el cálculo de cobertura, y \textbf{Vitest} con \textbf{React Testing Library} en el frontend para evaluar de manera aislada el comportamiento de los componentes. Para flujos de usuario extremo a extremo (E2E), se integra \textbf{Playwright}, permitiendo simular múltiples navegadores concurrentes.
     \item \textbf{Pruebas de carga:} Se emplea \textbf{Locust} para verificar de manera empírica la capacidad del servidor y medir la latencia del protocolo WebSocket al soportar la avalancha de respuestas concurrentes de los alumnos.
-    \item \textbf{SonarCloud:} Se ha configurado este auditor externo de análisis estático como parte del flujo de CI/CD en GitHub Actions, exigiendo una meta de calidad estricta (\textit{quality gate} A, duplicación $<$ 3\%, cobertura de tests $>$ 80\%).
+    \item \textbf{SonarCloud:} Se ha configurado este auditor externo de análisis estático como parte del flujo de integración y entrega continuas (CI/CD) en GitHub Actions, aplicando los principios de canalizaciones de despliegue automatizadas descritos por Farley \cite{farley2021continuous} para exigir una meta de calidad estricta (\textit{quality gate} A, duplicación $<$ 3\%, cobertura de tests $>$ 80\%).
 \end{itemize}
 
 \section{Conclusiones del estudio previo}\label{sec:conclusiones_estudio_previo}
