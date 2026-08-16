@@ -1,6 +1,6 @@
 \chapter{Introducción}\label{cap:introduccion}
 
-A lo largo de mi trayectoria en la carrera, he asistido a multitud de clases teóricas y prácticas, y si algo he aprendido de ellas es que mantener un dinamismo activo en el aula marca la diferencia en el proceso de aprendizaje. Esta experiencia de estudiante, sumada al reto de diseñar un producto tecnológico completo y autónomo, me motivó a enfocar mi Trabajo de Fin de Grado en el desarrollo de \textit{Quizzie}, una plataforma orientada a transformar las dinámicas de evaluación en el entorno educativo. 
+A lo largo de mi trayectoria en la carrera, he asistido a multitud de clases teóricas y prácticas, y si algo he aprendido de ellas es que mantener un dinamismo activo en el aula marca la diferencia en el proceso de aprendizaje. Esta experiencia como estudiante, sumada al reto de diseñar un producto tecnológico completo y autónomo, me motivó a enfocar mi Trabajo de Fin de Grado en el desarrollo de \textit{Quizzie}, una plataforma orientada a transformar las dinámicas de evaluación en el entorno educativo. 
 
 El objetivo de este capítulo inicial es asentar las bases del trabajo y ofrecer una hoja de ruta clara. Para ello, en las siguientes secciones se detalla el contexto y objeto del proyecto, las motivaciones personales y profesionales que impulsaron su creación, así como los objetivos académicos y técnicos que se pretenden alcanzar. 
 
@@ -16,7 +16,7 @@ Como respuesta a este escenario, el objeto de este proyecto es el desarrollo de 
 \section{Motivación}\label{sec:motivacion}
 La elección de este proyecto nace, en gran medida, de mi propia experiencia como estudiante a lo largo de mi formación. He vivido en primera persona cómo la introducción de \textbf{cuestionarios interactivos} en mitad de una clase es capaz de transformar por completo el clima del aula, despertando el interés de los alumnos y fijando los conceptos de una manera mucho más eficaz que los métodos tradicionales. No obstante, también he sido testigo de las limitaciones de las herramientas actuales: el uso de pseudónimos informales, la posibilidad de participar de forma remota sin acudir a clase o la frustración del docente al no poder \textbf{validar la autenticidad} de los resultados. Ver cómo una dinámica con tanto potencial perdía rigor por falta de control o por limitaciones de las plataformas utilizadas fue el detonante que me impulsó a buscar esta solución.
 
-Desde un punto de vista profesional, mi motivación principal se centra en el reto de plasmar de forma integral todos los conocimientos y competencias adquiridos a lo largo de la carrera. El desarrollo de \textit{Quizzie} representa la oportunidad perfecta para demostrar mi capacidad de afrontar un \textbf{proyecto de \textit{software} completo}, responsabilizándome de cada una de sus fases: desde las etapas iniciales de concepción, estudio previo y análisis de requisitos, hasta el diseño arquitectónico, la implementación técnica y la validación mediante pruebas. Abordar este \textbf{ciclo de vida de extremo a extremo} no solo me permite consolidar mis conocimientos técnicos, sino también validar mi criterio al tomar decisiones justificadas ante problemas, convirtiendo este trabajo en el puente definitivo hacia mi madurez como ingeniero de \textit{software}.
+El desarrollo de \textit{Quizzie} representa la oportunidad perfecta para demostrar mi capacidad de afrontar un \textbf{proyecto de \textit{software} completo} guiado por las metodologías y principios clásicos de la ingeniería del \textit{software} descritos por autores de referencia como Pressman \cite{pressman2010ingenieria} y Sommerville \cite{sommerville2011ingenieria}. Abordar este \textbf{ciclo de vida de extremo a extremo} no solo me permite consolidar mis conocimientos técnicos, sino también validar mi criterio al tomar decisiones justificadas ante problemas, convirtiendo este trabajo en el puente definitivo hacia mi madurez como ingeniero de \textit{software}.
 
 \section{Objetivos del proyecto}\label{sec:objetivos_del_proyecto}
 Para guiar el desarrollo del proyecto y asegurar el cumplimiento de las expectativas tanto formativas como técnicas, he definido una serie de metas divididas en dos vertientes: académica y técnico-profesional.
@@ -24,57 +24,56 @@ Para guiar el desarrollo del proyecto y asegurar el cumplimiento de las expectat
 \subsection{Objetivos académicos}
 Metas orientadas a consolidar la formación recibida durante los estudios de grado:
 \begin{itemize}
-    \item \textbf{Integrar y aplicar} de forma conjunta los conocimientos teóricos y prácticos adquiridos en las distintas asignaturas de la carrera.
-    \item \textbf{Adoptar metodologías de trabajo ágiles} y estándares de la industria en la gestión y planificación temporal del proyecto.
-    \item \textbf{Fomentar el uso de buenas prácticas} de ingeniería del \textit{software}, incluyendo el control de versiones formal, el diseño de código limpio y la documentación sistemática.
+    \item \textbf{Integrar y aplicar} de forma conjunta los conocimientos teóricos y prácticos adquiridos en las distintas asignaturas de la carrera, demostrando su aplicación real mediante la resolución de los problemas descritos en el análisis de requisitos y su verificación final mediante un plan de pruebas sistemático con un índice de cobertura de código global superior al 80\%.
+    \item \textbf{Adoptar metodologías de trabajo ágiles} en la gestión y planificación del proyecto, estableciendo un calendario estricto de iteraciones de desarrollo y midiendo las desviaciones temporales reales frente a la línea base del cronograma para mantener la desviación por debajo del 15\% mediante hitos de control definidos.
+    \item \textbf{Fomentar la aplicación rigurosa de buenas prácticas} de ingeniería del \textit{software}, estructurando el sistema según los principios de diseño y legibilidad del paradigma \textit{Clean Code} \cite{martin2009clean} y articulando la solución bajo patrones de \textit{Clean Architecture} \cite{martin2017clean}, garantizando un historial de control de versiones libre de confirmaciones informales (100\% de cumplimiento de una política de commits semánticos en la rama principal) y asegurando que cada incremento de código supere automáticamente las directrices de formateo y estilo antes de su integración. 
 \end{itemize}
 
 \subsection{Objetivos técnicos y profesionales}
 Retos tecnológicos asumidos para el producto final y el desarrollo de competencias laborales:
 \begin{itemize}
-    \item \textbf{Dominar nuevas tecnologías} y herramientas del ecosistema de desarrollo actual, tales como el \textit{framework} FastAPI para el entorno de servidor y React para la interfaz de usuario.
-    \item \textbf{Gestionar de manera autónoma el ciclo de vida completo} de un producto de \textit{software} real, abarcando desde su concepción y análisis hasta su despliegue y evaluación.
-    \item \textbf{Diseñar e implementar un sistema de verificación} robusto y eficiente que resuelva de manera efectiva la problemática de la asistencia y autoría en las evaluaciones en el aula.
-    \item \textbf{Asegurar la calidad del \textit{software}:} Diseñar e implementar un plan de pruebas automatizadas combinado con herramientas de análisis estático de código, garantizando la mantenibilidad, seguridad y fiabilidad.    
-    \item \textbf{Implementar una estrategia de pruebas exhaustiva} que abarque \textit{tests} unitarios y de integración, asegurando la fiabilidad del código y el correcto funcionamiento de las reglas de negocio del sistema.
-    \item \textbf{Diseñar y configurar un flujo de trabajo basado en CI/CD} (Integración y Despliegue Continuo) mediante herramientas de automatización, garantizando que cada cambio en el repositorio se verifique y despliegue de manera segura y eficiente.
+    \item \textbf{Dominar nuevas tecnologías} y herramientas del ecosistema de desarrollo actual, diseñando e implementando una solución cliente-servidor desacoplada que separe con éxito la lógica de negocio del \textit{backend} asíncrono de la representación en la interfaz reactiva del cliente.
+    \item \textbf{Gestionar de manera autónoma el ciclo de vida completo} de un producto de \textit{software} real, completando secuencialmente cada una de las fases temporales del cronograma y justificando documentalmente las decisiones de diseño mediante registros formales de decisiones arquitectónicas.
+    \item \textbf{Diseñar e implementar un sistema de verificación} presencial robusto y eficiente, garantizando una tasa de fraude por suplantación digital remota de 0\% en las salas de cuestionarios cerradas gracias a la validación de tokens criptográficos de un solo uso.
+    \item \textbf{Implementar una estrategia de pruebas exhaustiva} que asegure la calidad y fiabilidad del código, fijando un umbral objetivo de cobertura de código mínimo del 80\% y garantizando la ausencia de duplicidades, vulnerabilidades de seguridad y deuda técnica crítica mediante un flujo continuo de control de calidad.
+    \item \textbf{Diseñar y configurar un flujo de trabajo automatizado} para la integración y despliegue continuos (CI/CD), fundamentado en los principios de entrega continua expuestos por Farley \cite{farley2021continuous}, asegurando que el 100\% de las modificaciones de código en el repositorio se verifiquen, compilen y desplieguen automáticamente en el entorno de producción únicamente si superan satisfactoriamente los test de regresión y las metas de calidad preestablecidas.
 \end{itemize}
 
 \subsection{Objetivos de la plataforma}
 Aspiraciones funcionales y operativas de \textit{Quizzie}:
 \begin{itemize}
-    \item \textbf{Evaluación docente simplificada:} Proveer al profesorado de un sistema eficiente para gestionar cuestionarios que sirvan de herramienta de evaluación.
-    \item \textbf{Dinamismo e interactividad en el aula:} Priorizar la fluidez de las sesiones en tiempo real mediante mecánicas gamificadas que fomenten una participación activa y competitiva por parte de los estudiantes.
-    \item \textbf{Seguimiento continuo del alumnado:} Ofrecer herramientas analíticas que permitan monitorizar el rendimiento individual y colectivo, ayudando a identificar las necesidades de aprendizaje durante el curso.
-    \item \textbf{Validación y presencialidad física:} Asegurar la legitimidad de las pruebas mediante mecanismos de verificación digital \textit{in situ}, garantizando que los resultados registrados correspondan exclusivamente a los alumnos presentes en el aula.
-    \item \textbf{Accesibilidad y agilidad de incorporación:} Optimizar la experiencia de usuario con flujos de acceso inmediato y sin necesidad de registro previo para los estudiantes, facilitando una entrada instantánea a las salas de cuestionarios.
-    \item \textbf{Compatibilidad y despliegue multidispositivo:} Garantizar que la plataforma sea completamente responsiva y accesible desde cualquier tipo de dispositivo (móviles, \textit{tablets} u ordenadores), independientemente de su sistema operativo o navegador.
-    \item \textbf{Garantía de privacidad y cumplimiento:} Blindar el almacenamiento y tratamiento de los datos académicos bajo el estricto cumplimiento del marco legal y de protección de datos vigente.
+    \item \textbf{Evaluación docente simplificada:} Proveer al profesorado de un sistema eficiente para gestionar cuestionarios, reduciendo el tiempo necesario para configurar, lanzar y evaluar una sesión interactiva a menos de 5 minutos, y permitiendo la recogida automatizada de respuestas.
+    \item \textbf{Dinamismo e interactividad en el aula:} Priorizar la fluidez de las sesiones en tiempo real en escenarios de alta demanda, asegurando una tasa de error de red inferior al 1\% y una transmisión bidireccional inmediata en el aula bajo simulaciones de carga de al menos 100 usuarios activos concurrentes.
+    \item \textbf{Seguimiento continuo del alumnado:} Ofrecer herramientas analíticas para monitorizar el rendimiento individual y colectivo, generando estadísticas en tiempo real y permitiendo el volcado automático del histórico de calificaciones por grupos académicos estables.
+    \item \textbf{Validación y presencialidad física:} Asegurar la legitimidad de las pruebas mediante mecanismos de verificación digital \textit{in situ}, optimizando el proceso de captura y decodificación para que el tiempo de validación y firma del comprobante por cámara sea inferior a 2 segundos por participante.
+    \item \textbf{Accesibilidad y agilidad de incorporación:} Optimizar la experiencia de usuario con flujos de acceso inmediato y sin necesidad de registro previo para los estudiantes, facilitando la entrada a las salas en menos de 5 segundos.
+    \item \textbf{Compatibilidad y despliegue multidispositivo:} Garantizar que la plataforma sea completamente responsiva y accesible desde cualquier tipo de dispositivo (móviles, \textit{tablets} u ordenadores), sin deformaciones ni pérdida de control sobre las acciones.
+    \item \textbf{Garantía de privacidad y cumplimiento:} Blindar la privacidad de los datos académicos y el cumplimiento normativo (RGPD), aplicando el principio de minimización de datos al prescindir de registros tradicionales para estudiantes y protegiendo el almacenamiento de credenciales docentes mediante algoritmos de hashing seguro.
 \end{itemize}
 
 \section{Resumen del \textit{stack} tecnológico}\label{sec:resumen_del_stack_tecnologico}
 
-Para garantizar el cumplimiento de los objetivos técnicos del proyecto y asegurar un desarrollo robusto, eficiente y escalable, se ha seleccionado un conjunto de herramientas alineadas con los estándares de la industria actual. Esta sección ofrece una visión inicial del \textit{stack} tecnológico empleado para la construcción de \textit{Quizzie}. Las ventajas técnicas de cada opción frente a otras alternativas del mercado se argumentarán en profundidad en el Capítulo \ref{cap:estado_del_arte_y_fundamentacion}.
+Para garantizar el cumplimiento de los objetivos técnicos del proyecto y asegurar un desarrollo robusto, eficiente y escalable, se ha seleccionado un conjunto de herramientas alineadas con los estándares de la industria actual. Esta sección ofrece una visión inicial del \textit{stack} tecnológico empleado para la construcción de \textit{Quizzie}. Las ventajas técnicas de cada opción frente a otras alternativas del mercado se argumentarán en profundidad en el Capítulo 4, \hyperref[cap:estado_del_arte_y_fundamentacion]{Estado del arte y fundamentación}.
 
 El núcleo del sistema se divide claramente bajo una arquitectura cliente-servidor, donde el \textit{backend} gestiona la lógica de negocio, la seguridad y la comunicación en tiempo real, mientras que el \textit{frontend} ofrece una experiencia interactiva y fluida para profesores y alumnos.
 
 \subsection{Ecosistema del \textit{backend}}
 El entorno se ha diseñado priorizando el alto rendimiento, la seguridad y la agilidad en el desarrollo. Las tecnologías y herramientas principales que componen esta capa son:
 \begin{itemize}
-    \item \textbf{Lenguaje de programación:} Python 3.12, aprovechando las últimas mejoras de rendimiento y tipado estático del lenguaje.
-    \item \textbf{\textit{Framework} de desarrollo:} FastAPI, seleccionado por su alta velocidad de ejecución, soporte nativo de operaciones asíncronas y validación automática de datos.
-    \item \textbf{Comunicación en tiempo real:} Protocolo WebSocket, implementado para gestionar de manera bidireccional y eficiente el flujo de eventos y la sincronización de las salas en vivo.
-    \item \textbf{Persistencia y ORM:} SQLModel en combinación con SQLite. Al no requerir un gestor de base de datos externo complejo en esta fase, esta solución permite interactuar de forma nativa con la base de datos utilizando objetos de Python de manera eficiente.
-    \item \textbf{Gestión de dependencias:} \textit{uv}, utilizado como gestor de paquetes ultrarrápido para optimizar los tiempos de instalación y asegurar la reproducibilidad del entorno.
+    \item \textbf{Lenguaje de programación:} Python 3.12 \cite{python_official}, aprovechando las últimas mejoras de rendimiento y tipado estático del lenguaje.
+    \item \textbf{\textit{Framework} de desarrollo:} FastAPI \cite{fastapi_official}, seleccionado por su alta velocidad de ejecución, soporte nativo de operaciones asíncronas y validación automática de datos.
+    \item \textbf{Comunicación en tiempo real:} Protocolo WebSocket \cite{websocket_protocol}, implementado para gestionar de manera bidireccional y eficiente el flujo de eventos y la sincronización de las salas en vivo.
+    \item \textbf{Persistencia y ORM:} SQLModel \cite{sqlmodel_official} en combinación con SQLite \cite{sqlite_official}. Al no requerir un gestor de base de datos externo complejo en esta fase, esta solución permite interactuar de forma nativa con la base de datos utilizando objetos de Python de manera eficiente.
+    \item \textbf{Gestión de dependencias:} \textit{uv} \cite{uv_official}, utilizado como gestor de paquetes ultrarrápido para optimizar los tiempos de instalación y asegurar la reproducibilidad del entorno.
 \end{itemize}
 
 \subsection{Ecosistema del \textit{frontend}}
 La interfaz de usuario se ha planteado como una \textit{Single Page Application} (SPA) responsiva para ofrecer la fluidez que requiere una aplicación con dinámicas lúdicas y en vivo:
 \begin{itemize}
-    \item \textbf{\textit{Framework} principal:} React, para la construcción de una interfaz basada en componentes reutilizables y reactivos.
-    \item \textbf{Herramienta de construcción (\textit{Build Tool}):} Vite, que proporciona un entorno de desarrollo ágil gracias a su velocidad de compilación y recarga en caliente.
-    \item \textbf{Lenguajes:} TypeScript como eje principal para dotar al código de tipado fuerte y robustez, apoyado puntualmente en JavaScript.
-    \item \textbf{Enrutado y consumo de API:} React Router Dom para la navegación interna de la aplicación y Axios para realizar peticiones asíncronas y comunicarse con el \textit{backend}.
+    \item \textbf{\textit{Framework} principal:} React \cite{react_official}, para la construcción de una interfaz basada en componentes reutilizables y reactivos.
+    \item \textbf{Herramienta de construcción (\textit{Build Tool}):} Vite \cite{vite_official}, que proporciona un entorno de desarrollo ágil gracias a su velocidad de compilación y recarga en caliente.
+    \item \textbf{Lenguajes:} TypeScript \cite{typescript_official} como eje principal para dotar al código de tipado fuerte y robustez, apoyado puntualmente en JavaScript.
+    \item \textbf{Enrutado y consumo de API:} React Router Dom \cite{react_router_official} para la navegación interna de la aplicación y Axios \cite{axios_official} para realizar peticiones asíncronas y comunicarse con el \textit{backend}.
 \end{itemize}
 
 \section{Estructura de la memoria}\label{sec:estructura_de_la_memoria}
@@ -96,6 +95,7 @@ Para facilitar la lectura y comprensión de este documento, la memoria se ha est
 
 Adicionalmente, se incluyen dos manuales prácticos al final del documento como anexos independientes:
 \begin{itemize}
+    \item \textbf{\hyperref[anexo:prototipos_interfaz_usuario]{Prototipos de interfaz de usuario:}} Conjunto de \textit{mockups} y diagramas de flujo que ilustran la experiencia de usuario prevista, mostrando la navegación y las interacciones clave dentro de la plataforma.
     \item \textbf{\hyperref[anexo:manual_de_instalacion]{Manual de instalación:}} Guía técnica detallada para el despliegue del sistema tanto en un entorno local de desarrollo como en entornos de producción en la nube.
     \item \textbf{\hyperref[anexo:manual_de_usuario]{Manual de usuario:}} Guía visual e instructiva orientada a profesores y alumnos para el correcto uso y manejo de la plataforma.
 \end{itemize}
