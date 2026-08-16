@@ -1,12 +1,9 @@
 \chapter{Gestión del proyecto}\label{cap:gestion_del_proyecto}
 
-En la ingeniería de software, el éxito de un proyecto no depende únicamente de la calidad de su código, sino de una rigurosa gobernanza que garantice la viabilidad técnica, temporal y económica del proyecto. Para ello, se adopta un enfoque predictivo en la definición de las líneas base, complementado con prácticas ágiles para la gestión y ejecucióndel cambio.
-
-A lo largo de las siguientes secciones se detalla la metodología que se seguirá a lo largo del desarrollo, se establecen formalmente las línea base del alcance, cronograma y de costes, y se presenta el plan de gestión de riesgos y cambios destinado a mitigar las desviaciones del proyecto.
+En la ingeniería de software, el éxito de un proyecto no depende únicamente de la calidad de su código, sino de una rigurosa gobernanza que garantice la viabilidad técnica, temporal y económica del proyecto. Para ello, se adopta un enfoque predictivo en la definición de las líneas base fundamentado en el estándar de gestión del PMBOK \cite{pmi2021pmbok}, el cual se complementa con las prácticas de desarrollo iterativo e incremental del Manifiesto Ágil \cite{beck2001manifesto} para la gestión del cambio.
 
 \section{Metodología del trabajo}\label{sec:metodologia_del_trabajo}
-
-El desarrollo de \textit{Quizzie} se organiza gracias a un flujo de trabajo ágil centralizado en GitHub. Para el día a día y el seguimiento del proyecto, se utilizan las siguientes herramientas:
+El desarrollo de \textit{Quizzie} se organiza mediante un flujo de trabajo ágil apoyado en el modelo de ramificación y gestión de versiones \textit{GitHub Flow} \cite{chacon2014pro}, el cual centraliza el control de tareas en el repositorio para coordinar las integraciones y el despliegue de las \textit{releases}.
 
 \begin{itemize}
 \item \textbf{GitHub:} Centraliza el almacenamiento del código fuente y la gestión de las tareas mediante las siguientes herramientas:    
@@ -23,7 +20,6 @@ El desarrollo de \textit{Quizzie} se organiza gracias a un flujo de trabajo ági
 El avance del proyecto se valida de forma continua mediante tutorías. La dinámica de estas reuniones consiste en presentar y revisar el software funcionando o el texto redactado hasta esa fecha para recibir el visto bueno del tutor y, acto seguido, definir los siguientes pasos y prioridades a realizar para la próxima tutoría.
 
 \section{Línea base del alcance}\label{sec:linea_base_del_alcance}
-
 La línea base del alcance define con precisión los límites del proyecto, asegurando que todos los esfuerzos se concentren exclusivamente en los entregables necesarios para cumplir con los objetivos académicos y técnicos. A continuación, se detallan los supuestos, restricciones y exclusiones que condicionan esta planificación.
 
 \begin{itemize}
@@ -33,12 +29,11 @@ La línea base del alcance define con precisión los límites del proyecto, aseg
 \end{itemize}
 
 \subsection{Estructura del Desglose del Trabajo (EDT)}\label{subsec:edt}
-
-Para organizar y estructurar el alcance total del proyecto, se ha elaborado la siguiente Estructura de Desglose del Trabajo (EDT). Esta representación jerárquica descompone el proyecto en paquetes de trabajo, divididos a su vez en entregables específicos que se detallarán en el \hyperref[subsec:diccionario_edt]{diccionario de la EDT}.
+Para organizar y estructurar el alcance total del proyecto de forma sistemática, se ha elaborado la siguiente Estructura de Desglose del Trabajo (EDT). Esta representación jerárquica descompone el proyecto en paquetes de trabajo y entregables específicos según las directrices de descomposición del estándar ISO/IEC/IEEE 21839 \cite{iso21839}, los cuales se detallan en el \hyperref[subsec:diccionario_edt]{diccionario de la EDT}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{figures/edt.png}
+\includegraphics[width=0.95\textwidth]{figures/edt.png}
 \caption{Estructura de Desglose del Trabajo (EDT).}
 \label{fig:edt_grafica}
 \end{figure}
@@ -48,6 +43,7 @@ Para organizar y estructurar el alcance total del proyecto, se ha elaborado la s
 El diccionario de la EDT define formalmente el alcance de cada entregable y desglosa las actividades necesarias para su consecución, especificando los perfiles profesionales asignados y la estimación temporal.
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
 
 \subsubsection*{Paquete 1.0: Gestión del proyecto}
 \addcontentsline{toc}{subsubsection}{Paquete 1.0: Gestión del proyecto}
@@ -171,6 +167,8 @@ El diccionario de la EDT define formalmente el alcance de cada entregable y desg
 \caption{Actividades del entregable 1.3.}
 \label{actividades_entregable_1_3}
 \end{table}
+
+\newpage
 
 \subsubsection*{Paquete 2.0: Diseño y Arquitectura}
 \addcontentsline{toc}{subsubsection}{Paquete 2.0: Diseño y Arquitectura}
@@ -633,7 +631,7 @@ F-10 -- Defensa & H-13 & Presentación y material de soporte maquetados para la 
 \newpage
 
 \subsection{Diagrama de Gantt}\label{sub:diagrama_de_gantt}
-El siguiente diagrama de Gantt sintetiza de manera visual la distribución cronológica del proyecto, clave para el seguimiento del trabajo realizado y asegurar el cumplimiento de los plazos fijados.
+El siguiente diagrama de Gantt\cite{wilson2003gantt} sintetiza de manera visual la distribución cronológica del proyecto, clave para el seguimiento del trabajo realizado y asegurar el cumplimiento de los plazos fijados.
 
 \begin{figure}[H]
 \centering
@@ -727,7 +725,7 @@ El siguiente diagrama de Gantt sintetiza de manera visual la distribución crono
 El desarrollo de un proyecto como \textit{Quizzie} no solo exige viabilidad técnica, sino también un modelo financiero sostenible que justifique su implantación frente a otras soluciones. Para ello, se analizan a continuación los costes operativos, el impacto económico que supone el escalado de la infraestructura y el Coste Total de Propiedad (TCO).
 
 \subsection{Análisis de costes}\label{sub:analisis_de_costes}
-El estudio económico de la plataforma se fundamenta en dos componentes financieros esenciales: los Gastos de Capital (\textit{Capital Expenditure} o CAPEX), que engloban el coste teórico de desarrollo y los recursos fijos necesarios para materializar el sistema, y los Gastos Operativos (\textit{Operational Expenditure} o OPEX), que representan el coste mensual estimado para la explotación de la plataforma en producción. 
+El estudio económico de la plataforma se fundamenta en la clasificación financiera de costes de tecnologías de la información \cite{remenyi2007it}, dividiéndose en dos componentes esenciales: los Gastos de Capital (\textit{Capital Expenditure} o CAPEX), que engloban el coste de desarrollo y los recursos fijos iniciales, y los Gastos Operativos (\textit{Operational Expenditure} o OPEX), que representan el coste recurrente de la infraestructura en la nube para la explotación en producción.
 
 \begin{table}[H]
 \centering
@@ -919,8 +917,8 @@ Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15
 \newpage
 
 \subsection{Coste total de propiedad (TCO)}
+El coste total de propiedad (\textit{Total Cost of Ownership}, TCO) permite evaluar el impacto económico global de la plataforma a medio plazo mediante la metodología de consolidación financiera de costes directos e indirectos planteada por Ellram \cite{ellram1993total}, integrando la inversión inicial de desarrollo (CAPEX) junto con la proyección de los gastos operativos (OPEX) a tres años.
 
-El costo total de propiedad (\textit{Total Cost of Ownership}, TCO) permite evaluar el impacto económico global de la plataforma a medio plazo al consolidar la inversión inicial de desarrollo (CAPEX) junto con los gastos operativos (OPEX) proyectados a tres años. Para garantizar la validez metodológica de este presupuesto frente al mercado real, los costes de la mano de obra se contrastan con el \textit{Informe final sobre la consulta preliminar del mercado} de la Junta de Andalucía \cite{junta:cpi}.
 De este modo, asumiendo los gastos de infraestructura del escenario conservador, la proyección resultante se detalla en la siguiente tabla.
 \begin{table}[H]
 \centering
@@ -949,7 +947,7 @@ De este modo, asumiendo los gastos de infraestructura del escenario conservador,
 
 \section{Plan de gestión de cambios y riesgos}\label{sec:plan_gestion_cambios_riesgos}
 
-Un desarrollo tecnológico está inherentemente sujeto a imprevistos y desviaciones. Para asegurar el éxito y la entrega en plazo de la plataforma, este plan de contingencia se apoyará de forma sistemática en las tablas de riesgos (\hyperref[tab:riesgos_alcance]{de alcance}, \hyperref[tab:riesgos_tecnicos]{técnicos} y \hyperref[tab:riesgos_temporales]{temporales}) definida en la sección de \hyperref[sec:riesgos_iniciales]{riesgos iniciales}. En caso de que alguna de las amenazas identificadas se materialice, o bien si surge la necesidad de aplicar cualquier variación sobre los requisitos o la planificación del sistema, se activará el procedimiento formal de control estructurado a continuación.
+Un desarrollo tecnológico está inherentemente sujeto a imprevistos y desviaciones. Para asegurar el éxito y la entrega en plazo de la plataforma, el procedimiento formal de control de cambios y contingencias se estructura según las directrices de la norma IEEE 828 para la gestión de la configuración en ingeniería de software \cite{ieee828}, apoyándose de forma sistemática en las tablas de riesgos (\hyperref[tab:riesgos_alcance]{de alcance}, \hyperref[tab:riesgos_tecnicos]{técnicos} y \hyperref[tab:riesgos_temporales]{temporales}) definidas en la sección de \hyperref[sec:riesgos_iniciales]{riesgos iniciales}.
 
 Cualquier propuesta de modificación se gestionará siguiendo este flujo secuencial:
 
