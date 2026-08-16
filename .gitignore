@@ -54,12 +54,10 @@ frontend/coverage-reports/
 *benchmark_results*.csv
 
 
-
-
 # Thesis documents
 /thesis/*
 
 !/thesis/memoria.tex
 !/thesis/memoria.pdf
-!/thesis/bibliografia.bib
+!/thesis/*.bib
 !/thesis/*/
