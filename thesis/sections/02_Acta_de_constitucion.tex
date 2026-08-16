@@ -56,16 +56,13 @@ El desarrollo y uso de \textit{Quizzie} se rige por la normativa vigente en mate
 A continuación, se detallan los pilares normativos y legales de la aplicación:
 
 \begin{itemize}
-    \item \textbf{Reglamento General de Protección de Datos (RGPD):} La plataforma aplica el principio de privacidad desde el diseño. Para los estudiantes, el acceso a las salas se realiza mediante un código PIN y su \textit{uvus} (\textit{Usuario Virtual de la Universidad de Sevilla}), prescindiendo de un registro tradicional y limitando el almacenamiento de datos personales a este identificador institucional único. En el caso de los docentes, el registro obligatorio se limita a un correo electrónico y un alias, omitiendo identificadores directos como nombres, apellidos o DNI.
+    \item \textbf{Reglamento General de Protección de Datos (RGPD):} La plataforma aplica el principio de privacidad desde el diseño conforme al Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo \cite{gdpr2016}. Para los estudiantes, el acceso a las salas se realiza mediante un código PIN y su \textit{uvus} (\textit{Usuario Virtual de la Universidad de Sevilla}), prescindiendo de un registro tradicional y limitando el almacenamiento de datos personales a este identificador institucional único. En el caso de los docentes, el registro obligatorio se limita a un correo electrónico y un alias, omitiendo identificadores directos como nombres, apellidos o DNI.
     \item \textbf{Seguridad y persistencia de calificaciones:} El histórico de resultados almacenado en el sistema solo vincula las calificaciones al \textit{uvus} del alumno y cuenta con la previa verificación física del profesor. Esto garantiza la integridad del proceso de evaluación sin exponer la identidad real del estudiantado en la base de datos.
-    \item \textbf{Propiedad intelectual y licenciamiento:} El código fuente y los entregables de este Trabajo de Fin de Grado se distribuyen bajo una licencia de código abierto MIT. Esta elección garantiza la total transparencia del desarrollo, permite la auditoría pública del sistema y fomenta su reutilización o extensión por parte de la comunidad académica, eximiendo al autor de cualquier responsabilidad derivada de su uso.
+    \item \textbf{Propiedad intelectual y licenciamiento:} El código fuente y los entregables de este Trabajo de Fin de Grado se distribuyen bajo una licencia de código abierto MIT \cite{strayer2020open}. Esta elección garantiza la total transparencia del desarrollo, permite la auditoría pública del sistema y fomenta su reutilización o extensión por parte de la comunidad académica, eximiendo al autor de cualquier responsabilidad derivada de su uso.
 \end{itemize}
 
 \section{Riesgos iniciales de alto nivel}\label{sec:riesgos_iniciales}
-
-El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos de alcance, técnicos y temporales. Identificarlos de forma temprana permite establecer el impacto potencial de cada amenaza y diseñar estrategias de mitigación que garanticen el éxito del proyecto y el cumplimiento del cronograma.
-
-A continuación, se detallan los riesgos iniciales organizados por su naturaleza y evaluados según su probabilidad de ocurrencia y el impacto estimado en el desarrollo global del proyecto.
+El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos de alcance, técnicos y temporales. Su identificación temprana y categorización mediante matrices de probabilidad e impacto sigue las directrices del cuerpo de conocimiento del PMI \cite{pmi2021pmbok}, lo que permite evaluar la gravedad de cada amenaza y definir las estrategias de mitigación asociadas:
 
 \subsection{Riesgos de alcance}
 Desviaciones relacionadas con el volumen de funcionalidades implementadas y la correcta definición de los requisitos del sistema:
@@ -129,8 +126,7 @@ Amenazas asociadas directa o indirectamente con el cumplimiento de los plazos y 
 
 \section{Lista de interesados (\textit{Stakeholders})}\label{sec:lista_interesados}
 
-En este apartado se identifica a los actores, grupos  e instituciones que interactúan con la plataforma o se ven afectados por su desarrollo, definiendo sus roles y expectativas principales.
-
+En este apartado se identifica a los actores, grupos e instituciones que interactúan con la plataforma o se ven afectados por su desarrollo, aplicando la metodología de análisis de interesados descrita por Sommerville \cite{sommerville2011ingenieria} para definir sus roles, necesidades y expectativas principales.
 \begin{table}[htbp]
 \centering
 \renewcommand{\arraystretch}{1.5}
