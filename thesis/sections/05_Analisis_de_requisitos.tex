@@ -30,7 +30,7 @@ A lo largo de las siguientes secciones se identifican en primer lugar los actore
 
 \section{Historias de usuario}\label{sec:historias_de_usuario}
 
-Una vez definidos los perfiles que interactúan con la plataforma, el comportamiento del sistema se define mediante el uso de historias de usuario. Estas especificaciones permiten capturar las necesidades reales de cada actor siguiendo la estructura clásica de rol \textit{[como]}, acción \textit{[quiero]} y beneficio \textit{[para]}. Para facilitar la trazabilidad y el seguimiento de las historias, se han dividido y numerado de forma independiente según el perfil al que corresponden: el alumno (\textit{HU-AL}) y el profesor (\textit{HU-PR}).
+Una vez definidos los perfiles que interactúan con la plataforma, el comportamiento del sistema se define mediante historias de usuario siguiendo la metodología de elicitación de requisitos descrita por Sommerville \cite{sommerville2021engineering}. Estas especificaciones permiten capturar las necesidades reales de cada actor siguiendo la estructura clásica de rol \textbf{[como]}, acción \textbf{[quiero]} y beneficio \textbf{[para]}. Para facilitar la trazabilidad y el seguimiento de las historias, se han dividido y numerado de forma independiente según el perfil al que corresponden: el alumno (\textit{HU-AL}) y el profesor (\textit{HU-PR}).
 
 \begin{table}[H]
 \centering
@@ -40,20 +40,20 @@ Una vez definidos los perfiles que interactúan con la plataforma, el comportami
 \begin{tabularx}{\dimexpr\textwidth+1cm}{l l X}
 \hline
 \textbf{ID} & \textbf{Descripción} & \\ \hline
-\textbf{HU-AL-01}\label{hu:al-01} & \textit{Como} alumno, & \textit{quiero} unirme a una sala solo con un PIN y un apodo \\
-                                     && \textit{para} participar de forma inmediata sin necesidad de crear una cuenta. \\ \hline
-\textbf{HU-AL-02}\label{hu:al-02} & \textit{Como} alumno, & \textit{quiero} recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada \\
-                                     && \textit{para} competir en igualdad de condiciones con mis compañeros. \\ \hline
-\textbf{HU-AL-03}\label{hu:al-03} & \textit{Como} alumno, & \textit{quiero} saber si mi respuesta ha sido correcta justo después de enviarla \\
-                                     && \textit{para} reforzar mi aprendizaje en el momento. \\ \hline
-\textbf{HU-AL-04}\label{hu:al-04} & \textit{Como} alumno, & \textit{quiero} que se genere un código QR único al finalizar el test \\
-                                     && \textit{para} mostrárselo al profesor y que mi nota sea oficializada. \\ \hline
-\textbf{HU-AL-05}\label{hu:al-05} & \textit{Como} alumno, & \textit{quiero} ver mi posición en el ranking después de cada bloque de preguntas \\
-                                     && \textit{para} motivarme durante la realización del cuestionario. \\ \hline
-\textbf{HU-AL-06}\label{hu:al-06} & \textit{Como} alumno, & \textit{quiero} poder reengancharme a la partida si pierdo la conexión a internet \\
-                                     && \textit{para} no perder mi progreso y poder terminar el test. \\ \hline
-\textbf{HU-AL-07}\label{hu:al-07} & \textit{Como} alumno, & \textit{quiero} recibir puntos extra por responder rápido o mantener una racha de aciertos \\
-                                     && \textit{para} sentirme recompensado por mi agilidad y constancia. \\ \hline
+\textbf{HU-AL-01}\label{hu:al-01} & \textbf{Como} alumno, & \textbf{quiero} unirme a una sala solo con un PIN y un apodo \\
+                                     && \textbf{para} participar de forma inmediata sin necesidad de crear una cuenta. \\ \hline
+\textbf{HU-AL-02}\label{hu:al-02} & \textbf{Como} alumno, & \textbf{quiero} recibir la pregunta y las opciones de respuesta en mi móvil de forma sincronizada \\
+                                     && \textbf{para} competir en igualdad de condiciones con mis compañeros. \\ \hline
+\textbf{HU-AL-03}\label{hu:al-03} & \textbf{Como} alumno, & \textbf{quiero} saber si mi respuesta ha sido correcta justo después de enviarla \\
+                                     && \textbf{para} reforzar mi aprendizaje en el momento. \\ \hline
+\textbf{HU-AL-04}\label{hu:al-04} & \textbf{Como} alumno, & \textbf{quiero} que se genere un código QR único al finalizar el test \\
+                                     && \textbf{para} mostrárselo al profesor y que mi nota sea oficializada. \\ \hline
+\textbf{HU-AL-05}\label{hu:al-05} & \textbf{Como} alumno, & \textbf{quiero} ver mi posición en el ranking después de cada bloque de preguntas \\
+                                     && \textbf{para} motivarme durante la realización del cuestionario. \\ \hline
+\textbf{HU-AL-06}\label{hu:al-06} & \textbf{Como} alumno, & \textbf{quiero} poder reengancharme a la partida si pierdo la conexión a internet \\
+                                     && \textbf{para} no perder mi progreso y poder terminar el test. \\ \hline
+\textbf{HU-AL-07}\label{hu:al-07} & \textbf{Como} alumno, & \textbf{quiero} recibir puntos extra por responder rápido o mantener una racha de aciertos \\
+                                     && \textbf{para} sentirme recompensado por mi agilidad y constancia. \\ \hline
 \end{tabularx}
 }
 \caption{Historias de usuario asociadas al rol de Alumno.}
@@ -63,39 +63,39 @@ Una vez definidos los perfiles que interactúan con la plataforma, el comportami
 \begin{table}[H]
 \centering
 \small
-\renewcommand{\arraystretch}{1.4}
+\renewcommand{\arraystretch}{1.35}
 \makebox[\textwidth][c]{
 \begin{tabularx}{\dimexpr\textwidth+1cm}{l l X}
 \hline
 \textbf{ID} & \textbf{Descripción} & \\ \hline
-\textbf{HU-PR-01}\label{hu:pr-01} & \textit{Como} profesor, & \textit{quiero} crear y organizar mis propios cuestionarios \\
-                                     && \textit{para} disponer de un repositorio de actividades personalizado por asignatura o tema. \\ \hline
-\textbf{HU-PR-02}\label{hu:pr-02} & \textit{Como} profesor, & \textit{quiero} poder editar mis cuestionarios existentes \\
-                                     && \textit{para} corregir errores o crear variantes rápidas para diferentes grupos. \\ \hline
-\textbf{HU-PR-03}\label{hu:pr-03} & \textit{Como} profesor, & \textit{quiero} crear y administrar una sala con un PIN único \\
-                                     && \textit{para} controlar el acceso de los alumnos y decidir cuándo comienza el test. \\ \hline
-\textbf{HU-PR-04}\label{hu:pr-04} & \textit{Como} profesor, & \textit{quiero} ver en tiempo real qué están respondiendo los alumnos y quiénes se van conectando \\
-                                     && \textit{para} llevar un control del progreso de la clase. \\ \hline
-\textbf{HU-PR-05}\label{hu:pr-05} & \textit{Como} profesor, & \textit{quiero} poder cerrar la sala una vez iniciada la actividad \\
-                                     && \textit{para} que ningún alumno se una tarde o de forma externa. \\ \hline
-\textbf{HU-PR-06}\label{hu:pr-06} & \textit{Como} profesor, & \textit{quiero} escanear el móvil del alumno \\
-                                     && \textit{para} confirmar su presencia física y validar su nota en el sistema evitando respuestas no autorizadas. \\ \hline
-\textbf{HU-PR-07}\label{hu:pr-07} & \textit{Como} profesor, & \textit{quiero} crear grupos o clases \\
-                                     && \textit{para} tener organizados a mis alumnos y facilitar el volcado de notas histórico. \\ \hline
-\textbf{HU-PR-08}\label{hu:pr-08} & \textit{Como} profesor, & \textit{quiero} visualizar estadísticas de acierto por pregunta al finalizar \\
-                                     && \textit{para} detectar conceptos que no han quedado claros y reforzarlos. \\ \hline
-\textbf{HU-PR-09}\label{hu:pr-09} & \textit{Como} profesor, & \textit{quiero} generar borradores de preguntas mediante IA \\
-                                     && \textit{para} reducir el tiempo de preparación de mis clases. \\ \hline
-\textbf{HU-PR-10}\label{hu:pr-10} & \textit{Como} profesor, & \textit{quiero} exportar los resultados verificados a CSV \\
-                                     && \textit{para} integrarlos en mis herramientas de gestión docente externas. \\ \hline
-\textbf{HU-PR-11}\label{hu:pr-11} & \textit{Como} profesor, & \textit{quiero} configurar si se otorgan puntos extra por rapidez o racha \\
-                                     && \textit{para} adaptar el nivel de competitividad de la sesión. \\ \hline
-\textbf{HU-PR-12}\label{hu:pr-12} & \textit{Como} profesor, & \textit{quiero} decidir si el ranking se muestra tras cada pregunta \\
-                                     && \textit{para} gestionar el ritmo y la atención de la clase. \\ \hline
-\textbf{HU-PR-13}\label{hu:pr-13} & \textit{Como} profesor, & \textit{quiero} añadir etiquetas e imágenes a mis cuestionarios \\
-                                     && \textit{para} identificar los y personalizarlos visualmente. \\ \hline
-\textbf{HU-PR-14}\label{hu:pr-14} & \textit{Como} profesor, & \textit{quiero} acceder al historial de salas pasadas \\
-                                     && \textit{para} revisar resultados y analizar el progreso de mis alumnos en el tiempo. \\ \hline
+\textbf{HU-PR-01}\label{hu:pr-01} & \textbf{Como} profesor, & \textbf{quiero} crear y organizar mis propios cuestionarios \\
+                                     && \textbf{para} disponer de un repositorio de actividades personalizado por asignatura o tema. \\ \hline
+\textbf{HU-PR-02}\label{hu:pr-02} & \textbf{Como} profesor, & \textbf{quiero} poder editar mis cuestionarios existentes \\
+                                     && \textbf{para} corregir errores o crear variantes rápidas para diferentes grupos. \\ \hline
+\textbf{HU-PR-03}\label{hu:pr-03} & \textbf{Como} profesor, & \textbf{quiero} crear y administrar una sala con un PIN único \\
+                                     && \textbf{para} controlar el acceso de los alumnos y decidir cuándo comienza el test. \\ \hline
+\textbf{HU-PR-04}\label{hu:pr-04} & \textbf{Como} profesor, & \textbf{quiero} ver en tiempo real qué están respondiendo los alumnos y quiénes se van conectando \\
+                                     && \textbf{para} llevar un control del progreso de la clase. \\ \hline
+\textbf{HU-PR-05}\label{hu:pr-05} & \textbf{Como} profesor, & \textbf{quiero} poder cerrar la sala una vez iniciada la actividad \\
+                                     && \textbf{para} que ningún alumno se una tarde o de forma externa. \\ \hline
+\textbf{HU-PR-06}\label{hu:pr-06} & \textbf{Como} profesor, & \textbf{quiero} escanear el móvil del alumno \\
+                                     && \textbf{para} confirmar su presencia física y validar su nota en el sistema evitando respuestas no autorizadas. \\ \hline
+\textbf{HU-PR-07}\label{hu:pr-07} & \textbf{Como} profesor, & \textbf{quiero} crear grupos o clases \\
+                                     && \textbf{para} tener organizados a mis alumnos y facilitar el volcado de notas histórico. \\ \hline
+\textbf{HU-PR-08}\label{hu:pr-08} & \textbf{Como} profesor, & \textbf{quiero} visualizar estadísticas de acierto por pregunta al finalizar \\
+                                     && \textbf{para} detectar conceptos que no han quedado claros y reforzarlos. \\ \hline
+\textbf{HU-PR-09}\label{hu:pr-09} & \textbf{Como} profesor, & \textbf{quiero} generar borradores de preguntas mediante IA \\
+                                     && \textbf{para} reducir el tiempo de preparación de mis clases. \\ \hline
+\textbf{HU-PR-10}\label{hu:pr-10} & \textbf{Como} profesor, & \textbf{quiero} exportar los resultados verificados a CSV \\
+                                     && \textbf{para} integrarlos en mis herramientas de gestión docente externas. \\ \hline
+\textbf{HU-PR-11}\label{hu:pr-11} & \textbf{Como} profesor, & \textbf{quiero} configurar si se otorgan puntos extra por rapidez o racha \\
+                                     && \textbf{para} adaptar el nivel de competitividad de la sesión. \\ \hline
+\textbf{HU-PR-12}\label{hu:pr-12} & \textbf{Como} profesor, & \textbf{quiero} decidir si el ranking se muestra tras cada pregunta \\
+                                     && \textbf{para} gestionar el ritmo y la atención de la clase. \\ \hline
+\textbf{HU-PR-13}\label{hu:pr-13} & \textbf{Como} profesor, & \textbf{quiero} añadir etiquetas e imágenes a mis cuestionarios \\
+                                     && \textbf{para} identificar los y personalizarlos visualmente. \\ \hline
+\textbf{HU-PR-14}\label{hu:pr-14} & \textbf{Como} profesor, & \textbf{quiero} acceder al historial de salas pasadas \\
+                                     && \textbf{para} revisar resultados y analizar el progreso de mis alumnos en el tiempo. \\ \hline
 \end{tabularx}
 }
 \caption{Historias de usuario asociadas al rol de Profesor.}
@@ -124,7 +124,7 @@ Las reglas de negocio definen las políticas, derechos y leyes lógicas que gobi
 \end{itemize}
 
 \subsection{Restricciones}\label{sub:restricciones}
-Para que las políticas de negocio descritas anteriormente puedan ejecutarse de manera efectiva, el sistema debe acatar una serie de restricciones:
+Para que las políticas de negocio descritas anteriormente puedan ejecutarse de manera efectiva, el sistema debe acatar una serie de restricciones técnicas y de diseño, aplicando el principio de arquitectura con autoridad en el servidor expuesto por Gregory \cite{gregory2014game}:
 
 \begin{itemize}
     \item \textbf{Validación de \textit{uvus}:} El sistema restringirá el formato del \textit{uvus} de los alumnos para que coincida estrictamente con el patrón definido por la Universidad de Sevilla. El servidor validará mediante expresiones regulares que la cadena cumpla con los formatos oficiales, rechazando cualquier formato de nombre inválido.
@@ -580,8 +580,7 @@ A continuación, se detallan las plantillas descriptivas de cada caso de uso del
 \newpage 
 
 \section{Requisitos no funcionales}\label{sec:requisitos_no_funcionales}
-
-Una vez analizados los requisitos funcionales, es imprescindible enfocar la atención en los requisitos no funcionales, los cuales resultan igualmente críticos para el éxito de la plataforma. Mientras que los primeros definen el comportamiento explícito del sistema, los requisitos no funcionales establecen las cualidades globales de operación, tales como la seguridad de los flujos de evaluación, la agilidad en el funcionamiento del sistema y la robustez técnica ante fallos de conectividad. 
+Los requisitos no funcionales determinan los atributos de calidad, restricciones técnicas y criterios de rendimiento que debe satisfacer la plataforma \textit{Quizzie}. Su categorización se articula atendiendo a las dimensiones del modelo de calidad del producto de software definido en la norma ISO/IEC 25010 \cite{iso25010}:
 
 \begin{table}[H]
 \centering
