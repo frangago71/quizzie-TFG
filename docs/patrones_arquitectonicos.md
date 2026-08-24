@@ -8,11 +8,12 @@ Este documento describe conceptualmente la arquitectura del software, los patron
 
 El diseño de **Quizzie** responde a los requisitos de una aplicación web interactiva en tiempo real orientada a la gamificación educativa. Para garantizar un alto grado de mantenibilidad, flexibilidad y rendimiento en escenarios de concurrencia (como el uso simultáneo por múltiples alumnos en una misma aula), se han combinado tres patrones arquitectónicos fundamentales: **cliente-servidor (desacoplado)**, **arquitectura en capas (layered architecture)** y **arquitectura basada en eventos (event-driven architecture)**.
 
+*Diagrama 1.1: Visión conceptual de la arquitectura en capas y patrones principales.*
+
 ```mermaid
 %%{init: {'theme': 'neutral'}}%%
 graph TD
     subgraph "Capa de cliente (SPA) — <i>Patrón Cliente-Servidor</i>"
-        direction LR
         UI["Interfaz de usuario"] --> State["Gestión de estado"] --> NetClient["Servicios de red"]
     end
 
@@ -34,7 +35,63 @@ graph TD
     HTTP <--> Backend
     WS <--> Backend
     ORM --> Persistencia
+
+   style UI fill:#f8e6f8,stroke:#a946ab,color:#4a0f4a,stroke-width:1.5px
+   style State fill:#f8e6f8,stroke:#a946ab,color:#4a0f4a,stroke-width:1.5px
+   style NetClient fill:#f8e6f8,stroke:#a946ab,color:#4a0f4a,stroke-width:1.5px
+
+   style HTTP fill:#e4bce4,stroke:#661465,color:#4a0f4a,stroke-width:1.5px
+   style WS fill:#e4bce4,stroke:#661465,color:#4a0f4a,stroke-width:1.5px
+
+   style Routers fill:#e3f9f3,stroke:#55ccaa,color:#004d4a,stroke-width:1.5px
+   style Services fill:#e3f9f3,stroke:#55ccaa,color:#004d4a,stroke-width:1.5px
+   style ORM fill:#e3f9f3,stroke:#55ccaa,color:#004d4a,stroke-width:1.5px
+
+   style DB fill:#b3ebd9,stroke:#007976,color:#004d4a,stroke-width:1.5px
 ```
+
+*Diagrama 1.2: Mapeo de la arquitectura conceptual a la implementación concreta.*
+
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    subgraph Client ["Capa de cliente — <i>Implementación técnica</i>"]
+        UI["Componentes React / TSX"] --> State["Auth & Room Context"] --> NetClient["Servicios Axios / WS Client"]
+    end
+
+    subgraph Red ["Canal de comunicación — <i>Protocolos y conectores</i>"]
+        HTTP["Endpoints REST / Schemas Pydantic"]
+        WS["ConnectionManager / Sockets"]
+    end
+
+    subgraph Backend ["Capa de backend — <i>Tecnologías y servicios</i>"]
+        Routers["FastAPI Routers"] --> Services["JWT y Tokens de validación"] --> ORM["Modelos SQLModel"]
+    end
+
+    subgraph Persistencia ["Capa de persistencia — <i>Almacenamiento</i>"]
+        DB[(Motor SQLite)]
+    end
+
+    NetClient <--> HTTP
+    NetClient <--> WS
+    HTTP <--> Backend
+    WS <--> Backend
+    ORM --> Persistencia
+
+    style UI fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1px
+    style State fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1px
+    style NetClient fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1px
+
+    style HTTP fill:#661465,stroke:#4a0f4a,color:#ffffff,stroke-width:1px
+    style WS fill:#661465,stroke:#4a0f4a,color:#ffffff,stroke-width:1px
+
+    style Routers fill:#55ccaa,stroke:#007976,color:#ffffff,stroke-width:1px
+    style Services fill:#55ccaa,stroke:#007976,color:#ffffff,stroke-width:1px
+    style ORM fill:#55ccaa,stroke:#007976,color:#ffffff,stroke-width:1px
+
+    style DB fill:#007976,stroke:#005553,color:#ffffff,stroke-width:1px
+```
+
 
 ---
 

@@ -13,7 +13,7 @@ Antes de seleccionar el \textit{stack} y la estructura del código, se estableci
     \item \textbf{Gestión de la concurrencia y escalabilidad:} El sistema debe ser capaz de mantener decenas de conexiones bidireccionales simultáneas en un aula sin bloquear el procesamiento del servidor, distribuyendo el rendimiento de forma eficiente entre peticiones HTTP habituales y eventos en tiempo real.
 \end{itemize}
 
-Para dar respuesta a estos principios, se ha optado por una arquitectura híbrida que combina tres patrones complementarios: \textbf{cliente-servidor desacoplado}, \textbf{arquitectura en capas} (\textit{layered architecture}) y \textbf{arquitectura basada en eventos} (\textit{event-driven architecture}).
+Para dar respuesta a estos principios, se ha optado por una arquitectura híbrida que combina tres patrones complementarios: el modelo \textbf{cliente-servidor desacoplado}, formulado por Bass \textit{et al.} \cite{bass2012software} para la separación de responsabilidades; la \textbf{arquitectura en capas} (\textit{layered architecture}), formalizada por Martin \cite{martin2017clean} para el aislamiento de las reglas de negocio; y la \textbf{arquitectura basada en eventos} (\textit{event-driven architecture}), fundamentada en los patrones de comunicación asíncrona de Hohpe y Woolf \cite{hohpe2004enterprise}.
 
 \subsection{Arquitectura cliente-servidor desacoplada}
 
@@ -70,18 +70,175 @@ El diseño de este comportamiento se apoya en los siguientes componentes concept
     \label{fig:diagrama_secuencia_eventos}
 \end{figure}
 
+\newpage
+
 \section{Arquitectura global del sistema}
 
-La combinación de los tres patrones previamente descritos se consolida en una estructura global unificada. Como se ilustra en el \hyperref[fig:arquitectura_global]{esquema de la arquitectura global} del sistema, este enfoque permite integrar en un único marco de trabajo los terminales cliente, los canales de comunicación síncronos y asíncronos, las capas de servicios del \textit{backend} y el sistema de persistencia de datos.
+La combinación de los tres patrones previamente descritos se consolida en una estructura global unificada. En la \hyperref[fig:comparativa_arquitectura]{compartiva de la arquitectura} se presenta, a la izquierda, el marco conceptual abstracto de la arquitectura global y, a la derecha, su correspondencia directa con los componentes de software, módulos y tecnologías reales que ejecutan el sistema.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/arquitectura_global.png}
-    \caption{Esquema de la arquitectura global del sistema.}
-    \label{fig:arquitectura_global}
+    \begin{minipage}[b]{0.493\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/arquitectura_global.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/diagrama_componentes.png}
+    \end{minipage}
+    \vspace{0.3cm}
+    \caption{Comparativa entre la arquitectura global y su implementación concreta.}
+    \label{fig:comparativa_arquitectura}
 \end{figure}
 
+Como se observa en la comparativa, cada capa conceptual se corresponde de forma directa con sus módulos de software equivalentes: la interfaz y el estado en el cliente React, los controladores y gestores de eventos en FastAPI, y el mapeo de datos mediante SQLModel sobre el motor SQLite en la persistencia.
+
 \newpage
+
+\section{Justificación y decisiones de arquitectura}\label{sec:justificacion_arquitectura}
+
+Una vez definidos el esquema conceptual y la estructura de componentes del sistema, resulta imprescindible formalizar las decisiones tecnológicas adoptadas y verificar su alineación con las necesidades del proyecto. En este apartado se aborda dicho proceso desde dos perspectivas complementarias: la documentación formal de las decisiones de diseño clave y la verificación explícita de su impacto sobre los atributos de calidad del proyecto.
+
+\subsection{Registros de decisiones de arquitectura \textit{(ADR)}}\label{subsec:adrs}
+
+Para documentar y formalizar las decisiones de diseño estructural más críticas del proyecto, se ha adoptado el patrón de registros de decisiones de arquitectura (\textit{Architecture Decision Records}, ADR) propuesto por Nygard \cite{nygard2011adr}. A continuación se detallan las decisiones arquitectónicas fundamentales que vertebran el diseño de \textit{Quizzie}:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{12.5cm}}
+\hline
+\textbf{ADR} & ADR-01: Adopción de FastAPI y WebSockets para la comunicación en tiempo real \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & La plataforma requiere gestionar la comunicación bidireccional y síncrona con hasta 100 alumnos por sala, ofreciendo baja latencia en la transmisión de preguntas y recepción de respuestas. \\
+\hline
+\textbf{Alternativas} & API REST mediante \textit{polling} tradicional y \textit{Server-Sent Events (SSE)}. \\
+\hline
+\textbf{Decisión} & Utilizar FastAPI como motor asíncrono con protocolo \textit{WebSockets} bidireccional nativo. \\
+\hline
+\textbf{Consecuencias} & \textbf{Positivas:} Se logra una latencia inferior a 50 ms en la propagación de eventos y un consumo mínimo de RAM por conexión activa. \\
+\cline{2-2}
+& \textbf{Negativas:} Exige gestionar manualmente la reconexión y retención de estado de sockets en el cliente. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de decisiones de arquitectura - ADR-01.}
+\label{adr_01}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{12.5cm}}
+\hline
+\textbf{ADR} & ADR-02: Arquitectura basada en eventos para el manejo de salas \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & El ciclo de vida de una sala exige informar inmediatamente a todos los clientes en tiempo real, ya que todos deben estar en la misma fase en todo momento. \\
+\hline
+\textbf{Alternativas} & Bucle de consulta síncrono \textit{polling} desde el cliente o \textit{sockets} puros sin tipado de eventos. \\
+\hline
+\textbf{Decisión} & Diseñar un gestor centralizado de eventos (\texttt{ConnectionManager}) que difunda mensajes estructurados JSON mediante un patrón de publicación/suscripción local. \\
+\hline
+\textbf{Consecuencias} & \textbf{Positivas:} Desacoplamiento total entre la lógica del juego y la capa de transporte; facilidad para testear eventos aislados. \\
+\cline{2-2}
+& \textbf{Negativas:} Mayor complejidad en la serialización y deserialización de esquemas Pydantic. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de decisiones de arquitectura - ADR-02.}
+\label{adr_02}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{12.5cm}}
+\hline
+\textbf{ADR} & ADR-03: Selección del stack de persistencia SQLite + SQLModel \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & Se requiere un motor relacional liviano, de coste cero y portabilidad total, minimizando la carga operativa en el servidor sin duplicar esquemas de validación de datos. \\
+\hline
+\textbf{Alternativas} & PostgreSQL administrado en la nube o SQLAlchemy + Pydantic desacoplados. \\
+\hline
+\textbf{Decisión} & Adoptar SQLite como motor relacional en contenedor combinado con SQLModel como \textit{ORM} unificado. \\
+\hline
+\textbf{Consecuencias} & \textbf{Positivas:} Cumplimiento estricto del principio \textit{DRY (Don't Repeat Yourself)}; despliegue sin dependencias complejas de infraestructura. \\
+\cline{2-2}
+& \textbf{Negativas:} Bloqueo a nivel de archivo en escrituras masivas concurrentes. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de decisiones de arquitectura - ADR-03.}
+\label{adr_03}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{12.5cm}}
+\hline
+\textbf{ADR} & ADR-04: Autenticación híbrida JWT + Código QR presencial \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & Es necesario conciliar el acceso seguro del profesor (persistente) con la incorporación rápida del alumno (efímera y sin registro), garantizando que la nota solo se consolide si el estudiante está presente en el aula. \\
+\hline
+\textbf{Alternativas} & Cuentas obligatorias de usuario para alumnos o comprobación manual en lista por parte del docente. \\
+\hline
+\textbf{Decisión} & Implementar autenticación síncrona JWT para docentes y un flujo de tokens efímeros firmados criptográficamente presentados en formato código QR por el alumno al finalizar la prueba. \\
+\hline
+\textbf{Consecuencias} & \textbf{Positivas:} Eliminación del fraude por participación a distancia; fricción nula para el estudiante. \\
+\cline{2-2}
+& \textbf{Negativas:} Requiere el uso de la cámara del dispositivo docente durante la fase de cierre de la sesión. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de decisiones de arquitectura - ADR-04.}
+\label{adr_04}
+\end{table}
+
+\subsection{Trazabilidad entre RNF y tácticas arquitectónicas}\label{sec:trazabilidad_rnf_arquitectura}
+
+Para garantizar que el diseño propuesto satisface los atributos de calidad definidos en la especificación de requisitos, la siguiente tabla mapea cada requisito no funcional (RNF) con la táctica de arquitectura aplicada, el componente responsable de su ejecución y el método de verificación utilizado en el proyecto:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{%
+\begin{tabularx}{16cm}{l X p{3.5cm} p{3cm}}
+\hline
+\textbf{Requisito} & \textbf{Táctica arquitectónica} & \textbf{Responsable} & \textbf{Verificación} \\ \hline
+\hyperref[rnf:01]{\textbf{RNF-01}} & Canales bidireccionales y difusión asíncrona (\textit{broadcasting}). & Controladores (\texttt{routers/}) & Test de latencia ($<50$ ms) \\ \hline
+\hyperref[rnf:02]{\textbf{RNF-02}} & Bucle de eventos no bloqueante e E/S asíncrona. & Motor FastAPI y Uvicorn & Carga simultánea ($100$ usuarios) \\ \hline
+\hyperref[rnf:03]{\textbf{RNF-03}} & Tokens criptográficos firmados con HMAC de un solo uso. & \texttt{routers/} y \texttt{auth.py} & Test de unicidad de firmas \\ \hline
+\hyperref[rnf:04]{\textbf{RNF-04}} & Derivación y \textit{hashing} adaptativo de credenciales. & \texttt{auth.py} & Inspección de almacenamiento \\ \hline
+\hyperref[rnf:05]{\textbf{RNF-05}} & Forzado de canal seguro extremo a extremo (HTTPS / WSS). & Proxy inverso (TLS) & Auditoría de certificados TLS \\ \hline
+\hyperref[rnf:06]{\textbf{RNF-06}} & Diseños fluidos reactivos con puntos de ruptura adaptativos. & Componentes React UI y \texttt{layouts/} & Verificación en multidispositivo \\ \hline
+\hyperref[rnf:07]{\textbf{RNF-07}} & Escaneo optimizado del flujo de cámara en hilo secundario. & Módulo de partida (\texttt{room-play/}) & Medición de tiempo ($<1$ s) \\ \hline
+\hyperref[rnf:08]{\textbf{RNF-08}} & Persistencia de sesión local y reconexión mediante token/PIN. & Estado global (\texttt{context/}) & Simulación de caída de red \\ \hline
+\hyperref[rnf:09]{\textbf{RNF-09}} & Transacciones relacionales ACID con sincronización en disco. & Motor SQLite y SQLModel & Prueba de fallo de proceso \\ \hline
+\hyperref[rnf:10]{\textbf{RNF-10}} & Separación estricta de responsabilidades en capas independientes. & Arquitectura global & Inspección de dependencias \\ \hline
+\end{tabularx}%
+}
+\caption{Matriz de trazabilidad entre RNF y tácticas arquitectónicas.}
+\label{tab:trazabilidad_rnf_arquitectura}
+\end{table}
 
 \section{Estructura modular del código}
 
@@ -96,6 +253,7 @@ A continuación se presenta el esquema preliminar de la jerarquía de directorio
 .1 quizzie-tfg/\DTcomment{Raíz del proyecto}.
 .2 backend/\DTcomment{Servidor de aplicación y API REST/\textit{WebSockets}}.
 .3 main.py\DTcomment{Punto de entrada de la API y orquestación de servicios}.
+.3 auth.py\DTcomment{Lógica de autenticación, generación de JWT y hashing de claves}.
 .3 database.py\DTcomment{Configuración del motor de base de datos y sesiones}.
 .3 seed.py\DTcomment{Poblado inicial de datos y configuraciones base}.
 .3 models/\DTcomment{Capa de entidades y modelo relacional (ORM)}.

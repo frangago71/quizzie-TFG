@@ -52,3 +52,40 @@ graph TD
     style N3 fill:#a946ab,stroke:#7d386f,color:#fff,stroke-width:1px
     style N4 fill:#a946ab,stroke:#7d386f,color:#fff,stroke-width:1px
 ```
+
+## Diagrama de despliegue
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    subgraph Clients ["Dispositivos Cliente"]
+        direction TB
+        Teacher["Profesor"]
+        Student["Alumno"]
+        Teacher ~~~ Student
+    end
+
+    subgraph VercelHost ["FRONTEND — Vercel"]
+        Vercel["Hosting SPA (React + Vite)<br/><i>Config: VITE_API_URL (Secreto)</i>"]
+    end
+
+    subgraph RenderHost ["BACKEND — Render (Linux Container)"]
+        Render["Servidor FastAPI + Uvicorn<br/>• Cifrado TLS Ingress (HTTPS / WSS)<br/>• Motor JWT / Seguridad<br/>• Gestor WebSockets"]
+        SQLite[(Base de Datos SQLite<br/><i>Archivo DB en Volumen Local</i>)]
+
+        Render <-->|"SQLModel (Lectura / Escritura)"| SQLite
+    end
+
+    subgraph External ["Servicios Externos"]
+        Gemini["Google Gemini API<br/><i>(Generación por IA)</i>"]
+    end
+
+    Clients -->|"1. Carga SPA (HTTPS)"| VercelHost
+    VercelHost -.-|"2. Apunta vía VITE_API_URL"| RenderHost
+    Clients <-->|"3. Peticiones REST (HTTPS) y Sockets (WSS)"| RenderHost
+    Render <-->|"4. Integración IA (HTTPS / API Key)"| Gemini
+
+    style Clients stroke:#55ccaa,color:#3f3f46,stroke-width:3px
+    style External stroke:#a946ab,color:#3f3f46,stroke-width:3px
+    style VercelHost stroke:#661465,color:#3f3f46,stroke-width:3px
+    style RenderHost stroke:#007976,color:#3f3f46,stroke-width:3px
+    ```
