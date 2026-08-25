@@ -116,11 +116,11 @@ El diccionario de la EDT define formalmente el alcance de cada entregable y desg
 \hline
 \textbf{Actividad} & \textbf{Recurso} & \textbf{Horas} \\ 
 \hline
-\hyperref[act:13]{\textbf{ACT-13}} & Técnico & 2h \\
+\hyperref[act:13]{\textbf{ACT-13}} & Técnico & 11h \\
 \hline
-\hyperref[act:14]{\textbf{ACT-14}} & Project Manager & 5h \\
+\hyperref[act:14]{\textbf{ACT-14}} & Técnico & 5h \\
 \hline
-\hyperref[act:15]{\textbf{ACT-15}} & Project Manager & 3h \\
+\hyperref[act:15]{\textbf{ACT-15}} & Técnico & 12h \\
 \hline
 \end{tabular}
 \caption{Actividades del entregable 1.2.}
@@ -288,9 +288,9 @@ El diccionario de la EDT define formalmente el alcance de cada entregable y desg
 \hline
 \hyperref[act:16]{\textbf{ACT-16}} & Programador Backend & 25h \\
 \hline
-\hyperref[act:17]{\textbf{ACT-17}} & Programador Frontend & 35h \\
+\hyperref[act:17]{\textbf{ACT-17}} & Programador Frontend & 25h \\
 \hline
-\hyperref[act:18]{\textbf{ACT-18}} & Programador Backend & 20h \\
+\hyperref[act:18]{\textbf{ACT-18}} & Programador Backend & 15h \\
 \hline
 \end{tabular}
 \caption{Actividades del entregable 3.1.}
@@ -331,7 +331,7 @@ El diccionario de la EDT define formalmente el alcance de cada entregable y desg
 \hline
 \hyperref[act:21]{\textbf{ACT-21}} & Programador Backend & 20h \\
 \hline
-\hyperref[act:22]{\textbf{ACT-22}} & Programador Frontend & 20h \\
+\hyperref[act:22]{\textbf{ACT-22}} & Programador Frontend & 17h \\
 \hline
 \hyperref[act:23]{\textbf{ACT-23}} & Programador Backend & 12h \\
 \hline
@@ -567,15 +567,15 @@ F-02 -- Documentación & ACT-06\label{act:06} & Elaboración del manual funciona
 
 F-03 -- Inicio & ACT-13\label{act:13} & Inicialización del repositorio en GitHub y estructura base \\ \hline
 
-F-04 -- CI/CD & ACT-14\label{act:14} & Configuración de reglas en ramas y automatización base \\
-& ACT-15\label{act:15} & Diseño y despliegue de \textit{templates} para \textit{issues} \\ \hline
+F-04 -- CI/CD & ACT-14\label{act:14} & Diseño de \textit{templates} para \textit{issues} y automatización base \\
+& ACT-15\label{act:15} & Desarrollo de \textit{scripts} de despliegue e integración continuos \\ \hline
 
 F-05 -- MVP & ACT-16\label{act:16} & Diseño y desarrollo de la persistencia base para cuestionarios \\
 & ACT-17\label{act:17} & Implementación de la interfaz de creación de tests y panel base \\
 & ACT-18\label{act:18} & Lógica de control y validación para la ejecución asíncrona \\ \hline
 
 F-06 -- Testing & ACT-19\label{act:19} & Desarrollo y ejecución de test de integración de servicios \\
-& ACT-20\label{act:20} & Programación y lanzamiento de \textit{scripts} de carga \\ \hline
+& ACT-20\label{act:20} & Pruebas de componentes, de carga y \textit{end-to-end} \\ \hline
 
 F-07 -- Core & ACT-21\label{act:21} & Desarrollo de la infraestructura síncrona y canales WebSocket \\
 & ACT-22\label{act:22} & Implementación en frontend de la conexión reactiva a salas \\
@@ -734,20 +734,19 @@ El estudio económico de la plataforma se fundamenta en la clasificación financ
 \begin{tabular}{lr}
 \hline
 \textbf{Concepto} & \textbf{Coste neto} \\ \hline
-Costes laborales & 10.865,49 € \\
+Costes laborales & 11.552,65 € \\
 Equipamiento informático & 500,00 € \\
 Licencia comercial anual Google AI Premium (Gemini Pro) & 218,07 € \\
 Licencia GitHub Team (6 meses) & 21,82 € \\
 Licencia Microsoft Teams Essentials (6 meses) & 21,82 € \\
-Reserva de contingencia & 1.162,72 € \\ \hline
-\textbf{Total CAPEX} & \textbf{12.789,92 €} \\ \hline
+Reserva de contingencia & 12.314,36 € \\ \hline
+\textbf{Total CAPEX} & \textbf{13.545,80 €} \\ \hline
 \end{tabular}
 \caption{Resumen de Gastos de Capital (CAPEX).}
 \label{tab:resumen_capex}
 \end{table}
 
-Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos debido a que el proyecto ha sido ejecutado íntegramente por un único ingeniero. De este modo, cada actividad de la EDT se presupuesta teniendo en cuenta el rol profesional que la llevará a cabo. Para garantizar el rigor y la objetividad de las tarifas aplicadas, los precios base por hora se han extraído del \textit{Informe Final sobre la Consulta Preliminar del Mercado: ``Perfiles Profesionales Ámbito Informático''} de la Junta de Andalucía \cite{juntaTIC2018}. Siguiendo las directrices de dicho organismo, se utiliza como referencia la métrica de la \textbf{media acotada}, un indicador estadístico corregido mediante el test de Tukey que elimina valores atípicos del sector. Sobre la base salarial neta resultante de 8.358,07 €, se ha aplicado un recargo del 30\% en concepto de Seguridad Social y costes empresariales de contratación directos del mercado español, consolidando el coste laboral real en \textbf{10.865,49 €}. El desglose detallado de las horas por actividad y perfiles profesionales que sustenta este cálculo se presenta en la tabla de \hyperref[tab:coste_personal_rol]{costes netos laborales}.
-
+Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos debido a que el proyecto ha sido ejecutado íntegramente por un único ingeniero. De este modo, cada actividad de la EDT se presupuesta teniendo en cuenta el rol profesional que la llevará a cabo. Para garantizar el rigor y la objetividad de las tarifas aplicadas, los precios base por hora se han extraído del \textit{Informe Final sobre la Consulta Preliminar del Mercado: ``Perfiles Profesionales Ámbito Informático''} de la Junta de Andalucía \cite{juntaTIC2018}. Siguiendo las directrices de dicho organismo, se utiliza como referencia la métrica de la \textbf{media acotada}, un indicador estadístico corregido mediante el test de Tukey que elimina valores atípicos del sector. Sobre la base salarial neta resultante de 8.886,65 €, se ha aplicado un recargo del 30\% en concepto de Seguridad Social y costes empresariales de contratación directos del mercado español, consolidando el coste laboral real en \textbf{11.552,65 €}. El desglose detallado de las horas por actividad y perfiles profesionales que sustenta este cálculo se presenta en la tabla de \hyperref[tab:coste_personal_rol]{costes netos laborales}.
 \begin{table}[H]
 \centering
 \small
@@ -756,43 +755,43 @@ Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos deb
 \begin{tabular}{llccr}
 \hline
 \textbf{Recurso (Rol)} & \textbf{Actividad} & \textbf{Precio/hora} & \textbf{Horas} & \textbf{Coste neto} \\ \hline
-\textbf{Project Manager} & \hyperref[act:01]{\textbf{ACT-01}} & 46,09 € & 4 h  & 184,36 € \\
-                         & \hyperref[act:02]{\textbf{ACT-02}} & 46,09 € & 4 h  & 184,36 € \\
-                         & \hyperref[act:14]{\textbf{ACT-14}} & 46,09 € & 5 h  & 230,45 € \\
-                         & \hyperref[act:15]{\textbf{ACT-15}} & 46,09 € & 3 h  & 138,27 € \\
-                         & \hyperref[act:29]{\textbf{ACT-29}} & 46,09 € & 10 h & 460,90 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}} & \textbf{26 h} & \textbf{1.198,34 €} \\ \hline
-\textbf{Analista}        & \hyperref[act:06]{\textbf{ACT-06}} & 38,33 € & 2 h  & 76,66 € \\
-                         & \hyperref[act:08]{\textbf{ACT-08}} & 38,33 € & 3 h  & 114,99 € \\
-                         & \hyperref[act:09]{\textbf{ACT-09}} & 38,33 € & 4 h  & 153,32 € \\
-                         & \hyperref[act:10]{\textbf{ACT-10}} & 38,33 € & 4 h  & 153,32 € \\
-                         & \hyperref[act:11]{\textbf{ACT-11}} & 38,33 € & 4 h  & 153,32 € \\
-                         & \hyperref[act:27]{\textbf{ACT-27}} & 38,33 € & 70 h & 2.683,10 € \\ \cline{2-5}
+\textbf{Project Manager}     & \hyperref[act:01]{\textbf{ACT-01}} & 46,09 € & 4 h  & 184,36 € \\
+                             & \hyperref[act:02]{\textbf{ACT-02}} & 46,09 € & 4 h  & 184,36 € \\
+                             & \hyperref[act:29]{\textbf{ACT-29}} & 46,09 € & 10 h & 460,90 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{18 h} & \textbf{829,62 €} \\ \hline
+\textbf{Analista}            & \hyperref[act:06]{\textbf{ACT-06}} & 38,33 € & 2 h  & 76,66 € \\
+                             & \hyperref[act:08]{\textbf{ACT-08}} & 38,33 € & 3 h  & 114,99 € \\
+                             & \hyperref[act:09]{\textbf{ACT-09}} & 38,33 € & 4 h  & 153,32 € \\
+                             & \hyperref[act:10]{\textbf{ACT-10}} & 38,33 € & 4 h  & 153,32 € \\
+                             & \hyperref[act:11]{\textbf{ACT-11}} & 38,33 € & 4 h  & 153,32 € \\
+                             & \hyperref[act:27]{\textbf{ACT-27}} & 38,33 € & 70 h & 2.683,10 € \\ \cline{2-5}
                          & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{87 h} & \textbf{3.334,71 €} \\ \hline
-\textbf{Diseñador UI}    & \hyperref[act:03]{\textbf{ACT-03}} & 33,43 € & 2 h  & 66,86 € \\
-                         & \hyperref[act:04]{\textbf{ACT-04}} & 33,43 € & 5 h  & 167,15 € \\
-                         & \hyperref[act:05]{\textbf{ACT-05}} & 33,43 € & 5 h  & 167,15 € \\
-                         & \hyperref[act:28]{\textbf{ACT-28}} & 33,43 € & 10 h & 334,30 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}    & \textbf{22 h} & \textbf{735,46 €} \\ \hline
+\textbf{Diseñador UI}        & \hyperref[act:03]{\textbf{ACT-03}} & 33,43 € & 2 h  & 66,86 € \\
+                             & \hyperref[act:04]{\textbf{ACT-04}} & 33,43 € & 5 h  & 167,15 € \\
+                             & \hyperref[act:05]{\textbf{ACT-05}} & 33,43 € & 5 h  & 167,15 € \\
+                             & \hyperref[act:28]{\textbf{ACT-28}} & 33,43 € & 10 h & 334,30 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{22 h} & \textbf{735,46 €} \\ \hline
 \textbf{Programador Backend} & \hyperref[act:12]{\textbf{ACT-12}} & 23,85 € & 2 h  & 47,70 € \\
-                         & \hyperref[act:16]{\textbf{ACT-16}} & 23,85 € & 25 h & 596,25 € \\
-                         & \hyperref[act:18]{\textbf{ACT-18}} & 23,85 € & 20 h & 477,00 € \\
-                         & \hyperref[act:21]{\textbf{ACT-21}} & 23,85 € & 20 h & 477,00 € \\
-                         & \hyperref[act:23]{\textbf{ACT-23}} & 23,85 € & 12 h & 286,20 € \\
-                         & \hyperref[act:24]{\textbf{ACT-24}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}   & \textbf{84 h} & \textbf{2.003,40 €} \\ \hline
-\textbf{Programador Frontend} & \hyperref[act:17]{\textbf{ACT-17}} & 23,85 € & 35 h & 834,75 € \\
-                         & \hyperref[act:22]{\textbf{ACT-22}} & 23,85 € & 20 h & 477,00 € \\
-                         & \hyperref[act:25]{\textbf{ACT-25}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}  & \textbf{60 h} & \textbf{1.431,00 €} \\ \hline
-\textbf{Tester}          & \hyperref[act:19]{\textbf{ACT-19}} & 23,68 € & 7 h  & 165,76 € \\
-                         & \hyperref[act:20]{\textbf{ACT-20}} & 23,68 € & 8 h  & 189,44 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}          & \textbf{15 h} & \textbf{355,20 €} \\ \hline
-\textbf{Técnico}         & \hyperref[act:07]{\textbf{ACT-07}} & 19,58 € & 1 h  & 19,58 € \\
-                         & \hyperref[act:13]{\textbf{ACT-13}} & 19,58 € & 2 h  & 39,16 € \\
-                         & \hyperref[act:26]{\textbf{ACT-26}} & 19,58 € & 3 h  & 58,74 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}         & \textbf{6 h}  & \textbf{117,48 €} \\ \hline
-\textbf{TOTAL}         &  &  & \textbf{300 h} & \textbf{8.358,07 €} \\ \hline
+                             & \hyperref[act:16]{\textbf{ACT-16}} & 23,85 € & 25 h & 596,25 € \\
+                             & \hyperref[act:18]{\textbf{ACT-18}} & 23,85 € & 15 h  & 357,75 € \\
+                             & \hyperref[act:21]{\textbf{ACT-21}} & 23,85 € & 20 h & 477,00 € \\
+                             & \hyperref[act:23]{\textbf{ACT-23}} & 23,85 € & 12 h & 286,20 € \\
+                             & \hyperref[act:24]{\textbf{ACT-24}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{79 h} & \textbf{1.884,15 €} \\ \hline
+\textbf{Programador Frontend} & \hyperref[act:17]{\textbf{ACT-17}} & 23,85 € & 25 h & 596,25 € \\
+                             & \hyperref[act:22]{\textbf{ACT-22}} & 23,85 € & 17 h & 405,45 € \\
+                             & \hyperref[act:25]{\textbf{ACT-25}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{47 h} & \textbf{1.120,95 €} \\ \hline
+\textbf{Tester}              & \hyperref[act:19]{\textbf{ACT-19}} & 23,68 € & 7 h  & 165,76 € \\
+                             & \hyperref[act:20]{\textbf{ACT-20}} & 23,68 € & 8 h  & 189,44 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{15 h} & \textbf{355,20 €} \\ \hline
+\textbf{Técnico}             & \hyperref[act:07]{\textbf{ACT-07}} & 19,58 € & 1 h  & 19,58 € \\
+                             & \hyperref[act:13]{\textbf{ACT-13}} & 19,58 € & 11 h & 215,38 € \\
+                             & \hyperref[act:14]{\textbf{ACT-14}} & 19,58 € & 5 h  & 97,90 € \\
+                             & \hyperref[act:15]{\textbf{ACT-15}} & 19,58 € & 12 h & 234,96 € \\
+                             & \hyperref[act:26]{\textbf{ACT-26}} & 19,58 € & 3 h  & 58,74 € \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{32 h} & \textbf{626,56 €} \\ \hline
+\textbf{TOTAL}         &   &   & \textbf{300 h} & \textbf{8.886,65 €} \\ \hline
 \end{tabular}
 }
 \caption{Costes netos laborales agrupados por perfil profesional.}
