@@ -14,19 +14,11 @@ El proyecto implementa un flujo de trabajo secuencial que abarca desde el desarr
 
 ---
 
-## 2. Verificación Local (Pre-commit hooks)
-Para evitar que los commits fallen posteriormente en la etapa de CI en remoto, el archivo `.pre-commit-config.yaml` intercepta la creación de commits y aplica comprobaciones y correcciones automáticas:
+## 2. Verificación local (pre-commit hooks)
 
-* **Backend (Python):**
-  * **Ruff Check:** Ejecuta `ruff check --fix` para detectar y corregir errores estáticos.
-  * **Ruff Format:** Formatea el código de Python respetando las reglas de estilo del proyecto (`ruff-format`).
-* **Frontend (TypeScript / React):**
-  * **ESLint Local:** Ejecuta `npx eslint --config frontend/eslint.config.js --fix` sobre los archivos modificados bajo `frontend/src/`, asegurando que las reglas de ESLint y Prettier se apliquen con la misma configuración exacta que en la integración continua.
-* **Utilidades Generales:**
-  * `trailing-whitespace`: Elimina espacios innecesarios al final de cada línea.
-  * `end-of-file-fixer`: Asegura que todos los archivos terminen con una línea en blanco.
-  * `check-yaml`: Valida la sintaxis de los archivos YAML.
-  * `check-added-large-files`: Evita incluir accidentalmente archivos de gran tamaño.
+Para evitar que los commits fallen posteriormente en la etapa de CI en remoto, Git ejecuta comprobaciones locales automáticas en el entorno del desarrollador antes de registrar cada commit.
+
+*Nota: La instalación, el desglose completo de los hooks configurados en `.pre-commit-config.yaml` y las órdenes de auditoría se encuentran en el documento `docs/calidad_del_código.md`.*
 
 ---
 

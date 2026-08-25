@@ -39,16 +39,29 @@ npm audit               # Auditoría de seguridad de dependencias
 
 ## 2. Automatización con git hooks (pre-commit)
 
-Para evitar que código defectuoso llegue al repositorio, se utiliza **pre-commit**. Esta herramienta intercepta el comando `git commit` y ejecuta validaciones automáticas.
+Para evitar que código defectuoso o con errores de formato llegue al repositorio, se utiliza **pre-commit**. Esta herramienta intercepta el comando `git commit` en el entorno local y aplica comprobaciones y correcciones automáticas definidas en `.pre-commit-config.yaml`:
 
-- **Instalación:** `uv run pre-commit install`
-- **Validaciones locales:**
-  - Limpieza de espacios en blanco y finales de archivo.
-  - Ejecución de Ruff (Lint y Format).
-  - Validación de ESLint para archivos TypeScript.
-- **Funcionamiento:** Si se detectan fallos, el commit se detiene y la herramienta aplica correcciones automáticas siempre que sea posible.
+### 2.1. Instalación
+Para activar los hooks en el entorno de desarrollo local:
+```bash
+uv run pre-commit install
+```
 
-**Auditoría manual (opcional):**
+### 2.2. Desglose técnico de hooks configurados
+* **Backend (Python):**
+  * **Ruff Check:** Ejecuta `ruff check --fix` para detectar y corregir errores estáticos.
+  * **Ruff Format:** Formatea el código de Python respetando las reglas de estilo del proyecto (`ruff-format`).
+* **Frontend (TypeScript / React):**
+  * **ESLint Local:** Ejecuta `npx eslint --config frontend/eslint.config.js --fix` sobre los archivos modificados bajo `frontend/src/`, asegurando que las reglas de ESLint y Prettier se apliquen con la misma configuración exacta que en la integración continua.
+* **Utilidades Generales:**
+  * `trailing-whitespace`: Elimina espacios innecesarios al final de cada línea.
+  * `end-of-file-fixer`: Asegura que todos los archivos terminen con una línea en blanco.
+  * `check-yaml`: Valida la sintaxis de los archivos YAML.
+  * `check-added-large-files`: Evita incluir accidentalmente archivos de gran tamaño.
+
+### 2.3. Funcionamiento y auditoría manual
+Si alguna comprobación falla, el commit se detiene y la herramienta aplica correcciones automáticas siempre que sea posible.
+
 Aunque el proceso es automático al hacer commit, puedes ejecutar una validación completa de todo el proyecto en cualquier momento (útil para revisar archivos no modificados o antes de un push):
 ```bash
 uv run pre-commit run --all-files
