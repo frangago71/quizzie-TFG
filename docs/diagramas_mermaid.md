@@ -88,4 +88,40 @@ graph LR
     style External stroke:#a946ab,color:#3f3f46,stroke-width:3px
     style VercelHost stroke:#661465,color:#3f3f46,stroke-width:3px
     style RenderHost stroke:#007976,color:#3f3f46,stroke-width:3px
-    ```
+```
+
+## Integración a main
+
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A[1. Confirmar el estado exitoso de la integración] --> B[2. Acceder a la rama de integración local]
+    B --> C[3. Sincronizar los cambios locales con el remoto]
+    C --> D[4. Cambiar a la rama de producción]
+    D --> E[5. Consolidar los cambios validados localmente]
+    E --> F[6. Iniciar despliegue a producción]
+
+    style A stroke:#55ccaa,stroke-width:2px
+    style B stroke:#55ccaa,stroke-width:2px
+    style C stroke:#55ccaa,stroke-width:2px
+    style D stroke:#55ccaa,stroke-width:2px
+    style E stroke:#55ccaa,stroke-width:2px
+    style F stroke:#55ccaa,stroke-width:2px
+```
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A["Comprobar GitHub Actions (develop)"] --> B["<code>git checkout<br>develop</code>"]
+    B --> C["<code>git pull origin <br>develop</code>"]
+    C --> D["<code>git checkout<br> main</code>"]
+    D --> E["<code>git merge <br>develop</code>"]
+    E --> F["<code>git push origin <br>main</code>"]
+
+    style A stroke:#a946ab,stroke-width:2px
+       style B stroke:#a946ab,stroke-width:2px
+    style C stroke:#a946ab,stroke-width:2px
+    style D stroke:#a946ab,stroke-width:2px
+    style E stroke:#a946ab,stroke-width:2px
+    style F stroke:#a946ab,stroke-width:2px
+
+```

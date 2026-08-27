@@ -9,12 +9,34 @@ Este documento establece las normativas, estándares de código, flujo de ramifi
 El ciclo de desarrollo en **Quizzie** sigue un orden estricto de trabajo en 6 etapas:
 
 ```mermaid
+%%{init: {'theme': 'neutral'}}%%
 graph TD
-    A[1. Issue en GitHub] --> B[2. Rama de trabajo]
-    B --> C[3. Pre-commit hooks]
-    C --> D[4. Commitizen]
-    D --> E[5. Merge a develop & push]
-    E --> F[6. Merge a main & push]
+    subgraph Planning ["1. Planificación de la tarea"]
+        step1["Issue en GitHub (Plantilla YAML)"]
+    end
+
+    subgraph LocalDev ["2. Desarrollo local y control de calidad"]
+        direction LR
+        step2["Creación de rama (feature/fix/docs)"] --> step3["Pre-commit hooks (Ruff / ESLint)"]
+        step3 --> step4["Commitizen (Conventional Commits)"]
+    end
+
+    subgraph Integration ["3. Integración en desarrollo"]
+        step5["Merge a develop, Push (CI)"]
+    end
+
+    subgraph Deployment ["4. Promoción a Producción"]
+        step6["Merge a main, Push (CD y análisis de SonarCloud)"]
+    end
+
+    Planning --> LocalDev
+    LocalDev --> Integration
+    Integration --> Deployment
+
+    style Planning stroke:#a946ab,color:#3f3f46,stroke-width:2px
+    style LocalDev stroke:#661465,color:#3f3f46,stroke-width:2px
+    style Integration stroke:#55ccaa,color:#3f3f46,stroke-width:2px
+    style Deployment stroke:#007976,color:#3f3f46,stroke-width:2px
 ```
 
 ---
@@ -53,25 +75,41 @@ El proyecto adopta un modelo basado en **Git Flow simplificado** utilizando úni
 ### 2.2. Diagrama del flujo de ramificación
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
+   %%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'git0': '#007976',
+      'git1': '#55ccaa',
+      'git2': '#661465',
+      'git3': '#a946ab',
+      'gitBranchLabel0': '#ffffff',
+      'gitBranchLabel1': '#ffffff',
+      'gitBranchLabel2': '#ffffff',
+      'gitBranchLabel3': '#ffffff',
+      'commitLabelColor': '#3f3f46',
+      'commitLabelBackground': '#f4f4f5'
+    }
+  }
+}%%
 gitGraph
-   commit id: "v0.1.0"
+   commit id: "[v0.1.0]"
    branch develop
    checkout develop
-   commit id: "conf-inicial"
-   branch feature/RF-22-salas
-   checkout feature/RF-22-salas
-   commit id: "feat(stage): add ws manager"
-   commit id: "test(stage): add unit tests"
+   commit id: "build: set initial config"
+   branch feature/room-config
+   checkout feature/room-config
+   commit id: "feat: add ws manager"
+   commit id: "feat: add timer"
    checkout develop
-   merge feature/RF-22-salas id: "git merge feature/RF-22-salas"
+   merge feature/room-config id: "git merge"
    branch fix/bug-timer
    checkout fix/bug-timer
-   commit id: "fix(stage): fix timer drift"
+   commit id: "fix: remove timer drift"
    checkout develop
-   merge fix/bug-timer id: "git merge fix/bug-timer"
+   merge fix/bug-timer id: "git merge  "
    checkout main
-   merge develop id: "git merge develop (100% CI passed)"
+   merge develop id: "git merge [v0.2.0]"
 ```
 
 ---
