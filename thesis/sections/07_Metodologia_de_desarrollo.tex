@@ -1,9 +1,177 @@
-\chapter{Metodología técnica (CI/CD)}\label{cap:metodologia_tecnica}
+\chapter{Metodología técnica y de desarrollo}\label{cap:metodologia_tecnica}
 
-Mi idea es haber explicado todas las herramientas en el capítulo 4, pero aquí se podría entrar más en detalle sobre cómo se han configurado y utilizado en lo que respecta a ci/cd, gestión de ramas, commits, etc. También se podrían incluir políticas de código, como pre-commits, hooks, plantillas de issues, etc. que no se hayan mencionado en capítulos anteriores.
+Una vez establecida la arquitectura y el diseño conceptual del sistema, resulta imprescindible definir un marco operativo riguroso para la fase de construcción e integración del código. En el desarrollo de software, la ausencia de políticas explícitas en el control de versiones incrementa paulatinamente la deuda técnica y dificulta la detección temprana de errores.
 
-\section{Políticas del repositorio}
-Ramas, commits y versiones. Se puede mencionar los pre-commits, hooks, Github, Commitizen, Convenciones de commits, plantillas de issues, ... y su importancia en el desarrollo para trabajar de manera más organizada
+Este capítulo detalla la metodología técnica implantada en el proyecto \textit{Quizzie}. En él se abordan las políticas de trabajo en el repositorio, la automatización del ciclo de Integración y Despliegue Continuos (CI/CD), la gestión segura de perfiles de configuración y el análisis estático de la calidad del código.
+
+\section{Ecosistema base de desarrollo local}\label{sec:ecosistema_base}
+
+Concretando la selección tecnológica descrita en la subsección \hyperref[subsec:soporte_desarrollo]{soporte de desarrollo}, el trabajo local se sostiene sobre tres pilares operativos principales. La integración de este ecosistema busca asegurar la reproducibilidad homogénea del proyecto, garantizar el aislamiento de dependencias y simplificar la ejecución de herramientas de desarrollo:
+
+\begin{itemize}
+    \item Gestión de entorno \textbf{\textit{backend}} con \textbf{uv}: En lugar de recurrir a entornos virtuales creados manualmente (\texttt{venv}) o gestores tradicionales, el ciclo de vida del \textit{backend} se articula íntegramente mediante el gestor de dependencias \textit{uv}. Esta herramienta centraliza el aislamiento de la versión de Python, la resolución del árbol de dependencias expresado en \texttt{pyproject.toml} y la ejecución de comandos de soporte (linters, formateadores y motores de prueba) en un entorno reproducible mediante el prefijo \texttt{uv run}.
+    \item Gestión de entorno \textbf{\textit{frontend}} con \textbf{npm} y \textbf{Node.js}: Para la parte cliente, el ecosistema de trabajo se apoya en \textbf{npm} sobre el entorno de ejecución de \textbf{Node.js}. A través del fichero \texttt{package.json}, se estandarizan las tareas de desarrollo, la compilación y la verificación de tipos con TypeScript.
+    \item Sistema de control de versiones distribuido con \textbf{Git}: Registra la evolución del código fuente, sirviendo de nexo entre el trabajo en la máquina local y las políticas de integración remota que se detallan a continuación.
+\end{itemize}
+
+Esta combinación permite que cualquier desarrollador pueda clonar el repositorio y levantar el entorno completo de trabajo de forma idéntica con un conjunto mínimo y estandarizado de comandos.
+
+Los pasos detallados para la preparación inicial del entorno y el registro de dependencias se recogen en el \hyperref[anexo:manual_de_instalacion]{manual de instalación}.
+
+\section{Políticas del repositorio y flujo de trabajo}\label{sec:politicas_repositorio}
+
+Para asegurar un desarrollo estructurado, auditable y mantenible, se ha definido una normativa estricta sobre el repositorio centralizado en GitHub\cite{github_quizzie}. Esta normativa abarca desde el modelado de tareas hasta la consolidación de cambios en los entornos estables, siguiendo un flujo secuencial estandarizado compuesto por seis etapas consecutivas:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/flujo_secuencial_desarrollo.png}
+\caption{Ciclo de trabajo secuencial implementado en Quizzie.}
+\label{fig:flujo_secuencial_desarrollo}
+\end{figure}
+
+\subsection{Gestión de tareas mediante plantillas de \textit{GitHub Issues}}
+
+Todo trabajo de desarrollo, refactorización, documentación o pruebas debe originarse mediante una incidencia (\textit{Issue}) en GitHub. Esto garantiza la trazabilidad bidireccional entre los requisitos funcionales (RF), los objetivos del proyecto y las modificaciones del código.
+
+Para homogeneizar el registro de \textit{Issues}, se han implementado plantillas declarativas en formato \textit{YAML} ubicadas en el directorio \texttt{.github/ISSUE\_TEMPLATE} del repositorio:
+
+\newpage
+
+\begin{itemize}
+    \item \texttt{feature\_request.yml}: Diseñada para la implementación de nuevos Requisitos Funcionales. Exige vincular explícitamente el identificador del requisito (ej. \texttt{RF-07}), el objetivo asociado (\texttt{OBJ-02}), la descripción técnica de la solución y los criterios de aceptación.
+    \item \texttt{docs.yml}: Orientada a la redacción de documentación técnica o capítulos de la memoria en \LaTeX{}, indicando el documento afectado y los criterios de revisión.
+    \item \texttt{devops.yml}: Destinada a tareas de automatización, ajuste de canalizaciones de GitHub Actions, integración con SonarCloud o configuración de infraestructura.
+    \item \texttt{test.yml}: Específica para la creación o ampliación de baterías de pruebas (unitarias, integración, de componentes, E2E, o pruebas de carga con Locust).
+\end{itemize}
+
+El uso de esta estructura estandarizada asegura que cualquier incidencia registrada contenga los datos necesarios para que el desarrollo posterior se adecúe a los \hyperref[sub:criterios_de_aceptacion]{criterios de aceptación}.
+
+\subsection{Estrategia de ramas}
+
+El proyecto adopta una variante adaptada del modelo \textit{Git Flow} orientada a entornos de desarrollo ágil. A diferencia del modelo tradicional que emplea solicitudes de extracción (\textit{Pull Requests}) complejas para un único desarrollador, \textit{Quizzie} utiliza ramas de trabajo efímeras e integración mediante fusiones directas (\textit{merge}) locales.
+
+\begin{table}[H]
+\centering
+\small
+\makebox[\textwidth][c]{%
+\begin{tabular}{l l l}
+\hline
+\textbf{Rama} & \textbf{Propósito} & \textbf{Origen} \\
+\hline
+\texttt{main} & Código estable en producción. Solo recibe código probado y validado. & — \\
+\texttt{develop} & Rama principal de integración y desarrollo continuo. & \texttt{main} \\
+\texttt{feature/*} & Implementación de requisitos funcionales (RF). & \texttt{develop} \\
+\texttt{fix/*} & Corrección de errores y mejoras rápidas. & \texttt{develop} \\
+\texttt{docs/*} & Actualización de documentación o memoria del TFG. & \texttt{develop} \\
+\texttt{test/*} & Incorporación o mejora de baterías de pruebas. & \texttt{develop} \\
+\texttt{refactor/*} & Reestructuración interna de código sin cambio de comportamiento. & \texttt{develop} \\
+\texttt{build/*} & Ajustes en CI/CD, dependencias o infraestructura. & \texttt{develop} \\
+\hline
+\end{tabular}%
+}
+\caption{Clasificación de ramas, nomenclatura y rama de origen.}
+\label{tab:clasificacion_ramas}
+\end{table}
+
+El flujo de aislamiento y convergencia entre las ramas temporales, la rama de integración \texttt{develop} y la rama de producción \texttt{main} se esquematiza en el siguiente grafo:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.77\textwidth]{figures/diagrama_ramas.png}
+\caption{Diagrama del flujo de ramas en el repositorio.}
+\label{fig:diagrama_ramas}
+\end{figure}
+
+\subsection{Verificación local mediante \textit{pre-commit}}\label{subsec:precommits}
+
+Antes de que cualquier \textit{commit} (modificación en el código) sea registrada definitivamente en el historial de Git, es fundamental asegurar que cumple con los estándares de calidad y formato fijados en el proyecto. Para automatizar este control, en la máquina local del desarrollador se utiliza la herramienta \textbf{pre-commit}, la cual evalúa el código de forma previa a la confirmación.
+
+La configuración centralizada de estas verificaciones se define en el archivo \texttt{.pre-commit-config.yaml} ubicado en la raíz del repositorio. En dicho fichero se declaran los conectores (\textit{hooks}) y herramientas que se deben ejecutar de forma transparente sobre los archivos modificados:
+
+\begin{enumerate}
+    \item \textbf{\textit{Backend} (Python):} Se integra la herramienta \textbf{Ruff} para realizar un análisis estático ultra rápido, corregir automáticamente fallos de formato, eliminar importaciones sin usar y garantizar el cumplimiento del estándar PEP 8 \cite{pep8}.
+    \item \textbf{\textit{Frontend} (React / TypeScript):} Se ejecutan \textbf{ESLint} y \textbf{Prettier} para inspeccionar la sintaxis de los componentes JSX/TSX y unificar el estilo visual del código.
+    \item \textbf{Seguridad y limpieza:} Se añaden verificaciones generales para detectar y bloquear la subida accidental de archivos de secretos (\texttt{.env}), claves privadas o archivos con formato incorrecto.
+\end{enumerate}
+
+Para forzar manualmente la inspección de la totalidad del código fuente sin necesidad de intentar un \textit{commit}, se utiliza la instrucción:
+
+\begin{verbatim}
+uv run pre-commit run --all-files
+\end{verbatim}
+
+Si alguna de las comprobaciones detecta un fallo o una discrepancia de formato, pre-commit aborta la confirmación automáticamente, exigiendo corregir el problema antes de continuar.
+
+\subsection{Estandarización de commits}\label{subsec:estandarizacion_commits}
+
+Para mantener un historial de control de versiones limpio, semántico y legible, se ha adoptado la especificación \textbf{Conventional Commits}. Esta convención asigna un significado explícito a cada confirmación, lo que permite auditar la evolución del código y automatizar la gestión de versiones mediante Versionado Semántico (\textit{SemVer}) \cite{semver}.
+
+La construcción de los mensajes en la máquina local se canaliza a través de la herramienta \textbf{Commitizen}. Al ejecutar la instrucción interactiva correspondiente, se guía al desarrollador en la redacción del mensaje respetando la estructura obligatoria:
+\[
+\text{\texttt{<tipo>}}(\text{\texttt{<alcance>}}): \text{\texttt{<descripción>}}
+\]
+
+\begin{table}[H]
+\centering
+\small
+\makebox[\textwidth][c]{%
+\begin{tabular}{l l l}
+\hline
+\textbf{Tipo} & \textbf{Descripción} & \textbf{Impacto SemVer} \\
+\hline
+\texttt{feat} & Incorporación de una nueva funcionalidad o requisito. & MINOR (v0.X.0) \\
+\texttt{fix} & Corrección de un fallo o error en el código. & PATCH (v0.0.X) \\
+\texttt{docs} & Cambios exclusivamente en la documentación o memoria. & Ninguno \\
+\texttt{style} & Ajustes de formato o estilo que no alteran la lógica. & Ninguno \\
+\texttt{refactor} & Reestructuración de código sin cambio de comportamiento. & Ninguno \\
+\texttt{test} & Añadido o corrección de baterías de pruebas. & Ninguno \\
+\texttt{build} & Modificaciones en la configuración de build o dependencias. & Ninguno \\
+\texttt{ci} & Ajustes en los flujos de integración continua (CI/CD). & Ninguno \\
+\hline
+\end{tabular}%
+}
+\caption{Tipos de \textit{commits} según Conventional Commits.}
+\label{tab:tipos_commits}
+\end{table}
+
+Asimismo, se exige establecer la trazabilidad bidireccional entre el código registrado y las incidencias de GitHub. Para ello, en el pie del mensaje de confirmación se deben incluir las referencias correspondientes:
+
+\begin{itemize}
+    \item \texttt{Refs \#83}: Vincula la confirmación con la incidencia \#83 en la interfaz de GitHub para facilitar su seguimiento.
+    \item \texttt{Closes \#83} / \texttt{Fixes \#83}: Asocia el cambio y provoca el cierre automático de la incidencia al fusionar la rama en la rama principal (\texttt{main}).
+\end{itemize}
+
+Para automatizar este proceso, se ha configurado previamente una plantilla en el proyecto que guía al desarrollador paso a paso. Al ejecutar la siguiente instrucción en la terminal, se despliega el asistente de Commitizen y se genera el \textit{commit} de forma directa en el repositorio local una vez rellenados los campos:
+
+\begin{verbatim}
+uv run cz commit
+\end{verbatim}
+
+\newpage
+
+\subsection{Consolidación y despliegue a producción}\label{subsec:paso_produccion}
+
+Una vez completado el desarrollo y comprobada la estabilidad de las funcionalidades en la rama de integración (\texttt{develop}), se procede a la transferencia del código hacia la rama principal (\texttt{main}). Este procedimiento traslada de forma controlada únicamente versiones consolidadas que han superado previamente todas las verificaciones locales y de integración continua. Dicho flujo de trabajo se encuentra oficialmente respaldado por las reglas de protección de ramas en GitHub (\textit{Branch Protection Rules}), las cuales impiden subidas directas (\textit{direct push}) y fuerzan el cumplimiento de las políticas de validación establecidas.
+
+El procedimiento para llevar a cabo la fusión del código se compone de seis pasos clave. A continuación, se ilustran los pasos a seguir para integrar el código en la rama \textit{main}, junto a las acciones y comandos de consola correspondientes.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.264\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/pasos_integracion_a_main.png}
+    \end{minipage}%
+    \begin{minipage}[b]{0.26\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/acciones_integracion_a_main.png}
+    \end{minipage}
+    \vspace{0.3cm}
+    \caption{Procedimiento para integrar código en la rama \textit{main}.}
+    \label{fig:integracion_a_main}
+\end{figure}
+
+
+Para garantizar la estabilidad del entorno de producción, la rama \texttt{main} se reserva de forma exclusiva para el código listo para su despliegue. Las versiones del sistema (\textit{Releases}) se formalizan al culminar las \textit{issues} asociadas a cada una de las etapas de desarrollo, materializando formalmente los entregables de producto software definidos en la \hyperref[fig:edt_grafica]{EDT}. En dicho punto, se asigna la correspondiente etiqueta de versión semántica (\textit{SemVer}) y se documentan las modificaciones directamente en la sección de \textit{Releases} de GitHub a partir de las incidencias resueltas. 
 
 \section{Integración y Despliegue Continuo (CI/CD)}
 Descripción del ciclo ci/cd
