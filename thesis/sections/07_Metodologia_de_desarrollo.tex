@@ -170,13 +170,82 @@ El procedimiento para llevar a cabo la fusión del código se compone de seis pa
     \label{fig:integracion_a_main}
 \end{figure}
 
-
 Para garantizar la estabilidad del entorno de producción, la rama \texttt{main} se reserva de forma exclusiva para el código listo para su despliegue. Las versiones del sistema (\textit{Releases}) se formalizan al culminar las \textit{issues} asociadas a cada una de las etapas de desarrollo, materializando formalmente los entregables de producto software definidos en la \hyperref[fig:edt_grafica]{EDT}. En dicho punto, se asigna la correspondiente etiqueta de versión semántica (\textit{SemVer}) y se documentan las modificaciones directamente en la sección de \textit{Releases} de GitHub a partir de las incidencias resueltas. 
 
 \section{Integración y Despliegue Continuo (CI/CD)}
-Descripción del ciclo ci/cd
-\subsection{Configuración del Pipeline y automatización}
-Implementación de flujos de trabajo en GitHub Actions y qué herramientas incluyen
+
+Para garantizar la calidad del software, la detección temprana de errores, la seguridad de las dependencias y la entrega continua del servicio en \textit{Quizzie}, se ha diseñado e implementado una arquitectura de Integración y Despliegue Continuos (CI/CD) fundamentada en GitHub Actions. Este flujo automatizado actúa como un control de calidad estricto antes de actualizar cualquier versión del código hacia los entornos de integración y producción.
+
+\subsection{Ciclo de vida y arquitectura}\label{subsec:cicd_arquitectura}
+
+El flujo de trabajo automatizado se estructura en tres \textit{workflows} independientes en GitHub Actions, los cuales responden a eventos específicos en el repositorio y gestionan las distintas fases de validación técnica:
+
+\begin{enumerate}
+    \item \textbf{Integración Continua (CI):} Se activa automáticamente ante eventos de \textit{push} en la rama \texttt{develop}. Ejecuta la batería de análisis estático, seguridad, pruebas unitarias y de integración, de componentes, \textit{End-to-End} y evaluación de rendimiento.
+    \item \textbf{Análisis de calidad (QA):} Se dispara tras consolidar cambios en la rama \texttt{main}. Evalúa métricas avanzadas de mantenibilidad, duplicación de código y deuda técnica en la plataforma SonarCloud.
+    \item \textbf{Despliegue Continuo (CD):} Se ejecuta de forma paralela al análisis de calidad tras una fusión exitosa en \texttt{main}, activando el despliegue automático en la infraestructura de producción.
+\end{enumerate}
+
+La siguiente figura ilustra el funcionamiento general de los \textit{workflows}, destacando las dependencias entre \textit{jobs} y la separación de responsabilidades según la rama afectada.
+
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{%
+  \includegraphics[width=1.06\textwidth]{figures/ci_cd_simplificado.png}%
+}
+\caption{Estructura del \textit{pipeline} de CI/CD}
+\label{fig:ci_cd_simplificado}
+\end{figure}
+
+\subsection{Flujo de Integración Continua (CI)}\label{subsec:pipeline_ci}
+
+El proceso de validación de calidad y seguridad definido en \texttt{quality\_and\_security.yml} se compone de seis \textit{jobs} interconectados distribuidos en distintas etapas secuenciales:
+
+\subsubsection{Análisis estático y verificación}
+\begin{itemize}
+    \item \texttt{backend-ci}: Inicializa el entorno Python 3.12 con \texttt{uv}, analiza el formato y estilo del código mediante \textbf{Ruff} y realiza la auditoría de seguridad de dependencias con \texttt{pip-audit}.
+    \item \texttt{frontend-ci}: Prepara el entorno Node.js 20, ejecuta la verificación sintáctica mediante \textbf{ESLint} y valida el tipado de TypeScript junto con la compilación del proyecto.
+\end{itemize}
+
+\subsubsection{Pruebas de código y componentes}
+\begin{itemize}
+    \item \texttt{pytest-backend-tests}: Requiere la superación previa de \texttt{backend-ci}. Ejecuta la suite de pruebas unitarias y de integración del \textit{backend} mediante \textbf{Pytest} y exporta el informe de cobertura XML (\texttt{backend-coverage}) como artefacto.
+    \item \texttt{vitest-component-tests}: Se ejecuta tras la consecución de \texttt{frontend-ci}. Realiza las pruebas sobre la interfaz de usuario utilizando \textbf{Vitest} y almacena su reporte de cobertura.
+\end{itemize}
+
+\subsubsection{Pruebas de sistema y rendimiento}
+\begin{itemize}
+    \item \texttt{playwright-e2e-tests}: Depende del éxito conjunto de \texttt{pytest-backend-tests} y \texttt{frontend-ci}. Despliega el servidor backend de pruebas y ejecuta la batería \textit{End-to-End} con \textbf{Playwright} simulando la navegación de usuario en navegadores \textit{headless}.
+    \item \texttt{locust-performance-tests}: Se inicia tras la superación de \texttt{pytest-backend-tests}. Inicia el servidor de prueba y ejecuta la simulación de carga concurrente con \textbf{Locust}, validando mediante \texttt{evaluate\_thresholds.py} que las latencias y tasas de error se mantengan dentro de los límites establecidos en la \hyperref[sec:estrategia_testing]{estrategia de \textit{testing}}.
+\end{itemize}
+
+\subsection{Análisis de calidad con SonarQube}\label{subsec:sonarqube_ci}
+
+Al consolidar cambios en la rama (\texttt{main}), se activa el \textit{workflow} \texttt{sonar.yml}. Este proceso reejecuta la medición de cobertura del \textit{backend} y envía los resultados a la plataforma SonarCloud mediante la acción oficial \texttt{SonarSource/sonarqube-scan-action}, evaluando los umbrales de calidad (\textit{Quality Gate}) y la deuda técnica acumulada.
+
+\subsection{Estrategia de Despliegue Continuo (CD)}\label{subsec:estrategia_cd}
+
+Tras producirse un \textit{push} en la rama \texttt{main}, el despliegue del entorno de producción se efectúa automáticamente de forma segregada:
+
+\begin{itemize}
+    \item \textbf{Backend (Render):} Se gestiona mediante el \textit{workflow} \texttt{deploy.yml}, el cual notifica al servicio de Render tras cada \textit{push} en \texttt{main} para activar la actualización del servidor de aplicaciones.
+    \item \textbf{Frontend (Vercel):} Se apoya en la integración nativa de Vercel con el repositorio de GitHub, la cual detecta los nuevos \textit{commits} en la rama \texttt{main} e inicia automáticamente la compilación y publicación de la interfaz.
+\end{itemize}
+
+\subsection{Resumen de la estructura de CI/CD}\label{subsec:resumen_cicd}
+
+La siguiente figura resume la estructura del flujo de CI/CD, integrando los \textit{jobs}, scripts y herramientas utilizadas en cada fase:
+
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{%
+  \includegraphics[width=1.2\textwidth]{figures/ci_cd_ampliado.png}%
+}
+\caption{Resumen detallado de la estructura de CI/CD.}
+\label{fig:ci_cd_completo}
+\end{figure}
+
+
 
 \section{Perfiles de configuración y entornos}
 Variables de entorno, secretos y configuración específica para los entornos de desarrollo, pruebas y producción.
