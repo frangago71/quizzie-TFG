@@ -34,11 +34,11 @@ graph TD
     A[backend-ci] --> B[pytest-backend-tests]
     C[frontend-ci]
 
-    B --> D[playwright-e2e-tests]
-    C --> D
+    B --> D[locust-performance-tests]
+    C --> E
 
     C --> F[vitest-component-tests]
-    B --> E[locust-performance-tests]
+    B --> E[playwright-e2e-tests]
 ```
 
 #### Detalle de jobs del pipeline:
@@ -93,3 +93,54 @@ Se activa automáticamente tras realizar un `push` o consolidar una Pull Request
                                * **Frontend:** `frontend-ci` ──> `vitest-component-tests`
                                * **Integración E2E:** `pytest-backend-tests` + `frontend-ci` ──> `playwright-e2e-tests`
 3. **[Merge a main]** ──────> SonarQube Scan (`sonar.yml`) + CD Deploy Hook (`deploy.yml`) tras superar Vitest, Playwright y Locust.
+
+### Vistazo general de los flujos CI/CD
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    subgraph Triggers ["Eventos de disparo (GitHub Actions)"]
+        T1["Push a develop"]
+        T2["Push a main"]
+    end
+
+    subgraph CI ["CI - Calidad y seguridad"]
+        B1["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>backend-ci</div><div style='padding:6px; text-align:left;'>• Descarga código e instala Python 3.12 (uv)<br/>• Verifica estilo y código (Ruff check/format)<br/>• Audita vulnerabilidades de librerías (pip-audit)</div>"]
+        F1["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>frontend-ci</div><div style='padding:6px; text-align:left;'>• Prepara entorno Node.js 20 e instala npm<br/>• Revisa errores sintácticos/estilo (ESLint)<br/>• Valida tipos TypeScript y compila proyecto</div>"]
+
+        B2["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>pytest-backend-tests</div><div style='padding:6px; text-align:left;'>• Ejecuta tests de la API en entorno aislado<br/>• Calcula cobertura de código backend<br/>• Genera y sube reporte XML de cobertura</div>"]
+
+        L1["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>locust-performance-tests</div><div style='padding:6px; text-align:left;'>• Puebla la base de datos con datos de prueba<br/>• Levanta servidor Uvicorn en segundo plano<br/>• Simula carga de usuarios concurrentes (Locust)<br/>• Evalúa umbrales de latencia y sube reportes CSV</div>"]
+        E1["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>playwright-e2e-tests</div><div style='padding:6px; text-align:left;'>• Inicializa backend (Uvicorn) y base de datos<br/>• Instala navegadores headless para pruebas<br/>• Simula flujos de usuario reales de principio a fin<br/>• Guarda capturas/trazas si ocurren fallos</div>"]
+        F2["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>vitest-component-tests</div><div style='padding:6px; text-align:left;'>• Ejecuta pruebas unitarias de componentes React<br/>• Mide cobertura de interfaz de usuario<br/>• Sube reporte de cobertura como artefacto</div>"]
+    end
+
+    subgraph SQ ["SonarQube - Calidad del código"]
+        S1["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>sonarqube</div><div style='padding:6px; text-align:left;'>• Reejecuta pruebas backend para cobertura<br/>• Usa caché local para agilizar el análisis<br/>• Escanea deuda técnica, seguridad y mantenibilidad<br/>• Envía métricas consolidadas a SonarCloud</div>"]
+    end
+
+    subgraph CD ["CD - Despliegue a producción"]
+        D1["<div style='background:#333; color:#fff; padding:6px; font-weight:bold; border-bottom:1px solid #aaa;'>deploy</div><div style='padding:6px; text-align:left;'>• Notifica a Render para iniciar el despliegue automático</div>"]
+    end
+
+    T1 --> B1
+    T1 --> F1
+    T2 --> SQ
+    T2 --> CD
+
+    B1 -->|permite ejecutar| B2
+    B2 -->|permite ejecutar| L1
+    B2 -->|permite ejecutar| E1
+    F1 -->|permite ejecutar| E1
+    F1 -->|permite ejecutar| F2
+
+    style S1 stroke:#55ccaa,stroke-width:2px
+    style D1 stroke:#007976,stroke-width:2px
+    style B1 stroke:#a946ab,stroke-width:2px
+    style B2 stroke:#a946ab,stroke-width:2px
+    style F1 stroke:#a946ab,stroke-width:2px
+    style F2 stroke:#a946ab,stroke-width:2px
+    style E1 stroke:#a946ab,stroke-width:2px
+    style L1 stroke:#a946ab,stroke-width:2px
+    style T2 fill:#55ccaa,stroke:#2b6854,color:#fff,stroke-width:1px
+    style T1 fill:#a946ab,stroke:#7d386f,color:#fff,stroke-width:1px
+```
