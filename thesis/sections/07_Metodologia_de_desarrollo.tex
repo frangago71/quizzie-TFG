@@ -157,11 +157,11 @@ El procedimiento para llevar a cabo la fusión del código se compone de seis pa
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[b]{0.264\textwidth}
+    \begin{minipage}[b]{0.335\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/pasos_integracion_a_main.png}
     \end{minipage}%
-    \begin{minipage}[b]{0.26\textwidth}
+    \begin{minipage}[b]{0.33\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/acciones_integracion_a_main.png}
     \end{minipage}
@@ -170,7 +170,10 @@ El procedimiento para llevar a cabo la fusión del código se compone de seis pa
     \label{fig:integracion_a_main}
 \end{figure}
 
+\newpage
+
 Para garantizar la estabilidad del entorno de producción, la rama \texttt{main} se reserva de forma exclusiva para el código listo para su despliegue. Las versiones del sistema (\textit{Releases}) se formalizan al culminar las \textit{issues} asociadas a cada una de las etapas de desarrollo, materializando formalmente los entregables de producto software definidos en la \hyperref[fig:edt_grafica]{EDT}. En dicho punto, se asigna la correspondiente etiqueta de versión semántica (\textit{SemVer}) y se documentan las modificaciones directamente en la sección de \textit{Releases} de GitHub a partir de las incidencias resueltas. 
+
 
 \section{Integración y Despliegue Continuo (CI/CD)}
 
@@ -179,6 +182,8 @@ Para garantizar la calidad del software, la detección temprana de errores, la s
 \subsection{Ciclo de vida y arquitectura}\label{subsec:cicd_arquitectura}
 
 El flujo de trabajo automatizado se estructura en tres \textit{workflows} independientes en GitHub Actions, los cuales responden a eventos específicos en el repositorio y gestionan las distintas fases de validación técnica:
+
+\newpage
 
 \begin{enumerate}
     \item \textbf{Integración Continua (CI):} Se activa automáticamente ante eventos de \textit{push} en la rama \texttt{develop}. Ejecuta la batería de análisis estático, seguridad, pruebas unitarias y de integración, de componentes, \textit{End-to-End} y evaluación de rendimiento.
@@ -191,7 +196,7 @@ La siguiente figura ilustra el funcionamiento general de los \textit{workflows},
 \begin{figure}[H]
 \centering
 \makebox[\textwidth][c]{%
-  \includegraphics[width=1.06\textwidth]{figures/ci_cd_simplificado.png}%
+  \includegraphics[width=1.2\textwidth]{figures/ci_cd_simplificado.png}%
 }
 \caption{Estructura del \textit{pipeline} de CI/CD}
 \label{fig:ci_cd_simplificado}
@@ -245,14 +250,65 @@ La siguiente figura resume la estructura del flujo de CI/CD, integrando los \tex
 \label{fig:ci_cd_completo}
 \end{figure}
 
+\newpage
 
+\section{Gestión de configuración y entorno}\label{sec:env_secrets}
 
-\section{Perfiles de configuración y entornos}
-Variables de entorno, secretos y configuración específica para los entornos de desarrollo, pruebas y producción.
+Para garantizar la seguridad, el cumplimiento de buenas prácticas y la portabilidad entre el desarrollo local y los entornos de producción, \textit{Quizzie} desvincula completamente la configuración del código fuente. Los datos sensibles, credenciales de correo y claves de cifrado se gestionan de forma centralizada mediante variables de entorno seguras.
 
-\section{Métricas de calidad y análisis estático de código}
-SonarCloud para el análisis estático de código, deuda técnica y cobertura de pruebas. (Para ello también habría que ver hasta qué punto se ha hablado de Sonar en capítulos anteriores)
+\subsection{Categorización funcional de los secretos}\label{subsec:categorizacion_secretos}
 
-Aqui quiero hacer especial énfasis para explicar la importancia de estas métricas, cómo se han configurado y qué resultados han dado, mostrando gráficas o ejemplos concretos de cómo han ayudado a mejorar la calidad del código y a identificar áreas de mejora.
-También es importante recalcar que su uso es vital para evitar deuda técnica, y en el capítulo 9 de resultados diré que me arrepiento de haberlo implementado tan tarde y que me ha hecho tener que aplazar un par de issues que tenias planteadas para la entrega del tfg. (también podría ser en el capítulo de conclusiones)
+Las variables de entorno del sistema se estructuran en cinco categorías funcionales según su cometido dentro de la arquitectura:
 
+\begin{itemize}
+    \item \textbf{Autenticación y seguridad JWT:} Comprende la clave secreta de firma \textbf{\texttt{SECRET\_KEY}}, el algoritmo de cifrado \textbf{\texttt{ALGORITHM}} y el tiempo de expiración de las sesiones \textbf{\texttt{ACCESS\_TOKEN\_EXPIRE\_MINUTES}}. Garantizan la integridad y validez de los tokens de usuario.
+    \item \textbf{Servicio de inteligencia artificial (Gemini API):} Agrupa las credenciales necesarias \textbf{\texttt{GEMINI\_API\_KEY}} para la autenticación y consumo de los modelos de lenguaje de Google Gemini dedicados a la generación automatizada de preguntas y cuestionarios.
+    \item \textbf{Servicio de correo transaccional (SMTP):} Incluye los parámetros de conexión al servidor SMTP \textbf{\texttt{SMTP\_HOST}}, \textbf{\texttt{SMTP\_PORT}}, las credenciales de autenticación \textbf{\texttt{SMTP\_USERNAME}}, \textbf{\texttt{SMTP\_PASSWORD}} y la dirección del remitente \textbf{\texttt{SMTP\_FROM}}.
+    \item \textbf{Conectividad y cliente React:} Contiene la URL base del backend \textbf{\texttt{VITE\_API\_URL}}, requerida para orientar las peticiones HTTP del frontend tanto en desarrollo local como en producción.
+    \item \textbf{Integración continua y calidad (CI/CD):} Agrupa los tokens de autenticación para servicios externos del pipeline, como el token de análisis en SonarCloud \textbf{\texttt{SONAR\_TOKEN}} y la URL del disparador de despliegue en Render \textbf{\texttt{RENDER\_DEPLOY\_HOOK\_URL}}.
+\end{itemize}
+
+\subsection{Entorno de desarrollo local}\label{subsec:env_local}
+
+Para facilitar la configuración durante el desarrollo sin comprometer la seguridad del repositorio, se proporciona la plantilla \texttt{.env.example}. Este archivo define la estructura y variables obligatorias del sistema definidas anteriormente.
+
+A partir de dicha plantilla, el desarrollador genera su archivo local \texttt{.env}, ignorado por Git mediante \texttt{.gitignore} para evitar filtraciones. Este proceso se aborda en el \hyperref[anexo:manual_de_instalacion]{manual de instalación}.
+
+\subsection{Distribución de secretos por plataforma}\label{subsec:secretos_plataformas}
+
+En los entornos remotos se aplica de forma estricta el \textbf{principio de mínimo privilegio}, tal y como define el \textit{National Institute of Standards and Technology} (NIST) en su informe especial SP 800-53 \cite{nist_least_privilege}. Bajo este criterio, se garantiza que cada plataforma o servicio contenga de forma aislada únicamente las variables estrictamente necesarias para cumplir su función técnica, reduciendo la superficie de ataque y minimizando el impacto ante eventuales vulnerabilidades.
+
+La siguiente tabla resume la matriz de presencia de variables de entorno y secretos según la plataforma de despliegue:
+
+\begin{table}[H]
+\centering
+\small
+\makebox[\textwidth][c]{%
+\begin{tabular}{l c c c}
+\hline
+\textbf{Variable / Secreto} & \textbf{GitHub} & \textbf{Render} & \textbf{Vercel} \\
+\hline
+\texttt{SECRET\_KEY} & Sí & Sí & Sí \\
+\texttt{ALGORITHM} & Sí & Sí & Sí \\
+\texttt{ACCESS\_TOKEN\_EXPIRE\_MINUTES} & -- & Sí & Sí \\
+\texttt{VITE\_API\_URL} & -- & -- & Sí \\
+\texttt{GEMINI\_API\_KEY} & Sí & Sí & -- \\
+\texttt{RENDER\_DEPLOY\_HOOK\_URL} & Sí & -- & -- \\
+\texttt{SONAR\_TOKEN} & Sí & -- & -- \\
+\texttt{PYTHON\_VERSION} / \texttt{PYTHONPATH} & -- & Sí & -- \\
+\texttt{SMTP\_HOST} / \texttt{SMTP\_PORT} & -- & Sí & -- \\
+\texttt{SMTP\_USERNAME} / \texttt{SMTP\_PASSWORD} & -- & Sí & -- \\
+\texttt{SMTP\_FROM} & -- & Sí & -- \\
+\hline
+\end{tabular}%
+}
+\caption{Variables de entorno y secretos por plataforma.}
+\label{tab:distribucion_secretos}
+\end{table}
+
+\subsubsection{Justificación por entorno}
+\begin{itemize}
+    \item \textbf{GitHub (Actions):} Registra únicamente las credenciales requeridas para ejecutar las suites de prueba durante los \textit{workflows}, la autenticación del escáner en SonarCloud y el disparador del despliegue en producción.
+    \item \textbf{Render (Backend):} Concentra la configuración del servidor de aplicaciones, alojando la infraestructura de correo SMTP, la clave de acceso a la API de Gemini, los parámetros de runtime de Python y la gestión del ciclo de vida de los tokens JWT.
+    \item \textbf{Vercel (Frontend):} Contiene exclusivamente el parámetro público \texttt{VITE\_API\_URL} para el enrutamiento de peticiones HTTP desde la SPA React hacia la API, además de los parámetros de control de sesión en el cliente.
+\end{itemize}
