@@ -174,6 +174,48 @@ El procedimiento para llevar a cabo la fusión del código se compone de seis pa
 
 Para garantizar la estabilidad del entorno de producción, la rama \texttt{main} se reserva de forma exclusiva para el código listo para su despliegue. Las versiones del sistema (\textit{Releases}) se formalizan al culminar las \textit{issues} asociadas a cada una de las etapas de desarrollo, materializando formalmente los entregables de producto software definidos en la \hyperref[fig:edt_grafica]{EDT}. En dicho punto, se asigna la correspondiente etiqueta de versión semántica (\textit{SemVer}) y se documentan las modificaciones directamente en la sección de \textit{Releases} de GitHub a partir de las incidencias resueltas. 
 
+\section{Métricas de calidad y análisis estático de código}\label{sec:metricas_calidad}
+
+Con el fin de asegurar la mantenibilidad y robustez del código consolidado en la rama principal (\texttt{main}), se utiliza \textbf{SonarCloud} como auditor externo para el análisis estático. Esta herramienta evalúa de forma continuada la salud del proyecto, monitorizando la presencia de errores lógicos, brechas de seguridad, complejidad cognitiva y el porcentaje global de cobertura de pruebas tras cada integración en \texttt{main}, definiendo los criterios de calidad que posteriormente se automatizan en el flujo de CI/CD.
+
+\subsection{Justificación y métricas objetivo (\textit{Quality Gate})}\label{subsec:sonar_quality_gate}
+
+Con el objetivo de evitar la acumulación de deuda técnica y asegurar la mantenibilidad a largo plazo, se ha configurado un umbral de calidad (\textit{Quality Gate}) de obligado cumplimiento para cualquier nueva funcionalidad integrada en \texttt{main}. 
+
+La siguiente tabla resume los objetivos mínimos exigidos por el sistema y la justificación técnica de cada uno:
+
+\begin{table}[H]
+\centering
+\small
+\makebox[\textwidth][c]{%
+\begin{tabular}{l l p{9.5cm}}
+\hline
+\textbf{Métrica} & \textbf{Objetivo} & \textbf{Justificación técnica} \\
+\hline
+\textbf{Cobertura} & $> 80\%$ & Garantizar que la mayoría de los flujos críticos del sistema están probados. \\
+\textbf{Duplicación} & $< 3\%$ & Fomentar el principio DRY y facilitar el mantenimiento futuro evitando la repetición de código. \\
+\textbf{Fiabilidad} & Calificación A & Probar la ausencia total de errores lógicos conocidos en el código nuevo. \\
+\textbf{Seguridad} & Calificación A & Asegurar la inexistencia de vulnerabilidades y puntos de acceso no protegidos. \\
+\textbf{Mantenibilidad} & Calificación A & Mantener una deuda técnica mínima y un nivel bajo de complejidad cognitiva. \\
+\hline
+\end{tabular}%
+}
+\caption{Métricas objetivo y umbrales del \textit{Quality Gate} en SonarCloud.}
+\label{tab:sonar_quality_gate}
+\end{table}
+
+\newpage
+
+\subsection{Configuración y exclusiones técnicas}\label{subsec:sonar_exclusiones}
+
+Para que los indicadores del panel de control sean un reflejo fiel de la calidad del producto final, se han aplicado las siguientes configuraciones de calibración en la plataforma:
+
+\begin{itemize}
+    \item \textbf{Alcance de la cobertura de pruebas:} La métrica de cobertura de código integrada en SonarCloud se enfoca de forma exclusiva en el \textit{backend}. Esto se debe a que el reporte de ejecución de \textbf{Pytest} (\texttt{coverage.xml}) es el único que se exporta y vincula al análisis estático, mientras que las pruebas de componentes del \textit{frontend} se gestionan y auditan de manera independiente en su respectivo entorno de integración continua
+    \item \textbf{Exclusión de scripts de carga (\texttt{seed.py}):} Se ha excluido el archivo \texttt{backend/seed.py} del cálculo de cobertura y duplicación. Al tratarse de un script para la siembra masiva de datos con estructuras repetitivas, su inclusión penalizaba artificialmente la media de cobertura y distorsionaba la métrica de código duplicado.
+    \item \textbf{Integración del reporte de cobertura:} Se ha configurado la propiedad \texttt{sonar.python.coverage.reportPaths=coverage.xml} para garantizar una lectura e interpretación precisa del informe XML generado por \textbf{Pytest} (\texttt{pytest-cov}).
+    \item \textbf{Estandarización del entorno de análisis:} La ejecución del \textit{job} de CI para SonarQube se realiza sobre la imagen virtual \texttt{ubuntu-latest} en GitHub Actions, asegurando la consistencia en el mapeo de rutas de archivos entre el reporte de cobertura y el código fuente.
+\end{itemize}
 
 \section{Integración y Despliegue Continuo (CI/CD)}
 
