@@ -136,16 +136,378 @@ En \texttt{backend/auth.py}, se implementa un mecanismo de inyección de depende
 
 Esta función intercepta el \textit{Bearer token} emitido en las peticiones HTTP, descifra la firma criptográfica del estándar JSON Web Token~\cite{ietf_jwt_rfc7519} utilizando la clave secreta del servidor (\texttt{SECRET\_KEY}) y verifica su validez temporal antes de permitir el acceso a los controladores protegidos.
 
+\section{Estrategia de \textit{testing}}\label{sec:estrategia_testing}
 
-\section{Estrategia de testing}\label{sec:estrategia_testing}
-Unitarias, integración, E2E, etc
+Para garantizar la estabilidad del sistema, la integridad de los datos en tiempo real y una experiencia de usuario fluida, se ha diseñado un marco integral de verificación y pruebas automatizadas fundamentado en el modelo clásico de la pirámide de pruebas~\cite{cohn2009succeeding}. Este enfoque distribuye el esfuerzo analítico en distintos niveles de granularidad, equilibrando la velocidad de ejecución con el nivel de confianza obtenido sobre el comportamiento de la plataforma.
 
-Me gustaría mencionar también su importancia y los objetivos de cobertura que tengo, quizás lo mejor sea en este capítulo mencionar los umbrales objetivos y en el capítulo 9 de resultados hablar de su cumplimiento
+\subsection{Niveles de prueba y selección de herramientas}\label{subsec:niveles_herramientas}
+
+El ecosistema de pruebas desacopla las tecnologías encargadas de la ejecución de casos de prueba de aquellas orientadas a la auditoría estricta de cobertura de código, tal como se resume a continuación:
+
+\begin{table}[H]
+  \centering
+  \small
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{l p{8cm} p{3.5cm}}
+      \hline
+      \textbf{Nivel de prueba} & \textbf{Objetivo principal} & \textbf{Herramientas} \\
+      \hline
+      \textbf{Unitarias (\textit{Backend})} & Validar lógica de negocio aislada (cálculo de puntuaciones, \textit{hashing}, validaciones Pydantic). & pytest \\
+      \textbf{Integración} & Comprobar la interacción entre API REST, persistencia relacional y WebSockets. & pytest + TestClient (FastAPI) \\
+      \textbf{Componentes (\textit{Frontend})} & Verificar el renderizado y comportamiento reactivo de la interfaz en aislamiento. & Vitest + React Testing Library \\
+      \textbf{Extremo a Extremo (E2E)} & Simular flujos completos de navegación y concurrencia entre roles (docente y alumno). & Playwright \\
+      \textbf{Rendimiento y carga} & Evaluar la estabilidad y latencia del servidor ante concurrencia masiva en tiempo real. & Locust \\
+      \hline
+    \end{tabular}%
+  }
+  \caption{Clasificación de niveles de prueba y herramientas del sistema}
+  \label{tab:herramientas_pruebas}
+\end{table}
+
+\subsection{Organización del plan de pruebas y matriz de trazabilidad}\label{subsec:organizacion_trazabilidad}
+
+La \textit{suite} de pruebas se estructura modularmente y se alinea con la evolución temporal del proyecto, estableciendo una correspondencia unívoca entre la ingeniería de requisitos previa y los artefactos de verificación construidos:
+
+\begin{itemize}
+    \item \textbf{Trazabilidad con requisitos:}
+    \begin{itemize}
+        \item \textbf{Pruebas unitarias $\rightarrow$ Requisitos Funcionales (RF):} Garantizan que cada regla de negocio o cálculo atómico cumpla estrictamente con las especificaciones funcionales unitarias.
+        \item \textbf{Pruebas de integración $\rightarrow$ Historias de Usuario (HU):} Verifican que la interacción coordinada entre capas satisfaga los criterios de aceptación desde la perspectiva del usuario.
+        \item \textbf{Pruebas E2E $\rightarrow$ Casos de Uso (CU):} Validan el recorrido holístico del sistema simulando navegadores reales para cada caso de uso del sistema.
+    \end{itemize}
+    \item \textbf{Segmentación modular del sistema:} La batería de pruebas se divide según los dominios de la plataforma:
+    \begin{itemize}
+        \item En el \textit{backend}, las suites se organizan por áreas funcionales: \texttt{contenido} (cuestionarios y preguntas), \texttt{sesiones} (gestión de salas y sincronización en vivo) y \texttt{usuarios} (autenticación y perfiles).
+        \item En el \textit{frontend}, las pruebas se delimitan en los cuatro módulos cliente principales: autenticación (\texttt{auth}), gestión (\texttt{management}), acceso a salas (\texttt{room-access}) y juego en vivo (\texttt{room-play}).
+    \end{itemize}
+    \item \textbf{Evolución por fases de desarrollo:} La implementación de los casos de prueba acompañó el ciclo iterativo del software, priorizando los flujos mínimos esenciales (\textit{MVP}), consolidando la sincronización en vivo y la lógica central (\textit{Core}), e incorporando finalmente las auditorías de seguridad, control de fraude y gestión de desconexiones (\textit{Final Release}).
+\end{itemize}
+
+\subsection{Auditoría y umbrales de cobertura de código}\label{subsec:metricas_cobertura}
+
+Para evaluar el alcance y la exhaustividad de la batería de pruebas, se establecen umbrales mínimos (\textit{thresholds}) en las capas críticas del sistema. Estas métricas garantizan que la lógica de negocio del servidor y las vistas interactivas del cliente mantengan unos niveles de comprobación suficientes antes de considerar el código listo para producción:
+
+\begin{table}[H]
+  \centering
+  \small
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{l l l}
+      \hline
+      \textbf{Capa del sistema} & \textbf{Herramienta} & \textbf{Umbral mínimo exigido} \\
+      \hline
+      \textbf{\textit{Backend}} & pytest-cov & $\ge 90$\% en endpoints y rutas API \\
+                                &                      & $\ge 80$\% en código global del servidor \\
+      \hline
+      \textbf{\textit{Frontend}}      & @vitest/coverage-v8 & $\ge 80$\% en líneas, funciones y sentencias \\
+                                &                              & $\ge 75$\% en ramas (\textit{branches}) \\
+      \hline
+      \textbf{Pruebas E2E}      & monocart-coverage-reports & $\ge 80$\% en líneas, funciones y sentencias \\
+                                &                                    & $\ge 75$\% en ramas \\
+      \hline
+    \end{tabular}%
+  }
+  \caption{Métricas y umbrales mínimos de cobertura por capa}
+  \label{tab:umbrales_cobertura}
+\end{table}
+
+En las pruebas E2E, los componentes modales emergentes (como \texttt{LogoutModal.tsx} o \texttt{ScannerModal.tsx}) quedan deliberadamente excluidos de la métrica de \texttt{monocart-coverage-reports} y se evalúan de forma exhaustiva mediante \texttt{Vitest}. De este modo se evitan distorsiones en la cobertura debidas a guardas de renderizado condicional cuando los diálogos permanecen cerrados.
+
+\subsection{Ejecución y automatización de pruebas}\label{subsec:ejecucion_pruebas}
+
+Las diferentes baterías de pruebas que componen el sistema pueden ejecutarse en el entorno de desarrollo local. Las instrucciones de configuración, los prerrequisitos del entorno y los comandos específicos para su lanzamiento se detallan en el \hyperref[anexo:manual_de_instalacion]{manual de instalación}.
+
+Asimismo, tal y como se describió en la especificación del \hyperref[subsec:pipeline_ci]{flujo de integración continua}, la ejecución de la batería de pruebas se encuentra automatizada mediante GitHub Actions, activándose con cada evento de \textit{push} dirigido a la rama \texttt{develop}.
+
 \section{Casos de prueba y validación}\label{sec:casos_de_prueba_y_validacion}
 
-Descripción de los casos de prueba utilizados para validar los criterios de aceptación y alcanzar la cobertura objetivo
+Esta sección expone los casos de prueba implementados para verificar el cumplimiento de los criterios de aceptación y las reglas de negocio del sistema, estructurados según los niveles de la pirámide de pruebas definida previamente.
 
-\section{Pruebas de carga y rendimiento}
-Descripción de las pruebas de carga y rendimiento realizadas
+\newpage
 
-Importante porque los cuestionarios son en directo y con muchas personas simultáneamente
+\subsection{Pruebas de la capa \textit{Backend}}\label{subsec:casos_backend}
+
+Las pruebas unitarias y de integración se definen y ejecutan de forma conjunta mediante Pytest y el cliente de pruebas asíncrono de FastAPI. Esta batería cubre desde la lógica de dominio pura hasta la interacción coordinada entre la API REST, la persistencia en base de datos y la comunicación en tiempo real por WebSockets, estructurándose en tres módulos funcionales:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PB-01}\label{pb:01} & Control de acceso JWT & Intercepción mediante la dependencia \texttt{get\_current\_teacher\_id} ante tokens expirados, firmas ilegítimas o ausencia de cabecera \texttt{Authorization}, asegurando el rechazo inmediato y la protección de endpoints privados. \\ 
+\textbf{PB-02}\label{pb:02} & Ciclo de vida y verificación & Flujo de registro con derivación segura de claves mediante bcrypt, emisión de códigos temporales de 6 dígitos, prevención de accesos no autorizados a cuentas pendientes de validación y modo de contingencia del servicio de mensajería. \\ 
+\textbf{PB-03}\label{pb:03} & Integridad relacional y datos & Cumplimiento estricto del borrado en cascada sobre cuestionarios, grupos y salas al tramitar la baja de una cuenta docente, control de concurrencia y colisiones por identificadores duplicados, y garantía de enmascaramiento irreversible de contraseñas en las respuestas serializadas por Pydantic. \\ 
+\textbf{PB-04}\label{pb:04} & Gestión de estudiantes & Instanciación e identificación de alumnos en sala, validación formal del identificador universitario (UVUS) y detección de perfiles preexistentes. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{backend}: Módulo de usuarios.}
+\label{tab:casos_prueba_backend_usuarios}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PB-05}\label{pb:05} & Persistencia transaccional & Creación y actualización atómica de cuestionarios con preguntas y opciones en una única transacción de base de datos, validación estricta de límites operativos y aseguramiento de que toda pregunta contenga obligatoriamente una opción marcada como correcta. \\ 
+\textbf{PB-06}\label{pb:06} & Seguridad y aislamiento & Comprobación de que ningún usuario pueda consultar, mutar o eliminar cuestionarios ajenos, bloqueando cualquier intento de escalado horizontal de privilegios. \\ 
+\textbf{PB-07}\label{pb:07} & Integridad referencial & Bloqueo de borrado físico (\textit{hard delete}) si el cuestionario posee salas activas asociadas, con validación de la eliminación en cascada de preguntas y opciones solo cuando las salas vinculadas ya han sido finalizadas. \\ 
+\textbf{PB-08}\label{pb:08} & Filtrado, historial y exportación & Auditoría de la lógica de segmentación de cuestionarios, consulta y agregación histórica de las sesiones finalizadas asociadas a cada cuestionario, y extracción estructurada de calificaciones y aciertos formateados para su descarga en CSV. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{backend}: Módulo de contenido.}
+\label{tab:casos_prueba_backend_contenido}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PB-09}\label{pb:09} & Salas únicas y transición & Control estricto de concurrencia que impide abrir múltiples salas simultáneas para un mismo cuestionario y gestión del ciclo de vida y transiciones de los estados y fases de la sala. \\ 
+\textbf{PB-10}\label{pb:10} & Sincronización y temporizador & Validación del bucle asíncrono \texttt{timer\_sync\_loop} en el servidor, garantizando la emisión periódica de marcas de tiempo UTC sin bloqueo del hilo principal, junto con el control docente de pausas, reanudaciones y cierres forzados. \\ 
+\textbf{PB-11}\label{pb:11} & Mecanismos anti-fraude y QR & Comprobación del algoritmo de barajado pseudoaleatorio de opciones, procesamiento atómico de respuestas con rechazo de dobles envíos, validación mediante escaneo del código QR y purga de alumnos no validados al cerrar la sala. \\ 
+\textbf{PB-12}\label{pb:12} & Resiliencia en \textit{WebSockets} & Verificación de la resiliencia del \texttt{ConnectionManager} ante desconexiones abruptas por WebSockets, asegurando la expulsión ordenada de sockets corruptos sin interrumpir la difusión de eventos al resto del aula. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{backend}: Módulo de sesiones.}
+\label{tab:casos_prueba_backend_sesiones}
+\end{table}
+
+Para garantizar la cobertura sistemática de los requisitos del sistema, la siguiente tabla sintetiza la correspondencia entre los casos de prueba y las Historias de Usuario, junto con los Requisitos Funcionales que auditan de forma directa:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llll}
+\hline
+\textbf{Módulo} & \textbf{ID} & \textbf{Historia de Usuario} & \textbf{Requisitos Funcionales} \\ \hline
+
+Usuarios & \textbf{\hyperref[pb:01]{PB-01}} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:01]{RF-01}, \hyperref[req:02]{RF-02}, \hyperref[req:03]{RF-03} \\ 
+ & \textbf{\hyperref[pb:02]{PB-02}} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:04]{RF-04}, \hyperref[req:05]{RF-05}, \hyperref[req:06]{RF-06} \\ 
+ & \textbf{\hyperref[pb:03]{PB-03}} & \hyperref[hu:pr-01]{HU-PR-01}, \hyperref[hu:pr-07]{HU-PR-07} & \hyperref[req:06]{RF-06}, \hyperref[req:38]{RF-38} \\ 
+ & \textbf{\hyperref[pb:04]{PB-04}} & \hyperref[hu:al-01]{HU-AL-01} & \hyperref[req:16]{RF-16}, \hyperref[req:17]{RF-17} \\ \hline
+
+Contenido & \textbf{\hyperref[pb:05]{PB-05}} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:07]{RF-07}, \hyperref[req:08]{RF-08}, \hyperref[req:13]{RF-13}, \hyperref[req:14]{RF-14} \\ 
+ & \textbf{\hyperref[pb:06]{PB-06}} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:07]{RF-07}, \hyperref[req:10]{RF-10} \\ 
+ & \textbf{\hyperref[pb:07]{PB-07}} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:12]{RF-12}, \hyperref[req:41]{RF-41} \\ 
+ & \textbf{\hyperref[pb:08]{PB-08}} & \hyperref[hu:pr-10]{HU-PR-10}, \hyperref[hu:pr-13]{HU-PR-13}, \hyperref[hu:pr-14]{HU-PR-14} & \hyperref[req:39]{RF-39}, \hyperref[req:46]{RF-46}, \hyperref[req:47]{RF-47} \\ \hline
+
+Sesiones & \textbf{\hyperref[pb:09]{PB-09}} & \hyperref[hu:pr-03]{HU-PR-03}, \hyperref[hu:pr-05]{HU-PR-05} & \hyperref[req:11]{RF-11}, \hyperref[req:15]{RF-15}, \hyperref[req:18]{RF-18}, \hyperref[req:19]{RF-19} \\ 
+ & \textbf{\hyperref[pb:10]{PB-10}} & \hyperref[hu:pr-03]{HU-PR-03}, \hyperref[hu:al-03]{HU-AL-03} & \hyperref[req:20]{RF-20}, \hyperref[req:22]{RF-22} \\ 
+ & \textbf{\hyperref[pb:11]{PB-11}} & \hyperref[hu:pr-04]{HU-PR-04}, \hyperref[hu:pr-06]{HU-PR-06}, \hyperref[hu:al-04]{HU-AL-04} & \hyperref[req:23]{RF-23}, \hyperref[req:24]{RF-24}, \hyperref[req:27]{RF-27}, \hyperref[req:28]{RF-28}, \hyperref[req:30]{RF-30}, \hyperref[req:31]{RF-31} \\ 
+ & \textbf{\hyperref[pb:12]{PB-12}} & \hyperref[hu:pr-05]{HU-PR-05}, \hyperref[hu:al-02]{HU-AL-02} & \hyperref[req:21]{RF-21}, \hyperref[req:40]{RF-40} \\ \hline
+
+\end{tabular}
+}
+\caption{Matriz de trazabilidad de pruebas \textit{backend} con HU y RF.}
+\label{tab:trazabilidad_backend}
+\end{table}
+
+\subsection{Pruebas de componentes de la interfaz (\textit{Frontend})}\label{subsec:casos_componentes}
+
+Las pruebas de componentes se ejecutan de manera aislada mediante Vitest y React Testing Library sobre un entorno DOM simulado (\texttt{jsdom}). Esta batería evalúa tanto los elementos visuales como las vistas completas de la interfaz, verificando el renderizado de componentes en pantalla, la gestión del estado reactivo ante eventos del usuario y la accesibilidad en las diferentes áreas del cliente web:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{5.5cm}p{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PF-01}\label{pf:01} & Interacción accesible en entradas de códigos & Verificación del componente de cuadrícula de seis dígitos (\texttt{CodeInputGrid}), evaluando el avance automático de foco entre celdas, el borrado secuencial y el soporte de pegado desde el portapapeles. \\ 
+\textbf{PF-02}\label{pf:02} & Validación de credenciales y tratamiento de respuestas & Pruebas sobre los formularios de acceso, registro y restablecimiento de contraseña, asegurando el manejo visual de errores y la persistencia segura de credenciales en almacenamiento local. \\ 
+\textbf{PF-03}\label{pf:03} & Confirmación modal de acciones críticas & Comprobación del renderizado y comportamiento de los diálogos de cierre de sesión y baja definitiva de cuenta con validación previa de contraseña. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{frontend}: Módulo de autenticación y perfil.}
+\label{tab:casos_prueba_frontend_auth}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{5.5cm}p{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PF-04}\label{pf:04} & Filtrado dinámico e indicadores de estado & Renderizado de la lista de cuestionarios con filtrado reactivo y opciones de reconexión para salas en curso. \\ 
+\textbf{PF-05}\label{pf:05} & Formularios de edición y creación de cuestionarios & Creación y modificación interactiva de cuestionarios, límites en el número de preguntas y opciones, imposibilidad de guardar una pregunta sin opción correcta, atajos de teclado y gestos táctiles (\textit{swipe}). \\ 
+\textbf{PF-06}\label{pf:06} & Configuración de salas & Ajuste de temporizador y controles para el barajado de preguntas y la visibilidad del podio. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{frontend}: Módulo de gestión de contenidos.}
+\label{tab:casos_prueba_frontend_gestion}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{5.5cm}p{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PF-07}\label{pf:07} & Introducción y verificación del código de sala & Validación visual del campo numérico de acceso y gestión de mensajes de error ante códigos inexistentes o salas cerradas. \\ 
+\textbf{PF-08}\label{pf:08} & Validación preventiva de UVUS & Comprobación del identificador mediante expresiones regulares previa a la llamada al servidor. \\ 
+\textbf{PF-09}\label{pf:09} & Flujo de confirmación de nuevos alumnos & Gestión de diálogos emergentes de vinculación de identidad para participantes no registrados con anterioridad. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{frontend}: Módulo de acceso a salas.}
+\label{tab:casos_prueba_frontend_acceso}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{lp{5.5cm}p{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PF-10}\label{pf:10} & Sincronización visual de sala de espera & Despliegue del código de sala, detalles de la sala y listado reactivo de participantes conectados. \\ 
+\textbf{PF-11}\label{pf:11} & Experiencia interactiva del estudiante & Renderizado de alternativas barajadas, temporizador visual animado y bloqueo de botones tras la emisión del voto para evitar respuestas duplicadas. \\ 
+\textbf{PF-12}\label{pf:12} & Control docente y visualización de resultados & Botones de finalización del temporizador, gráficos de barras con el recuento de opciones y podio animado con las mejores calificaciones. \\ 
+\textbf{PF-13}\label{pf:13} & Generación de credenciales QR y escaneo presencial & Renderizado del código QR personal con token efímero en el dispositivo del alumno y modal con visor de cámara para la validación de notas por parte del profesor. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba de la capa \textit{frontend}: Módulo de sala en directo.}
+\label{tab:casos_prueba_frontend_sala}
+\end{table}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25} 
+\setlength{\tabcolsep}{4.5pt} 
+\makebox[\textwidth][c]{
+\begin{tabular}{l*{10}{c}}
+\cline{2-11}
+\multicolumn{1}{c}{} & \hyperref[rnf:01]{RNF-01} & \hyperref[rnf:02]{RNF-02} & \hyperref[rnf:03]{RNF-03} & \hyperref[rnf:04]{RNF-04} & \hyperref[rnf:05]{RNF-05} & \hyperref[rnf:06]{RNF-06} & \hyperref[rnf:07]{RNF-07} & \hyperref[rnf:08]{RNF-08} & \hyperref[rnf:09]{RNF-09} & \hyperref[rnf:10]{RNF-10} \\ \hline
+\hyperref[pf:01]{PF-01} &   &   &   &   &   & X &   &   &   & X \\ \hline
+\hyperref[pf:02]{PF-02} &   &   &   & X & X & X &   &   &   & X \\ \hline
+\hyperref[pf:03]{PF-03} &   &   &   & X &   & X &   &   &   & X \\ \hline
+\hyperref[pf:04]{PF-04} &   &   &   &   &   & X &   & X &   & X \\ \hline
+\hyperref[pf:05]{PF-05} &   &   &   &   &   & X &   &   &   & X \\ \hline
+\hyperref[pf:06]{PF-06} &   &   &   &   &   & X &   &   &   & X \\ \hline
+\hyperref[pf:07]{PF-07} &   &   &   &   &   & X &   & X &   & X \\ \hline
+\hyperref[pf:08]{PF-08} &   &   &   &   &   & X &   &   &   & X \\ \hline
+\hyperref[pf:09]{PF-09} &   &   &   &   &   & X &   &   &   & X \\ \hline
+\hyperref[pf:10]{PF-10} & X & X &   &   & X & X &   & X &   & X \\ \hline
+\hyperref[pf:11]{PF-11} & X & X &   &   & X & X &   & X & X & X \\ \hline
+\hyperref[pf:12]{PF-12} & X &   &   &   & X & X &   &   & X & X \\ \hline
+\hyperref[pf:13]{PF-13} &   &   & X &   & X & X & X &   &   & X \\ \hline
+\end{tabular}
+}
+\caption{Matriz de trazabilidad pruebas \textit{frontend} con RNF.}
+\label{tab:matriz_trazabilidad_pf_rnf}
+\end{table}
+
+
+\subsection{Pruebas de extremo a extremo (\textit{E2E})}\label{subsec:casos_e2e}
+
+Las pruebas de extremo a extremo se implementan con Playwright sobre instancias reales de Chromium, automatizando los flujos de interacción completos sin recurrir a emulaciones intermedias. Esta \textit{suite} reproduce fielmente la experiencia de uso del sistema mediante escenarios que validan de forma integrada el cliente web, la API REST, la base de datos y la comunicación en tiempo real. Los casos de prueba definidos para este nivel se recogen en la siguiente tabla:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{
+\begin{tabular}{llp{9cm}}
+\hline
+\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
+\textbf{PE-01}\label{pe:01} & Autenticación y perfil docente & Verificación de rutas protegidas (redirección a \textit{login} si no existe sesión activa), registro docente con validación de formularios, introducción de códigos en la vista de verificación de correo, restablecimiento de contraseña y baja irreversible de usuario. \\ 
+\textbf{PE-02}\label{pe:02} & Gestión de cuestionarios & Ciclo completo de creación de cuestionarios con preguntas de diversa ponderación, edición de enunciados, borrado lógico con opción de restauración y eliminación física definitiva con comprobación de avisos sobre salas históricas. \\ 
+\textbf{PE-03}\label{pe:03} & Configuración y apertura de sala & Configuración de parámetros de sala, apertura de la sala de espera en estado \texttt{WAITING} y transición sincronizada hacia la cuenta atrás inicial tras la orden docente de arranque. \\ 
+\textbf{PE-04}\label{pe:04} & Acceso a sala de espera & Acceso secuencial de participantes mediante código PIN, validación del formato UVUS, confirmación de identidad y recepción concurrente de la lista de espera por WebSockets. \\ 
+\textbf{PE-05}\label{pe:05} & Podio y puntuaciones & Renderizado del podio con las mejores puntuaciones entre fases de preguntas, tratamiento de empates y visualización personalizada de la posición y puntuación individual en el navegador de cada alumno. \\ 
+\textbf{PE-06}\label{pe:06} & Validación QR & Flujo de cierre de partida con muestra del código QR personal en el dispositivo del alumno, apertura del modal con cámara en el panel docente, escaneo del token criptográfico, rechazo de códigos ajenos a la partida y confirmación visual de calificación auditada. \\ 
+\textbf{PE-07}\label{pe:07} & Historial de resultados & Revisión del histórico de sesiones pasadas y desglose porcentual de opciones seleccionadas por los alumnos al término de cada pregunta. \\ 
+\textbf{PE-08}\label{pe:08} & Exportación de calificaciones & Descarga en el navegador del fichero CSV normalizado con las notas finales y número de aciertos de los alumnos tras finalizar la sala. \\ 
+\textbf{PE-09}\label{pe:09} & Emisión de respuestas & Selección y emisión de votos por parte del alumno con desactivación inmediata de botones anti-duplicidad, gestión del temporizador (pausa y corte anticipado) y propagación coordinada de eventos WebSocket. \\ \hline
+\end{tabular}
+}
+\caption{Casos de prueba \textit{E2E}.}
+\label{tab:casos_prueba_e2e}
+\end{table}
+
+\newpage
+
+Para asegurar una cobertura funcional completa y garantizar que los flujos críticos del sistema han sido evaluados en condiciones reales de ejecución, la siguiente matriz recoge la correspondencia entre los escenarios de prueba y los Casos de Uso del sistema.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25} 
+\setlength{\tabcolsep}{4.5pt} 
+\makebox[\textwidth][c]{
+\begin{tabular}{l*{9}{c}}
+\cline{2-10}
+\multicolumn{1}{c}{} & \hyperref[cu:01]{CU-01} & \hyperref[cu:02]{CU-02} & \hyperref[cu:04]{CU-04} & \hyperref[cu:05]{CU-05} & \hyperref[cu:06]{CU-06} & \hyperref[cu:07]{CU-07} & \hyperref[cu:08]{CU-08} & \hyperref[cu:09]{CU-09} & \hyperref[cu:10]{CU-10} \\ \hline
+\hyperref[pe:01]{PE-01} & X &   &   &   &   &   &   &   &   \\ \hline
+\hyperref[pe:02]{PE-02} &   & X &   &   &   &   &   &   &   \\ \hline
+\hyperref[pe:03]{PE-03} &   &   & X &   &   &   &   &   &   \\ \hline
+\hyperref[pe:04]{PE-04} &   &   &   & X &   &   &   &   &   \\ \hline
+\hyperref[pe:05]{PE-05} &   &   &   &   & X &   &   &   &   \\ \hline
+\hyperref[pe:06]{PE-06} &   &   &   &   &   & X &   &   &   \\ \hline
+\hyperref[pe:07]{PE-07} &   &   &   &   &   &   & X &   &   \\ \hline
+\hyperref[pe:08]{PE-08} &   &   &   &   &   &   &   & X &   \\ \hline
+\hyperref[pe:09]{PE-09} &   &   &   &   &   &   &   &   & X \\ \hline
+\end{tabular}
+}
+\caption{Matriz de trazabilidad pruebas \textit{E2E} con CU.}
+\label{tab:matriz_trazabilidad_pe_cu}
+\end{table}
+
+La cuantificación del volumen total de pruebas ejecutadas, los porcentajes de cobertura alcanzados y las evidencias gráficas resultantes se analizan en detalle en el capítulo dedicado a los \hyperref[cap:resultados_y_evaluacion]{resultados y evaluación} del sistema.
+
+\section{Pruebas de carga y rendimiento}\label{sec:pruebas_rendimiento_carga}
+
+Dada la exigencia de una comunicación bidireccional fluida en las sesiones en directo, se implementó un banco de pruebas de estrés mediante Locust. El escenario estándar evalúa el comportamiento del \textit{backend} sometido a una carga simultánea de \textbf{200 usuarios} virtuales concurrentes, incorporados progresivamente a una tasa de 15 usuarios por segundo durante 1 minuto continuo.
+
+El reparto del volumen total de usuarios simulados se distribuye como se muestra a continuación, reflejando la composición realista de la audiencia y los roles del sistema:
+
+\begin{enumerate}
+    \item \textbf{\texttt{TeacherManagerUser}} (3\,\%, 6 usuarios): simula la navegación administrativa del profesor, la consulta del catálogo y la edición interactiva de cuestionarios.
+    \item \textbf{\texttt{TeacherHostUser}} (2\,\%, 4 usuarios): modela a los profesores dirigiendo salas activas en tiempo real, ordenando el tránsito entre fases de preguntas y forzando el despliegue de las clasificaciones.
+    \item \textbf{\texttt{StudentUser}} (95\,\%, 190 usuarios): representa al grueso del alumnado interactuando de forma concurrente, manteniendo conexiones persistentes mediante WebSockets, emitiendo respuestas masivas al unísono y enviando señales periódicas de \textit{ping}.
+\end{enumerate}
+
+Para evaluar los tiempos de respuesta de forma rigurosa, se utiliza como métrica principal el \textbf{percentil 90 (P90)}. Este indicador asegura que al menos el 90\% de las peticiones analizadas se resuelven en un tiempo igual o inferior al límite establecido, garantizando una percepción de inmediatez para la inmensa mayoría de los usuarios concurrentes y evitando que los valores atípicos extremos distorsionen la evaluación del sistema.
+
+Para superar la auditoría de rendimiento, el sistema debe satisfacer estrictamente los umbrales de latencia y estabilidad expuestos en esta tabla:
+
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{llp{7.5cm}c}
+      \hline
+      \textbf{Ámbito} & \textbf{Métrica} & \textbf{Operación evaluada / Condición} & \textbf{Umbral objetivo} \\
+      \hline
+      Global & Tasa de error & Régimen continuo con 200 usuarios concurrentes & $< 1{,}0$\,\% \\
+      REST API & Latencia P90 & Peticiones generales (lectura, salas, voto) & $\le 200\text{ ms}$ \\
+      Autenticación & Latencia P90 & \texttt{POST /users/login} (derivación de claves con Bcrypt) & $\le 500\text{ ms}$ \\
+      WebSockets & Latencia P90 & Negociación inicial (\textit{handshake}) y apertura de canal & $\le 200\text{ ms}$ \\
+      Concurrencia & Latencia P90 & Ráfagas masivas de respuestas (\texttt{POST /stage/answers}) & $\le 200\text{ ms}$ \\
+      \hline
+    \end{tabular}%
+  }
+  \caption{Umbrales y criterios de aceptación para las pruebas de rendimiento.}
+  \label{tab:metricas_rendimiento}
+\end{table}
+
+La verificación y el cumplimiento estricto de estos umbrales se auditan de forma automatizada tras cada ejecución mediante el \textit{script} \texttt{evaluate\_thresholds.py}. Esta herramienta procesa los ficheros de estadísticas consolidados por Locust, computa los percentiles reales obtenidos frente a las cotas fijadas y determina el éxito o fracaso de las pruebas de rendimiento.
