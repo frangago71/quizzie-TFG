@@ -1,6 +1,6 @@
 import { test as baseTest } from "@playwright/test";
 import MCR from "monocart-coverage-reports";
-import mcrConfig from "../../mcr.config";
+import mcrConfig from "../../frontend/mcr.config";
 
 const mcr = MCR(mcrConfig);
 
