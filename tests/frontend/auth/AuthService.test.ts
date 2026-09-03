@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { authService } from "../../auth/authService";
+import { authService } from "@/auth/authService";
 
 describe("authService", () => {
   const originalFetch = globalThis.fetch;

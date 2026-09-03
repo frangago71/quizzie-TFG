@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import DeleteQuizModal, { type Room } from "../../management/DeleteQuizModal";
+import DeleteQuizModal, { type Room } from "@/management/DeleteQuizModal";
 
 describe("DeleteQuizModal Component", () => {
   it("does not render when isOpen is false", () => {

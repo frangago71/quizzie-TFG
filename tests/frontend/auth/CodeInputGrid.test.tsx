@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { CodeInputGrid } from "../../auth/CodeInputGrid";
+import { CodeInputGrid } from "@/auth/CodeInputGrid";
 
 describe("CodeInputGrid", () => {
   it("renders 6 input boxes with provided digit values", () => {

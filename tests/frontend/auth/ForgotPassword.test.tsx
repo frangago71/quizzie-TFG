@@ -1,11 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ForgotPassword } from "../../auth/ForgotPassword";
-import api from "../../api";
-import { ToastProvider } from "../../context/ToastContext";
+import { ForgotPassword } from "@/auth/ForgotPassword";
+import api from "@/api";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     post: vi.fn(),
   },

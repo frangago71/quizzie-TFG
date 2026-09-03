@@ -8,12 +8,12 @@ import {
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import Lobby from "../../room-play/Lobby";
-import api from "../../api";
-import { RoomProvider, useRoom } from "../../context/RoomContext";
-import { ToastProvider } from "../../context/ToastContext";
+import Lobby from "@/room-play/Lobby";
+import api from "@/api";
+import { RoomProvider, useRoom } from "@/context/RoomContext";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(),

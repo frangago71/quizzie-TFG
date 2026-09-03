@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import RoomHistory from "../../management/RoomHistory";
-import api from "../../api";
+import RoomHistory from "@/management/RoomHistory";
+import api from "@/api";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
   },

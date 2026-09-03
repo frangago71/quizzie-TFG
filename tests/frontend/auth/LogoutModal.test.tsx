@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import LogoutModal from "../../auth/LogoutModal";
+import LogoutModal from "@/auth/LogoutModal";
 
 describe("LogoutModal", () => {
   it("does not render when isOpen is false", () => {

@@ -36,7 +36,7 @@ const ResultsChart: React.FC<ResultsChartProps> = ({
   correctOptionId,
   selectedOptionId,
 }) => {
-  const maxVotes = Math.max(...Object.values(statistics), 0);
+  const maxVotes = Math.max(...(Object.values(statistics) as number[]), 0);
 
   return (
     <div className="chart-area">
@@ -186,8 +186,11 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
   handleShowLeaderboard,
   handleNextQuestion,
 }) => {
-  const totalVotes = Object.values(statistics).reduce((a, b) => a + b, 0);
-  const maxVotes = Math.max(...Object.values(statistics), 0);
+  const totalVotes = (Object.values(statistics) as number[]).reduce(
+    (a, b) => a + b,
+    0,
+  );
+  const maxVotes = Math.max(...(Object.values(statistics) as number[]), 0);
   const winners = Object.keys(statistics).filter(
     (id) => statistics[id] === maxVotes,
   );

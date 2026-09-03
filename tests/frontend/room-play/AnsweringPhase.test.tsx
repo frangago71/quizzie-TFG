@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import AnsweringPhase from "../../room-play/AnsweringPhase";
+import AnsweringPhase from "@/room-play/AnsweringPhase";
 
 describe("AnsweringPhase Component", () => {
   const mockRoomData = {

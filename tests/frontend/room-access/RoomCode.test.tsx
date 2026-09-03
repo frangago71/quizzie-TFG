@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BrowserRouter } from "react-router-dom";
-import RoomCode from "../../room-access/RoomCode";
-import api from "../../api";
-import { RoomProvider } from "../../context/RoomContext";
-import { ToastProvider } from "../../context/ToastContext";
+import RoomCode from "@/room-access/RoomCode";
+import api from "@/api";
+import { RoomProvider } from "@/context/RoomContext";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
   },
@@ -48,7 +48,7 @@ describe("RoomCode Component", () => {
     const inputs = screen.getAllByRole("textbox");
     expect(inputs).toHaveLength(6);
 
-    inputs.forEach((input, index) => {
+    inputs.forEach((input: HTMLElement, index: number) => {
       fireEvent.change(input, { target: { value: String(index + 1) } });
     });
 
@@ -102,7 +102,7 @@ describe("RoomCode Component", () => {
     renderComponent();
 
     const inputs = screen.getAllByRole("textbox");
-    inputs.forEach((input, index) => {
+    inputs.forEach((input: HTMLElement, index: number) => {
       fireEvent.change(input, { target: { value: String(index + 1) } });
     });
 

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import LeaderboardPhase from "../../room-play/LeaderboardPhase";
+import LeaderboardPhase from "@/room-play/LeaderboardPhase";
 
 describe("LeaderboardPhase Component", () => {
   it("renders top 3 leaderboard data", () => {

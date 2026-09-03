@@ -1,11 +1,11 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { Register } from "../../auth/Register";
-import { authService } from "../../auth/authService";
-import { ToastProvider } from "../../context/ToastContext";
+import { Register } from "@/auth/Register";
+import { authService } from "@/auth/authService";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../auth/authService", () => ({
+vi.mock("@/auth/authService", () => ({
   authService: {
     isLoggedIn: vi.fn().mockReturnValue(false),
     register: vi.fn(),

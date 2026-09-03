@@ -1,19 +1,19 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import FinalScreen from "../../room-play/FinalScreen";
-import { RoomProvider } from "../../context/RoomContext";
-import api from "../../api";
-import { ToastProvider } from "../../context/ToastContext";
+import FinalScreen from "@/room-play/FinalScreen";
+import { RoomProvider } from "@/context/RoomContext";
+import api from "@/api";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(),
   },
 }));
 
-vi.mock("../../room-play/ScannerModal", () => ({
+vi.mock("@/room-play/ScannerModal", () => ({
   default: ({
     onScan,
     onClose,

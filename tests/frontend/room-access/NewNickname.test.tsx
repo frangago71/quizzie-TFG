@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import NewNickname from "../../room-access/NewNickname";
-import api from "../../api";
-import { ToastProvider } from "../../context/ToastContext";
+import NewNickname from "@/room-access/NewNickname";
+import api from "@/api";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     post: vi.fn(),
   },

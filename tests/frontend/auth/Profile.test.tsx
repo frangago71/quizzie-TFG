@@ -1,16 +1,16 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import { Profile } from "../../auth/Profile";
-import api from "../../api";
-import { ToastProvider } from "../../context/ToastContext";
-import ToastContainer from "../../layouts/ToastContainer";
+import { Profile } from "@/auth/Profile";
+import api from "@/api";
+import { ToastProvider } from "@/context/ToastContext";
+import ToastContainer from "@/layouts/ToastContainer";
 
-vi.mock("../../auth/authService", () => ({
+vi.mock("@/auth/authService", () => ({
   authService: { logout: vi.fn() },
 }));
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
     put: vi.fn(),

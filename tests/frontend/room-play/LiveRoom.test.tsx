@@ -7,10 +7,10 @@ import {
 } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import LiveRoom from "../../room-play/LiveRoom";
-import { RoomProvider } from "../../context/RoomContext";
-import { ToastProvider } from "../../context/ToastContext";
-import api from "../../api";
+import LiveRoom from "@/room-play/LiveRoom";
+import { RoomProvider } from "@/context/RoomContext";
+import { ToastProvider } from "@/context/ToastContext";
+import api from "@/api";
 
 // Mock WebSocket
 class MockWebSocket {
@@ -36,7 +36,7 @@ class MockWebSocket {
 
 vi.stubGlobal("WebSocket", MockWebSocket);
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(),

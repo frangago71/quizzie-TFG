@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import ListQuizzes from "../../management/ListQuizzes";
-import api from "../../api";
-import { RoomProvider } from "../../context/RoomContext";
-import { ToastProvider } from "../../context/ToastContext";
+import ListQuizzes from "@/management/ListQuizzes";
+import api from "@/api";
+import { RoomProvider } from "@/context/RoomContext";
+import { ToastProvider } from "@/context/ToastContext";
 
-vi.mock("../../api", () => ({
+vi.mock("@/api", () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(),
