@@ -30,12 +30,13 @@ Se adopta un enfoque de "Pirámide de pruebas" para equilibrar velocidad de ejec
 ### 3.1. Pruebas unitarias y de integración por módulos y etapas
 Las pruebas unitarias y de integración se estructuran por **módulos** y se organizan internamente según las **etapas del ciclo de vida del proyecto**, garantizando una trazabilidad completa con el diseño y los requisitos:
 
-* **Organización por módulos:** Tanto las pruebas unitarias como las de integración se dividen en archivos correspondientes a cada módulo funcional principal del sistema (un archivo de pruebas específico para cada módulo):
-  * **Contenido:** Gestión de cuestionarios, preguntas y opciones (`contenido`).
-  * **Sesiones:** Control de salas de juego, participantes y respuestas en tiempo real (`sesiones`).
-  * **Usuarios:** Registro, autenticación y gestión de profesores y alumnos (`usuarios`).
+* **Organización modular unificada (`tests/`):** La totalidad de las pruebas del sistema se encuentra centralizada en la carpeta raíz `tests/`, subdividida en cuatro áreas especializadas:
+  * **`tests/backend/`:** Pruebas unitarias y de integración del backend (`contenido`, `sesiones` y `usuarios`).
+  * **`tests/frontend/`:** Pruebas de componentes de la interfaz de usuario en React.
+  * **`tests/e2e/`:** Pruebas de extremo a extremo con Playwright basadas en Casos de Uso.
+  * **`tests/locust/`:** Pruebas de carga, rendimiento y concurrencia.
 
-* **División por etapas (dentro de cada archivo):** Dentro de cada uno de los archivos de prueba de los módulos, los tests se agrupan y estructuran según la fase de desarrollo correspondiente:
+* **División por etapas (dentro de las suites de backend):** Dentro de cada uno de los archivos de prueba de los módulos del backend, los tests se agrupan y estructuran según la fase de desarrollo correspondiente:
   * **MVP:** Funcionalidad mínima esencial (por ejemplo: login básico, creación de cuestionario simple, entrada a sala).
   * **Core:** Lógica de negocio principal y flujos estándar (por ejemplo: sincronización de juego, juego en vivo, estadísticas).
   * **Final Release:** Características avanzadas, optimizaciones, seguridad reforzada y control de errores del entregable final.
@@ -43,6 +44,7 @@ Las pruebas unitarias y de integración se estructuran por **módulos** y se org
 * **Trazabilidad:**
   * **Pruebas unitarias:** Tienen trazabilidad directa con los **Requisitos Funcionales (RF)**.
   * **Pruebas de integración:** Tienen trazabilidad directa con las **Historias de Usuario (HU)**.
+  * **Pruebas E2E:** Tienen trazabilidad directa con los **Casos de Uso (CU)**.
 
 ### 3.2. Interacción en tiempo real y sockets
 * **Sincronización:** Pruebas de integración para la actualización en tiempo real de la lista de participantes y estados de espera.
@@ -58,7 +60,7 @@ Dada la alta densidad de requisitos en tiempo real, las pruebas de carga y estr�
 
 ### 4.1. Escenarios de simulación y distribución realista de usuarios
 
-El conjunto de pruebas de rendimiento se implementa en Python con **Locust** (`tests/performance/`). La simulación estándar por defecto evalúa **200 usuarios virtuales simultáneos** incorporados a una tasa de **15 usuarios/segundo** durante **1 minuto** de ejecución continua. Por cada conjunto de usuarios, se aplica la siguiente distribución realista:
+El conjunto de pruebas de rendimiento se implementa en Python con **Locust** (`tests/locust/`). La simulación estándar por defecto evalúa **200 usuarios virtuales simultáneos** incorporados a una tasa de **15 usuarios/segundo** durante **1 minuto** de ejecución continua. Por cada conjunto de usuarios, se aplica la siguiente distribución realista:
 
 1. **`TeacherManagerUser` (3%)**:
    * **Alcance:** Profesores gestionando su contenido, explorando sus cuestionarios y consultando su perfil.

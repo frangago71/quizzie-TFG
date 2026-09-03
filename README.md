@@ -161,13 +161,13 @@ Para previsualizar en el navegador el mapa de cobertura interactivo V8 generado 
 * **Ejecutar script de benchmarking automatizado (con valores por defecto):**
   Lanza la prueba de rendimiento sin interfaz gráfica utilizando el script preconfigurado (por defecto **200 usuarios**, tasa de **15 u/s** y **1 minuto** de duración):
   ```bash
-  uv run python tests/performance/run_performance_tests.py
+  uv run python tests/locust/run_performance_tests.py
   ```
 
 * **Ejecutar script personalizando parámetros de carga:**
   Puedes especificar directamente el número de usuarios virtuales, la velocidad de incorporación y la duración desde la terminal:
   ```bash
-  uv run python tests/performance/run_performance_tests.py -u 300 -r 25 -t 2m
+  uv run python tests/locust/run_performance_tests.py -u 300 -r 25 -t 2m
   ```
   * **`-u 300` (`--users`):** Número total de usuarios virtuales simultáneos a simular (default: `200`).
   * **`-r 25` (`--spawn-rate`):** Tasa de incorporación por segundo (default: `15`).
@@ -178,16 +178,16 @@ Para previsualizar en el navegador el mapa de cobertura interactivo V8 generado 
 * **Ejecutar en modo interactivo con interfaz web (Navegador):**
   Abre la interfaz gráfica de monitoreo en tiempo real de Locust en `http://localhost:8089` para ajustar parámetros visualmente desde el navegador:
   ```bash
-  uv run locust -f tests/performance/locustfile.py --host http://127.0.0.1:8000
+  uv run locust -f tests/locust/locustfile.py --host http://127.0.0.1:8000
   ```
 
 #### Interpretación de informes CSV
 
-Al ejecutar las pruebas en modo *headless*, Locust genera automáticamente informes detallados en el directorio `tests/performance/`:
-* `tests/performance/benchmark_results_stats.csv`: Resumen cuantitativo por cada tipo de petición y endpoint.
-* `tests/performance/benchmark_results_failures.csv`: Registro específico de errores si alguna petición falló.
-* `tests/performance/benchmark_results_exceptions.csv`: Traceback de excepciones de Python ocurridas en los usuarios virtuales.
-* `tests/performance/benchmark_results_stats_history.csv`: Evolución temporal de las métricas segundo a segundo.
+Al ejecutar las pruebas en modo *headless*, Locust genera automáticamente informes detallados en el directorio `tests/locust/`:
+* `tests/locust/benchmark_results_stats.csv`: Resumen cuantitativo por cada tipo de petición y endpoint.
+* `tests/locust/benchmark_results_failures.csv`: Registro específico de errores si alguna petición falló.
+* `tests/locust/benchmark_results_exceptions.csv`: Traceback de excepciones de Python ocurridas en los usuarios virtuales.
+* `tests/locust/benchmark_results_stats_history.csv`: Evolución temporal de las métricas segundo a segundo.
 
 **Columnas principales a revisar en `benchmark_results_stats.csv`:**
 - **`Request Count`:** Número total de peticiones procesadas por el endpoint.
@@ -199,7 +199,7 @@ Al ejecutar las pruebas en modo *headless*, Locust genera automáticamente infor
 * **Auditar umbrales fijos sobre los informes CSV generados:**
   Si deseas verificar si las métricas del último reporte CSV superan los umbrales fijos de calidad en el percentil 90 (tasa de errores `< 1.0 %`, REST P90 `<= 200 ms` y auth/pesadas P90 `<= 500 ms`), puedes ejecutar de forma independiente:
   ```bash
-  uv run python tests/performance/evaluate_thresholds.py
+  uv run python tests/locust/evaluate_thresholds.py
   ```
 
 

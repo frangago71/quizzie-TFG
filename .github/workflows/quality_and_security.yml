@@ -221,15 +221,15 @@ jobs:
           npx wait-on http://127.0.0.1:8000/docs --timeout 30000
 
       - name: Run Locust performance benchmark
-        run: uv run python tests/performance/run_performance_tests.py -u 200 -r 15 -t 1m
+        run: uv run python tests/locust/run_performance_tests.py -u 200 -r 15 -t 1m
         continue-on-error: true
 
       - name: Audit performance thresholds
-        run: uv run python tests/performance/evaluate_thresholds.py
+        run: uv run python tests/locust/evaluate_thresholds.py
 
       - name: Upload performance CSV artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-locust-reports
-          path: tests/performance/benchmark_results*.csv
+          path: tests/locust/benchmark_results*.csv
