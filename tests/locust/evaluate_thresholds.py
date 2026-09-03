@@ -7,7 +7,7 @@ MAX_HTTP_P90_MS = 200              # Latencia P90 HTTP REST <= 200ms
 MAX_AUTH_P90_MS = 500              # Latencia P90 Autenticación y operaciones pesadas <= 500ms
 MAX_WS_CONNECT_P90_MS = 200        # Latencia P90 WS Connect <= 200ms
 
-def evaluate_thresholds(csv_path="tests/performance/benchmark_results_stats.csv"):
+def evaluate_thresholds(csv_path="tests/locust/benchmark_results_stats.csv"):
     """
     Analiza el archivo CSV de estadísticas generado por Locust y evalúa si se
     cumplen los umbrales fijos de calidad de servicio (SLA/QA) en el percentil 90 (P90).
@@ -107,6 +107,6 @@ def evaluate_thresholds(csv_path="tests/performance/benchmark_results_stats.csv"
     return all_passed
 
 if __name__ == "__main__":
-    csv_file = sys.argv[1] if len(sys.argv) > 1 else "tests/performance/benchmark_results_stats.csv"
+    csv_file = sys.argv[1] if len(sys.argv) > 1 else "tests/locust/benchmark_results_stats.csv"
     success = evaluate_thresholds(csv_file)
     sys.exit(0 if success else 1)

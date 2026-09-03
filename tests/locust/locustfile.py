@@ -1,7 +1,7 @@
 from locust import events
-from tests.performance.teacher_manager_user import TeacherManagerUser
-from tests.performance.teacher_host_user import TeacherHostUser
-from tests.performance.student_user import StudentUser
+from tests.locust.teacher_manager_user import TeacherManagerUser
+from tests.locust.teacher_host_user import TeacherHostUser
+from tests.locust.student_user import StudentUser
 
 # Definición de clases expuestas para Locust con sus ponderaciones
 __all__ = ["TeacherManagerUser", "TeacherHostUser", "StudentUser"]

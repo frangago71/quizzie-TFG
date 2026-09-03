@@ -22,13 +22,13 @@ def run_benchmark(host="http://127.0.0.1:8000", users=200, spawn_rate=15, run_ti
 
     cmd = [
         "uv", "run", "locust",
-        "-f", "tests/performance/locustfile.py",
+        "-f", "tests/locust/locustfile.py",
         "--headless",
         "-u", str(users),
         "-r", str(spawn_rate),
         "--run-time", run_time,
         "--host", host,
-        "--csv", "tests/performance/benchmark_results",
+        "--csv", "tests/locust/benchmark_results",
         "--exit-code-on-error", "0"
     ]
 
