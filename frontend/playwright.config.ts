@@ -1,9 +1,28 @@
-import { defineConfig, devices } from "@playwright/test";
+import path from "path";
+import { fileURLToPath } from "url";
+import { createRequire } from "module";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+
+const nodeModulesPath = path.resolve(__dirname, "./node_modules");
+if (!process.env.NODE_PATH?.includes(nodeModulesPath)) {
+  process.env.NODE_PATH = `${process.env.NODE_PATH ? process.env.NODE_PATH + path.delimiter : ""}${nodeModulesPath}`;
+  const Module = require("module");
+  if (typeof Module._initPaths === "function") {
+    Module._initPaths();
+  }
+}
+
+import pkg from "@playwright/test";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { defineConfig, devices } = pkg as any;
 
 export default defineConfig({
-  testDir: "./specs/e2e",
+  testDir: "../tests/e2e",
   testMatch: "**/*.spec.ts",
-  globalTeardown: "./specs/e2e/teardown.ts",
+  globalTeardown: "../tests/e2e/teardown.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
