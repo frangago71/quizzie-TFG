@@ -1,8 +1,124 @@
 \chapter{Resultados y evaluación}\label{cap:resultados_y_evaluacion}
 
+Una vez finalizado el ciclo de desarrollo e implementadas las pruebas de verificación expuestas en el capítulo anterior, el presente capítulo aborda la auditoría cuantitativa y cualitativa del proyecto. A través de este análisis se evalúa el desempeño de la solución construida respecto a los compromisos definidos durante la fase de planificación, contrastando la ejecución real frente a las líneas base establecidas. Asimismo, se documenta la gestión de cambios articulada durante el desarrollo, la resolución efectiva de las pruebas y una retrospectiva técnica en torno a la infraestructura de integración continua y métricas de calidad de código.
+ 
+\section{Cumplimiento de la Línea Base del Alcance}\label{sec:cumplimiento_alcance}
 
-\section{Grado de cumplimiento de la Línea Base del Alcance}
-Evaluación del cumplimiento de los objetivos y requisitos establecidos en la Línea Base del Alcance.
+La \hyperref[sec:linea_base_del_alcance]{Línea Base del Alcance} quedó formalizada en la \hyperref[cap:gestion_del_proyecto]{planificación del proyecto} a través de la \hyperref[subsec:edt]{EDT} y su correspondiente \hyperref[subsec:diccionario_edt]{diccionario}, distribuyendo el esfuerzo en cuatro paquetes troncales: Gestión del proyecto, Diseño y arquitectura, Producto software y Documentación final. 
+
+A nivel global del proyecto, los entregables documentales, de gestión y de diseño preliminar se han completado al \textbf{100\%}, quedando consolidados a lo largo de los capítulos técnicos, anexos y código fuente de esta memoria. Por su parte, el paquete \textbf{Producto software} materializa con éxito el flujo íntegro del sistema a través de las tres \textit{releases} planificadas; no obstante, al haberse pospuesto dos de los doce objetivos funcionales contemplados en el diseño inicial, el grado de consecución de dichos objetivos se sitúa en el \textbf{83{,}33\%}.
+
+Para auditar las desviaciones del alcance del sistema, el siguiente cuadro detalla en primer término los dos objetivos funcionales que resultaron formalmente pospuestos, justificando el motivo de su aplazamiento:
+
+\begin{table}[H]
+\centering
+\normalsize
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{llp{10.7cm}}
+\hline
+\textbf{ID} & \textbf{Objetivo funcional} & \textbf{Motivo del aplazamiento} \\ \hline
+\hyperref[obj:09]{OBJ-09} & Asistente IA & Evitar la dependencia de cuotas de facturación por consumo de \textit{tokens}, límites de tasa (\textit{rate limits}) y sobrecostes imprevistos de servicios externos, priorizando un núcleo completamente autosuficiente. \\ 
+\hyperref[obj:11]{OBJ-11} & Gestión de grupos & Elevado coste de oportunidad: el gran esfuerzo temporal necesario para su implementación no justificaba el valor añadido, decidiendo concentrar ese tiempo en consolidar la concurrencia y la estabilidad de las salas en vivo. \\ \hline
+\end{tabular}%
+}
+\caption{Objetivos funcionales pospuestos.}
+\label{tab:objetivos_pospuestos}
+\end{table}
+
+Gracias a las relaciones establecidas en la \hyperref[tab:matriz_trazabilidad]{matriz de trazabilidad unificada}, es posible determinar con precisión cómo repercute la postergación de estos dos objetivos en los casos de uso, historias de usuario y requisitos funcionales asociados:
+
+\begin{itemize}
+    \item \textbf{Asistente de IA (\hyperref[obj:09]{OBJ-09}):} Conlleva la postergación completa del caso de uso \textbf{\hyperref[cu:03]{CU-03} - Generar preguntas con IA} y de la historia de usuario \textbf{\hyperref[hu:pr-09]{HU-PR-09} - Generación asistida de preguntas}, afectando a cuatro requisitos funcionales. Estos requisitos han quedado formalizados en el repositorio del proyecto como líneas de evolución futura:
+
+\begin{table}[H]
+\centering
+\normalsize
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{llp{7.2cm}}
+\hline
+\textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \hline
+\hyperref[req:34]{RF-34} & Generación preguntas &   \\
+\hyperref[req:35]{RF-35} & Asistente de ayuda &   \\
+\hyperref[req:36]{RF-36} & Navegación y tutorial por IA &   \\
+\hyperref[req:37]{RF-37} & Revisión post IA &   \\ \hline
+\end{tabular}%
+}
+\caption{Requisitos funcionales pospuestos para OBJ-09.}
+\label{tab:rf_pospuestos_obj09}
+\end{table}
+
+    \item \textbf{Gestión de grupos (\hyperref[obj:11]{OBJ-11}):} Implica posponer íntegramente el caso de uso \textbf{\hyperref[cu:11]{CU-11} - Gestionar grupos}) y la historia de usuario \textbf{\hyperref[hu:pr-07]{HU-PR-07} - Organización por grupos de clase}, afectando a un único requisito funcional:
+\begin{table}[H]
+\centering
+\normalsize
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{llp{7.2cm}}
+\hline
+\textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \hline
+\hyperref[req:38]{RF-38} & Crear clase &  \\ \hline
+\end{tabular}%
+}
+\caption{Requisito funcional pospuesto para OBJ-11.}
+\label{tab:rf_pospuestos_grupos}
+\end{table}
+
+\end{itemize}
+
+Por otro lado, los diez objetivos funcionales restantes alcanzaron cobertura operativa suficiente para la entrega. La siguiente tabla resume la retrospectiva técnica, los desafíos de diseño y las decisiones clave adoptadas durante su materialización:
+
+\begin{table}[H]
+\centering
+\normalsize
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{3.7cm}p{10.7cm}}
+\hline
+\textbf{ID} & \textbf{Objetivo funcional} & \textbf{Retrospectiva técnica e impacto en el desarrollo} \\ \hline
+\hyperref[obj:01]{OBJ-01} & Módulo de usuario y autenticación & Implementación sólida de JWT y Bcrypt. Para evitar bloqueos en el hilo principal de la API por la latencia del servidor SMTP de Gmail, el envío del código de verificación por correo se delegó a tareas en segundo plano. \\ 
+\hyperref[obj:02]{OBJ-02} & Gestión de cuestionarios & Se optó por borrado lógico (\textit{soft delete}) en cascada para impedir que la edición o eliminación de preguntas corrompiera los registros de salas históricas. \\ 
+\hyperref[obj:03]{OBJ-03} & Creación de salas & Se implementó una máquina de estados en el servidor para controlar las fases de la partida, garantizando un flujo sincronizado y previniendo saltos de estado indebidos. \\ 
+\hyperref[obj:04]{OBJ-04} & Acceso rápido & Entrada ágil e inmediata sin necesidad de registro previo. Para evitar que un refresco accidental del navegador expulsara al estudiante de la partida, la sesión activa se conservó localmente mediante \texttt{sessionStorage}. \\ 
+\hyperref[obj:05]{OBJ-05} & Interacción en tiempo real & La recepción de respuestas se gestionó en memoria garantizando que cada participante emitiera un único voto por pregunta. Además, se centralizó el temporizador en el servidor para anular intentos de manipulación o ventajas por desajustes horarios entre los clientes. \\ 
+\hyperref[obj:06]{OBJ-06} & Verificación QR & Generación distribuida en el cliente para liberar de procesamiento al servidor mediante la librería \texttt{qrcode.react}. La carga útil del código QR estructura un objeto JSON con los datos clave de la evaluación (UVUS, sala y puntuación), acompañado de un token criptográfico de un solo uso. \\ 
+\hyperref[obj:07]{OBJ-07} & Persistencia validada & Se logró el desacoplamiento entre el estado efímero de la partida y el almacenamiento persistente: solo los resultados verificados se consolidan en la base de datos. \\  
+\hyperref[obj:08]{OBJ-08} & Estadísticas y análisis & Agregación reactiva en memoria al cierre de cada ronda para computar la distribución de respuestas, aciertos globales y el podio en tiempo real, evitando sobrecargar la base de datos con consultas recurrentes. \\  
+\hyperref[obj:10]{OBJ-10} & Escaneo de código QR & Lectura ágil mediante \texttt{html5-qrcode} con solicitud de permisos de cámara, validando el \textit{token} criptográfico contra el servidor en un solo paso atómico. \\  
+\hyperref[obj:12]{OBJ-12} & Exportación de datos & Se habilitó la descarga de resultados en formato CSV, garantizando la compatibilidad con hojas de cálculo. \\  \hline
+\end{tabular}%
+}
+\caption{Retrospectiva técnica de los objetivos funcionales.}
+\label{tab:objetivos_completados}
+\end{table}
+
+\newpage
+
+Cabe destacar que los nueve casos de uso y dieciséis historias de usuario que sustentan estos diez objetivos están plenamente disponibles en sus flujos troncales. Sin embargo, para cumplir con el calendario fijado sin comprometer la estabilidad, se decidió catalogar como mejoras o extensiones secundarias siete requisitos funcionales. La siguiente tabla detalla estos requisitos de ampliación y las \textit{issues} abiertas para su integración en versiones sucesivas:
+
+\begin{table}[H]
+\centering
+\normalsize
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{llp{7.2cm}}
+\hline
+\textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \hline
+\hyperref[req:12]{RF-12} & Importación & \\
+\hyperref[req:32]{RF-32} & Listado en vivo &  \\
+\hyperref[req:33]{RF-33} & Estadísticas &  \\
+\hyperref[req:42]{RF-42} & Bonificación por tiempo &  \\
+\hyperref[req:43]{RF-43} & Sistema de rachas &   \\
+\hyperref[req:44]{RF-44} & Configuración de puntuación &   \\
+\hyperref[req:46]{RF-46} & Creación/edición avanzada &  \\ \hline
+\end{tabular}%
+}
+\caption{Requisitos funcionales pospuestos como puntos de extensión.}
+\label{tab:rf_mejoras_issues}
+\end{table}
+
+En términos cuantitativos, este ajuste de alcance deliberado se traduce en que 9 de los 11 casos de uso diseñados (\textbf{81{,}82\,\%}) y 16 de las 18 historias de usuario (\textbf{88{,}89\,\%}) se encuentran plenamente operativos en sus flujos de valor principal. En el nivel de especificación atómica, 35 de los 47 requisitos funcionales (\textbf{74{,}47\,\%}) han sido implementados y verificados con éxito, garantizando la totalidad de la operativa requerida en el aula presencial y dejando acotadas las extensiones como trabajo futuro.
 
 \section{Tiempo real frente a Línea Base del Cronograma}
 Comparación del tiempo real dedicado a cada fase del proyecto con el tiempo estimado inicialmente
