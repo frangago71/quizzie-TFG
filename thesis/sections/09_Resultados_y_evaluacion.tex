@@ -120,13 +120,173 @@ Cabe destacar que los nueve casos de uso y dieciséis historias de usuario que s
 
 En términos cuantitativos, este ajuste de alcance deliberado se traduce en que 9 de los 11 casos de uso diseñados (\textbf{81{,}82\,\%}) y 16 de las 18 historias de usuario (\textbf{88{,}89\,\%}) se encuentran plenamente operativos en sus flujos de valor principal. En el nivel de especificación atómica, 35 de los 47 requisitos funcionales (\textbf{74{,}47\,\%}) han sido implementados y verificados con éxito, garantizando la totalidad de la operativa requerida en el aula presencial y dejando acotadas las extensiones como trabajo futuro.
 
-\section{Tiempo real frente a Línea Base del Cronograma}
-Comparación del tiempo real dedicado a cada fase del proyecto con el tiempo estimado inicialmente
+\section{Tiempo real frente a Línea Base del Cronograma}\label{sec:tiempo_real_vs_cronograma}
 
-\section{Gastos incurridos frente a Línea Base de Costes}
-Diferencia entre los gastos previstos y los reales
+Para auditar el desempeño temporal del proyecto frente a la \hyperref[sec:linea_base_del_cronograma]{Línea Base del Cronograma}, se ha consolidado el registro continuo de dedicación temporal a través de Clockify, cuyo informe detallado queda recogido íntegramente en el \hyperref[anexo:clockify]{anexo de dedicación temporal}. Las horas se han computado a nivel de tareas operativas individuales, asignando en la herramienta una etiqueta (\textit{tag}) que las vincula directamente con su actividad homóloga más próxima de la planificación inicial. Este mecanismo permite clasificar el esfuerzo según el rol profesional desempeñado, trazabilidad que se empleará más adelante en la \hyperref[tab:horas_roles_previstas_reales]{tabla de dedicación por roles} para calcular las desviaciones en los gastos de contratación.
 
-\section{Desviaciones y gestión de cambios realizados}
+\textcolor{red}{\textbf{[TODO: Actualizar informe cuando estén todas las horas computadas]}}
+
+El siguiente cuadro resume la comparativa entre la estimación inicial y la dedicación real registrada por fase de trabajo:
+
+\textcolor{red}{\textbf{[TODO: Rellenar las horas]}}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{llcc}
+\hline
+\textbf{ID} & \textbf{Fase} & \textbf{Horas previstas} & \textbf{Horas reales} \\ \hline
+F-01 & Planificación & 20 h & 11 h \\
+F-02 & Documentación & 20 h & 27,14 h \\
+F-03 & Inicio        & 11 h & 12,50 h \\
+F-04 & CI/CD         & 17 h & 19,87 h \\
+F-05 & MVP           & 65 h & 55,40 h \\
+F-06 & Testing       & 15 h & 42,74 h \\
+F-07 & Core          & 49 h & 45,24 h \\
+F-08 & QA            & 13 h & 23,73 h \\
+F-09 & Memoria       & 70 h &   \\
+F-10 & Defensa       & 20 h &  \\ \hline
+\multicolumn{2}{l}{\textbf{Total}} & \textbf{300 h} &   \\ \hline
+\end{tabular}
+\caption{Comparativa de horas previstas y reales por fase del proyecto.}
+\label{tab:horas_fases_previstas_reales}
+\end{table}
+
+\textcolor{red}{\textbf{[TODO: Redactar retrospectiva general de desviaciones temporales una vez cerrado el cómputo final de horas en Clockify]}}
+
+Este incremento en el esfuerzo dedicado a la robustez técnica y las pruebas del sistema impactó de forma directa en los plazos globales. Si bien la planificación inicial contemplaba finalizar el proyecto para la convocatoria ordinaria de junio, mantener dicha fecha habría obligado a comprometer la calidad del producto o recortar el rigor de la memoria técnica. Por ello, se optó formalmente por trasladar la finalización y defensa a la convocatoria extraordinaria de octubre, quedando esta modificación justificada y registrada en la sección de \hyperref[sec:desviaciones_y_gestion_cambios]{gestión de cambios}.
+
+A continuación, se muestra una comparativa entre la Línea Base del Cronograma y la ejecución real, representada mediante un diagrama de Gantt:
+
+\begin{figure}[H]
+\centering
+\noindent\makebox[\textwidth][c]{%
+\begin{ganttchart}[
+    hgrid=false, 
+    vgrid=false, 
+    x unit=0.0636cm,
+    y unit title=0.55cm,
+    y unit chart=0.72cm, 
+    time slot format=isodate,
+    inline,
+    title label font=\scriptsize\bfseries,
+    title calendar link/.style={draw=black},
+    canvas/.style={draw=black, fill=white}
+]{2026-01-15}{2026-10-17}
+
+    \gantttitle{Ene}{17}
+    \gantttitle{Feb}{28}
+    \gantttitle{Mar}{31}
+    \gantttitle{Abr}{30}
+    \gantttitle{May}{31}
+    \gantttitle{Jun}{30}
+    \gantttitle{Jul}{31}
+    \gantttitle{Ago}{31}
+    \gantttitle{Sep}{30}
+    \gantttitle{Oct}{17} \\
+
+    % F01 
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}, ganttbar label node/.append style={xshift=0.35cm}]{F01-Plan}{2026-01-15}{2026-01-28}
+    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}, ganttbar label node/.append style={xshift=0.15cm}]{F01}{2026-01-15}{2026-01-26} \\
+
+    % F02  
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F02-Plan}{2026-01-29}{2026-04-14}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F02}{2026-01-26}{2026-06-07} \\
+
+    % F03 
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F03-Plan}{2026-01-29}{2026-02-11}
+    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F03}{2026-01-30}{2026-02-09} \\
+
+    % F04  
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F04-Plan}{2026-02-12}{2026-04-26}
+    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F04}{2026-02-11}{2026-08-14} \\
+
+    % F05  
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F05-Plan}{2026-02-19}{2026-03-08}
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F05}{2026-02-12}{2026-04-04} \\
+
+    % F06 
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F06-Plan}{2026-02-24}{2026-04-26}
+    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F06}{2026-04-06}{2026-08-14} \\
+
+    % F07 
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F07-Plan}{2026-03-09}{2026-04-12}
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F07}{2026-04-15}{2026-04-28} \\
+
+    % F08 
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F08-Plan}{2026-04-13}{2026-04-24}
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F08}{2026-04-28}{2026-07-23} \\
+
+    % F09 
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F09-Plan}{2026-04-15}{2026-05-17}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F09}{2026-05-04}{2026-10-17} \\
+
+    % F10 
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F10-Plan}{2026-05-18}{2026-06-12}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F10}{2026-10-01}{2026-10-17}
+
+    % Líneas semanales 
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{19}{2026-01-19}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{26}{2026-01-26}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{02}{2026-02-02}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{09}{2026-02-09}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{16}{2026-02-16}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{23}{2026-02-23}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{02}{2026-03-02}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{09}{2026-03-09}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{16}{2026-03-16}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{23}{2026-03-23}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{30}{2026-03-30}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{06}{2026-04-06}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{13}{2026-04-13}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{20}{2026-04-20}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{27}{2026-04-27}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{04}{2026-05-04}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{11}{2026-05-11}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{18}{2026-05-18}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{25}{2026-05-25}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{01}{2026-06-01}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{08}{2026-06-08}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{15}{2026-06-15}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{22}{2026-06-22}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{29}{2026-06-29}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{06}{2026-07-06}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{13}{2026-07-13}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{20}{2026-07-20}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{27}{2026-07-27}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{03}{2026-08-03}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{10}{2026-08-10}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{17}{2026-08-17}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{24}{2026-08-24}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{31}{2026-08-31}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{07}{2026-09-07}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{14}{2026-09-14}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{21}{2026-09-21}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{28}{2026-09-28}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{05}{2026-10-05}
+    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{12}{2026-10-12}
+\end{ganttchart}%
+}
+\vspace{0.25cm}
+\begin{center}
+\footnotesize
+\begin{tabular}{clccl}
+\fcolorbox{black}{primaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
+\fcolorbox{black}{primaryCyan}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Desarrollo de código \\
+\fcolorbox{black}{secondaryCyan}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
+\fcolorbox{black}{secondaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
+\end{tabular}
+\end{center}
+\caption{Diagrama de Gantt de seguimiento: cronograma planificado \textit{vs.} real.}
+\label{fig:gantt_comparativa}
+\end{figure}
+
+\textcolor{red}{\textbf{[TODO: Establecer fin de fase 9 y comienzo de fase 10]}}
+
+\section{Gastos incurridos frente a Línea Base de Costes}\label{sec:gastos_incurridos_costes}
+
+\section{Desviaciones y gestión de cambios realizados}\label{sec:desviaciones_y_gestion_cambios}
 Cómo se gestionaron las desviaciones y qué modificaciones de la planificación provocaron
 
 \section{Resultados de las pruebas y validación}
