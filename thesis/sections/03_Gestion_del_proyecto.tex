@@ -619,7 +619,7 @@ F-05 -- MVP & H-07 & Funcionalidades del MVP operativas (creación y respuesta d
 F-06 -- Testing & H-08 & Baterías de pruebas de software ejecutadas y superadas con éxito & 26 Abr \\ \hline
 F-07 -- Core & H-09 & Conexión y respuesta a cuestionarios en tiempo real operativos & 29 Mar \\ 
 & H-10 & Motor de validación y control de integridad de respuestas completado & 12 Abr \\ \hline
-F-08 -- QA & H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales & 19 Abr \\ \hline
+F-08 -- QA & H-11 & Vistas de historial de salas pasadas y exportación de datos funcionales &  24 Abr \\ \hline
 F-09 -- Memoria & H-12 & Memoria académica consolidada y entregada & 17 May \\ \hline
 F-10 -- Defensa & H-13 & Presentación y material de soporte maquetados para la defensa & 5 Jun \\ 
 & H-14 & Defensa pública del proyecto ejecutada ante el tribunal & 10 Jun \\ \hline
@@ -644,7 +644,7 @@ El siguiente diagrama de Gantt\cite{wilson2003gantt} sintetiza de manera visual 
     y unit chart=0.75cm, 
     time slot format=isodate,
     inline,
-    bar label font=\scriptsize\bfseries\color{black},
+    bar label font=\scriptsize\bfseries\color{white},
     ganttbar label node/.style={text width=0pt, inner sep=0pt},
     title label font=\scriptsize\bfseries,
     title calendar link/.style={draw=black},
@@ -658,63 +658,75 @@ El siguiente diagrama de Gantt\cite{wilson2003gantt} sintetiza de manera visual 
     \gantttitle{May}{31}
     \gantttitle{Jun}{12} \\
 
-    \ganttbar[bar/.style={fill=orange!15, draw=orange!50, rounded corners=2pt}]{H01-Plan}{2026-01-15}{2026-01-28} \\
-    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H02-Documentación}{2026-01-29}{2026-04-14} \\
-    \ganttbar[bar/.style={fill=orange!15, draw=orange!50, rounded corners=2pt}]{H03-Inicio}{2026-01-29}{2026-02-11} \\
-    \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H04-CI/CD}{2026-02-14}{2026-04-26} \\
-    \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H05-MVP}{2026-02-12}{2026-03-08} \\
-    \ganttbar[bar/.style={fill=purple!15, draw=purple!50, rounded corners=2pt}]{H06-Testing}{2026-02-12}{2026-04-26} \\
-    \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H07-Core}{2026-03-09}{2026-04-12} \\
-    \ganttbar[bar/.style={fill=blue!15, draw=blue!50, rounded corners=2pt}]{H08-QA}{2026-04-13}{2026-04-26} \\
-    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H09-Memoria}{2026-04-15}{2026-05-17} \\
-    \ganttbar[bar/.style={fill=teal!15, draw=teal!50, rounded corners=2pt}]{H10-Defensa}{2026-05-18}{2026-06-12}
+    % Fases
+    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=2pt}]{F01-Plan}{2026-01-15}{2026-01-28} \\
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=2pt}]{F02-Documentación}{2026-01-29}{2026-04-14} \\
+    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=2pt}]{F03-Inicio}{2026-01-29}{2026-02-11} \\
+    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=2pt}]{F04-CI/CD}{2026-02-12}{2026-04-26} \\
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=2pt}]{F05-MVP}{2026-02-19}{2026-03-08} \\
+    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=2pt}]{F06-Testing}{2026-02-24}{2026-04-26} \\
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=2pt}]{F07-Core}{2026-03-09}{2026-04-12} \\
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=2pt}]{F08-QA}{2026-04-13}{2026-04-24} \\
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=2pt}]{F09-Memoria}{2026-04-15}{2026-05-17} \\
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=2pt}]{F10-Defensa}{2026-05-18}{2026-06-12}
 
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{19}{2026-01-19}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{26}{2026-01-26}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-02-02}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-02-09}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-02-16}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-02-23}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-03-02}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-03-09}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-03-16}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-03-23}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{30}{2026-03-30}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{06}{2026-04-06}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{13}{2026-04-13}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{20}{2026-04-20}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{27}{2026-04-27}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{04}{2026-05-04}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{11}{2026-05-11}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{18}{2026-05-18}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{25}{2026-05-25}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{01}{2026-06-01}
-    \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{08}{2026-06-08}
+    \begin{pgfonlayer}{behind}
+        % Líneas semanales
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{19}{2026-01-19}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{26}{2026-01-26}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-02-02}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-02-09}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-02-16}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-02-23}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{02}{2026-03-02}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{09}{2026-03-09}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{16}{2026-03-16}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{23}{2026-03-23}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{30}{2026-03-30}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{06}{2026-04-06}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{13}{2026-04-13}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{20}{2026-04-20}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{27}{2026-04-27}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{04}{2026-05-04}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{11}{2026-05-11}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{18}{2026-05-18}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{25}{2026-05-25}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{01}{2026-06-01}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=7.45cm, font=\tiny\bfseries\color{gray!90!black}, fill=white, inner sep=1pt}]{08}{2026-06-08}
 
-    \ganttvrule[vrule/.style={draw=orange!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{orange!90!black}, fill=white, inner sep=1pt}]{H-01}{2026-01-21}
-    \ganttvrule[vrule/.style={draw=red, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{red}, fill=white, inner sep=1pt}]{H-02}{2026-01-28}
-    \ganttvrule[vrule/.style={draw=teal!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{teal!90!black}, fill=white, inner sep=1pt}]{H-03}{2026-02-18}
-    \ganttvrule[vrule/.style={draw=yellow!80!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{yellow!80!black}, fill=white, inner sep=1pt}]{H-05}{2026-02-11}
-    \ganttvrule[vrule/.style={draw=purple, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{purple}, fill=white, inner sep=1pt}]{H-06}{2026-03-01}
-    \ganttvrule[vrule/.style={draw=blue, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{blue}, fill=white, inner sep=1pt}]{H-07}{2026-03-08}
-    \ganttvrule[vrule/.style={draw=darkgray, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{darkgray}, fill=white, inner sep=1pt}]{H-09}{2026-03-29}
-    \ganttvrule[vrule/.style={draw=violet!60!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{violet!60!black}, fill=white, inner sep=1pt}]{H-10}{2026-04-12}
-    \ganttvrule[vrule/.style={draw=brown!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, yshift=0.3cm, font=\tiny\bfseries\color{brown!90!black}, fill=white, inner sep=1pt}]{H-04}{2026-04-14}
-    \ganttvrule[vrule/.style={draw=cyan!90!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{cyan!90!black}, fill=white, inner sep=1pt}]{H-11}{2026-04-19}
-    \ganttvrule[vrule/.style={draw=purple, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{purple}, fill=white, inner sep=1pt}]{H-08}{2026-04-26}
-    \ganttvrule[vrule/.style={draw=lime!40!black, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{lime!40!black}, fill=white, inner sep=1pt}]{H-12}{2026-05-17}
-    \ganttvrule[vrule/.style={draw=olive, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{olive}, fill=white, inner sep=1pt}]{H-13}{2026-06-05}
-    \ganttvrule[vrule/.style={draw=blue!50!violet, densely dotted, thick}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{blue!50!violet}, fill=white, inner sep=1pt}]{H-14}{2026-06-10}
+        % Hitos de gestión y planificación
+        \ganttvrule[vrule/.style={draw=primaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryMagenta}, fill=white, inner sep=1pt}]{H-01}{2026-01-21}
+        \ganttvrule[vrule/.style={draw=primaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryMagenta}, fill=white, inner sep=1pt}]{H-02}{2026-01-28}
+        \ganttvrule[vrule/.style={draw=primaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryMagenta}, fill=white, inner sep=1pt}]{H-05}{2026-02-11}
+
+        % Hitos de desarrollo de código
+        \ganttvrule[vrule/.style={draw=primaryCyan, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryCyan}, fill=white, inner sep=1pt}]{H-07}{2026-03-08}
+        \ganttvrule[vrule/.style={draw=primaryCyan, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryCyan}, fill=white, inner sep=1pt}]{H-09}{2026-03-29}
+        \ganttvrule[vrule/.style={draw=primaryCyan, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryCyan}, fill=white, inner sep=1pt}]{H-10}{2026-04-12}
+        \ganttvrule[vrule/.style={draw=primaryCyan, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{primaryCyan}, fill=white, inner sep=1pt}]{H-11}{2026-04-24}
+
+        % Hitos del ciclo de vida y calidad
+        \ganttvrule[vrule/.style={draw=secondaryCyan, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{secondaryCyan}, fill=white, inner sep=1pt}]{H-06}{2026-03-01}
+        \ganttvrule[vrule/.style={draw=secondaryCyan, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, yshift=0.3cm, font=\tiny\bfseries\color{secondaryCyan}, fill=white, inner sep=1pt}]{H-08}{2026-04-26}
+
+        % Hitos de documentación y cierre
+        \ganttvrule[vrule/.style={draw=secondaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{secondaryMagenta}, fill=white, inner sep=1pt}]{H-03}{2026-02-18}
+        \ganttvrule[vrule/.style={draw=secondaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, yshift=0.3cm, font=\tiny\bfseries\color{secondaryMagenta}, fill=white, inner sep=1pt}]{H-04}{2026-04-14}
+        \ganttvrule[vrule/.style={draw=secondaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{secondaryMagenta}, fill=white, inner sep=1pt}]{H-12}{2026-05-17}
+        \ganttvrule[vrule/.style={draw=secondaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{secondaryMagenta}, fill=white, inner sep=1pt}]{H-13}{2026-06-05}
+        \ganttvrule[vrule/.style={draw=secondaryMagenta, dashed, line width=1.3pt}, vrule label node/.style={anchor=south, font=\tiny\bfseries\color{secondaryMagenta}, fill=white, inner sep=1pt}]{H-14}{2026-06-10}
+    \end{pgfonlayer}
+
 \end{ganttchart}
 }
 \vspace{0.15cm}
 \begin{center}
 \footnotesize
 \begin{tabular}{clccl}
-\fcolorbox{black}{orange!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
-\fcolorbox{black}{blue!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Desarrollo de código \\
-\fcolorbox{black}{purple!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
-\fcolorbox{black}{teal!15}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
+\fcolorbox{black}{primaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
+\fcolorbox{black}{primaryCyan}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Desarrollo de código \\
+\fcolorbox{black}{secondaryCyan}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
+\fcolorbox{black}{secondaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
 \end{tabular}
 \end{center}
 \caption{Diagrama de Gantt inicial del proyecto.}
