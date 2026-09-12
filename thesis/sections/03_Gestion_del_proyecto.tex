@@ -746,19 +746,20 @@ El estudio económico de la plataforma se fundamenta en la clasificación financ
 \begin{tabular}{lr}
 \hline
 \textbf{Concepto} & \textbf{Coste neto} \\ \hline
-Costes laborales & 11.552,65 € \\
-Equipamiento informático & 500,00 € \\
-Licencia comercial anual Google AI Premium (Gemini Pro) & 218,07 € \\
-Licencia GitHub Team (6 meses) & 21,82 € \\
-Licencia Microsoft Teams Essentials (6 meses) & 21,82 € \\
-Reserva de contingencia & 12.314,36 € \\ \hline
-\textbf{Total CAPEX} & \textbf{13.545,80 €} \\ \hline
+Costes laborales & 11.552,65 \euro \\
+Equipamiento informático & 500,00 \euro \\
+Licencia comercial anual Google AI Premium (Gemini Pro) & 218,07 \euro \\
+Licencia GitHub Team (6 meses) & 21,82 \euro \\
+Licencia Microsoft Teams Essentials (6 meses) & 21,82 \euro \\
+Reserva de contingencia & 12.314,36 \euro \\ \hline
+\textbf{Total CAPEX} & \textbf{13.545,80 \euro} \\ \hline
 \end{tabular}
 \caption{Resumen de Gastos de Capital (CAPEX).}
 \label{tab:resumen_capex}
 \end{table}
 
-Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos debido a que el proyecto ha sido ejecutado íntegramente por un único ingeniero. De este modo, cada actividad de la EDT se presupuesta teniendo en cuenta el rol profesional que la llevará a cabo. Para garantizar el rigor y la objetividad de las tarifas aplicadas, los precios base por hora se han extraído del \textit{Informe Final sobre la Consulta Preliminar del Mercado: ``Perfiles Profesionales Ámbito Informático''} de la Junta de Andalucía \cite{juntaTIC2018}. Siguiendo las directrices de dicho organismo, se utiliza como referencia la métrica de la \textbf{media acotada}, un indicador estadístico corregido mediante el test de Tukey que elimina valores atípicos del sector. Sobre la base salarial neta resultante de 8.886,65 €, se ha aplicado un recargo del 30\% en concepto de Seguridad Social y costes empresariales de contratación directos del mercado español, consolidando el coste laboral real en \textbf{11.552,65 €}. El desglose detallado de las horas por actividad y perfiles profesionales que sustenta este cálculo se presenta en la tabla de \hyperref[tab:coste_personal_rol]{costes netos laborales}.
+Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos debido a que el proyecto ha sido ejecutado íntegramente por un único ingeniero. De este modo, cada actividad de la EDT se presupuesta teniendo en cuenta el rol profesional que la llevará a cabo. Para garantizar el rigor y la objetividad de las tarifas aplicadas, los precios base por hora se han extraído del \textit{Informe Final sobre la Consulta Preliminar del Mercado: ``Perfiles Profesionales Ámbito Informático''} de la Junta de Andalucía \cite{juntaTIC2018}. Siguiendo las directrices de dicho organismo, se utiliza como referencia la métrica de la \textbf{media acotada}, un indicador estadístico corregido mediante el test de Tukey que elimina valores atípicos del sector. Sobre la base salarial neta resultante de 8.886,65 \euro, se ha aplicado un recargo del 30\% en concepto de Seguridad Social y costes empresariales de contratación directos del mercado español, consolidando el coste laboral real en \textbf{11.552,65 \euro}. El desglose detallado de las horas por actividad y perfiles profesionales que sustenta este cálculo se presenta en la tabla de \hyperref[tab:coste_personal_rol]{costes netos laborales}.
+
 \begin{table}[H]
 \centering
 \small
@@ -767,60 +768,64 @@ Para justificar coste laboral del CAPEX, se adopta un modelo de roles mixtos deb
 \begin{tabular}{llccr}
 \hline
 \textbf{Recurso (Rol)} & \textbf{Actividad} & \textbf{Precio/hora} & \textbf{Horas} & \textbf{Coste neto} \\ \hline
-\textbf{Project Manager}     & \hyperref[act:01]{\textbf{ACT-01}} & 46,09 € & 4 h  & 184,36 € \\
-                             & \hyperref[act:02]{\textbf{ACT-02}} & 46,09 € & 4 h  & 184,36 € \\
-                             & \hyperref[act:29]{\textbf{ACT-29}} & 46,09 € & 10 h & 460,90 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{18 h} & \textbf{829,62 €} \\ \hline
-\textbf{Analista}            & \hyperref[act:06]{\textbf{ACT-06}} & 38,33 € & 2 h  & 76,66 € \\
-                             & \hyperref[act:08]{\textbf{ACT-08}} & 38,33 € & 3 h  & 114,99 € \\
-                             & \hyperref[act:09]{\textbf{ACT-09}} & 38,33 € & 4 h  & 153,32 € \\
-                             & \hyperref[act:10]{\textbf{ACT-10}} & 38,33 € & 4 h  & 153,32 € \\
-                             & \hyperref[act:11]{\textbf{ACT-11}} & 38,33 € & 4 h  & 153,32 € \\
-                             & \hyperref[act:27]{\textbf{ACT-27}} & 38,33 € & 70 h & 2.683,10 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{87 h} & \textbf{3.334,71 €} \\ \hline
-\textbf{Diseñador UI}        & \hyperref[act:03]{\textbf{ACT-03}} & 33,43 € & 2 h  & 66,86 € \\
-                             & \hyperref[act:04]{\textbf{ACT-04}} & 33,43 € & 5 h  & 167,15 € \\
-                             & \hyperref[act:05]{\textbf{ACT-05}} & 33,43 € & 5 h  & 167,15 € \\
-                             & \hyperref[act:28]{\textbf{ACT-28}} & 33,43 € & 10 h & 334,30 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{22 h} & \textbf{735,46 €} \\ \hline
-\textbf{Programador Backend} & \hyperref[act:12]{\textbf{ACT-12}} & 23,85 € & 2 h  & 47,70 € \\
-                             & \hyperref[act:16]{\textbf{ACT-16}} & 23,85 € & 25 h & 596,25 € \\
-                             & \hyperref[act:18]{\textbf{ACT-18}} & 23,85 € & 15 h  & 357,75 € \\
-                             & \hyperref[act:21]{\textbf{ACT-21}} & 23,85 € & 20 h & 477,00 € \\
-                             & \hyperref[act:23]{\textbf{ACT-23}} & 23,85 € & 12 h & 286,20 € \\
-                             & \hyperref[act:24]{\textbf{ACT-24}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{79 h} & \textbf{1.884,15 €} \\ \hline
-\textbf{Programador Frontend} & \hyperref[act:17]{\textbf{ACT-17}} & 23,85 € & 25 h & 596,25 € \\
-                             & \hyperref[act:22]{\textbf{ACT-22}} & 23,85 € & 17 h & 405,45 € \\
-                             & \hyperref[act:25]{\textbf{ACT-25}} & 23,85 € & 5 h  & 119,25 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{47 h} & \textbf{1.120,95 €} \\ \hline
-\textbf{Tester}              & \hyperref[act:19]{\textbf{ACT-19}} & 23,68 € & 7 h  & 165,76 € \\
-                             & \hyperref[act:20]{\textbf{ACT-20}} & 23,68 € & 8 h  & 189,44 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{15 h} & \textbf{355,20 €} \\ \hline
-\textbf{Técnico}             & \hyperref[act:07]{\textbf{ACT-07}} & 19,58 € & 1 h  & 19,58 € \\
-                             & \hyperref[act:13]{\textbf{ACT-13}} & 19,58 € & 11 h & 215,38 € \\
-                             & \hyperref[act:14]{\textbf{ACT-14}} & 19,58 € & 5 h  & 97,90 € \\
-                             & \hyperref[act:15]{\textbf{ACT-15}} & 19,58 € & 12 h & 234,96 € \\
-                             & \hyperref[act:26]{\textbf{ACT-26}} & 19,58 € & 3 h  & 58,74 € \\ \cline{2-5}
-                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{32 h} & \textbf{626,56 €} \\ \hline
-\textbf{TOTAL}         &   &   & \textbf{300 h} & \textbf{8.886,65 €} \\ \hline
+\textbf{Project Manager}     & \hyperref[act:01]{\textbf{ACT-01}} & 46,09 \euro & 4 h  & 184,36 \euro \\
+                             & \hyperref[act:02]{\textbf{ACT-02}} & 46,09 \euro & 4 h  & 184,36 \euro \\
+                             & \hyperref[act:29]{\textbf{ACT-29}} & 46,09 \euro & 10 h & 460,90 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{18 h} & \textbf{829,62 \euro} \\ \hline
+\textbf{Analista}            & \hyperref[act:06]{\textbf{ACT-06}} & 38,33 \euro & 2 h  & 76,66 \euro \\
+                             & \hyperref[act:08]{\textbf{ACT-08}} & 38,33 \euro & 3 h  & 114,99 \euro \\
+                             & \hyperref[act:09]{\textbf{ACT-09}} & 38,33 \euro & 4 h  & 153,32 \euro \\
+                             & \hyperref[act:10]{\textbf{ACT-10}} & 38,33 \euro & 4 h  & 153,32 \euro \\
+                             & \hyperref[act:11]{\textbf{ACT-11}} & 38,33 \euro & 4 h  & 153,32 \euro \\
+                             & \hyperref[act:27]{\textbf{ACT-27}} & 38,33 \euro & 70 h & 2.683,10 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{87 h} & \textbf{3.334,71 \euro} \\ \hline
+\textbf{Diseñador UI}        & \hyperref[act:03]{\textbf{ACT-03}} & 33,43 \euro & 2 h  & 66,86 \euro \\
+                             & \hyperref[act:04]{\textbf{ACT-04}} & 33,43 \euro & 5 h  & 167,15 \euro \\
+                             & \hyperref[act:05]{\textbf{ACT-05}} & 33,43 \euro & 5 h  & 167,15 \euro \\
+                             & \hyperref[act:28]{\textbf{ACT-28}} & 33,43 \euro & 10 h & 334,30 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{22 h} & \textbf{735,46 \euro} \\ \hline
+\textbf{Programador Backend} & \hyperref[act:12]{\textbf{ACT-12}} & 23,85 \euro & 2 h  & 47,70 \euro \\
+                             & \hyperref[act:16]{\textbf{ACT-16}} & 23,85 \euro & 25 h & 596,25 \euro \\
+                             & \hyperref[act:18]{\textbf{ACT-18}} & 23,85 \euro & 15 h  & 357,75 \euro \\
+                             & \hyperref[act:21]{\textbf{ACT-21}} & 23,85 \euro & 20 h & 477,00 \euro \\
+                             & \hyperref[act:23]{\textbf{ACT-23}} & 23,85 \euro & 12 h & 286,20 \euro \\
+                             & \hyperref[act:24]{\textbf{ACT-24}} & 23,85 \euro & 5 h  & 119,25 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{79 h} & \textbf{1.884,15 \euro} \\ \hline
+\textbf{Programador Frontend} & \hyperref[act:17]{\textbf{ACT-17}} & 23,85 \euro & 25 h & 596,25 \euro \\
+                             & \hyperref[act:22]{\textbf{ACT-22}} & 23,85 \euro & 17 h & 405,45 \euro \\
+                             & \hyperref[act:25]{\textbf{ACT-25}} & 23,85 \euro & 5 h  & 119,25 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{47 h} & \textbf{1.120,95 \euro} \\ \hline
+\textbf{Tester}              & \hyperref[act:19]{\textbf{ACT-19}} & 23,68 \euro & 7 h  & 165,76 \euro \\
+                             & \hyperref[act:20]{\textbf{ACT-20}} & 23,68 \euro & 8 h  & 189,44 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{15 h} & \textbf{355,20 \euro} \\ \hline
+\textbf{Técnico}             & \hyperref[act:07]{\textbf{ACT-07}} & 19,58 \euro & 1 h  & 19,58 \euro \\
+                             & \hyperref[act:13]{\textbf{ACT-13}} & 19,58 \euro & 11 h & 215,38 \euro \\
+                             & \hyperref[act:14]{\textbf{ACT-14}} & 19,58 \euro & 5 h  & 97,90 \euro \\
+                             & \hyperref[act:15]{\textbf{ACT-15}} & 19,58 \euro & 12 h & 234,96 \euro \\
+                             & \hyperref[act:26]{\textbf{ACT-26}} & 19,58 \euro & 3 h  & 58,74 \euro \\ \cline{2-5}
+                         & \multicolumn{2}{l}{\textbf{Subtotal}}        & \textbf{32 h} & \textbf{626,56 \euro} \\ \hline
+\textbf{TOTAL}         &   &   & \textbf{300 h} & \textbf{8.886,65 \euro} \\ \hline
 \end{tabular}
 }
 \caption{Costes netos laborales agrupados por perfil profesional.}
 \label{tab:coste_personal_rol}
 \end{table}
 
+Una vez cuantificada la base de la mano de obra directa y consolidados los recursos materiales del proyecto, el CAPEX queda cerrado incorporando los costes empresariales y la reserva de contingencia definidos. Frente a esta inversión no recurrente asociada a la fase de construcción, es necesario proyectar los compromisos económicos continuos requeridos para mantener la plataforma operativa en producción. 
+
+A continuación se desglosa la partida correspondiente al OPEX base estimada para el arranque del sistema:
+
 \begin{table}[H]
-\centering
+\centering 
 \small
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{lr}
 \hline
 \textbf{Concepto} & \textbf{Coste neto} \\ \hline
-Infraestructura web Frontend (\textit{Vercel Pro}) & 18,18 €/mes \\
-Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 12,73 €/mes \\
-Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 15,00 €/mes \\ \hline
-\textbf{Total OPEX} & \textbf{45,91 €/mes} \\ \hline
+Infraestructura web Frontend (\textit{Vercel Pro}) & 18,18 \euro/mes \\
+Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 12,73 \euro/mes \\
+Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 15,00 \euro/mes \\ \hline
+\textbf{Total OPEX} & \textbf{45,91 \euro/mes} \\ \hline
 \end{tabular}
 \caption{Resumen de Gastos Operativos mensuales (OPEX).}
 \label{tab:resumen_opex}
@@ -840,10 +845,10 @@ Para prever el impacto financiero de la plataforma en entornos reales, se analiz
 \begin{tabular}{lccc}
 \hline
 \textbf{Concepto} & \textbf{Pesimista} & \textbf{Conservador} & \textbf{Optimista} \\ \hline
-Infraestructura web Frontend (\textit{Vercel Pro}) & 0,00 € & 18,18 € & 18,18 € \\
-Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 0,00 € & 12,73 € & 27,27 € \\
-Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15,00 € & 60,00 € \\ \hline
-\textbf{Total OPEX} & \textbf{2,50 €/mes} & \textbf{45,91 €/mes} & \textbf{105,45 €/mes} \\ \hline
+Infraestructura web Frontend (\textit{Vercel Pro}) & 0,00 \euro & 18,18 \euro & 18,18 \euro \\
+Servidor de aplicaciones y Base de Datos (\textit{Render Starter}) & 0,00 \euro & 12,73 \euro & 27,27 \euro \\
+Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 \euro & 15,00 \euro & 60,00 \euro \\ \hline
+\textbf{Total OPEX} & \textbf{2,50 \euro/mes} & \textbf{45,91 \euro/mes} & \textbf{105,45 \euro/mes} \\ \hline
 \end{tabular}
 }
 \caption{Comparativa de OPEX según escenario de escalado.}
@@ -858,7 +863,7 @@ Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15
     bar width=12pt,                
     enlarge x limits=0.3,
     legend style={at={(0.5,-0.25)}, anchor=north, legend columns=-1}, 
-    ylabel={Coste Neto (€/mes)},
+    ylabel={Coste Neto (\euro/mes)},
     symbolic x coords={Pesimista, Conservador, Optimista},
     xtick=data,
     nodes near coords,
@@ -894,7 +899,7 @@ Consumo de la API de \textit{Gemini Pro} para el asistente de IA & 2,50 € & 15
     width=12cm,
     height=8cm,
     xlabel={Número de usuarios activos mensuales},
-    ylabel={Coste Neto (€/mes)},
+    ylabel={Coste Neto (\euro/mes)},
     xmin=0, xmax=2100,
     ymin=0, ymax=120,
     xtick={0, 100, 500, 1000, 1500, 2000},
@@ -940,13 +945,13 @@ De este modo, asumiendo los gastos de infraestructura del escenario conservador,
 \hline
 \textbf{Concepto} & \textbf{Año 1} & \textbf{Año 2} & \textbf{Año 3} \\ \hline
 \textbf{Inversión inicial (CAPEX)} & & & \\
-~~Desarrollo de Software (Ingeniería) & 5.935,20 € & 0,00 € & 0,00 € \\ \hline
+~~Desarrollo de Software (Ingeniería) & 13.545,80 \euro & 0,00 \euro & 0,00 \euro \\ \hline
 \textbf{Gastos operativos (OPEX)} & & & \\
-~~Infraestructura Frontend (\textit{Vercel Pro}) & 218,16 € & 218,16 € & 218,16 € \\
-~~Servidor de aplicaciones y BD (\textit{Render Starter}) & 152,76 € & 152,76 € & 152,76 € \\
-~~Consumo de la API de \textit{Gemini Pro} & 180,00 € & 180,00 € & 180,00 € \\ \hline
-\textbf{Total anual} & \textbf{6.486,12 €} & \textbf{550,92 €} & \textbf{550,92 €} \\ \hline
-\textbf{TCO acumulado (3 Años)} & \multicolumn{3}{c}{\textbf{7.587,96 €}} \\ \hline
+~~Infraestructura Frontend (\textit{Vercel Pro}) & 218,16 \euro & 218,16 \euro & 218,16 \euro \\
+~~Servidor de aplicaciones y BD (\textit{Render Starter}) & 152,76 \euro & 152,76 \euro & 152,76 \euro \\
+~~Consumo de la API de \textit{Gemini Pro} & 180,00 \euro & 180,00 \euro & 180,00 \euro \\ \hline
+\textbf{Total anual} & \textbf{14.096,72 \euro} & \textbf{550,92 \euro} & \textbf{550,92 \euro} \\ \hline
+\textbf{TCO acumulado (3 Años)} & \multicolumn{3}{c}{\textbf{15.198,56 \euro}} \\ \hline
 \end{tabular}
 }
 \caption{TCO proyectado a tres años.}
