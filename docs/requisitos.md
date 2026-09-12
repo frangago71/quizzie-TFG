@@ -34,7 +34,7 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 | **RF-09** | #39 | Mostrar ranking | Ranking de alumnos después de cada pregunta y al final. | Media | OBJ-08 | Core |
 | **RF-10** | #62 | Aleatoriedad | Opción para cambiar el orden de preguntas y respuestas. | Baja | OBJ-02 | QA |
 | **RF-11** | #63 | Configurar tiempo | Definición del tiempo de respuesta al crear la sala. | Media | OBJ-03 | QA |
-| **RF-12** | # | Importación | Carga de preguntas y respuestas desde archivos .txt o .csv. | Media | OBJ-12 | |
+| **RF-12** | #100 | Importación | Carga de preguntas y respuestas desde archivos .txt o .csv. | Media | OBJ-12 | |
 | **RF-13** | #51 | Edición de cuestionarios y preguntas | Permitir editar el título, descripción, preguntas y opciones. | Media | OBJ-02 |Core |
 | **RF-14** | #40 | Eliminación de datos | Borrado lógico de cuestionarios o preguntas. | Media | OBJ-02 | Core |
 | **RF-15** | #3 | Crear sala | Instanciación de una sesión con PIN único basada en un cuestionario. | Alta | OBJ-03 | MVP |
@@ -54,21 +54,21 @@ Listado detallado de las capacidades del sistema, trazadas con su correspondient
 | **RF-29** | #46 | Validación Token | Comparación del Token escaneado con el del servidor. | Alta | OBJ-06 | Core |
 | **RF-30** | #47 | Control de estado | Impedimento de validar nota si ya consta como "Verificado". | Alta | OBJ-07 | Core |
 | **RF-31** | #48 | Check verificación | Actualización a estado verificado y oficialización de nota. | Alta | OBJ-07 | Core |
-| **RF-32** | # | Listado en vivo | Actualización en tiempo real de alumnos verificados en pantalla. | Media | OBJ-08 | |
-| **RF-33** | # | Estadísticas | Porcentaje de aciertos por pregunta para detectar temas difíciles. | Media | OBJ-08 | |
-| **RF-34** | # | Generación preguntas | Procesamiento de tema o texto para generar preguntas vía IA. | Media | OBJ-09 | |
-| **RF-35** | # | Asistente de ayuda | Interpretación de preguntas en lenguaje natural sobre la web. | Baja | OBJ-09 | |
-| **RF-36** | # | Navegación y tutorial por IA | Detección de intenciones de navegación y explicación del funcionamiento de la app vía IA. | Baja | OBJ-09 | |
-| **RF-37** | # | Revisión post IA | Presentación de contenido generado por IA para validación manual. | Media | OBJ-09 | |
-| **RF-38** | # | Crear clase | Agrupación de alumnos o resultados bajo etiqueta de clase. | Baja | OBJ-11 | |
+| **RF-32** | #101 | Listado en vivo | Actualización en tiempo real de alumnos verificados en pantalla. | Media | OBJ-08 | |
+| **RF-33** | #102 | Estadísticas | Porcentaje de aciertos por pregunta para detectar temas difíciles. | Media | OBJ-08 | |
+| **RF-34** | #95 | Generación preguntas | Procesamiento de tema o texto para generar preguntas vía IA. | Media | OBJ-09 | |
+| **RF-35** | #96 | Asistente de ayuda | Interpretación de preguntas en lenguaje natural sobre la web. | Baja | OBJ-09 | |
+| **RF-36** | #97 | Navegación y tutorial por IA | Detección de intenciones de navegación y explicación del funcionamiento de la app vía IA. | Baja | OBJ-09 | |
+| **RF-37** | #98 | Revisión post IA | Presentación de contenido generado por IA para validación manual. | Media | OBJ-09 | |
+| **RF-38** | #99 | Crear clase | Agrupación de alumnos o resultados bajo etiqueta de clase. | Baja | OBJ-11 | |
 | **RF-39** | #64 | Exportación CSV | Generación de archivo descargable con los resultados. | Alta | OBJ-12 | QA |
 | **RF-40** | #49 | Gestión de desconexiones y reconexiones | Manejo de unirse tarde, desconexiones y borrado al abandonar. | Media | OBJ-05 | Core |
 | **RF-41** | #50 | Filtros en listar cuestionarios | Filtrado por inactivos, nuevos o todos. | Media | OBJ-02 | Core |
-| **RF-42** | # | Bonificación por tiempo | Cálculo de puntos extra en función del tiempo empleado en responder. | Baja | OBJ-05 | |
-| **RF-43** | # | Sistema de rachas | Bonificación de puntos por encadenar respuestas correctas consecutivas. | Baja | OBJ-05 | |
-| **RF-44** | # | Configuración de puntuación | Elección del modo de puntuación (estándar o con bonificaciones) al crear la sala. | Baja | OBJ-03 | |
+| **RF-42** | #103 | Bonificación por tiempo | Cálculo de puntos extra en función del tiempo empleado en responder. | Baja | OBJ-05 | |
+| **RF-43** | #104 | Sistema de rachas | Bonificación de puntos por encadenar respuestas correctas consecutivas. | Baja | OBJ-05 | |
+| **RF-44** | #105 | Configuración de puntuación | Elección del modo de puntuación (estándar o con bonificaciones) al crear la sala. | Baja | OBJ-03 | |
 | **RF-45** | #65 | Visibilidad del ranking | Opción para activar o desactivar la visualización del ranking entre preguntas. | Baja | OBJ-03 | QA |
-| **RF-46** | # | Creación/edición de cuestionarios avanzada | Inclusión de etiquetas (tags) e imágenes en el formulario de creación y edición. | Baja | OBJ-02 | |
+| **RF-46** | #106 | Creación/edición de cuestionarios avanzada | Inclusión de etiquetas (tags) e imágenes en el formulario de creación y edición. | Baja | OBJ-02 | |
 | **RF-47** | #66| Historial de salas | Registro de salas finalizadas con acceso a los resultados y estadísticas históricas. | Alta | OBJ-07 | QA |
 
 ## 3. Requisitos No Funcionales (RNF)
