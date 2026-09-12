@@ -49,7 +49,7 @@ Gracias a las relaciones establecidas en la \hyperref[tab:matriz_trazabilidad]{m
 \label{tab:rf_pospuestos_obj09}
 \end{table}
 
-    \item \textbf{Gestión de grupos (\hyperref[obj:11]{OBJ-11}):} Implica posponer íntegramente el caso de uso \textbf{\hyperref[cu:11]{CU-11} - Gestionar grupos}) y la historia de usuario \textbf{\hyperref[hu:pr-07]{HU-PR-07} - Organización por grupos de clase}, afectando a un único requisito funcional:
+    \item \textbf{Gestión de grupos (\hyperref[obj:11]{OBJ-11}):} Implica posponer íntegramente el caso de uso \textbf{\hyperref[cu:11]{CU-11} - Gestionar grupos} y la historia de usuario \textbf{\hyperref[hu:pr-07]{HU-PR-07} - Organización por grupos de clase}, afectando a un único requisito funcional:
 \begin{table}[H]
 \centering
 \normalsize
@@ -278,13 +278,72 @@ A continuación, se muestra una comparativa entre la Línea Base del Cronograma 
 \fcolorbox{black}{secondaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
 \end{tabular}
 \end{center}
-\caption{Diagrama de Gantt de seguimiento: cronograma planificado \textit{vs.} real.}
+\caption{Diagrama de Gantt de seguimiento: cronograma planificado vs. real.}
 \label{fig:gantt_comparativa}
 \end{figure}
 
 \textcolor{red}{\textbf{[TODO: Establecer fin de fase 9 y comienzo de fase 10]}}
 
 \section{Gastos incurridos frente a Línea Base de Costes}\label{sec:gastos_incurridos_costes}
+
+Para evaluar las diferencias entre la \hyperref[sec:linea_base_de_costes]{Línea Base de Costes} y los gastos reales del proyecto, el análisis se centra exclusivamente en el CAPEX. El OPEX se mantiene idéntico a lo previsto, ya que los costes recurrentes de despliegue y consumo de servicios (incluida la API de IA para cuando entre en producción) se consideraron fijos para el proyecto y no han sufrido variaciones.
+
+La variación del CAPEX se debe principalmente a dos factores derivados de las desviaciones temporales del proyecto: por un lado, el desvío en los costes laborales según el esfuerzo dedicado, y por otro, la extensión en el uso de las licencias de software. Al haberse trasladado el cierre del proyecto de junio a octubre, las suscripciones de GitHub Team y Microsoft Teams Essentials debieron mantenerse activas durante cuatro meses adicionales (pasando de 6 a 10 meses), mientras que la licencia comercial anual de Google AI Premium y el equipamiento no experimentaron cambios.
+
+En la siguiente tabla se recoge el balance consolidado del presupuesto de capital frente a los costes reales:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lrrr}
+\hline
+\textbf{Concepto} & \textbf{Coste previsto} & \textbf{Coste real} & \textbf{Desviación} \\ \hline
+Costes laborales                                        & 11.552,65 \euro & [   \euro] & [   \euro] \\
+Equipamiento informático                                & 500,00 \euro    & 500,00 \euro & 0,00 \euro \\
+Licencia Google AI Premium (anual)                      & 218,07 \euro    & 218,07 \euro & 0,00 \euro \\
+Licencia GitHub Team                                    & 21,82 \euro{} (6 m)   & 36,37 \euro{} (10 m) & 14,55 \euro \\
+Licencia Microsoft Teams Essentials                     & 21,82 \euro{} (6 m)   & 36,37 \euro{} (10 m) & 14,55 \euro \\
+Reserva de contingencia                                 & 12.314,36 \euro & [   \euro] & [   \euro] \\ \hline
+\textbf{Total CAPEX}                                    & \textbf{13.545,80 \euro} & \textbf{[   \euro]} & \textbf{[   \euro]} \\ \hline
+\end{tabular}%
+}
+\caption{Comparativa de Gastos de Capital (CAPEX) presupuestados vs. reales.}
+\label{tab:resumen_capex_real}
+\end{table}
+
+\textcolor{red}{\textbf{[TODO:Completar tabla]}}
+
+Para comprender de dónde procede la desviación observada en la partida de costes laborales, es necesario descender al detalle del esfuerzo por rol profesional. La redistribución de horas entre tareas alteró la dedicación asignada a cada perfil. A continuación se desglosan las horas e importes correspondientes a partir de las tarifas por hora fijadas en la planificación inicial:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\noindent\makebox[\textwidth][c]{%
+\begin{tabular}{lccccc}
+\hline
+\textbf{Rol} & \textbf{Precio/hora} & \textbf{Horas previstas} & \textbf{Horas reales} & \textbf{Coste previsto} & \textbf{Coste real} \\ \hline
+Project Manager      & 46,09 \euro & 18 h  & [   h] & 829,62 \euro   & [   \euro] \\
+Analista             & 38,33 \euro & 87 h  & [   h] & 3.334,71 \euro & [   \euro] \\
+Diseñador UI         & 33,43 \euro & 22 h  & [   h] & 735,46 \euro   & [   \euro] \\
+Programador Backend  & 23,85 \euro & 79 h  & [   h] & 1.884,15 \euro & [   \euro] \\
+Programador Frontend & 23,85 \euro & 47 h  & [   h] & 1.120,95 \euro & [   \euro] \\
+Tester               & 23,68 \euro & 15 h  & [   h] & 355,20 \euro   & [   \euro] \\
+Técnico              & 19,58 \euro & 32 h  & [   h] & 626,56 \euro   & [   \euro] \\ \hline
+\textbf{Total}       & --          & \textbf{300 h} & \textbf{[   h]} & \textbf{8.886,65 \euro} & \textbf{[   \euro]} \\ \hline
+\end{tabular}%
+}
+\caption{Comparativa de dedicación y costes de personal por rol profesional.}
+\label{tab:horas_roles_previstas_reales}
+\end{table}
+
+\textcolor{red}{\textbf{[TODO: Completar tabla y redactar pequeña retrospectiva final de desviaciones de los roles]}}
+
+Como consecuencia de esta variación en el gasto de capital y al mantenerse inmutable el OPEX, el coste total de propiedad (TCO) del proyecto pasa de los 15.198,56 € estimados inicialmente a un valor definitivo de [   \euro], cerrando la auditoría económica del desarrollo.
+
+\textcolor{red}{\textbf{[TODO: Añadir tco final]}}
 
 \section{Desviaciones y gestión de cambios realizados}\label{sec:desviaciones_y_gestion_cambios}
 Cómo se gestionaron las desviaciones y qué modificaciones de la planificación provocaron
