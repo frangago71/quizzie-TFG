@@ -346,11 +346,207 @@ Como consecuencia de esta variación en el gasto de capital y al mantenerse inmu
 
 \textcolor{red}{\textbf{[TODO: Añadir tco final]}}
 
-\section{Desviaciones y gestión de cambios realizados}\label{sec:desviaciones_y_gestion_cambios}
-Cómo se gestionaron las desviaciones y qué modificaciones de la planificación provocaron
+\section{Desviaciones y gestión de cambios}\label{sec:desviaciones_y_gestion_cambios}
+
+A lo largo del ciclo de vida del proyecto surgieron contingencias técnicas, restricciones de tiempo y oportunidades de mejora que hicieron necesario activar mecanismos formales de control del cambio. Con el objetivo de proteger la calidad técnica del producto software y evitar desviaciones incontroladas de la planificación, cada alteración significativa respecto a la línea base se analizó y documentó mediante una ficha formal de solicitud de cambio (\textit{Change Request}), evaluando su impacto directo sobre el alcance, el cronograma y los costes.
+
+\subsection{Registro de cambios}\label{sub:registro_cambios}
+
+En este apartado se recoge el historial de las principales decisiones de cambio gestionadas durante el desarrollo, estructuradas como \textit{Change Requests} (CR). Cada ficha documenta el estado de la solicitud, el contexto que la motivó, la decisión adoptada y las consecuencias derivadas de su resolución.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-01: Aplazamiento de la defensa a convocatoria de octubre. \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & El esfuerzo necesario para estabilizar las pruebas de integración en WebSockets y redactar la memoria con el rigor exigido impidió concluir en junio sin comprometer la calidad. \\
+\hline
+\textbf{Decisión} & Trasladar formalmente la entrega de la memoria y la defensa técnica de la convocatoria ordinaria de junio a la extraordinaria de octubre de 2026. \\
+\hline
+\textbf{Impacto en alcance} & Ninguno. \\
+\hline
+\textbf{Impacto en tiempo} & Ampliación de 4 meses en la ventana temporal global del proyecto. \\
+\hline
+\textbf{Impacto en coste} & Incremento de 29,10 \euro{} en licencias de desarrollo CAPEX por 4 meses adicionales de GitHub Team y Microsoft Teams Essentials. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-01.}
+\label{tab:cr_01_aplazamiento}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-02: Aplazamiento de funcionalidades del asistente de generación con IA (\hyperref[obj:09]{OBJ-09}). \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & La latencia y los límites de consumo (\textit{rate limits}) de la API de Gemini planteaban riesgos de bloqueo operativo en vivo, exigiendo un esfuerzo desproporcionado para asegurar un comportamiento determinista. \\
+\hline
+\textbf{Decisión} & Desacoplar la generación con IA del alcance actual, registrarla como línea de trabajo futuro en GitHub y priorizar la creación e importación manual de cuestionarios. \\
+\hline
+\textbf{Impacto en alcance} & Reducción del alcance funcional inmediato, preservando íntegro el flujo estándar de gestión de cuestionarios. \\
+\hline
+\textbf{Impacto en tiempo} & Liberación de horas de desarrollo backend y frontend, mitigando retrasos en el núcleo del sistema. \\
+\hline
+\textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-02.}
+\label{tab:cr_02_ia}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-03: Postergación de la creación de grupos de alumnos (\hyperref[obj:11]{OBJ-11}). \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & Se priorizó centrar el tiempo de desarrollo en la estabilidad de las partidas en tiempo real antes que en la gestión de grupos. \\
+\hline
+\textbf{Decisión} & Posponer la gestión de grupos de alumnos y dejarla registrada en GitHub como trabajo futuro. \\
+\hline
+\textbf{Impacto en alcance} & Se excluye la funcionalidad de grupos de alumnos en esta entrega para asegurar el funcionamiento del juego en vivo. \\
+\hline
+\textbf{Impacto en tiempo} & Se liberan horas de desarrollo para dedicarlas a la estabilidad y pruebas del sistema. \\
+\hline
+\textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-03.}
+\label{tab:cr_03_obj11}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-04: Ampliación de la batería y estrategia de pruebas. \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & La estrategia de pruebas planificada inicialmente resultó insuficiente para asegurar la calidad global del sistema, haciendo necesario un enfoque de verificación más exhaustivo. \\
+\hline
+\textbf{Decisión} & Rediseñar y ampliar la estrategia de pruebas, incorporando una batería más completa de casos de prueba tanto a nivel unitario como de integración. \\
+\hline
+\textbf{Impacto en alcance} & Incremento sustancial en la cobertura de pruebas y en la robustez general de la aplicación. \\
+\hline
+\textbf{Impacto en tiempo} & Aumento notable de horas dedicadas a la fase de pruebas frente a las 15 horas presupuestadas originalmente. \\
+\hline
+\textbf{Impacto en coste} & Incremento en el coste imputado al rol de Tester dentro del balance contable del CAPEX. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-04.}
+\label{tab:cr_04_testing}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-05: Incorporación de Redis para la sincronización de la sala. \\
+\hline
+\textbf{Estado} & Desestimado. \\
+\hline
+\textbf{Contexto} & Se evaluó utilizar Redis para guardar el estado de las salas y permitir que varios servidores pudieran comunicarse entre sí ante un gran número de usuarios simultáneos. \\
+\hline
+\textbf{Decisión} & Desestimar el uso de Redis y mantener la gestión de las salas en la propia memoria del servidor actual. \\
+\hline
+\textbf{Impacto en alcance} & Ninguno; se mantiene una arquitectura más simple y directa, suficiente para las necesidades del proyecto. \\
+\hline
+\textbf{Impacto en tiempo} & Se evita un trabajo extra estimado entre 10 y 15 horas de desarrollo y configuración. \\
+\hline
+\textbf{Impacto en coste} & Ninguno; además, se evita el coste mensual extra de contratar un servicio adicional en la nube. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-05.}
+\label{tab:cr_05_redis}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-06: Despliegue efectivo de SonarCloud y refuerzo de controles en local (\textit{pre-commits}). \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & La activación en CI/CD del análisis con SonarCloud se demoró; al procesar el código acumulado, el volumen de avisos obligó a atajar las incidencias antes de subirlas al repositorio. \\
+\hline
+\textbf{Decisión} & Habilitar formalmente el análisis continuo en GitHub Actions e implantar ganchos de \textit{pre-commit} junto a formateadores locales para filtrar defectos de estilo y tipado en local. \\
+\hline
+\textbf{Impacto en alcance} & Incorporación de controles estáticos automatizados en el entorno local y en la integración continua. \\
+\hline
+\textbf{Impacto en tiempo} & Dedicación técnica imprevista en configurar las herramientas locales y solventar los avisos acumulados. \\
+\hline
+\textbf{Impacto en coste} & Ninguno en licencias (uso del plan gratuito de SonarCloud); imputación adicional de horas al rol Técnico. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-06.}
+\label{tab:cr_06_sonar}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{12pt}
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{11.5cm}}
+\hline
+\textbf{CR} & CR-07: Reducción de deuda técnica en SonarCloud y congelación del alcance. \\
+\hline
+\textbf{Estado} & Aprobado. \\
+\hline
+\textbf{Contexto} & La integración tardía del análisis de SonarCloud generó un volumen acumulado de deuda técnica que exigió atención inmediata, poniendo en riesgo la fecha límite de entrega si se continuaba desarrollando nuevas funcionalidades. \\
+\hline
+\textbf{Decisión} & Congelar el desarrollo de nuevas características para priorizar la corrección de errores críticos en SonarCloud, posponiendo los requisitos de mejora no esenciales como tareas de trabajo futuro en GitHub, en consonancia con la retrospectiva del alcance. \\
+\hline
+\textbf{Impacto en alcance} & Se detiene la incorporación de requisitos de mejora secundarios, asegurando una base de código limpia y libre de fallos graves para el núcleo de la plataforma. \\
+\hline
+\textbf{Impacto en tiempo} & Permite cumplir con los plazos de entrega y dedicar el tiempo necesario a la redacción rigurosa de la memoria técnica. \\
+\hline
+\textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+\hline
+\end{tabular}%
+}
+\caption{Registro de cambios - CR-07.}
+\label{tab:cr_07_backlog}
+\end{table}
+
+Este conjunto de solicitudes de cambio pone de manifiesto que las desviaciones temporales y económicas registradas no fueron fruto de la improvisación, sino de decisiones conscientes de ingeniería orientadas a priorizar la estabilidad técnica, la verificación exhaustiva y la calidad del producto final frente a las restricciones temporales.
 
 \section{Resultados de las pruebas y validación}
-Resultados obtenidos en las pruebas unitarias, de integración, E2E, carga y rendimiento, y su comparación con los objetivos establecidos
+Resultados obtenidos en las pruebas unitarias(backend), de integración(backend), componentes frontend,  E2E, carga y rendimiento, y su comparación con los objetivos establecidos
 
 \section{Retrospectiva técnica}
 Reflexión sobre la implementación de las prácticas de CI/CD, testing y métricas de calidad, y decir si he cumplido los objetivos como las métricas de cobertura o de issues de sonar
