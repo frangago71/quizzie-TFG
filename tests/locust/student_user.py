@@ -9,20 +9,54 @@ from websocket import create_connection, WebSocketException, WebSocketTimeoutExc
 class StudentUser(HttpUser):
     """
     Simula alumnos repartidos en salas activas respondiendo en tiempo real (95% del tráfico).
+    Flujo:
+    1) Se unen a la sala activa del cuestionario.
+    2) Escuchan el inicio y avance de preguntas vía WebSocket.
+    3) Responden de manera repartida dentro del tiempo EXACTAMENTE una sola vez por cada pregunta con opciones válidas.
     """
     weight = 95
     wait_time = between(2, 5)
 
     room_id = 1
     participant_id = None
+    current_question_id = None
+    current_options = None
     ws = None
     listen_greenlet = None
 
     def on_start(self):
-        """Conecta al alumno a una sala activa y registra el listener de eventos."""
-        self.participant_id = random.randint(1, 10000)
+        """Conecta al alumno a la sala activa, vincula su participante y abre el WebSocket de eventos."""
+        self.current_options = []
+        self.answered_question_ids = set()
+
+        # Pequeño retardo escalonado para no saturar SQLite en el mismo milisegundo durante el spawn
+        gevent.sleep(random.uniform(0.05, 0.3))
+
+        # 1. Distribuir a los alumnos entre las salas activas
         self.room_id = random.choice([1, 2, 3])
 
+        # 2. Vincular el estudiante a la sala -> Trazabilidad Estudiante + Sala -> Participante
+        student_id = random.randint(1, 40)
+        with self.client.post(
+            f"/stage/participants?student_id={student_id}&room_id={self.room_id}",
+            name="/stage/participants",
+            catch_response=True,
+        ) as join_res:
+            if join_res.status_code in [200, 201]:
+                data = join_res.json()
+                self.participant_id = data.get("participant_id")
+                join_res.success()
+            else:
+                try:
+                    parts_res = self.client.get("/stage/participants", name="/stage/participants")
+                    if parts_res.status_code == 200 and parts_res.json():
+                        parts = parts_res.json()
+                        room_parts = [p.get("id") for p in parts if p.get("room_id") == self.room_id]
+                        self.participant_id = random.choice(room_parts) if room_parts else parts[0].get("id", 1)
+                except Exception:
+                    self.participant_id = 1
+
+        # 3. Conexión WebSocket para recibir los eventos en vivo de la sala
         host = self.host or "http://127.0.0.1:8000"
         parsed = urlparse(host)
         ws_scheme = "ws" if parsed.scheme in ["http", "ws", ""] else "wss"
@@ -40,7 +74,6 @@ class StudentUser(HttpUser):
                 response_length=0,
                 exception=None,
             )
-            # Iniciar greenlet de escucha en segundo plano
             self.listen_greenlet = gevent.spawn(self._listen)
         except Exception as e:
             total_time = int((time.time() - start_time) * 1000)
@@ -53,8 +86,25 @@ class StudentUser(HttpUser):
             )
             self.ws = None
 
+        try:
+            room_res = self.client.get(f"/stage/rooms/{self.room_id}", name="/stage/rooms/{id}")
+            if room_res.status_code == 200:
+                r_data = room_res.json()
+                q_id = r_data.get("question_id")
+                options = r_data.get("options", [])
+                opt_ids = [opt.get("id") for opt in options if isinstance(opt, dict) and "id" in opt]
+                if q_id and opt_ids and q_id not in self.answered_question_ids and r_data.get("status") == "live":
+                    self.answered_question_ids.add(q_id)
+                    self.current_question_id = q_id
+                    self.current_options = opt_ids
+                    gevent.sleep(random.uniform(0.1, 0.5))
+                    option_id = random.choice(opt_ids)
+                    self._submit_answer(q_id, option_id)
+        except Exception:
+            pass
+
     def _listen(self):
-        """Greenlet que escucha mensajes del WebSocket en tiempo real."""
+        """Greenlet que escucha eventos WebSocket (room_start, next_question) y responde repartido una sola vez por pregunta."""
         while self.ws:
             try:
                 self.ws.settimeout(1.0)
@@ -75,11 +125,23 @@ class StudentUser(HttpUser):
                     exception=None,
                 )
 
-                # Si llega una nueva pregunta, enviar respuesta de alumno
+                # Cuando el profesor inicia la sala o avanza pregunta, responder dentro del tiempo (1 sola vez)
                 if event_type in ["next_question", "room_start"]:
                     q_data = payload.get("data", {})
-                    question_id = q_data.get("question_id", 1)
-                    self._submit_answer(question_id)
+                    q_id = q_data.get("question_id")
+                    options = q_data.get("options", [])
+                    opt_ids = [
+                        opt.get("id") for opt in options if isinstance(opt, dict) and "id" in opt
+                    ]
+                    if q_id and opt_ids and q_id not in self.answered_question_ids:
+                        # Marcar inmediatamente como respondida para evitar cualquier duplicidad
+                        self.answered_question_ids.add(q_id)
+                        self.current_question_id = q_id
+                        self.current_options = opt_ids
+                        # Tiempo de lectura y respuesta repartido entre alumnos
+                        gevent.sleep(random.uniform(0.1, 0.8))
+                        option_id = random.choice(opt_ids)
+                        self._submit_answer(q_id, option_id)
 
             except WebSocketTimeoutException:
                 continue
@@ -95,23 +157,23 @@ class StudentUser(HttpUser):
             except Exception:
                 break
 
-    @task(2)
-    def submit_answer_task(self):
-        """Tarea periódica para simular el envío de respuestas de alumnos durante la partida."""
-        question_id = random.choice([1, 2, 3, 4, 5])
-        self._submit_answer(question_id)
+    def _submit_answer(self, question_id, option_id):
+        """Envía la respuesta al backend asegurando que option pertenezca estrictamente a question."""
+        if not self.participant_id or not question_id or not option_id:
+            return
 
-    def _submit_answer(self, question_id):
-        """Simula el envío masivo de respuesta de alumno al backend usando la API nativa de Locust."""
-        option_id = random.choice([1, 2, 3, 4])
         url = f"/stage/answers?participant_id={self.participant_id}&option_id={option_id}&question_id={question_id}"
         with self.client.post(url, name="/stage/answers", catch_response=True) as res:
-            if res.status_code in [200, 201, 400, 404]:
+            if res.status_code in [200, 201]:
                 res.success()
+            elif res.status_code == 400 and "Ya has respondido" in res.text:
+                res.success()
+            else:
+                res.failure(f"HTTP {res.status_code}: {res.text}")
 
     @task(1)
     def keep_alive_ping(self):
-        """Envía un ping periódico a la conexión WebSocket activa."""
+        """Envía un ping periódico a la conexión WebSocket activa mientras espera eventos."""
         if self.ws:
             start_time = time.time()
             try:

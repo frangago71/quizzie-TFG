@@ -62,24 +62,34 @@ class TeacherHostUser(HttpUser):
                 if res.status_code in [200, 404]:
                     res.success()
 
-    @task(2)
+    @task(3)
     def control_game_flow(self):
-        """Simula la transición de estado de la sala por parte del profesor."""
+        """Simula la transición de estado de la sala por parte del profesor según su estado actual."""
         if not self.room_id or not self.token:
             return
         headers = {"Authorization": f"Bearer {self.token}"}
 
-        # 1. Iniciar sala
-        with self.client.post(f"/stage/rooms/{self.room_id}/start", headers=headers, name="/stage/rooms/{id}/start", catch_response=True) as res:
-            if res.status_code in [200, 400]:
-                res.success()
+        # Consultar estado de la sala
+        with self.client.get(f"/stage/rooms/{self.room_id}", name="/stage/rooms/{id}", catch_response=True) as room_res:
+            if room_res.status_code != 200:
+                self.room_id = random.choice([1, 2, 3])
+                return
+            room_data = room_res.json()
+            status = room_data.get("status")
 
-        # 2. Avanzar pregunta
-        with self.client.patch(f"/stage/rooms/{self.room_id}/next-question", headers=headers, name="/stage/rooms/{id}/next-question", catch_response=True) as res:
-            if res.status_code in [200, 400]:
-                res.success()
-
-        # 3. Mostrar resultados y leaderboard
-        with self.client.post(f"/stage/rooms/{self.room_id}/leaderboard/show", headers=headers, name="/stage/rooms/{id}/leaderboard/show", catch_response=True) as res:
-            if res.status_code in [200, 400]:
-                res.success()
+        if status == "waiting":
+            # 1. Iniciar sala
+            with self.client.post(f"/stage/rooms/{self.room_id}/start", headers=headers, name="/stage/rooms/{id}/start", catch_response=True) as res:
+                if res.status_code in [200, 400]:
+                    res.success()
+        elif status == "live":
+            # 2. Avanzar a la siguiente pregunta
+            with self.client.patch(f"/stage/rooms/{self.room_id}/next-question", headers=headers, name="/stage/rooms/{id}/next-question", catch_response=True) as res:
+                if res.status_code in [200, 400]:
+                    res.success()
+                elif res.status_code == 404:
+                    # 3. Si no hay más preguntas, mostrar leaderboard
+                    self.client.post(f"/stage/rooms/{self.room_id}/leaderboard/show", headers=headers, name="/stage/rooms/{id}/leaderboard/show")
+                    self.room_id = random.choice([1, 2, 3])
+        elif status in ["finished", "verifying"]:
+            self.room_id = random.choice([1, 2, 3])

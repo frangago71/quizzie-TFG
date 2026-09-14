@@ -105,7 +105,11 @@ class TeacherManagerUser(HttpUser):
     @task(1)
     def join_room_by_code(self):
         """Simula la consulta de PIN/Código de sala."""
-        test_code = "123456"
-        with self.client.get(f"/stage/code/{test_code}", name="/stage/code/{join_code}", catch_response=True) as res:
-            if res.status_code in [200, 404]:
+        test_code = "111111"
+        with self.client.get(
+            f"/stage/rooms/verify/{test_code}",
+            name="/stage/rooms/verify/{join_code}",
+            catch_response=True,
+        ) as res:
+            if res.status_code in [200, 400, 404]:
                 res.success()

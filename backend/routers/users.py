@@ -39,7 +39,7 @@ USER_NOT_FOUND_DETAIL = "Usuario no encontrado."
         403: {"description": NOT_VERIFIED_DETAIL},
     },
 )
-async def login(login_data: LoginRequest, session: Annotated[Session, Depends(get_session)]):
+def login(login_data: LoginRequest, session: Annotated[Session, Depends(get_session)]):
     statement = select(Teacher).where(Teacher.email == login_data.email)
     teacher = session.exec(statement).first()
     if not teacher or not verify_password(login_data.password, teacher.hashed_password):
