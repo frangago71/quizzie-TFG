@@ -64,6 +64,17 @@
 \renewcommand{\lstlistingname}{Extracto de código}
 \renewcommand*{\lstlistlistingname}{Índice de extractos de código}
 
+\usepackage{newfloat}
+\usepackage{caption}
+
+\DeclareFloatingEnvironment[
+    fileext=loe,
+    listname={Índice de evidencias},
+    name=Evidencia,
+    placement=H,
+    within=chapter
+]{evidence}
+
 % Definición de colores personalizados para los enlaces
 \definecolor{primaryCyan}{RGB}{85, 204, 170}
 \definecolor{primaryMagenta}{RGB}{169, 70, 171}
@@ -95,56 +106,22 @@
 \definecolor{editorOcher}{rgb}{0.8, 0.3, 0} % #FF7F00 -> rgb(239, 169, 0)
 \definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
 
-\lstdefinestyle{listingstyle}{
-    backgroundcolor=\color{white},
-    keywordstyle=\bfseries\color{blue},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{editorGreen},
-    commentstyle=\color{codegray},
-    basicstyle=\ttfamily\color{black},
-    breakatwhitespace=false,
-    breaklines=true,
-    captionpos=b,
+\newcommand{\covRed}[1]{\textcolor{red!80!black}{\textbf{#1}}}
+\newcommand{\covYellow}[1]{\textcolor{orange!90!black}{\textbf{#1}}} 
+\newcommand{\covGreen}[1]{\textcolor{green!60!black}{\textbf{#1}}}
+
+\lstdefinestyle{terminal}{
+    language={},
+    basicstyle=\fontsize{12pt}{13.8pt}\ttfamily\color{black},
+    keywordstyle=\color{black},
+    commentstyle=\color{black},
+    stringstyle=\color{black},
+    identifierstyle=\color{black},
+    numbers=none,
+    frame=none,
+    columns=fullflexible,
     keepspaces=true,
-    numbers=left,
-    numbersep=5pt,
-    showspaces=false,
     showstringspaces=false,
-    showtabs=false,
-    tabsize=2,
-    frame=tb,
-    keywords=[2]{True,False},
-    literate=%
-*{0}{{{\color{editorOcher}0}}}1
-{1}{{{\color{editorOcher}1}}}1
-{2}{{{\color{editorOcher}2}}}1
-{3}{{{\color{editorOcher}3}}}1
-{4}{{{\color{editorOcher}4}}}1
-{5}{{{\color{editorOcher}5}}}1
-{6}{{{\color{editorOcher}6}}}1
-{7}{{{\color{editorOcher}7}}}1
-{8}{{{\color{editorOcher}8}}}1
-{9}{{{\color{editorOcher}9}}}1,
+    escapeinside={(*@}{@*)}
 }
-
-\lstset{style=listingstyle}
-\lstset{columns=fullflexible}
-
-\lstdefinelanguage{css}{
-  keywords={color,background-image:,margin,padding,font,weight,display,position,top,left,right,bottom,list,style,border,size,white,space,min,width, transition:, transform:, transition-property, transition-duration, transition-timing-function},
-  sensitive=true,
-  morecomment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  morestring=[b]',
-  morestring=[b]",
-  alsoletter={:},
-  alsodigit={-}
-}
-% JavaScript
-\lstdefinelanguage{javascript}{
-  morekeywords={abstract, arguments, await, boolean, break, byte, case, catch, char, class, const, continue, debugger, default, delete, do, double, else, enum, eval, export, extends, false, final, finally, float, for, function, goto, if, implements, import, in, instanceof, int, interface, let, long, native, new, null, package, private, protected, public, return, short, static, super, switch, synchronized, this, throw, throws, transient, true, try, typeof, var, void, volatile, while, with, yield},
-  morecomment=[s]{/*}{*/},
-  morecomment=[l]//,
-  morestring=[b]",
-  morestring=[b]'
-}
+\lstset{style=terminal}
