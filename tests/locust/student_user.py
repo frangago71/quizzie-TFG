@@ -33,7 +33,22 @@ class StudentUser(HttpUser):
         gevent.sleep(random.uniform(0.05, 0.3))
 
         # 1. Distribuir a los alumnos entre las salas activas
-        self.room_id = random.choice([1, 2, 3])
+        active_room_ids = []
+        try:
+            rooms_res = self.client.get("/stage/rooms", name="/stage/rooms")
+            if rooms_res.status_code == 200 and rooms_res.json():
+                active_room_ids = [
+                    r.get("id")
+                    for r in rooms_res.json()
+                    if r.get("status") in ["waiting", "live"]
+                ]
+        except Exception:
+            pass
+
+        if active_room_ids:
+            self.room_id = random.choice(active_room_ids)
+        else:
+            self.room_id = random.choice([1, 2, 3])
 
         # 2. Vincular el estudiante a la sala -> Trazabilidad Estudiante + Sala -> Participante
         student_id = random.randint(1, 40)
@@ -46,15 +61,13 @@ class StudentUser(HttpUser):
                 data = join_res.json()
                 self.participant_id = data.get("participant_id")
                 join_res.success()
+            elif join_res.status_code in [400, 404]:
+                # Sala cerrada, en finalización o no encontrada: comportamiento esperado del juego
+                join_res.success()
+                self.participant_id = student_id
             else:
-                try:
-                    parts_res = self.client.get("/stage/participants", name="/stage/participants")
-                    if parts_res.status_code == 200 and parts_res.json():
-                        parts = parts_res.json()
-                        room_parts = [p.get("id") for p in parts if p.get("room_id") == self.room_id]
-                        self.participant_id = random.choice(room_parts) if room_parts else parts[0].get("id", 1)
-                except Exception:
-                    self.participant_id = 1
+                join_res.failure(f"HTTP {join_res.status_code}: {join_res.text}")
+                self.participant_id = student_id
 
         # 3. Conexión WebSocket para recibir los eventos en vivo de la sala
         host = self.host or "http://127.0.0.1:8000"
