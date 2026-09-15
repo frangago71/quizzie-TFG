@@ -545,8 +545,111 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
 
 Este conjunto de solicitudes de cambio pone de manifiesto que las desviaciones temporales y económicas registradas no fueron fruto de la improvisación, sino de decisiones conscientes de ingeniería orientadas a priorizar la estabilidad técnica, la verificación exhaustiva y la calidad del producto final frente a las restricciones temporales.
 
-\section{Resultados de las pruebas y validación}
-Resultados obtenidos en las pruebas unitarias(backend), de integración(backend), componentes frontend,  E2E, carga y rendimiento, y su comparación con los objetivos establecidos
+\section{Resultados de las pruebas y validación}\label{sec:resultados_pruebas}
+
+Una vez definida la estrategia de verificación en la fase de planificación y detallada la infraestructura técnica de ejecución en el capítulo de implementación, en este apartado se exponen exclusivamente los resultados obtenidos. El objetivo es contrastar las métricas reales de cobertura, robustez y rendimiento frente a los umbrales de aceptación fijados como criterio de calidad para el proyecto.
+
+\subsection{Pruebas unitarias y de integración del backend}\label{sub:resultados_pruebas_backend}
+
+\begin{evidence}[H]
+\begin{lstlisting}
+tests\backend\test_integration_content.py (*@\covGreen{....}@*)                  (*@\covGreen{[\ \ 5\%]}@*)
+tests\backend\test_integration_stage.py (*@\covGreen{...........}@*)             (*@\covGreen{[\ 21\%]}@*)
+tests\backend\test_integration_users.py (*@\covGreen{....}@*)                    (*@\covGreen{[\ 26\%]}@*)
+tests\backend\test_unit_content.py (*@\covGreen{.............}@*)                (*@\covGreen{[\ 45\%]}@*)
+tests\backend\test_unit_stage.py (*@\covGreen{......................}@*)         (*@\covGreen{[\ 76\%]}@*)
+tests\backend\test_unit_users.py (*@\covGreen{.................}@*)              (*@\covGreen{[100\%]}@*)
+
+Name                                             Stmts   Miss   Cover
+-------------------------------------------------------------------------
+backend\routers\content.py                         188      0  (*@\covGreen{100\%}@*)
+backend\routers\stage.py                           454      9   (*@\covGreen{98\%}@*)
+backend\routers\users.py                           211      0  (*@\covGreen{100\%}@*)
+Otros (auth, database, models, schemas...)         398     23   (*@\covGreen{94\%}@*)
+-------------------------------------------------------------------------
+TOTAL                                             1251     32   (*@\covGreen{97\%}@*)
+
+(*@\covGreen{========================== 71 passed in 13.50s ==========================}@*)
+\end{lstlisting}
+\caption{Resumen de ejecución y cobertura en backend (\textbf{pytest-cov}).}
+\label{ev:resumen_backend}
+\end{evidence}
+
+\subsection{Pruebas de componentes del frontend}\label{sub:resultados_pruebas_frontend}
+
+\begin{evidence}[H]
+\begin{lstlisting}
+Test Files  (*@\covGreen{25 passed}@*) (25)
+     Tests  (*@\covGreen{193 passed}@*) (193)
+
+-----------------------|---------|----------|---------|---------|
+File                   | % Stmts | % Branch | % Funcs | % Lines |
+-----------------------|---------|----------|---------|---------|
+All files              |   (*@\covGreen{90.13}@*) |    (*@\covGreen{80.29}@*) |   (*@\covGreen{88.56}@*) |   (*@\covGreen{92.68}@*) |
+ auth                  |   (*@\covGreen{93.37}@*) |    (*@\covGreen{84.93}@*) |   (*@\covGreen{95.16}@*) |   (*@\covGreen{94.17}@*) |
+ management            |   (*@\covGreen{87.82}@*) |    (*@\covGreen{76.37}@*) |   (*@\covGreen{86.36}@*) |   (*@\covGreen{90.78}@*) |
+ room-access           |   (*@\covGreen{94.91}@*) |     (*@\covGreen{75.8}@*) |   (*@\covGreen{94.73}@*) |   (*@\covGreen{97.36}@*) |
+ room-play             |   (*@\covGreen{89.66}@*) |    (*@\covGreen{82.47}@*) |   (*@\covGreen{86.9}@*)  |   (*@\covGreen{92.83}@*) |
+-----------------------|---------|----------|---------|---------|
+\end{lstlisting}
+\caption{Resumen de pruebas y cobertura de componentes (\textbf{Vitest}).}
+\label{ev:resumen_componentes}
+\end{evidence}
+
+\subsection{Pruebas de extremo a extremo (E2E)}\label{sub:resultados_pruebas_e2e}
+
+\begin{evidence}[H]
+\begin{lstlisting}
+Test Files  (*@\covGreen{10 passed}@*) (10)
+     Tests  (*@\covGreen{112 passed}@*) (112)
+
+-------------------|---------|---------|----------|---------|---------|
+Name               | % Bytes | % Stms  | % Branch | % Funcs | % Lines |
+-------------------|---------|---------|----------|---------|---------|
+auth               |  (*@\covGreen{95.44}@*)  |   (*@\covGreen{95.53}@*) |    (*@\covGreen{91.77}@*) |   (*@\covGreen{85.25}@*) |   (*@\covGreen{94.79}@*) |
+management         |  (*@\covGreen{93.58}@*)  |   (*@\covGreen{88.37}@*) |    (*@\covGreen{80.18}@*) |   (*@\covGreen{92.35}@*) |   (*@\covGreen{92.37}@*) |
+room-access        |  (*@\covGreen{97.80}@*)  |   (*@\covGreen{90.00}@*) |    (*@\covGreen{83.05}@*) |  (*@\covGreen{100.00}@*) |   (*@\covGreen{95.22}@*) |
+room-play          |  (*@\covGreen{92.04}@*)  |   (*@\covGreen{91.88}@*) |    (*@\covGreen{84.10}@*) |   (*@\covGreen{92.11}@*) |   (*@\covGreen{90.65}@*) |
+-------------------|---------|---------|----------|---------|---------|
+Summary            |  (*@\covGreen{93.81}@*)  |   (*@\covGreen{91.30}@*) |    (*@\covGreen{83.92}@*) |   (*@\covGreen{91.41}@*) |   (*@\covGreen{92.58}@*) |
+-------------------|---------|---------|----------|---------|---------|
+\end{lstlisting}
+\caption{Resumen de pruebas y cobertura \textit{End-to-End} (\textbf{Playwright} + \textbf{Monocart}).}
+\label{ev:resumen_e2e}
+\end{evidence}
+
+\subsection{Pruebas de carga y rendimiento}\label{sub:resultados_pruebas_carga}
+
+\begin{evidence}[H]
+\begin{lstlisting}
+=======================================================================
+ === INFORME DE EVALUACION DE UMBRALES DE RENDIMIENTO (P90) ===
+=======================================================================
+ Metrica / Endpoint                  | Valor P90 | Umbral    | Estado
+-----------------------------------------------------------------------
+ GET /content/quizzes/                | 20 ms   | <= 500 ms   | (*@\covGreen{[OK]}@*)
+ POST /content/quizzes/               | 38 ms   | <= 500 ms   | (*@\covGreen{[OK]}@*)
+ GET /content/quizzes/{id}            | 17 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ PUT /content/quizzes/{id}            | 22 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ POST /stage/participants             | 38 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ GET /stage/rooms                     | 69 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ POST /stage/rooms/                   | 84 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ GET /stage/rooms/verify/{join_code}  | 49 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ GET /stage/rooms/{id}                | 35 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ GET /stage/rooms/{id}/participants   | 12 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ POST /users/login                    | 240 ms  | <= 500 ms   | (*@\covGreen{[OK]}@*)
+ GET /users/me                        | 12 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ WebSocket Connect                    | 28 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
+ Tasa de Errores (Global)             | 0.00%   | < 1.0%      | (*@\covGreen{[OK]}@*)
+-----------------------------------------------------------------------
+RESULTADO: TODAS LAS PRUEBAS DE RENDIMIENTO SUPERARON LOS UMBRALES (*@\covGreen{[OK]}@*)
+=======================================================================
+\end{lstlisting}
+\caption{Evaluación de cumplimiento de umbrales de latencia percentil 90 ($P_{90}$) y tasa de error.}
+\label{ev:resumen_umbrales}
+\end{evidence}
+
+\subsection{Evaluación global frente a umbrales de calidad}\label{sub:evaluacion_umbrales_calidad}
 
 \section{Retrospectiva técnica}
 Reflexión sobre la implementación de las prácticas de CI/CD, testing y métricas de calidad, y decir si he cumplido los objetivos como las métricas de cobertura o de issues de sonar
