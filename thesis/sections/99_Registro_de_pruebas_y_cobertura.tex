@@ -7,7 +7,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=\textwidth]{evidences/terminal_test_backend.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/terminal_test_backend.png}}
     \captionsetup{hypcap=false}
     \caption{Captura de la terminal al ejecutar las pruebas del \textit{backend}.}
     \label{ev:terminal_test_backend}
@@ -15,9 +15,9 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=\textwidth]{evidences/cobertura_backend.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/cobertura_backend.png}}
     \captionsetup{hypcap=false}
-    \caption{Reporte HTML de cobertura del \textit{backend} (\textbf{coverage.py})}   
+    \caption{Reporte HTML de cobertura del \textit{backend}.}   
     \label{ev:cobertura_backend}
 \end{evidence}
 
@@ -25,7 +25,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=\textwidth]{evidences/terminal_test_componentes.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/terminal_test_componentes.png}}
     \captionsetup{hypcap=false}
     \caption{Captura de la terminal al ejecutar las pruebas de componentes.}
     \label{ev:terminal_test_componentes}
@@ -33,9 +33,9 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=\textwidth]{evidences/cobertura_componentes.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.15\textwidth]{evidences/cobertura_componentes.png}}
     \captionsetup{hypcap=false}
-    \captionof{evidence}{Reporte HTML de cobertura de componentes (\textbf{Vitest}).}   
+    \captionof{evidence}{Reporte HTML de cobertura de componentes.}   
     \label{ev:cobertura_componentes}
 \end{evidence}
 
@@ -43,7 +43,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
   \centering
-  \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/terminal_test_e2e.png}}
+  \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{evidences/terminal_test_e2e.png}}
   \captionsetup{hypcap=false}
   \caption{Captura de la terminal al ejecutar las pruebas E2E.}
   \label{ev:terminal_test_e2e}
@@ -51,28 +51,32 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
   \centering
-  \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/reporte_playwright.png}}
+  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/reporte_playwright.png}}
   \captionsetup{hypcap=false}
-  \caption{Reporte de ejecución de pruebas E2E en Playwright (desglose de aserciones en \texttt{CU-10}).}
+  \caption{Reporte de ejecución de pruebas E2E.}
   \label{ev:reporte_playwright}
 \end{evidence}
 
 \begin{evidence}[H]
   \centering
-  \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/cobertura_e2e.png}}
+  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/cobertura_e2e.png}}
   \captionsetup{hypcap=false}
-  \caption{Informe interactivo de cobertura E2E en \textbf{Monocart} (vista con desglose del módulo \texttt{auth}).}
+  \caption{Informe interactivo de cobertura E2E.}
   \label{ev:cobertura_e2e}
 \end{evidence}
 
-\section{Pruebas de rendimiento y carga (Locust)}\label{anexo:sec:rendimiento}
+\newpage
+
+\section{Pruebas de rendimiento y carga}\label{anexo:sec:rendimiento}
 
 \begin{evidence}[H]
     \centering
-    \includegraphics[width=\linewidth]{evidences/terminal_test_locust.png}
-    \caption{Captura de terminal con la ejecución de pruebas de rendimiento y carga (\textbf{Locust}).}
+    \includegraphics[width=0.9\linewidth]{evidences/terminal_test_locust.png}
+    \caption{Captura de la ejecución de pruebas de carga y rendimiento.}
     \label{ev:terminal_test_locust}
 \end{evidence}
+
+A continuación se detallan las métricas consolidadas a partir de los ficheros CSV generados durante la prueba de carga, estructuradas según el comportamiento por \textit{endpoint} y la distribución de latencias.
 
 \begin{table}[H]
   \centering
@@ -88,10 +92,10 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       \rotatebox{90}{\textbf{Fallos}} & 
       \rotatebox{90}{\textbf{Mediana (ms)}} & 
       \rotatebox{90}{\textbf{Media (ms)}} & 
-      \rotatebox{90}{\textbf{Mín. (ms)}} & 
-      \rotatebox{90}{\textbf{Máx. (ms)}} & 
-      \rotatebox{90}{\textbf{Tam. Medio (B)}} & 
-      \rotatebox{90}{\textbf{Pet./s}} & 
+      \rotatebox{90}{\textbf{Mínima (ms)}} & 
+      \rotatebox{90}{\textbf{Máxima (ms)}} & 
+      \rotatebox{90}{\textbf{Tamaño Medio (B)}} & 
+      \rotatebox{90}{\textbf{Peticiones/s}} & 
       \rotatebox{90}{\textbf{Fallos/s}} & 
       \rotatebox{90}{\textbf{P50 (ms)}} & 
       \rotatebox{90}{\textbf{P66 (ms)}} & 
@@ -107,14 +111,14 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       \midrule
       GET       & \texttt{/content/quizzes/}          & 21   & 0 & 15 & 19{,}82 & 8{,}26  & 86{,}49  & 36581{,}05 & 0{,}36  & 0{,}0 & 15  & 16  & 16  & 17  & 20  & 46  & 86  & 86  & 86  & 86  & 86  \\
       POST      & \texttt{/content/quizzes/}          & 11   & 0 & 19 & 25{,}08 & 10{,}01 & 78{,}32  & 50{,}00    & 0{,}19  & 0{,}0 & 19  & 21  & 24  & 24  & 38  & 78  & 78  & 78  & 78  & 78  & 78  \\
-      GET       & \texttt{/content/quizzes/:id}       & 23   & 0 & 11 & 11{,}62 & 9{,}50  & 19{,}10  & 359{,}43   & 0{,}39  & 0{,}0 & 11  & 11  & 12  & 12  & 17  & 18  & 19  & 19  & 19  & 19  & 19  \\
-      PUT       & \texttt{/content/quizzes/:id}       & 11   & 0 & 20 & 19{,}74 & 17{,}04 & 25{,}04  & 41{,}00    & 0{,}19  & 0{,}0 & 20  & 21  & 21  & 21  & 22  & 25  & 25  & 25  & 25  & 25  & 25  \\
+      GET       & \texttt{/content/quizzes/\textbf{:id}}       & 23   & 0 & 11 & 11{,}62 & 9{,}50  & 19{,}10  & 359{,}43   & 0{,}39  & 0{,}0 & 11  & 11  & 12  & 12  & 17  & 18  & 19  & 19  & 19  & 19  & 19  \\
+      PUT       & \texttt{/content/quizzes/\textbf{:id}}       & 11   & 0 & 20 & 19{,}74 & 17{,}04 & 25{,}04  & 41{,}00    & 0{,}19  & 0{,}0 & 20  & 21  & 21  & 21  & 22  & 25  & 25  & 25  & 25  & 25  & 25  \\
       POST      & \texttt{/stage/participants}        & 190  & 0 & 15 & 18{,}53 & 3{,}24  & 53{,}91  & 52{,}00    & 3{,}25  & 0{,}0 & 16  & 22  & 28  & 30  & 38  & 43  & 44  & 51  & 54  & 54  & 54  \\
       GET       & \texttt{/stage/rooms}               & 194  & 0 & 21 & 31{,}99 & 3{,}90  & 173{,}95 & 2188{,}00  & 3{,}32  & 0{,}0 & 22  & 33  & 45  & 49  & 69  & 79  & 150 & 170 & 170 & 170 & 170 \\
       POST      & \texttt{/stage/rooms/}              & 4    & 0 & 11 & 40{,}45 & 9{,}53  & 84{,}28  & 53{,}00    & 0{,}07  & 0{,}0 & 57  & 57  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  \\
-      GET       & \texttt{/stage/rooms/verify/{code}}  & 8    & 0 & 8  & 17{,}97 & 6{,}66  & 48{,}85  & 57{,}00    & 0{,}14  & 0{,}0 & 8   & 13  & 44  & 44  & 49  & 49  & 49  & 49  & 49  & 49  & 49  \\
-      GET       & \texttt{/stage/rooms/{id}}           & 268  & 0 & 12 & 17{,}62 & 3{,}47  & 162{,}76 & 546{,}13   & 4{,}59  & 0{,}0 & 12  & 18  & 23  & 26  & 35  & 44  & 52  & 54  & 160 & 160 & 160 \\
-      GET       & \texttt{/stage/rooms/{id}/participants}     & 26   & 0 & 8  & 8{,}13  & 3{,}26  & 13{,}29  & 723{,}69   & 0{,}44  & 0{,}0 & 8   & 8   & 8   & 9   & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
+      GET       & \texttt{/stage/rooms/verify/\textbf{:code}}  & 8    & 0 & 8  & 17{,}97 & 6{,}66  & 48{,}85  & 57{,}00    & 0{,}14  & 0{,}0 & 8   & 13  & 44  & 44  & 49  & 49  & 49  & 49  & 49  & 49  & 49  \\
+      GET       & \texttt{/stage/rooms/\textbf{:id}}           & 268  & 0 & 12 & 17{,}62 & 3{,}47  & 162{,}76 & 546{,}13   & 4{,}59  & 0{,}0 & 12  & 18  & 23  & 26  & 35  & 44  & 52  & 54  & 160 & 160 & 160 \\
+      GET       & \texttt{/stage/rooms/\textbf{:id}/participants}     & 26   & 0 & 8  & 8{,}13  & 3{,}26  & 13{,}29  & 723{,}69   & 0{,}44  & 0{,}0 & 8   & 8   & 8   & 9   & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
       POST      & \texttt{/users/login}               & 10   & 0 & 94 & 113{,}52 & 68{,}73 & 235{,}30 & 160{,}00   & 0{,}17  & 0{,}0 & 100 & 110 & 130 & 140 & 240 & 240 & 240 & 240 & 240 & 240 & 240 \\
       GET       & \texttt{/users/me}                  & 18   & 0 & 9  & 9{,}20  & 5{,}40  & 12{,}92  & 117{,}00   & 0{,}31  & 0{,}0 & 9   & 9   & 10  & 11  & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
       WS        & \texttt{WS Connect}                 & 190  & 0 & 11 & 14{,}66 & 2{,}00  & 149{,}00 & 0{,}00     & 3{,}25  & 0{,}0 & 11  & 16  & 21  & 23  & 28  & 34  & 37  & 39  & 150 & 150 & 150 \\
@@ -124,15 +128,15 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       \bottomrule
     \end{tabular}%
   }
-  \captionof{evidence}{Métricas completas de rendimiento y percentiles de latencia generadas por Locust.}
+  \captionof{evidence}{Métricas de rendimiento y percentiles de latencia en la prueba de carga.}
   \label{ev:locust_estadisticas_completas}
 \end{table}
 
 \begin{table}[H]
   \centering
   \scriptsize
-  \setlength{\tabcolsep}{4.3pt}
-  \renewcommand{\arraystretch}{1.05}
+  \setlength{\tabcolsep}{4.1pt}
+  \renewcommand{\arraystretch}{1}
   \makebox[\textwidth][c]{%
     \begin{tabular}{rrrrrrrrrrrrrrrrrrrrrr}
       \toprule
@@ -221,7 +225,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       \bottomrule
     \end{tabular}%
   }
-  \captionof{evidence}{Historial cronológico de la prueba de carga en Locust segundo a segundo.}
+  \captionof{evidence}{Historial cronológico de la prueba de carga segundo a segundo.}
   \label{ev:locust_historial_segundos}
 \end{table}
 
@@ -238,7 +242,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       \bottomrule
     \end{tabular}%
   }
-  \captionof{evidence}{Registro de excepciones detectadas durante la prueba de carga (Locust).}
+  \captionof{evidence}{Registro de excepciones detectadas durante la prueba de carga.}
   \label{ev:locust_excepciones}
 \end{table}
 
@@ -255,14 +259,14 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       \bottomrule
     \end{tabular}%
   }
-  \captionof{evidence}{Registro de fallos detectados durante la prueba de carga (Locust).}
+  \captionof{evidence}{Registro de fallos detectados durante la prueba de carga.}
   \label{ev:locust_fallos}
 \end{table}
 
 \begin{evidence}[H]
     \centering
     \includegraphics[width=\linewidth]{evidences/terminal_test_umbrales.png}
-    \caption{Captura de terminal con la verificación y cumplimiento de umbrales de rendimiento.}
+    \caption{Captura de ejecución de \textit{script} de verificación de umbrales.}
     \label{ev:terminal_umbrales_locust}
 \end{evidence}
 
