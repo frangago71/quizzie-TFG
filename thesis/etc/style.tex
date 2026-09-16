@@ -106,9 +106,16 @@
 \definecolor{editorOcher}{rgb}{0.8, 0.3, 0} % #FF7F00 -> rgb(239, 169, 0)
 \definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
 
+
 \newcommand{\covRed}[1]{\textcolor{red!80!black}{\textbf{#1}}}
 \newcommand{\covYellow}[1]{\textcolor{orange!90!black}{\textbf{#1}}} 
 \newcommand{\covGreen}[1]{\textcolor{green!60!black}{\textbf{#1}}}
+\definecolor{bashYellow}{RGB}{204, 204, 0} 
+\newcommand{\bashYellow}[1]{\textcolor{bashYellow}{\textbf{#1}}}
+\definecolor{bashGrey}{RGB}{140, 140, 140}
+\newcommand{\bashGrey}[1]{\textcolor{bashGrey}{\textbf{#1}}}
+\newcommand{\cliPrompt}{\textcolor{bashGrey}{\textbf{>}}}
+
 
 \lstdefinestyle{terminal}{
     language={},

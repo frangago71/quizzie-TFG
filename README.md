@@ -158,6 +158,12 @@ Para previsualizar en el navegador el mapa de cobertura interactivo V8 generado 
 
 > **Requisito previo:** El servidor Backend (FastAPI) **debe estar previamente iniciado** en `http://127.0.0.1:8000` (Terminal 1: `cd backend` -> `uv run fastapi dev`).
 
+* **Ejecutar en modo interactivo con interfaz web (Navegador):**
+  Abre la interfaz gráfica de monitoreo en tiempo real de Locust en `http://localhost:8089` para ajustar parámetros visualmente desde el navegador:
+  ```bash
+  uv run locust -f tests/locust/locustfile.py --host http://127.0.0.1:8000
+  ```
+
 * **Ejecutar script de benchmarking automatizado (con valores por defecto):**
   Lanza la prueba de rendimiento sin interfaz gráfica utilizando el script preconfigurado (por defecto **200 usuarios**, tasa de **15 u/s** y **1 minuto** de duración):
   ```bash
@@ -174,12 +180,6 @@ Para previsualizar en el navegador el mapa de cobertura interactivo V8 generado 
   * **`-t 2m` (`--run-time`):** Duración total de la prueba, ej. `30s`, `1m`, `5m` (default: `1m`).
   * **`--host http://127.0.0.1:8000`:** URL del backend objetivo (default: `http://127.0.0.1:8000`).
 
-
-* **Ejecutar en modo interactivo con interfaz web (Navegador):**
-  Abre la interfaz gráfica de monitoreo en tiempo real de Locust en `http://localhost:8089` para ajustar parámetros visualmente desde el navegador:
-  ```bash
-  uv run locust -f tests/locust/locustfile.py --host http://127.0.0.1:8000
-  ```
 
 #### Interpretación de informes CSV
 

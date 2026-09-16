@@ -71,10 +71,37 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{evidences/terminal_test_locust.png}
+    \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/terminal_interfaz_locust.png}}
+    \captionsetup{hypcap=false}
+    \caption{Salida por terminal al iniciar el panel de control de Locust.}
+    \label{ev:terminal_interfaz_locust}
+\end{evidence}
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/interfaz_locust.png}}
+    \captionsetup{hypcap=false}
+    \caption{Vista de la interfaz web de Locust.}
+    \label{ev:interfaz_locust}
+\end{evidence}
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{evidences/interfaz_locust_resultados.png}}
+    \captionsetup{hypcap=false}
+    \caption{Vista de los resultados de la prueba en la interfaz web de Locust.}
+    \label{ev:locust_resultados}
+\end{evidence}
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/terminal_test_locust.png}}
+    \captionsetup{hypcap=false}
     \caption{Captura de la ejecución de pruebas de carga y rendimiento.}
     \label{ev:terminal_test_locust}
 \end{evidence}
+
+\newpage
 
 A continuación se detallan las métricas consolidadas a partir de los ficheros CSV generados durante la prueba de carga, estructuradas según el comportamiento por \textit{endpoint} y la distribución de latencias.
 
@@ -128,8 +155,43 @@ A continuación se detallan las métricas consolidadas a partir de los ficheros 
       \bottomrule
     \end{tabular}%
   }
-  \captionof{evidence}{Métricas de rendimiento y percentiles de latencia en la prueba de carga.}
+  \captionof{evidence}{Métricas y percentiles de latencia en la prueba de carga.}
   \label{ev:locust_estadisticas_completas}
+\end{table}
+
+
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{cccc}
+      \toprule
+      \textbf{Recuento} & \textbf{Mensaje} & \textbf{Traza} & \textbf{Proceso} \\
+      \midrule
+      -- & -- & -- & -- \\
+      \bottomrule
+    \end{tabular}%
+  }
+  \captionof{evidence}{Registro de excepciones detectadas durante la prueba de carga.}
+  \label{ev:locust_excepciones}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{cccccc}
+      \toprule
+      \textbf{Método} & \textbf{Nombre} & \textbf{Error} & \textbf{Número} & \textbf{Primer registro} & \textbf{Último registro} \\
+      \midrule
+      -- & -- & -- & -- & -- & -- \\
+      \bottomrule
+    \end{tabular}%
+  }
+  \captionof{evidence}{Registro de fallos detectados durante la prueba de carga.}
+  \label{ev:locust_fallos}
 \end{table}
 
 \begin{table}[H]
@@ -227,40 +289,6 @@ A continuación se detallan las métricas consolidadas a partir de los ficheros 
   }
   \captionof{evidence}{Historial cronológico de la prueba de carga segundo a segundo.}
   \label{ev:locust_historial_segundos}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \small
-  \renewcommand{\arraystretch}{1.15}
-  \makebox[\textwidth][c]{%
-    \begin{tabular}{cccc}
-      \toprule
-      \textbf{Recuento} & \textbf{Mensaje} & \textbf{Traza} & \textbf{Proceso} \\
-      \midrule
-      -- & -- & -- & -- \\
-      \bottomrule
-    \end{tabular}%
-  }
-  \captionof{evidence}{Registro de excepciones detectadas durante la prueba de carga.}
-  \label{ev:locust_excepciones}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \small
-  \renewcommand{\arraystretch}{1.15}
-  \makebox[\textwidth][c]{%
-    \begin{tabular}{cccccc}
-      \toprule
-      \textbf{Método} & \textbf{Nombre} & \textbf{Error} & \textbf{Número} & \textbf{Primer registro} & \textbf{Último registro} \\
-      \midrule
-      -- & -- & -- & -- & -- & -- \\
-      \bottomrule
-    \end{tabular}%
-  }
-  \captionof{evidence}{Registro de fallos detectados durante la prueba de carga.}
-  \label{ev:locust_fallos}
 \end{table}
 
 \begin{evidence}[H]

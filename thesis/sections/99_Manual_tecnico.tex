@@ -1,5 +1,239 @@
 \begin{appendices}
-\chapter{Manual técnico}\label{anexo:manual_tecnico}
 
-Guía de instalación
+\chapter{Manual técnico de instalación, ejecución y reproducción}\label{anexo:manual_tecnico}
+
+El presente manual técnico detalla el procedimiento para la clonación, configuración de dependencias, puesta en marcha del entorno de desarrollo local y reproducción íntegra de la batería de pruebas y análisis de rendimiento del sistema.
+
+\section{Requisitos previos del sistema}\label{sec:manual_requisitos}
+
+Para garantizar la correcta ejecución de la plataforma en un entorno local, la máquina anfitriona debe disponer de las herramientas base instaladas y registradas en las variables de entorno del sistema (\texttt{PATH}):
+
+\begin{itemize}
+    \item \textbf{Git}\cite{git_official}.
+    \item \textbf{Python} (versión 3.12) \cite{python_official}.
+    \item \textbf{Node.js}\cite{nodejs_official}.
+\end{itemize}
+
+\section{Preparación y configuración del repositorio}\label{sec:manual_preparacion}
+
+\subsection*{Descarga del código fuente}
+Clonar el repositorio del proyecto e ingresar en el directorio raíz:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{git}@*) clone https://github.com/frangago71/quizzie-TFG.git
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) quizzie-TFG
+\end{lstlisting}
+
+\subsection*{Configuración del entorno del backend}
+Instalar el gestor de paquetes \texttt{uv} \cite{uv_official}, sincronizar el entorno virtual con las dependencias del proyecto y poblar la base de datos con los registros iniciales:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) backend
+(*@\cliPrompt@*) (*@\bashYellow{pip}@*) install uv         (*@\covGreen{\# Instalar uv si no está disponible en el sistema}@*)
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) sync               (*@\covGreen{\# Crear entorno virtual y sincronizar dependencias}@*)
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run python -m seed            (*@\covGreen{\# Ejecutar el sembrado inicial de datos}@*)
+
+\end{lstlisting}
+
+\subsection*{Configuración del entorno del frontend}
+Acceder al directorio de la interfaz de usuario e instalar los módulos de dependencias:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) frontend
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) install                          (*@\covGreen{\# Instalar dependencias de Node.js}@*)
+\end{lstlisting}
+
+
+\section{Ejecución del proyecto en el entorno local}\label{sec:manual_ejecucion}
+
+La plataforma requiere la ejecución simultánea de dos procesos independientes. Para ello, se recomienda disponer de dos terminales de trabajo activas de manera concurrente.
+
+\subsection*{Terminal 1: Servicio del backend (FastAPI)}
+Iniciar el servidor de desarrollo del \textit{backend}:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) backend
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run fastapi dev        
+\end{lstlisting}
+
+Una vez levantado el servicio, los accesos locales quedan disponibles en:
+\begin{itemize}
+    \item \texttt{http://127.0.0.1:8000}: Raíz del servidor y servicio de la API.
+    \item \texttt{http://127.0.0.1:8000/docs}: Documentación - \textbf{Swagger UI}.
+    \item \texttt{http://127.0.0.1:8000/redoc}: Documentación - \textbf{ReDoc}.
+\end{itemize}
+
+\subsection*{Terminal 2: Cliente del frontend (Vite)}
+Acceder al directorio de la interfaz y levantar el servidor de desarrollo local:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) frontend
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) run dev               
+\end{lstlisting}
+
+La interfaz web quedará accesible desde el navegador en \texttt{http://localhost:5173}.
+
+\section{Procedimiento de ejecución de pruebas y cobertura}\label{sec:manual_pruebas}
+
+\subsection*{Pruebas unitarias y de integración del \textit{backend}}
+
+Ejecutar la suite completa de pruebas unitarias y de integración del \textit{backend} mediante \texttt{pytest}:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run pytest
+\end{lstlisting}
+
+Para auditar la cobertura de código y generar reportes adicionales, se pueden combinar los siguientes modificadores:
+
+\begin{itemize}
+    \item \texttt{--cov=backend}: Delimita el análisis exclusivamente al código fuente del \textit{backend}.
+    \item \texttt{--cov-report=term-missing}: Imprime en la consola la tabla desglosada por módulo señalando las líneas exactas sin cobertura.
+    \item \texttt{--cov-report=html}: Genera un informe visual interactivo estructurado dentro del directorio local \texttt{htmlcov/}.
+\end{itemize}
+
+Al combinar estas tres opciones, se imprime en la terminal la tabla de cobertura del \textit{backend} y se genera simultáneamente un informe interactivo en \texttt{htmlcov/index.html}:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run pytest (*@\bashGrey{--cov=backend --cov-report=term-missing --cov-report=html}@*)
+\end{lstlisting}
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{evidences/terminal_test_backend.png}}
+    \captionsetup{hypcap=false}
+    \caption*{Salida por terminal al ejecutar las pruebas y la cobertura del \textit{backend}.}
+\end{evidence}
+
+\newpage
+
+Para abrir el reporte web directamente en el navegador predeterminado desde la consola según el sistema operativo:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{start}@*) htmlcov/index.html                  (*@\covGreen{\# Windows}@*)
+(*@\cliPrompt@*) (*@\bashYellow{xdg-open}@*) htmlcov/index.html                 (*@\covGreen{\# Linux}@*)
+(*@\cliPrompt@*) (*@\bashYellow{open}@*) htmlcov/index.html                     (*@\covGreen{\# macOS}@*)
+\end{lstlisting}
+
+De manera alternativa, el informe puede consultarse abriendo el archivo a través del explorador del sistema operativo.
+
+\subsection*{Pruebas de componentes del \textit{frontend}}
+
+Acceder al directorio de la interfaz y ejecutar la suite completa de pruebas unitarias y de componentes:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) frontend
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) run test
+\end{lstlisting}
+
+Ejecutar la suite de pruebas evaluando la cobertura de código:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) run test:frontend:coverage
+\end{lstlisting}
+
+Al ejecutar este comando, se imprime por terminal el desglose cuantitativo de cobertura acotado a los módulos clave (\texttt{auth}, \texttt{management}, \texttt{room-access} y \texttt{room-play}) y se genera el directorio de cobertura \texttt{frontend/coverage/}:
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=\textwidth]{evidences/terminal_test_componentes.png}}
+    \captionsetup{hypcap=false}
+    \caption*{Salida por terminal al ejecutar las pruebas y la cobertura de componentes.}
+\end{evidence}
+
+Para visualizar en el navegador el informe web interactivo generado, iniciar el servidor local de visualización:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) run cov-report:frontend
+\end{lstlisting}
+
+El reporte web queda desplegado en \texttt{http://localhost:4173}. Asimismo, es posible visualizarlo de forma estática cargando \texttt{frontend/coverage/index.html} en el navegador.
+
+\subsection*{Pruebas de extremo a extremo y cobertura E2E}
+
+Ejecutar la suite de pruebas \textit{End-to-End} sobre la compilación de producción del cliente web:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) frontend
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) run test:e2e
+\end{lstlisting}
+
+Al finalizar la ejecución, la consola muestra el resumen de los escenarios evaluados y se generan los informes de trazas de ejecución de casos de uso y de cobertura:
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=0.85\textwidth]{evidences/terminal_test_e2e.png}}
+    \captionsetup{hypcap=false}
+    \caption*{Salida por terminal al ejecutar las pruebas de extremo a extremo.}
+\end{evidence}
+
+Para inspeccionar las trazas detalladas, capturas de pantalla y pasos de ejecución mediante el servidor integrado de Playwright:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{npx}@*) playwright show-report
+\end{lstlisting}
+
+El reporte queda desplegado en \texttt{http://localhost:9323}, permaneciendo almacenado como archivo estático en \texttt{frontend/playwright-report/index.html}.
+
+Para previsualizar el informe de cobertura interactivo generado por \textbf{Monocart}, levantar el servidor local:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{npm}@*) run cov-report:e2e
+\end{lstlisting}
+
+El reporte queda accesible en \texttt{http://localhost:4174}, o bien abriendo directamente el archivo \texttt{frontend/coverage-e2e/index.html}.
+
+\subsection*{Pruebas de carga y rendimiento}
+
+Para ejecutar estas pruebas es necesario disponer de dos terminales abiertas: una manteniendo el servicio del \textit{backend} en ejecución en \texttt{http://127.0.0.1:8000} y otra situada en la raíz del proyecto para lanzar las pruebas.
+
+El flujo de trabajo se compone de dos fases: en primer lugar, se inyecta la carga en el servidor mediante Locust, lo que genera automáticamente los registros de métricas en formato CSV dentro del directorio \texttt{tests/locust/}. Posteriormente, el script \texttt{tests/locust/evaluate\_thresholds.py} procesa dichos ficheros para verificar si los tiempos de respuesta y las tasas de error se mantienen dentro de los umbrales de aceptación definidos.
+
+Para llevar a cabo la inyección de carga se dispone de dos alternativas válidas:
+
+\subsubsection*{Opción 1: Modo interactivo con interfaz web}
+
+Iniciar el panel gráfico de control de Locust para configurar los parámetros manualmente y monitorizar la prueba en tiempo real en \texttt{http://localhost:8089}:
+
+\begin{lstlisting}[basicstyle=\fontsize{11.5pt}{13.2pt}\ttfamily\color{black}, aboveskip=4pt, belowskip=4pt]
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run locust -f tests/locust/locustfile.py --host http://127.0.0.1:8000
+\end{lstlisting}
+
+\subsubsection*{Opción 2: Ejecución por consola}
+
+Ejecutar las pruebas directamente desde la terminal utilizando el script automatizado con la configuración base (200 usuarios, tasa de 15~u/s y 1~minuto de duración):
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run python tests/locust/run_performance_tests.py
+\end{lstlisting}
+
+Para personalizar las condiciones de estrés, es posible sobrescribir estos valores mediante los siguientes argumentos:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run python tests/locust/run_performance_tests.py (*@\bashGrey{-u}@*) 300 (*@\bashGrey{-r}@*) 25 (*@\bashGrey{-t}@*) 2m
+\end{lstlisting}
+
+\begin{itemize}
+    \item \texttt{-u} (\texttt{--users}): Número de usuarios virtuales simultáneos.
+    \item \texttt{-r} (\texttt{--spawn-rate}): Tasa de incorporación de nuevos usuarios por segundo.
+    \item \texttt{-t} (\texttt{--run-time}): Duración total de la prueba.
+    \item \texttt{--host}: Dirección base del servicio \textit{backend}.
+\end{itemize}
+
+Una vez concluida la prueba mediante cualquiera de las dos alternativas y generados los archivos CSV, ejecutar el script de auditoría para verificar cuantitativamente el cumplimiento de los umbrales de aceptación:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) run python tests/locust/evaluate_thresholds.py
+\end{lstlisting}
+
+\newpage
+
+Al procesar los registros, la herramienta contrasta las latencias y tasas de error frente a los límites admisibles:
+
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=0.85\textwidth]{evidences/terminal_test_umbrales.png}}
+    \captionsetup{hypcap=false}
+    \caption*{Salida por terminal del \textit{script} de cumplimiento de umbrales.}
+\end{evidence}
+
 \end{appendices}
