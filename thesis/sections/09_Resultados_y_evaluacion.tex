@@ -547,9 +547,11 @@ Este conjunto de solicitudes de cambio pone de manifiesto que las desviaciones t
 
 \section{Resultados de las pruebas y validación}\label{sec:resultados_pruebas}
 
-Una vez definida la estrategia de verificación en la fase de planificación y detallada la infraestructura técnica de ejecución en el capítulo de implementación, en este apartado se exponen exclusivamente los resultados obtenidos. El objetivo es contrastar las métricas reales de cobertura, robustez y rendimiento frente a los umbrales de aceptación fijados como criterio de calidad para el proyecto.
+Una vez definida la estrategia de verificación en la fase de planificación y detallada la infraestructura técnica de ejecución en el capítulo de implementación, en este apartado se exponen exclusivamente los resultados obtenidos. El objetivo es contrastar las métricas reales de cobertura, robustez y rendimiento frente a los umbrales de aceptación fijados como criterio de calidad para el proyecto. Para facilitar la trazabilidad completa, el material probatorio complementario (reportes interactivos, registros íntegros y capturas) se encuentra recopilado en el anexo de \hyperref[anexo:registro_pruebas_cobertura]{registro de pruebas de cobertura}.
 
 \subsection{Pruebas unitarias y de integración del backend}\label{sub:resultados_pruebas_backend}
+
+La suite del \textit{backend} cubre tanto la lógica de negocio aislada (modelos, servicios y esquemas) como la integración de los puntos de entrada de la API contra la base de datos y el motor de autenticación. 
 
 \begin{evidence}[H]
 \begin{lstlisting}
@@ -571,11 +573,23 @@ TOTAL                                             1251     32   (*@\covGreen{97\
 
 (*@\covGreen{========================== 71 passed in 13.50s ==========================}@*)
 \end{lstlisting}
-\caption{Resumen de ejecución y cobertura en backend (\textbf{pytest-cov}).}
+\caption{Resumen de ejecución y cobertura en backend.}
 \label{ev:resumen_backend}
 \end{evidence}
 
+La batería completó la ejecución de 71 pruebas sin registrar ningún fallo en un tiempo de 13{,}50 segundos. A nivel de cobertura:
+
+\begin{itemize}
+    \item Se alcanzó una cobertura agregada de sentencias del \textbf{97\,\%}, superando ampliamente el umbral mínimo del 80\,\% fijado en los \hyperref[tab:umbrales_cobertura]{umbrales de cobertura}.
+    \item Los controladores de contenidos (\texttt{content.py}) y de usuarios (\texttt{users.py}) alcanzaron una cobertura plena del \textbf{100\,\%}.
+    \item La máquina de estados de las salas (\texttt{stage.py}) registró un \textbf{98\,\%}, garantizando la solidez de las dinámicas en tiempo real frente a condiciones imprevistas.
+\end{itemize}
+
+Estos resultados quedan respaldados en el anexo mediante la captura de la \hyperref[ev:terminal_test_backend]{salida de terminal de las pruebas de \textbf{pytest}} y el informe de \hyperref[ev:cobertura_backend]{cobertura del \textit{backend}} generado en HTML con el desglose detallado por archivos.
+
 \subsection{Pruebas de componentes del frontend}\label{sub:resultados_pruebas_frontend}
+
+En la interfaz visual, las pruebas de componentes permiten verificar el renderizado, el ciclo de vida, la gestión de estados reactivos y la emisión de eventos de forma aislada.
 
 \begin{evidence}[H]
 \begin{lstlisting}
@@ -592,19 +606,30 @@ All files              |   (*@\covGreen{90.13}@*) |    (*@\covGreen{80.29}@*) | 
  room-play             |   (*@\covGreen{89.66}@*) |    (*@\covGreen{82.47}@*) |   (*@\covGreen{86.9}@*)  |   (*@\covGreen{92.83}@*) |
 -----------------------|---------|----------|---------|---------|
 \end{lstlisting}
-\caption{Resumen de pruebas y cobertura de componentes (\textbf{Vitest}).}
+\caption{Resumen de pruebas y cobertura de componentes.}
 \label{ev:resumen_componentes}
 \end{evidence}
 
+La ejecución completó los 193 casos de prueba a lo largo de los 25 ficheros evaluados. El análisis de las métricas arroja las siguientes conclusiones sobre la robustez visual:
+
+\begin{itemize}
+    \item El umbral fijado del 80\,\% se superó de forma generalizada, alcanzando un \textbf{90{,}13\,\%} en sentencias y consolidando un \textbf{92{,}68\,\%} sobre el total de líneas de código fuente.
+    \item La cobertura de ramas se situó en el \textbf{80{,}29\,\%}, certificando el correcto tratamiento de los flujos alternativos del cliente, tales como errores de red, validaciones de entrada o pantallas intermedias de espera.
+    \item Los dominios de acceso e incorporación (\texttt{auth} y \texttt{room-access}) registraron los valores más altos (superando el 94\,\% de cobertura), blindando los puntos iniciales de entrada de la experiencia de usuario.
+\end{itemize}
+
+El detalle completo de esta batería se puede contrastar en el anexo consultando la \hyperref[ev:terminal_test_componentes]{salida por consola de \textbf{Vitest}} junto con la perspectiva del \hyperref[ev:cobertura_componentes]{reporte HTML de cobertura de componentes}.
+
 \subsection{Pruebas de extremo a extremo (E2E)}\label{sub:resultados_pruebas_e2e}
 
+Las pruebas de extremo a extremo verifican los flujos completos de usuario sobre instancias reales de navegador, asegurando la correcta integración entre la interfaz, los servicios de la API y los canales de comunicación bidireccional. 
 \begin{evidence}[H]
 \begin{lstlisting}
 Test Files  (*@\covGreen{10 passed}@*) (10)
      Tests  (*@\covGreen{112 passed}@*) (112)
 
 -------------------|---------|---------|----------|---------|---------|
-Name               | % Bytes | % Stms  | % Branch | % Funcs | % Lines |
+Name               | % Bytes | % Stms | % Branch | % Funcs | % Lines |
 -------------------|---------|---------|----------|---------|---------|
 auth               |  (*@\covGreen{95.44}@*)  |   (*@\covGreen{95.53}@*) |    (*@\covGreen{91.77}@*) |   (*@\covGreen{85.25}@*) |   (*@\covGreen{94.79}@*) |
 management         |  (*@\covGreen{93.58}@*)  |   (*@\covGreen{88.37}@*) |    (*@\covGreen{80.18}@*) |   (*@\covGreen{92.35}@*) |   (*@\covGreen{92.37}@*) |
@@ -614,11 +639,17 @@ room-play          |  (*@\covGreen{92.04}@*)  |   (*@\covGreen{91.88}@*) |    (*
 Summary            |  (*@\covGreen{93.81}@*)  |   (*@\covGreen{91.30}@*) |    (*@\covGreen{83.92}@*) |   (*@\covGreen{91.41}@*) |   (*@\covGreen{92.58}@*) |
 -------------------|---------|---------|----------|---------|---------|
 \end{lstlisting}
-\caption{Resumen de pruebas y cobertura \textit{End-to-End} (\textbf{Playwright} + \textbf{Monocart}).}
+\caption{Resumen de pruebas y cobertura \textit{End-to-End}.}
 \label{ev:resumen_e2e}
 \end{evidence}
 
+La ejecución completó todos los escenarios sin registrar fallos sobre instancias reales de navegador. Más allá del volumen de pruebas aprobadas, la relevancia de este nivel reside en verificar la interoperabilidad entre la interfaz, los servicios de la API y los canales de comunicación en tiempo real. En este sentido, la cobertura global del 91{,}30\,\% en sentencias y del 83{,}92\,\% en \textit{branches} valida la consistencia de los flujos críticos de la plataforma, desde la persistencia de sesión en \texttt{auth} hasta la sincronización reactiva durante la partida en \texttt{room-play}.
+
+Destaca el comportamiento del módulo \texttt{room-access}, que alcanzó el 100\,\% en cobertura de funciones; esto garantiza que todos los métodos asociados a la validación de salas, control de estados y admisión de participantes se ejercitan tal y como lo experimenta el usuario final. La traza detallada de todos los recorridos y el análisis visual de cobertura se recogen en el anexo mediante el \hyperref[ev:reporte_playwright]{reporte de ejecución de \textbf{Playwright}} y el \hyperref[ev:cobertura_e2e]{informe de cobertura de \textbf{Monocart}}.
+
 \subsection{Pruebas de carga y rendimiento}\label{sub:resultados_pruebas_carga}
+
+Las pruebas de rendimiento evalúan el comportamiento y los tiempos de respuesta del sistema bajo condiciones de concurrencia simulada. La batería se ejecutó de manera automatizada en modo desatendido, procesando las series temporales exportadas para contrastar las métricas obtenidas con los criterios de aceptación fijados.
 
 \begin{evidence}[H]
 \begin{lstlisting}
@@ -640,16 +671,22 @@ Summary            |  (*@\covGreen{93.81}@*)  |   (*@\covGreen{91.30}@*) |    (*
  POST /users/login                    | 240 ms  | <= 500 ms   | (*@\covGreen{[OK]}@*)
  GET /users/me                        | 12 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
  WebSocket Connect                    | 28 ms   | <= 200 ms   | (*@\covGreen{[OK]}@*)
- Tasa de Errores (Global)             | 0.00%   | < 1.0%      | (*@\covGreen{[OK]}@*)
+ Tasa de Errores (Global)             | 0.00%  | < 1.0%      | (*@\covGreen{[OK]}@*)
 -----------------------------------------------------------------------
 RESULTADO: TODAS LAS PRUEBAS DE RENDIMIENTO SUPERARON LOS UMBRALES (*@\covGreen{[OK]}@*)
 =======================================================================
 \end{lstlisting}
-\caption{Evaluación de cumplimiento de umbrales de latencia percentil 90 ($P_{90}$) y tasa de error.}
+\caption{Informe de evaluación de umbrales de latencia $P_{90}$ y tasa de error.}
 \label{ev:resumen_umbrales}
 \end{evidence}
 
-\subsection{Evaluación global frente a umbrales de calidad}\label{sub:evaluacion_umbrales_calidad}
+A lo largo de la simulación no se registró ningún fallo en las peticiones ni interrupciones en los canales de comunicación, consolidando una tasa de error del 0{,}00\,\% sobre el total de operaciones. En términos de latencia, todos los puntos de entrada cumplieron holgadamente con sus umbrales de aceptación: los endpoints de consulta y sincronización mantuvieron tiempos de respuesta $P_{90}$ inferiores a los 50\,ms, e incluso operaciones de mayor coste computacional como la autenticación (\texttt{/users/login}, con 240\,ms) se situaron muy por debajo del límite estricto de 500\,ms fijado en los \hyperref[tab:metricas_rendimiento]{umbrales de las pruebas de rendimiento}. Destaca el comportamiento del canal bidireccional (\textit{WebSocket Connect}), cuyo $P_{90}$ se consolidó en apenas 28\,ms bajo ráfagas concurrentes de conexión.
+
+La trazabilidad completa del procedimiento se respalda en el anexo: la ejecución de la batería queda reflejada en la \hyperref[ev:terminal_test_locust]{captura de terminal de las pruebas de carga}, cuyos resultados brutos se recopilaron en los registros CSV correspondientes y fueron evaluados posteriormente mediante la \hyperref[ev:terminal_umbrales_locust]{ejecución del script de verificación de umbrales} de rendimiento.
+
+\section{Análisis estático de código (SonarQube)}
+
+% \section{Evaluación global frente a umbrales de calidad}\label{sub:evaluacion_umbrales_calidad}
 
 \section{Retrospectiva técnica}
 Reflexión sobre la implementación de las prácticas de CI/CD, testing y métricas de calidad, y decir si he cumplido los objetivos como las métricas de cobertura o de issues de sonar

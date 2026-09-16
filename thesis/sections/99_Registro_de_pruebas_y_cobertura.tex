@@ -54,7 +54,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
   \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/reporte_playwright.png}}
   \captionsetup{hypcap=false}
   \caption{Reporte de ejecución de pruebas E2E en Playwright (desglose de aserciones en \texttt{CU-10}).}
-  \label{ev:playwright_report}
+  \label{ev:reporte_playwright}
 \end{evidence}
 
 \begin{evidence}[H]
@@ -62,15 +62,22 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
   \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/cobertura_e2e.png}}
   \captionsetup{hypcap=false}
   \caption{Informe interactivo de cobertura E2E en \textbf{Monocart} (vista con desglose del módulo \texttt{auth}).}
-  \label{ev:cobertura_e2e_html}
+  \label{ev:cobertura_e2e}
 \end{evidence}
 
 \section{Pruebas de rendimiento y carga (Locust)}\label{anexo:sec:rendimiento}
 
+\begin{evidence}[H]
+    \centering
+    \includegraphics[width=\linewidth]{evidences/terminal_test_locust.png}
+    \caption{Captura de terminal con la ejecución de pruebas de rendimiento y carga (\textbf{Locust}).}
+    \label{ev:terminal_test_locust}
+\end{evidence}
+
 \begin{table}[H]
   \centering
   \scriptsize
-  \setlength{\tabcolsep}{2.8pt}
+  \setlength{\tabcolsep}{2.6pt}
   \renewcommand{\arraystretch}{1.2}
   \makebox[\textwidth][c]{%
     \begin{tabular}{llrrrrrrrrrrrrrrrrrrrr}
@@ -105,9 +112,9 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
       POST      & \texttt{/stage/participants}        & 190  & 0 & 15 & 18{,}53 & 3{,}24  & 53{,}91  & 52{,}00    & 3{,}25  & 0{,}0 & 16  & 22  & 28  & 30  & 38  & 43  & 44  & 51  & 54  & 54  & 54  \\
       GET       & \texttt{/stage/rooms}               & 194  & 0 & 21 & 31{,}99 & 3{,}90  & 173{,}95 & 2188{,}00  & 3{,}32  & 0{,}0 & 22  & 33  & 45  & 49  & 69  & 79  & 150 & 170 & 170 & 170 & 170 \\
       POST      & \texttt{/stage/rooms/}              & 4    & 0 & 11 & 40{,}45 & 9{,}53  & 84{,}28  & 53{,}00    & 0{,}07  & 0{,}0 & 57  & 57  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  \\
-      GET       & \texttt{/stage/rooms/verify/:code}  & 8    & 0 & 8  & 17{,}97 & 6{,}66  & 48{,}85  & 57{,}00    & 0{,}14  & 0{,}0 & 8   & 13  & 44  & 44  & 49  & 49  & 49  & 49  & 49  & 49  & 49  \\
-      GET       & \texttt{/stage/rooms/:id}           & 268  & 0 & 12 & 17{,}62 & 3{,}47  & 162{,}76 & 546{,}13   & 4{,}59  & 0{,}0 & 12  & 18  & 23  & 26  & 35  & 44  & 52  & 54  & 160 & 160 & 160 \\
-      GET       & \texttt{/stage/rooms/:id/part.}     & 26   & 0 & 8  & 8{,}13  & 3{,}26  & 13{,}29  & 723{,}69   & 0{,}44  & 0{,}0 & 8   & 8   & 8   & 9   & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
+      GET       & \texttt{/stage/rooms/verify/{code}}  & 8    & 0 & 8  & 17{,}97 & 6{,}66  & 48{,}85  & 57{,}00    & 0{,}14  & 0{,}0 & 8   & 13  & 44  & 44  & 49  & 49  & 49  & 49  & 49  & 49  & 49  \\
+      GET       & \texttt{/stage/rooms/{id}}           & 268  & 0 & 12 & 17{,}62 & 3{,}47  & 162{,}76 & 546{,}13   & 4{,}59  & 0{,}0 & 12  & 18  & 23  & 26  & 35  & 44  & 52  & 54  & 160 & 160 & 160 \\
+      GET       & \texttt{/stage/rooms/{id}/participants}     & 26   & 0 & 8  & 8{,}13  & 3{,}26  & 13{,}29  & 723{,}69   & 0{,}44  & 0{,}0 & 8   & 8   & 8   & 9   & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
       POST      & \texttt{/users/login}               & 10   & 0 & 94 & 113{,}52 & 68{,}73 & 235{,}30 & 160{,}00   & 0{,}17  & 0{,}0 & 100 & 110 & 130 & 140 & 240 & 240 & 240 & 240 & 240 & 240 & 240 \\
       GET       & \texttt{/users/me}                  & 18   & 0 & 9  & 9{,}20  & 5{,}40  & 12{,}92  & 117{,}00   & 0{,}31  & 0{,}0 & 9   & 9   & 10  & 11  & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
       WS        & \texttt{WS Connect}                 & 190  & 0 & 11 & 14{,}66 & 2{,}00  & 149{,}00 & 0{,}00     & 3{,}25  & 0{,}0 & 11  & 16  & 21  & 23  & 28  & 34  & 37  & 39  & 150 & 150 & 150 \\
@@ -251,5 +258,12 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
   \captionof{evidence}{Registro de fallos detectados durante la prueba de carga (Locust).}
   \label{ev:locust_fallos}
 \end{table}
+
+\begin{evidence}[H]
+    \centering
+    \includegraphics[width=\linewidth]{evidences/terminal_test_umbrales.png}
+    \caption{Captura de terminal con la verificación y cumplimiento de umbrales de rendimiento.}
+    \label{ev:terminal_umbrales_locust}
+\end{evidence}
 
 \end{appendices}
