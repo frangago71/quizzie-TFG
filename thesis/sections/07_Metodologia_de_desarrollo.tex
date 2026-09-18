@@ -281,18 +281,25 @@ Tras producirse un \textit{push} en la rama \texttt{main}, el despliegue del ent
 
 \subsection{Resumen de la estructura de CI/CD}\label{subsec:resumen_cicd}
 
-La siguiente figura resume la estructura del flujo de CI/CD, integrando los \textit{jobs}, scripts y herramientas utilizadas en cada fase:
+A continuación, se detalla la estructura del flujo de integración y despliegue continuos, desglosando las fases ejecutadas según la rama de destino:
 
 \begin{figure}[H]
 \centering
 \makebox[\textwidth][c]{%
-  \includegraphics[width=1.2\textwidth]{figures/ci_cd_ampliado.png}%
+  \includegraphics[width=1.2\textwidth]{figures/ci_develop.png}%
 }
-\caption{Resumen detallado de la estructura de CI/CD.}
-\label{fig:ci_cd_completo}
+\caption{Resumen del flujo de CI para la rama \textit{develop}.}
+\label{fig:ci_develop}
 \end{figure}
 
-\newpage
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{%
+  \includegraphics[width=1.2\textwidth]{figures/ci_cd_main.png}%
+}
+\caption{Resumen del flujo de CI/CD para la rama \textit{main}.}
+\label{fig:cicd_main}
+\end{figure}
 
 \section{Gestión de configuración y entorno}\label{sec:env_secrets}
 

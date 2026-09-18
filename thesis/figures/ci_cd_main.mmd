@@ -1,0 +1,37 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'background': '#ffffff',
+    'fontSize': '22px',
+    'titleColor': '#222222'
+  }
+}}%%
+graph TD
+    T2["<div style='min-width:280px;'><div style='font-size:32px; font-weight:bold; padding:10px 14px;'>Push a main</div></div>"]
+
+    subgraph SQ ["SonarQube - Calidad del código"]
+        subgraph SQ_Inner [" "]
+            S1["<div style='min-width:330px;'><div style='background:#333; color:#fff; padding:12px; font-size:24px; font-weight:bold; border-bottom:1px solid #aaa;'>sonarqube</div><div style='padding:16px; font-size:22px; line-height:1.5; text-align:left; white-space:normal;'>• Reejecuta pruebas backend para cobertura<br/>• Usa caché local para agilizar el análisis<br/>• Escanea deuda técnica, seguridad y mantenibilidad<br/>• Envía métricas consolidadas a SonarCloud</div></div>"]
+        end
+    end
+
+    subgraph CD ["CD - Despliegue a producción"]
+        subgraph CD_Inner [" "]
+            D1["<div style='min-width:220px;'><div style='background:#333; color:#fff; padding:12px; font-size:24px; font-weight:bold; border-bottom:1px solid #aaa;'>deploy</div><div style='padding:16px; font-size:22px; line-height:1.5; text-align:left; white-space:normal;'>• Notifica a Render para iniciar el despliegue automático del backend</div></div>"]
+            D2["<div style='min-width:290px;'><div style='background:#111; color:#fff; padding:12px; font-size:24px; font-weight:bold; border-bottom:1px solid #aaa;'>vercel</div><div style='padding:16px; font-size:22px; line-height:1.5; text-align:left; white-space:normal;'>• Integración nativa, GitHub detecta el push a main<br/>• Compila y despliega el frontend automáticamente</div></div>"]
+        end
+    end
+
+    T2 --> S1
+    T2 --> D1
+    T2 -.-> D2
+
+    style S1 stroke:#55ccaa,stroke-width:2px
+    style D1 stroke:#007976,stroke-width:2px
+    style D2 stroke:#007976,stroke-width:2px
+    style T2 fill:#55ccaa,stroke:#2b6854,color:#fff,stroke-width:1px
+
+    style SQ_Inner fill:transparent,stroke:transparent
+    style CD_Inner fill:transparent,stroke:transparent
+
+    linkStyle 2 stroke-width:2.5px,stroke:#444444,stroke-dasharray:8 12

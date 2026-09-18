@@ -1,0 +1,62 @@
+---
+id: 3c1ce0c0-2305-4668-b2b2-387fa573045c
+---
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'background': '#ffffff',
+    'fontSize': '26px',
+    'titleColor': '#222222'
+  }
+}}%%
+graph TD
+    subgraph Triggers ["Eventos de disparo (GitHub Actions)"]
+        T1["<div style='min-width:250px;'><div style='font-size:30px; font-weight:bold; padding:6px 12px;'>Push a develop</div>"]
+        T2["<div style='min-width:250px;'><div style='font-size:30px; font-weight:bold; padding:6px 12px;'>Push a main</div>"]
+    end
+
+    subgraph CI ["CI - Calidad y seguridad"]
+        B1["<div style='min-width:300px;'><div style='background:#333; color:#fff; padding:10px; font-size:25px; font-weight:bold; border-bottom:1px solid #aaa;'>backend-ci</div><div style='padding:12px; font-size:25px; line-height:1.45; text-align:left; white-space:normal;'>• Descarga código e instala Python 3.12 (uv)<br/>• Verifica formato y linteo de código (Ruff)<br/>• Audita vulnerabilidades de librerías (pip-audit)</div></div>"]
+        F1["<div style='min-width:250px;'><div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>frontend-ci</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Prepara entorno Node.js 20 e instala npm<br/>• Revisa errores sintácticos/estilo (ESLint)<br/>• Valida tipos TypeScript y compila proyecto</div></div>"]
+
+        B2["<div style='min-width:220px;'><div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>pytest-backend-tests</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Ejecuta tests de la API en entorno aislado<br/>• Calcula cobertura de código backend<br/>• Genera y sube reporte XML de cobertura</div></div>"]
+
+        L1["<div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>locust-performance-tests</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Puebla la base de datos con datos de prueba<br/>• Levanta servidor Uvicorn en segundo plano<br/>• Simula carga de usuarios concurrentes (Locust)<br/>• Carga reportes CSV y evalúa umbrales de latencia</div></div>"]
+        E1["<div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>playwright-e2e-tests</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Inicializa backend (Uvicorn) y base de datos<br/>• Instala navegadores headless para pruebas<br/>• Simula flujos de usuario reales de principio a fin<br/>• Guarda capturas/trazas si ocurren fallos</div></div>"]
+        F2["<div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>vitest-component-tests</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Ejecuta pruebas unitarias de componentes React<br/>• Mide cobertura de interfaz de usuario<br/>• Sube reporte de cobertura como artefacto</div></div>"]
+    end
+
+    subgraph SQ ["SonarQube - Calidad del código"]
+        S1["<div style='min-width:250px;'><div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>sonarqube</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Reejecuta pruebas backend para cobertura<br/>• Usa caché local para agilizar el análisis<br/>• Escanea deuda técnica, seguridad y mantenibilidad<br/>• Envía métricas consolidadas a SonarCloud</div></div>"]
+    end
+
+    subgraph CD ["CD - Despliegue a producción"]
+        D1["<div style='background:#333; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>deploy</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Notifica a Render para iniciar el despliegue automático del backend</div></div>"]
+        D2["<div style='background:#111; color:#fff; padding:10px; font-size:19px; font-weight:bold; border-bottom:1px solid #aaa;'>vercel</div><div style='padding:12px; font-size:18px; line-height:1.45; text-align:left; white-space:normal;'>• Integración nativa, GitHub detecta el push a main<br/>• Compila y despliega el frontend automáticamente</div></div>"]
+    end
+
+    T1 --> B1
+    T1 --> F1
+    T2 --> SQ
+    T2 --> D1
+    T2 -.-> D2
+
+    B1 --> B2
+    B2 --> L1
+    B2 --> E1
+    F1 --> E1
+    F1 --> F2
+
+    style S1 stroke:#55ccaa,stroke-width:2px
+    style D1 stroke:#007976,stroke-width:2px
+    style D2 stroke:#007976,stroke-width:2px
+    style B1 stroke:#a946ab,stroke-width:2px
+    style B2 stroke:#a946ab,stroke-width:2px
+    style F1 stroke:#a946ab,stroke-width:2px
+    style F2 stroke:#a946ab,stroke-width:2px
+    style E1 stroke:#a946ab,stroke-width:2px
+    style L1 stroke:#a946ab,stroke-width:2px
+    style T2 fill:#55ccaa,stroke:#2b6854,color:#fff,stroke-width:1px
+    style T1 fill:#a946ab,stroke:#7d386f,color:#fff,stroke-width:1px
+
+    linkStyle 4 stroke-width:1px,stroke-dasharray:10 4
