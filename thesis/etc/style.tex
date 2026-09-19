@@ -98,18 +98,13 @@
 \newcommand{\setYear}[1]{\def\tfgYear {#1}}
 \newcommand{\setDedication}[1]{\def\tfgDedication {#1}}
 
-% Estilos para el código
-% Configuración genérica
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{editorOcher}{rgb}{0.8, 0.3, 0} % #FF7F00 -> rgb(239, 169, 0)
-\definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
-
-
 \newcommand{\covRed}[1]{\textcolor{red!80!black}{\textbf{#1}}}
-\newcommand{\covYellow}[1]{\textcolor{orange!90!black}{\textbf{#1}}} 
+\newcommand{\covCross}{\textcolor{covRed}{\textbf{\texttimes}}}
+\definecolor{covYellow}{RGB}{218,165,32}
+\newcommand{\covYellow}[1]{\textcolor{covYellow}{\textbf{#1}}} 
 \newcommand{\covGreen}[1]{\textcolor{green!60!black}{\textbf{#1}}}
+% \newcommand{\covCheck}{\textcolor{green!60!black}{\textbf{\checkmark}}}
+\newcommand{\covCheck}{\textcolor{green!60!black}{\ding{51}}}       
 \definecolor{bashYellow}{RGB}{204, 204, 0} 
 \newcommand{\bashYellow}[1]{\textcolor{bashYellow}{\textbf{#1}}}
 \definecolor{bashGrey}{RGB}{140, 140, 140}

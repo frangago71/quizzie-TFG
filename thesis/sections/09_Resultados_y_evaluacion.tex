@@ -684,9 +684,192 @@ A lo largo de la simulación no se registró ningún fallo en las peticiones ni 
 
 La trazabilidad completa del procedimiento se respalda en el anexo: la ejecución de la batería queda reflejada en la \hyperref[ev:terminal_test_locust]{captura de terminal de las pruebas de carga}, cuyos resultados brutos se recopilaron en los registros CSV correspondientes y fueron evaluados posteriormente mediante la \hyperref[ev:terminal_umbrales_locust]{ejecución del script de verificación de umbrales} de rendimiento.
 
-\section{Análisis estático de código (SonarQube)}
+\section{Análisis estático de código (SonarCloud)}\label{sec:sonar}
 
-% \section{Evaluación global frente a umbrales de calidad}\label{sub:evaluacion_umbrales_calidad}
+En paralelo a las pruebas funcionales y de rendimiento analizadas en los apartados anteriores, la salud estructural y la mantenibilidad del código se monitorizan de manera continua a través de análisis estático en la rama \texttt{main}. Con el fin de contrastar las métricas consolidadas frente a los umbrales definidos en las \hyperref[sec:metricas_calidad]{métricas de calidad}, el escaneo en SonarCloud certifica el cumplimiento íntegro de los criterios fijados, alcanzando el estado \textbf{Superado} (\textit{Passed}) en su \textit{Quality Gate}:
 
-\section{Retrospectiva técnica}
-Reflexión sobre la implementación de las prácticas de CI/CD, testing y métricas de calidad, y decir si he cumplido los objetivos como las métricas de cobertura o de issues de sonar
+\begin{evidence}[H]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/informe_sonar.png}}
+    \captionsetup{hypcap=false}
+    \caption{Estado del \textit{Quality Gate} y métricas consolidadas en SonarCloud.}
+    \label{ev:sonar_overall_code}
+\end{evidence}
+
+La siguiente tabla compara los valores obtenidos sobre el código completo (\textit{Overall Code}) con los \hyperref[tab:sonar_quality_gate]{umbrales y métricas objetivo} de referencia:
+
+\begin{table}[H]
+\centering
+\normalsize
+\renewcommand{\arraystretch}{1.4}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l l c c}
+\hline
+\textbf{Métrica} & \textbf{Objetivo} & \textbf{Valor obtenido} & \textbf{Estado} \\ \hline
+\textbf{Cobertura} & $> 80\%$ & \textbf{97,4\%} & \covCheck \\
+\textbf{Duplicación} & $< 3\%$ & \textbf{1,2\%} & \covCheck \\
+\textbf{Seguridad} & Calificación A & \covGreen{A} & \covCheck \\
+\textbf{Fiabilidad} & Calificación A & \covGreen{A} (3 \textit{issues}) & \covCheck \\
+\textbf{Mantenibilidad} & Calificación A & \covGreen{A} (38 \textit{code smells}) & \covCheck \\
+\end{tabular}%
+}
+\caption{Comparativa de los umbrales del \textit{Quality Gate} frente a resultados obtenidos.}
+\label{tab:comparativa_sonar}
+\end{table}
+
+A continuación, se presenta la evolución temporal del volumen de incidencias y de la calidad del código a lo largo de las distintas sesiones de trabajo, acompañada del desglose cuantitativo detallado por nivel de severidad y área técnica:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.95\textwidth,
+    height=6.8cm,
+    xlabel={Historial de análisis en SonarCloud},
+    ylabel={Número de incidencias},
+    xmin=0.5, xmax=15.5,
+    ymin=0, ymax=285,
+    xtick={1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+    xticklabels={AS-01, AS-02, AS-03, AS-04, AS-05, AS-06, AS-07, AS-08, AS-09, AS-10, AS-11, AS-12, AS-13, AS-14, AS-15},
+    ytick={0, 50, 100, 150, 200, 250},
+    minor y tick num=1,
+    ymajorgrids=true,
+    yminorgrids=true,
+    grid style={dashed, gray!35},
+    minor grid style={dashed, gray!25},
+    tick label style={font=\footnotesize},
+    x tick label style={font=\scriptsize, rotate=45, anchor=north east},
+    label style={font=\small\bfseries},
+    legend style={
+        font=\footnotesize,
+        at={(0.5, 1.15)},
+        anchor=south,
+        legend columns=3,
+        draw=none,
+        /tikz/every even column/.append style={column sep=0.4cm}
+    }
+]
+
+    \addplot[
+        fill=primaryCyan,
+        fill opacity=0.20,
+        draw=none,
+        forget plot
+    ] coordinates {
+        (7.5, 0) (7.5, 285) (8.5, 285) (8.5, 0)
+    };
+
+    \addplot[
+        fill=primaryCyan,
+        fill opacity=0.20,
+        draw=none,
+        forget plot
+    ] coordinates {
+        (9.5, 0) (9.5, 285) (10.5, 285) (10.5, 0)
+    };
+
+    \addplot[
+        fill=primaryCyan,
+        fill opacity=0.20,
+        draw=primaryCyan!60,
+        area legend
+    ] coordinates {
+        (11.5, 0) (11.5, 285) (15.5, 285) (15.5, 0)
+    };
+    \addlegendentry{Calificación global A}
+
+    \addplot[
+        color=secondaryCyan,
+        line width=1.4pt,
+        dashed
+    ] coordinates {(8.5, 0) (8.5, 280)};
+    \addlegendentry{Repuntes de incidencias}
+
+    \addplot[
+        color=secondaryCyan,
+        line width=1.4pt,
+        dashed,
+        forget plot
+    ] coordinates {(10.5, 0) (10.5, 280)};
+
+    \addplot[
+        color=primaryMagenta,
+        mark=*,
+        mark size=2.2pt,
+        line width=1.8pt
+    ] coordinates {
+        (1, 261)
+        (2, 152)
+        (3, 150)
+        (4, 112)
+        (5, 74)
+        (6, 29)
+        (7, 24)
+        (8, 23)
+        (9, 57)
+        (10, 23)
+        (11, 83)
+        (12, 26)
+        (13, 37)
+        (14, 36)
+        (15, 38)
+    };
+    \addlegendentry{Total incidencias}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Evolución del volumen de incidencias en SonarCloud.}
+\label{fig:sonar_issues_evolution}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\makebox[\textwidth][c]{%
+\begin{tabular}{c c c c c}
+\hline
+\textbf{Análisis} & \textbf{\textit{Issues}} & \makecell{\textbf{Severidad}\\\footnotesize(Alta / Media / Baja)} & \makecell{\textbf{Categoría}\\\footnotesize(Seg / Fiab / Mant)} & \makecell{\textbf{Calificación}\\\footnotesize(Seg / Fiab / Mant)} \\ \hline
+AS-01 & 261 & 45 / 130 / 86 & 20 / 26 / 215 & \covRed{C} \covRed{C} \covRed{C} \\ \hline
+AS-02 & 152 & 24 / 74 / 54  & 27 / 48 / 109 & \covRed{C} \covRed{C} \covYellow{B} \\ \hline
+AS-03 & 150 & 23 / 82 / 71  & 25 / 48 / 108 & \covRed{C} \covRed{C} \covYellow{B} \\ \hline
+AS-04 & 112 & 17 / 65 / 43  & 25 / 24 / 79  & \covRed{C} \covYellow{B} \covYellow{B} \\ \hline
+AS-05 & 74  & 3 / 24 / 40   & 2 / 24 / 64   & \covYellow{B} \covYellow{B} \covGreen{A} \\ \hline
+AS-06 & 29  & 3 / 13 / 14   & 1 / 2 / 28    & \covYellow{B} \covYellow{B} \covGreen{A} \\ \hline
+AS-07 & 24  & 2 / 10 / 12   & 1 / 0 / 23    & \covYellow{B} \covGreen{A} \covGreen{A} \\ \hline
+AS-08 & 23  & 1 / 9 / 13    & 0 / 0 / 23    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+AS-09 & 57  & 22 / 23 / 13  & 3 / 7 / 48    & \covGreen{A} \covGreen{A} \covRed{C} \\ \hline
+AS-10 & 23  & 5 / 7 / 11    & 0 / 0 / 23    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+AS-11 & 83  & 4 / 70 / 9    & 4 / 52 / 27   & \covGreen{A} \covRed{C} \covGreen{A}  \\ \hline
+AS-12 & 26  & 3 / 14 / 9    & 0 / 0 / 26    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+AS-13 & 37  & 5 / 22 / 10   & 0 / 1 / 37    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+AS-14 & 36  & 4 / 22 / 10   & 0 / 1 / 35    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+AS-15 & 38  & 4 / 24 / 12   & 0 / 3 / 38    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+\end{tabular}%
+}
+\caption{Desglose de historial de \textit{issues} registradas en SonarCloud.}
+\label{tab:desglose_issues_sonar}
+\end{table}
+
+El análisis de estos datos refleja con claridad el ciclo de vida del proyecto y las decisiones técnicas adoptadas:
+
+\begin{itemize}
+    \item \textbf{Adopción y saneamiento inicial (AS-01 a AS-08):} 
+    La integración del escaneo estático en la canalización de integración continua se produjo de forma tardía, una vez concluidas las fases \hyperref[fase:mvp]{F-05 MVP} y \hyperref[fase:core]{F-06 Core}. Esta demora provocó que el primer análisis registrado (\textbf{AS-01}) arrojase una deuda técnica de partida muy elevada, con un volumen inicial de 261 incidencias. Ante este escenario crítico, se adoptaron dos decisiones de gestión inmediatas:
+    \begin{itemize}
+        \item Mediante la solicitud \hyperref[tab:cr_06_sonar]{CR-06}, se habilitó formalmente el análisis continuo en GitHub Actions y se implantaron \textit{pre-commit hooks} junto a formateadores locales para atajar y filtrar defectos de estilo y tipado antes de subirlos al repositorio.
+        \item Mediante la solicitud \hyperref[tab:cr_07_backlog]{CR-07}, se congeló temporalmente el desarrollo de nuevas características para priorizar la corrección de errores en SonarCloud, posponiendo los requisitos de mejora secundarios al \textit{backlog} de \hyperref[sec:trabajo_futuro]{trabajo futuro}.
+    \end{itemize}
+    La dedicación técnica a este proceso intensivo de saneamiento permitió reducir drásticamente las \textit{issues} de 261 a tan solo 23 en el \textbf{AS-08}, alcanzando por primera vez la máxima calificación global.
+
+    \item \textbf{Primer repunte: Desarrollo del módulo de usuarios (AS-09 y AS-10):}
+    Tras alcanzar por primera vez la máxima calificación global y superar los umbrales exigidos por SonarCloud, la reanudación del desarrollo para completar las funcionalidades finales del módulo de autenticación y gestión de usuarios introdujo nuevo código que originó un repunte transitorio a 57 incidencias (\textbf{AS-09}). Al contar ya con el analizador estático plenamente integrado en el flujo de trabajo, estas desviaciones se atajaron con rapidez en la siguiente iteración, retornando de inmediato a la calificación \covGreen{A} \covGreen{A} \covGreen{A} con 23 incidencias en \textbf{AS-10}.
+
+    \item \textbf{Segundo repunte: Reglas de accesibilidad en la interfaz (AS-11 y AS-12):}
+    El repunte registrado en \textbf{AS-11}, donde las incidencias subieron a 83 (con 52 defectos de fiabilidad que dejaron temporalmente la calificación en \covGreen{A} \covRed{C} \covGreen{A}), se debió a que, al seguir creciendo el proyecto y abarcar más vistas del frontend, SonarCloud empezó a evaluar en profundidad las plantillas de React. En ese análisis comenzó a exigir de forma estricta que todas las etiquetas \texttt{<button>} incluyesen su atributo explícito, ya que por defecto HTML les asigna \texttt{type="submit"} y puede provocar comportamientos no deseados en la interfaz. Al no haberse contemplado este aviso antes, el fallo saltó en cascada en prácticamente todos los botones de la aplicación. Bastó con añadir \texttt{type="button"} a los elementos de navegación y acción para eliminar por completo esas 52 incidencias de fiabilidad, recuperando de inmediato la calificación \covGreen{A} \covGreen{A} \covGreen{A} con 26 incidencias en \textbf{AS-12}.
+
+    \item \textbf{Consolidación en la versión final y deuda residual (AS-13 a AS-15):}
+    Con las buenas prácticas y los controles locales ya interiorizados durante la implementación de los módulos de contenido y sesiones de la etapa \hyperref[fase:qa]{F-08 QA}, el proyecto concluyó sin nuevos repuntes. La ligera variación observada entre \textbf{AS-12} y \textbf{AS-15} (pasando de 26 a 38 incidencias en total) responde únicamente a pequeños \textit{code smells} y ajustes menores de maquetación o tipado que no comprometen la lógica de la plataforma. De este modo, la base de código se mantuvo estable en la máxima calificación hasta el cierre definitivo del desarrollo.
+\end{itemize}
+
+Al cierre del desarrollo, la deuda técnica residual computada por SonarCloud es de tan solo \textbf{3 horas y 46 minutos}. Con la máxima calificación afianzada y sin alertas de seguridad, se decidió no invertir más horas de desarrollo en estas incidencias menores para destinarlas a otros aspectos del proyecto. Así, su saneamiento queda pospuesto como línea de \hyperref[sec:trabajo_futuro]{trabajo futuro}. Por su parte, la valoración personal sobre la experiencia y el impacto de integrar SonarCloud se aborda en detalle en las \hyperref[sec:lecciones_aprendidas]{lecciones aprendidas}.

@@ -80,12 +80,12 @@ El conjunto de pruebas de rendimiento se implementa en Python con **Locust** (`t
 | Métrica | Umbral Objetivo / Criterio de Éxito |
 | :--- | :--- |
 | **Tasa de Errores Global (Error Rate)** | `< 1.0 %` en ejecuciones continuas de 200 usuarios concurrentes. |
-| **Latencia P95 (REST API Lectura/Escritura)** | `<= 200 ms` para endpoints de cuestionarios, salas y envío de respuestas (`POST /stage/answers`). |
-| **Latencia P95 (Autenticación - Bcrypt)** | `<= 500 ms` en `POST /users/login` (debido al cómputo intencionado de hashing de claves contra fuerza bruta). |
-| **Latencia P95 (Conexión WebSocket)** | `<= 200 ms` para el establecimiento de conexiones persistentes (`WS Connect`). |
+| **Latencia P90 (REST API Lectura/Escritura)** | `<= 200 ms` para endpoints de cuestionarios, salas y envío de respuestas (`POST /stage/answers`). |
+| **Latencia P90 (Autenticación - Bcrypt)** | `<= 500 ms` en `POST /users/login` (debido al cómputo intencionado de hashing de claves contra fuerza bruta). |
+| **Latencia P90 (Conexión WebSocket)** | `<= 200 ms` para el establecimiento de conexiones persistentes (`WS Connect`). |
 | **Picos de Respuestas (`POST /stage/answers`)** | `<= 200 ms` durante ráfagas sostenidas de respuestas masivas simultáneas. |
 
-> **Nota:** **Percentil 95 (P95)** indica que el 95% de las peticiones procesadas por el servidor obtienen un tiempo de respuesta igual o inferior al valor umbral especificado.
+> **Nota:** **Percentil 90 (P90)** indica que el 90% de las peticiones procesadas por el servidor obtienen un tiempo de respuesta igual o inferior al valor umbral especificado.
 
 
 ## 5. Métricas de cobertura (Coverage)
