@@ -29,37 +29,42 @@ El proyecto está construido sobre un stack moderno y eficiente:
 
 ---
 
-## Guía de instalación y ejecución
-
-Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local.
-
 ### 1. Requisitos previos
 Asegúrate de tener instalado en tu sistema:
 * [Git](https://git-scm.com/)
-* [Python 3.12](https://www.python.org/)
+* [uv](https://docs.astral.sh/uv/) (puede instalarse nativamente o mediante `pip install uv` si ya dispones de Python)
 * [Node.js](https://nodejs.org/)
 
 ### 2. Clonar y preparar el repositorio
-Clona el repositorio alojado en [https://github.com/frangago71/quizzie-TFG.git](https://github.com/frangago71/quizzie-TFG.git)
+Clona el repositorio alojado en [https://github.com/frangago71/quizzie-TFG.git](https://github.com/frangago71/quizzie-TFG.git):
 ~~~bash
 git clone https://github.com/frangago71/quizzie-TFG.git
 cd quizzie-TFG
 ~~~
 
-Si no lo tienes, instala el gestor [uv](https://docs.astral.sh/uv/) y sincroniza las dependencias. Posteriormente, pobla la base de datos.
+#### Configuración del backend
+Instala el gestor de paquetes `uv` en caso de no disponer de él previamente y sincroniza las dependencias del proyecto:
+
+~~~bash
+pip install uv
+uv sync --all-groups
+~~~
+
+La sincronización anterior genera un entorno virtual aislado (`.venv`). Para ejecutar órdenes en él puedes usar el prefijo `uv run`, o bien activar explícitamente el entorno en tu sesión de terminal para omitir dicho prefijo:
+
+~~~bash
+& .\.venv\Scripts\Activate.ps1
+~~~
+
+Posteriormente, accede al directorio del backend y ejecuta el sembrado inicial de la base de datos:
 
 ~~~bash
 cd backend
-pip install uv
-
-# Usa uv para instalar las dependencias y crear el entorno virtual automáticamente
-uv sync
-
-# Pobla la base de datos
 uv run python -m seed
 ~~~
 
-Instala las librerías de Node.js necesarias.
+#### Configuración del frontend
+Instala las dependencias de Node.js necesarias:
 
 ~~~bash
 cd ../frontend

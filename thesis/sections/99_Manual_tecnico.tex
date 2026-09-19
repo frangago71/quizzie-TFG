@@ -10,8 +10,8 @@ Para garantizar la correcta ejecución de la plataforma en un entorno local, la 
 
 \begin{itemize}
     \item \textbf{Git}\cite{git_official}.
-    \item \textbf{Python} (versión 3.12) \cite{python_official}.
     \item \textbf{Node.js}\cite{nodejs_official}.
+    \item \textbf{\texttt{uv}}\cite{uv_official} (puede instalarse nativamente o mediante \texttt{pip} si el sistema ya cuenta con un intérprete de Python).
 \end{itemize}
 
 \section{Preparación y configuración del repositorio}\label{sec:manual_preparacion}
@@ -25,24 +25,33 @@ Clonar el repositorio del proyecto e ingresar en el directorio raíz:
 \end{lstlisting}
 
 \subsection*{Configuración del entorno del backend}
-Instalar el gestor de paquetes \texttt{uv} \cite{uv_official}, sincronizar el entorno virtual con las dependencias del proyecto y poblar la base de datos con los registros iniciales:
+Instalar el gestor \texttt{uv} en caso de no disponer de él previamente y sincronizar todas las dependencias del proyecto:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{pip}@*) install uv
+(*@\cliPrompt@*) (*@\bashYellow{uv}@*) sync (*@\bashGrey{--all-groups}@*)
+\end{lstlisting}
+
+La sincronización anterior genera un entorno virtual aislado (\texttt{.venv}) con todas las librerías necesarias. Para la ejecución de órdenes en dicho entorno se puede emplear el prefijo \texttt{uv run} en cada invocación, o bien activar explícitamente el entorno en la sesión de terminal para omitir dicho prefijo y ejecutar los comandos directamente:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{\&}@*) .\.venv\Scripts\Activate.ps1
+\end{lstlisting}
+
+Para poblar la base de datos con los registros iniciales, acceder al directorio del backend y ejecutar el script de sembrado:
 
 \begin{lstlisting}
 (*@\cliPrompt@*) (*@\bashYellow{cd}@*) backend
-(*@\cliPrompt@*) (*@\bashYellow{pip}@*) install uv         (*@\covGreen{\# Instalar uv si no está disponible en el sistema}@*)
-(*@\cliPrompt@*) (*@\bashYellow{uv}@*) sync               (*@\covGreen{\# Crear entorno virtual y sincronizar dependencias}@*)
 (*@\cliPrompt@*) (*@\bashYellow{uv}@*) run python -m seed            (*@\covGreen{\# Ejecutar el sembrado inicial de datos}@*)
-
 \end{lstlisting}
 
 \subsection*{Configuración del entorno del frontend}
 Acceder al directorio de la interfaz de usuario e instalar los módulos de dependencias:
 
 \begin{lstlisting}
-(*@\cliPrompt@*) (*@\bashYellow{cd}@*) frontend
+(*@\cliPrompt@*) (*@\bashYellow{cd}@*) ../frontend
 (*@\cliPrompt@*) (*@\bashYellow{npm}@*) install                          (*@\covGreen{\# Instalar dependencias de Node.js}@*)
 \end{lstlisting}
-
 
 \section{Ejecución del proyecto en el entorno local}\label{sec:manual_ejecucion}
 
