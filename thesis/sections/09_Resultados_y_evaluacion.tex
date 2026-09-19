@@ -684,6 +684,46 @@ A lo largo de la simulación no se registró ningún fallo en las peticiones ni 
 
 La trazabilidad completa del procedimiento se respalda en el anexo: la ejecución de la batería queda reflejada en la \hyperref[ev:terminal_test_locust]{captura de terminal de las pruebas de carga}, cuyos resultados brutos se recopilaron en los registros CSV correspondientes y fueron evaluados posteriormente mediante la \hyperref[ev:terminal_umbrales_locust]{ejecución del script de verificación de umbrales} de rendimiento.
 
+\subsection{Resumen de resultados de las pruebas}\label{sub:resumen_pruebas}
+
+A modo de síntesis, la siguiente tabla resume los resultados obtenidos en las distintas \textit{suites} de verificación frente a los umbrales de aceptación definidos en el plan de pruebas:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l l c c}
+\hline
+\textbf{Objetivo} & \textbf{Umbral} & \textbf{Resultado} & \textbf{Estado} \\ \hline
+\multicolumn{4}{l}{\textbf{Pruebas unitarias y de integración}} \\
+Cobertura global & $\ge 80\%$ & 97,4\% & \covCheck \\
+\texttt{routers/content.py} & $\ge 90\%$ & 100\% & \covCheck \\ 
+\texttt{routers/stage.py} & $\ge 90\%$ & 98\% & \covCheck \\
+\texttt{routers/users.py} & $\ge 90\%$ & 100\% & \covCheck \\ \hline
+\multicolumn{4}{l}{\textbf{Pruebas de componentes}} \\
+Líneas & $\ge 80\%$ & 92,68\% & \covCheck \\
+Funciones & $\ge 80\%$ & 88,56\% & \covCheck \\
+Sentencias & $\ge 80\%$ & 90,13\% & \covCheck \\
+Ramas & $\ge 75\%$ & 80,29\% & \covCheck \\ \hline
+\multicolumn{4}{l}{\textbf{Pruebas de extremo a extremo}} \\
+Líneas & $\ge 80\%$ & 92,58\% & \covCheck \\
+Funciones & $\ge 80\%$ & 91,41\% & \covCheck \\
+Sentencias & $\ge 80\%$ & 91,30\% & \covCheck \\
+Ramas & $\ge 75\%$ & 83,92\% & \covCheck \\ \hline
+\multicolumn{4}{l}{\textbf{Pruebas de carga y rendimiento}} \\
+Tasa global de errores & $< 1,0\%$ & 0,00\% & \covCheck \\
+Rutas \textit{Auth} & P90 $\le 500$\,ms & Media: 99\,ms & \covCheck \\
+Rutas generales & P90 $\le 200$\,ms & Media: 38\,ms & \covCheck \\
+\textit{WebSocket} & P90 $\le 200$\,ms & 28\,ms & \covCheck \\ \hline
+\end{tabular}%
+}
+\caption{Resumen del cumplimiento de métricas de cobertura.}
+\label{tab:resumen_testing_umbrales}
+\end{table}
+
+\newpage
+
 \section{Análisis estático de código (SonarCloud)}\label{sec:sonar}
 
 En paralelo a las pruebas funcionales y de rendimiento analizadas en los apartados anteriores, la salud estructural y la mantenibilidad del código se monitorizan de manera continua a través de análisis estático en la rama \texttt{main}. Con el fin de contrastar las métricas consolidadas frente a los umbrales definidos en las \hyperref[sec:metricas_calidad]{métricas de calidad}, el escaneo en SonarCloud certifica el cumplimiento íntegro de los criterios fijados, alcanzando el estado \textbf{Superado} (\textit{Passed}) en su \textit{Quality Gate}:
