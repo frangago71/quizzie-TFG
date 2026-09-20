@@ -1,7 +1,83 @@
 \chapter{Conclusiones}\label{cap:conclusiones}
 
-\section{Grado de cumplimiento de los objetivos}
-Evaluación sobre los objetivos planteados en el acta de constitución.
+Este capítulo contrasta los resultados alcanzados frente a las metas planteadas en el proyecto, evalúa el cumplimiento de cada objetivo y resume las lecciones aprendidas durante el desarrollo de \textit{Quizzie}.
+
+\section{Grado de cumplimiento de los objetivos}\label{sec:cumplimiento_objetivos}
+
+A continuación se evalúa el nivel de consecución de las metas definidas en la sección de \hyperref[sec:objetivos_del_proyecto]{objetivos del proyecto}, divididas en los tres ámbitos de trabajo.
+
+\subsection{Objetivos académicos}
+
+El bloque formativo y metodológico priorizó la calidad y verificación del código mediante pruebas rigurosas, asumiendo una replanificación del calendario hacia la tercera convocatoria para garantizar la madurez del sistema.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l >{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{6cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Meta fijada} & \textbf{Resultado} & \textbf{Retrospectiva} \\ \hline
+\hyperref[oa:01]{OA-01} & Aplicación de competencias adquiridas & Cobertura global $\ge 80\%$. & \covCheck~97,4\% \textit{backend} \newline \covCheck~+90\% \textit{frontend}. & Se consolidaron los conocimientos del grado logrando una suite de pruebas robusta y ampliamente superior al mínimo exigido. \\ \hline
+\hyperref[oa:02]{OA-02} & Metodologías ágiles & Desviación temporal $< 15\%$ en hitos. & \covCross~+50\% de desviación temporal. & El aplazamiento de la entrega de la primera a la tercera convocatoria alteró los plazos previstos, completándose a tiempo menos del 50\% de los hitos fijados. \\ \hline
+\hyperref[oa:03]{OA-03} & Buenas prácticas e ingeniería & 100\% commits semánticos y reglas de estilo. & \covCheck~100\% commits semánticos \newline \covPartial~Fallos puntuales de linteo y formato. & Aunque la política de commits semánticos se cumplió en todo el historial, surgieron fallos intermitentes de formateo y linting que requirieron correcciones manuales posteriores. \\ \hline
+\end{tabular}%
+}
+\caption{Evaluación del cumplimiento de objetivos académicos.}
+\label{tab:cumplimiento_obj_academicos}
+\end{table}
+
+\newpage 
+
+\subsection{Objetivos técnicos y profesionales}
+
+La arquitectura desacoplada y la justificación formal mediante registros de decisiones (ADR) guiaron la ingeniería del sistema, concentrándose las limitaciones en la incorporación tardía del flujo de automatización y la ausencia de auditorías de seguridad externas.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{5.55cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Meta fijada} & \textbf{Resultado} & \textbf{Retrospectiva} \\ \hline
+\hyperref[ot:01]{OT-01} & Dominio tecnológico & Separación \textit{backend} asíncrono y \textit{frontend} reactivo. & \covCheck~Arquitectura cliente-servidor desacoplada. & La separación entre el servidor asíncrono y la interfaz cliente facilitó el desarrollo, mantenimiento y pruebas independientes de cada subsistema. \\ \hline
+\hyperref[ot:02]{OT-02} & Ciclo de vida completo & Trazabilidad formal de decisiones. & \covCheck~Fases del ciclo cubiertas y decisiones documentadas con ADRs. & La documentación estructurada y secuencial de las decisiones arquitectónicas justificó técnicamente la evolución del diseño del sistema. \\ \hline
+\hyperref[ot:03]{OT-03} & Seguridad y prevención de fraude & 0\% fraude por suplantación remota en salas. & \covCheck~Mitigación efectiva en pruebas controladas. \newline \covPartial~Sin auditoría de seguridad externa. & El esquema de tokens y códigos QR impidió la suplantación en los escenarios de prueba evaluados, si bien queda pendiente contrastar su resistencia en auditorías externas. \\ \hline
+\hyperref[ot:04]{OT-04} & Estrategia de pruebas y calidad & Cobertura global $\ge 80\%$ y control de calidad. & \covCheck~Cobertura superada \newline \covCheck~Análisis estático integrado. & Se superó el umbral fijado en los componentes críticos, evitando la acumulación de deuda técnica severa mediante la verificación continua de calidad. \\ \hline
+\hyperref[ot:05]{OT-05} & Automatización CI/CD & 100\% de cambios se validan en CI. & \covCheck~Flujo automatizado de CI/CD activo. \newline \covPartial~Configuración tardía del \textit{pipeline}. & Aunque la canalización automatizada se configuró en una etapa avanzada del desarrollo, garantizó que solo versiones estables alcanzaran el entorno productivo. \\ \hline
+\end{tabular}%
+}
+\caption{Evaluación del cumplimiento de objetivos técnicos y profesionales.}
+\label{tab:cumplimiento_obj_tecnicos}
+\end{table}
+
+\newpage 
+
+\subsection{Objetivos de la plataforma}
+
+El producto resolvió eficazmente el acceso inmediato sin credenciales y la agilidad operativa en el aula, postergando la gestión avanzada de grupos a líneas futuras y requiriendo validación en despliegues con alumnado real.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{2.7cm} >{\raggedright\arraybackslash}p{3.7cm} >{\raggedright\arraybackslash}p{5.3cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Meta fijada} & \textbf{Resultado} & \textbf{Retrospectiva} \\ \hline
+\hyperref[op:01]{OP-01} & Evaluación docente simplificada & Puesta en marcha $< 5$\,min y recogida automatizada. & \covCheck~Configuración ágil y recolección automática. & La centralización de la gestión de cuestionarios y respuestas redujo significativamente la carga operativa previa a la sesión. \\ \hline
+\hyperref[op:02]{OP-02} & Dinamismo e interactividad & Errores $< 1,0\%$ en concurrencia ($\ge 100$ usuarios). & \covCheck~Tolerancia a carga concurrente verificada. \newline \covPartial~Pendiente de prueba real en aula. & La comunicación bidireccional mantuvo la fluidez bajo pruebas simuladas, validar su comportamiento en un entorno real queda como trabajo futuro. \\ \hline
+\hyperref[op:03]{OP-03} & Seguimiento continuo & Estadísticas en tiempo real e histórico por grupos. & \covCheck~Métricas inmediatas y registro histórico. \newline \covCross~Gestión de grupos fuera del alcance de la entrega. & Se consolidó la analítica detallada y el volcado por sesión individual, posponiendo la gestión de grupos a una fase posterior. \\ \hline
+\hyperref[op:04]{OP-04} & Validación presencial física & Verificación y firma por cámara $< 2$\,s. & \covCheck~Validación ágil \textit{in situ}. & El flujo de escaneo y comprobación instantánea evitó cuellos de botella durante la validación QR. \\ \hline
+\hyperref[op:05]{OP-05} & Accesibilidad e incorporación & Incorporación sin registro previo en $< 5$\,s. & \covCheck~Acceso directo sin registro previo. & Suprimir la necesidad de credenciales para los estudiantes permitió iniciar las actividades de inmediato sin fricción de acceso. \\ \hline
+\hyperref[op:06]{OP-06} & Compatibilidad multidispositivo & Diseño responsivo sin pérdida funcional. & \covCheck~Verificada compatibilidad multidispositivo. \newline \covPartial~Falta consistencia en navegadores menos habituales. & La interfaz responde de forma ágil y homogénea en los principales motores, aunque se detectaron ligeras disparidades visuales en navegadores minoritarios. \\ \hline
+\hyperref[op:07]{OP-07} & Privacidad y cumplimiento normativo & Minimización de datos (RGPD) y credenciales seguras. & \covCheck~Minimización aplicada y claves protegidas. & Se garantizó la privacidad prescindiendo de datos personales innecesarios y aplicando mecanismos seguros de autenticación docente. \\ \hline
+\end{tabular}%
+}
+\caption{Evaluación del cumplimiento de los objetivos de la plataforma.}
+\label{tab:cumplimiento_obj_plataforma}
+\end{table}
 
 \section{Lecciones aprendidas y valoración personal}\label{sec:lecciones_aprendidas}
 Reflexión sobre el trabajo realizado.

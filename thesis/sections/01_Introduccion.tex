@@ -19,37 +19,81 @@ La elección de este proyecto nace, en gran medida, de mi propia experiencia com
 El desarrollo de \textit{Quizzie} representa la oportunidad perfecta para demostrar mi capacidad de afrontar un \textbf{proyecto de \textit{software} completo} guiado por las metodologías y principios clásicos de la ingeniería del \textit{software} descritos por autores de referencia como Pressman \cite{pressman2010ingenieria} y Sommerville \cite{sommerville2011ingenieria}. Abordar este \textbf{ciclo de vida de extremo a extremo} no solo me permite consolidar mis conocimientos técnicos, sino también validar mi criterio al tomar decisiones justificadas ante problemas, convirtiendo este trabajo en el puente definitivo hacia mi madurez como ingeniero de \textit{software}.
 
 \section{Objetivos del proyecto}\label{sec:objetivos_del_proyecto}
-Para guiar el desarrollo del proyecto y asegurar el cumplimiento de las expectativas tanto formativas como técnicas, he definido una serie de metas divididas en dos vertientes: académica y técnico-profesional.
+Para guiar el desarrollo del proyecto y asegurar el cumplimiento de las expectativas tanto formativas como técnicas y de producto, he definido una serie de metas divididas en tres vertientes: académica, técnico-profesional y operativa de la plataforma.
+
+\newpage
 
 \subsection{Objetivos académicos}
 Metas orientadas a consolidar la formación recibida durante los estudios de grado:
-\begin{itemize}
-    \item \textbf{Integrar y aplicar} de forma conjunta los conocimientos teóricos y prácticos adquiridos en las distintas asignaturas de la carrera, demostrando su aplicación real mediante la resolución de los problemas descritos en el análisis de requisitos y su verificación final mediante un plan de pruebas sistemático con un índice de cobertura de código global superior al 80\%.
-    \item \textbf{Adoptar metodologías de trabajo ágiles} en la gestión y planificación del proyecto, estableciendo un calendario estricto de iteraciones de desarrollo y midiendo las desviaciones temporales reales frente a la línea base del cronograma para mantener la desviación por debajo del 15\% mediante hitos de control definidos.
-    \item \textbf{Fomentar la aplicación rigurosa de buenas prácticas} de ingeniería del \textit{software}, estructurando el sistema según los principios de diseño y legibilidad del paradigma \textit{Clean Code} \cite{martin2009clean} y articulando la solución bajo patrones de \textit{Clean Architecture} \cite{martin2017clean}, garantizando un historial de control de versiones libre de confirmaciones informales (100\% de cumplimiento de una política de commits semánticos en la rama principal) y asegurando que cada incremento de código supere automáticamente las directrices de formateo y estilo antes de su integración. 
-\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l >{\raggedright\arraybackslash}p{2.8cm} p{10cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
+\textbf{OA-01}\label{oa:01} & Aplicación de competencias adquiridas & Integrar y aplicar de forma conjunta los conocimientos teóricos y prácticos adquiridos en las distintas asignaturas de la carrera, demostrando su aplicación real mediante la resolución de los problemas descritos en el análisis de requisitos y su verificación final mediante un plan de pruebas sistemático con un índice de cobertura de código global superior al 80\%. \\ \hline
+\textbf{OA-02}\label{oa:02} & Metodologías ágiles & Adoptar metodologías de trabajo ágiles en la gestión y planificación del proyecto, estableciendo un calendario estricto de iteraciones de desarrollo y midiendo las desviaciones temporales reales frente a la línea base del cronograma para mantener la desviación por debajo del 15\% mediante hitos de control definidos. \\ \hline
+\textbf{OA-03}\label{oa:03} & Buenas prácticas e ingeniería & Fomentar la aplicación rigurosa de buenas prácticas de ingeniería del \textit{software}, estructurando el sistema según los principios de diseño y legibilidad del paradigma \textit{Clean Code} \cite{martin2009clean} y articulando la solución bajo patrones de \textit{Clean Architecture} \cite{martin2017clean}, garantizando un historial de control de versiones libre de confirmaciones informales (100\% de cumplimiento de una política de commits semánticos en la rama principal) y asegurando que cada incremento de código supere automáticamente las directrices de formateo y estilo antes de su integración. \\ \hline
+\end{tabular}%
+}
+\caption{Definición de objetivos académicos.}
+\label{tab:def_obj_academicos}
+\end{table}
+
+\newpage
 
 \subsection{Objetivos técnicos y profesionales}
 Retos tecnológicos asumidos para el producto final y el desarrollo de competencias laborales:
-\begin{itemize}
-    \item \textbf{Dominar nuevas tecnologías} y herramientas del ecosistema de desarrollo actual, diseñando e implementando una solución cliente-servidor desacoplada que separe con éxito la lógica de negocio del \textit{backend} asíncrono de la representación en la interfaz reactiva del cliente.
-    \item \textbf{Gestionar de manera autónoma el ciclo de vida completo} de un producto de \textit{software} real, completando secuencialmente cada una de las fases temporales del cronograma y justificando documentalmente las decisiones de diseño mediante registros formales de decisiones arquitectónicas.
-    \item \textbf{Diseñar e implementar un sistema de verificación} presencial robusto y eficiente, garantizando una tasa de fraude por suplantación digital remota de 0\% en las salas de cuestionarios cerradas gracias a la validación de tokens criptográficos de un solo uso.
-    \item \textbf{Implementar una estrategia de pruebas exhaustiva} que asegure la calidad y fiabilidad del código, fijando un umbral objetivo de cobertura de código mínimo del 80\% y garantizando la ausencia de duplicidades, vulnerabilidades de seguridad y deuda técnica crítica mediante un flujo continuo de control de calidad.
-    \item \textbf{Diseñar y configurar un flujo de trabajo automatizado} para la integración y despliegue continuos (CI/CD), fundamentado en los principios de entrega continua expuestos por Farley \cite{farley2021continuous}, asegurando que el 100\% de las modificaciones de código en el repositorio se verifiquen, compilen y desplieguen automáticamente en el entorno de producción únicamente si superan satisfactoriamente los test de regresión y las metas de calidad preestablecidas.
-\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l >{\raggedright\arraybackslash}p{2.8cm} p{10cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
+\textbf{OT-01}\label{ot:01} & Dominio tecnológico & Dominar nuevas tecnologías y herramientas del ecosistema de desarrollo actual, diseñando e implementando una solución cliente-servidor desacoplada que separe con éxito la lógica de negocio del \textit{backend} asíncrono de la representación en la interfaz reactiva del cliente. \\ \hline
+\textbf{OT-02}\label{ot:02} & Ciclo de vida completo & Gestionar de manera autónoma el ciclo de vida completo de un producto de \textit{software} real, completando secuencialmente cada una de las fases temporales del cronograma y justificando documentalmente las decisiones de diseño mediante registros formales de decisiones arquitectónicas. \\ \hline
+\textbf{OT-03}\label{ot:03} & Seguridad y prevención de fraude & Diseñar e implementar un sistema de verificación presencial robusto y eficiente, garantizando una tasa de fraude por suplantación digital remota de 0\% en las salas de cuestionarios cerradas gracias a la validación de tokens criptográficos de un solo uso. \\ \hline
+\textbf{OT-04}\label{ot:04} & Estrategia de pruebas y calidad & Implementar una estrategia de pruebas exhaustiva que asegure la calidad y fiabilidad del código, fijando un umbral objetivo de cobertura de código mínimo del 80\% y garantizando la ausencia de duplicidades, vulnerabilidades de seguridad y deuda técnica crítica mediante un flujo continuo de control de calidad. \\ \hline
+\textbf{OT-05}\label{ot:05} & Automatización CI/CD & Diseñar y configurar un flujo de trabajo automatizado para la integración y despliegue continuos (CI/CD), fundamentado en los principios de entrega continua expuestos por Farley \cite{farley2021continuous}, asegurando que el 100\% de las modificaciones de código en el repositorio se verifiquen, compilen y desplieguen automáticamente en el entorno de producción únicamente si superan satisfactoriamente los test de regresión y las metas de calidad preestablecidas. \\ \hline
+\end{tabular}%
+}
+\caption{Definición de objetivos técnicos y profesionales.}
+\label{tab:def_obj_tecnicos}
+\end{table}
+
+\newpage
 
 \subsection{Objetivos de la plataforma}
 Aspiraciones funcionales y operativas de \textit{Quizzie}:
-\begin{itemize}
-    \item \textbf{Evaluación docente simplificada:} Proveer al profesorado de un sistema eficiente para gestionar cuestionarios, reduciendo el tiempo necesario para configurar, lanzar y evaluar una sesión interactiva a menos de 5 minutos, y permitiendo la recogida automatizada de respuestas.
-    \item \textbf{Dinamismo e interactividad en el aula:} Priorizar la fluidez de las sesiones en tiempo real en escenarios de alta demanda, asegurando una tasa de error de red inferior al 1\% y una transmisión bidireccional inmediata en el aula bajo simulaciones de carga de al menos 100 usuarios activos concurrentes.
-    \item \textbf{Seguimiento continuo del alumnado:} Ofrecer herramientas analíticas para monitorizar el rendimiento individual y colectivo, generando estadísticas en tiempo real y permitiendo el volcado automático del histórico de calificaciones por grupos académicos estables.
-    \item \textbf{Validación y presencialidad física:} Asegurar la legitimidad de las pruebas mediante mecanismos de verificación digital \textit{in situ}, optimizando el proceso de captura y decodificación para que el tiempo de validación y firma del comprobante por cámara sea inferior a 2 segundos por participante.
-    \item \textbf{Accesibilidad y agilidad de incorporación:} Optimizar la experiencia de usuario con flujos de acceso inmediato y sin necesidad de registro previo para los estudiantes, facilitando la entrada a las salas en menos de 5 segundos.
-    \item \textbf{Compatibilidad y despliegue multidispositivo:} Garantizar que la plataforma sea completamente responsiva y accesible desde cualquier tipo de dispositivo (móviles, \textit{tablets} u ordenadores), sin deformaciones ni pérdida de control sobre las acciones.
-    \item \textbf{Garantía de privacidad y cumplimiento:} Blindar la privacidad de los datos académicos y el cumplimiento normativo (RGPD) \cite{gdpr2016}, aplicando el principio de minimización de datos al prescindir de registros tradicionales para estudiantes y protegiendo el almacenamiento de credenciales docentes mediante algoritmos de hashing seguro.
-\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l >{\raggedright\arraybackslash}p{2.8cm} p{10cm}}
+\hline
+\textbf{ID} & \textbf{Nombre} & \textbf{Descripción} \\ \hline
+\textbf{OP-01}\label{op:01} & Evaluación docente simplificada & Proveer al profesorado de un sistema eficiente para gestionar cuestionarios, reduciendo el tiempo necesario para configurar, lanzar y evaluar una sesión interactiva a menos de 5 minutos, y permitiendo la recogida automatizada de respuestas. \\ \hline
+\textbf{OP-02}\label{op:02} & Dinamismo e interactividad & Priorizar la fluidez de las sesiones en tiempo real en escenarios de alta demanda, asegurando una tasa de error de red inferior al 1\% y una transmisión bidireccional inmediata en el aula bajo simulaciones de carga de al menos 100 usuarios activos concurrentes. \\ \hline
+\textbf{OP-03}\label{op:03} & Seguimiento continuo & Ofrecer herramientas analíticas para monitorizar el rendimiento individual y colectivo, generando estadísticas en tiempo real y permitiendo el volcado automático del histórico de calificaciones por grupos académicos estables. \\ \hline
+\textbf{OP-04}\label{op:04} & Validación presencial física & Asegurar la legitimidad de las pruebas mediante mecanismos de verificación digital \textit{in situ}, optimizando el proceso de captura y decodificación para que el tiempo de validación y firma del comprobante por cámara sea inferior a 2 segundos por participante. \\ \hline
+\textbf{OP-05}\label{op:05} & Accesibilidad e incorporación & Optimizar la experiencia de usuario con flujos de acceso inmediato y sin necesidad de registro previo para los estudiantes, facilitando la entrada a las salas en menos de 5 segundos. \\ \hline
+\textbf{OP-06}\label{op:06} & Compatibilidad multidispositivo & Garantizar que la plataforma sea completamente responsiva y accesible desde cualquier tipo de dispositivo (móviles, \textit{tablets} u ordenadores), sin deformaciones ni pérdida de control sobre las acciones. \\ \hline
+\textbf{OP-07}\label{op:07} & Privacidad y cumplimiento normativo & Blindar la privacidad de los datos académicos y el cumplimiento normativo (RGPD) \cite{gdpr2016}, aplicando el principio de minimización de datos al prescindir de registros tradicionales para estudiantes y protegiendo el almacenamiento de credenciales docentes mediante algoritmos de hashing seguro. \\ \hline
+\end{tabular}%
+}
+\caption{Definición de objetivos de la plataforma \textit{Quizzie}.}
+\label{tab:def_obj_plataforma}
+\end{table}
+
+\newpage
 
 \section{Resumen del \textit{stack} tecnológico}\label{sec:resumen_del_stack_tecnologico}
 
