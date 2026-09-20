@@ -79,8 +79,21 @@ El producto resolvió eficazmente el acceso inmediato sin credenciales y la agil
 \label{tab:cumplimiento_obj_plataforma}
 \end{table}
 
-\section{Lecciones aprendidas y valoración personal}\label{sec:lecciones_aprendidas}
-Reflexión sobre el trabajo realizado.
+\section{Lecciones aprendidas}\label{sec:lecciones_aprendidas}
+
+El desarrollo del proyecto ha constituido un ejercicio práctico de ingeniería del que se extraen conclusiones clave sobre gestión, metodología y diseño técnico:
+
+\begin{itemize}
+    \item \textbf{Gestión de tiempos y estimación del esfuerzo:} La planificación inicial resultó deficiente debido a la dificultad de compaginar el desarrollo con la carga lectiva de asignaturas pendientes, sumada a una clara subestimación del tiempo necesario para tareas críticas no ligadas a la codificación directa, como la redacción de la memoria, la elaboración de la documentación técnica y el diseño de las pruebas. Esta concatenación de factores forzó el traslado de la entrega a la tercera convocatoria, dejando como aprendizaje clave la necesidad de presupuestar márgenes realistas para las fases de documentación y validación desde el inicio.
+
+    \item \textbf{Integración temprana  de testing y automatizción (CI/CD):} Aunque la \textit{suite} de pruebas y la canalización de integración continua se articularon una vez consolidadas las fases MVP y \textit{core} del sistema, postergar su adopción hasta ese punto evidenció los riesgos del desarrollo desasistido. Automatizar las pruebas junto al análisis en SonarCloud mediante GitHub Actions debió priorizarse desde el inicio. Carecer de esta validación temprana provocó una deuda técnica y desajustes de código que exigieron refactorizaciones posteriores evitables.
+
+    \item \textbf{Metodologías ágiles y trazabilidad documental:} El seguimiento estructurado mediante GitHub Projects, la gestión de \textit{issues} con etiquetas estandarizadas y el registro formal de decisiones de cambio (\textit{ADRs} y \textit{CRs}) demostraron ser indispensables. Este marco organizativo permitió absorber las replanificaciones de manera ordenada, garantizando visibilidad total sobre el estado del desarrollo y evitando la pérdida de contexto entre iteraciones.
+
+    \item \textbf{Madurez técnica y decisiones de diseño:} En el plano del desarrollo, la modularización del estado mediante contextos estructurados en el \textit{frontend} previno el acoplamiento excesivo entre componentes. Asimismo, delegar la generación y lectura de códigos QR en librerías consolidadas y mantenidas por la comunidad resultó una decisión acertada, permitiendo centrar el esfuerzo en la lógica de negocio y la validación presencial sin reinventar mecanismos resueltos por la industria.
+\end{itemize}
+
+En retrospectiva, el proyecto alcanza un equilibrio sólido entre la ambición inicial y la viabilidad técnica real. Aunque la planificación temporal sufrió desviaciones que obligaron a postergar requisitos secundarios, la decisión de priorizar la robustez del núcleo en tiempo real, la seguridad en la gestión de salas y el desacoplamiento arquitectónico ha resultado acertada. \textit{Quizzie} no concluye como una prueba de concepto frágil, sino como una base de \textit{software} mantenible, trazable y con un nivel de calidad verificado.
 
 \section{Trabajos futuros y líneas de evolución}\label{sec:trabajo_futuro}
 Conclusiones sobre el trabajo realizado y líneas de evolución futuras.
