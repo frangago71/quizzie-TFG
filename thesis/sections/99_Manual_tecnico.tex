@@ -53,6 +53,33 @@ Acceder al directorio de la interfaz de usuario e instalar los módulos de depen
 (*@\cliPrompt@*) (*@\bashYellow{npm}@*) install                          (*@\covGreen{\# Instalar dependencias de Node.js}@*)
 \end{lstlisting}
 
+\subsection*{Configuración de variables de entorno}\label{subsec:manual_env}
+Copiar la plantilla de configuración situada en la raíz del proyecto para generar el archivo local \texttt{.env}:
+
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{cp}@*) .env.example .env
+\end{lstlisting}
+
+A continuación, editar el archivo \texttt{.env} completando las siguientes secciones:
+
+\begin{itemize}
+    \item \textbf{\texttt{VITE\_API\_URL}}: Dirección base donde escucha la API de FastAPI. En local se establece en \texttt{http://localhost:8000}; en producción apuntará a la URL del backend desplegado.
+    \item \textbf{\texttt{SECRET\_KEY}}: Clave simétrica utilizada para firmar criptográficamente los tokens de sesión. Para garantizar la seguridad, se recomienda generarla de manera aleatoria, por ejemplo ejecutando el siguiente comando en la terminal:
+\begin{lstlisting}
+(*@\cliPrompt@*) (*@\bashYellow{openssl}@*) rand -hex 32
+\end{lstlisting}
+    \item \textbf{\texttt{ALGORITHM}}: Algoritmo criptográfico de firma de tokens (por defecto, \texttt{HS256}).
+    \item \textbf{\texttt{ACCESS\_TOKEN\_EXPIRE\_MINUTES}}: Tiempo de expiración del token de sesión expresado en minutos (fijado por defecto en 30).
+    \item \textbf{\texttt{SMTP\_HOST}}: Nombre de dominio del servidor de correo saliente (por defecto, \texttt{smtp.gmail.com}).
+    \item \textbf{\texttt{SMTP\_PORT}}: Puerto del servicio de transporte. Los valores habituales son \texttt{465} (cifrado implícito SSL) o \texttt{587} (cifrado explícito TLS/STARTTLS).
+    \item \textbf{\texttt{SMTP\_USERNAME}}: Cuenta de correo electrónico empleada para la autenticación ante el servidor SMTP.
+    \item \textbf{\texttt{SMTP\_PASSWORD}}: Clave de acceso al servicio. Al emplear Gmail, es indispensable utilizar una \textbf{Contraseña de aplicación} de Google generada desde la cuenta de seguridad, en lugar de la contraseña principal de usuario.
+    \item \textbf{\texttt{SMTP\_FROM}}: Dirección visible en la cabecera del remitente. Si se omite, toma automáticamente el valor de \texttt{SMTP\_USERNAME}. En servidores como Gmail, este campo debe coincidir con la cuenta autenticada para evitar que el servidor rechace el envío por sospecha de suplantación.
+    \item \textbf{\texttt{GEMINI\_API\_KEY}}: Clave de acceso a la API de Google Gemini para la generación asistida de cuestionarios. Corresponde a una funcionalidad planificada para la siguiente etapa y que queda fuera del alcance de la presente entrega del TFG.
+\end{itemize}
+
+El archivo \texttt{.env} resultante se encuentra excluido mediante el archivo \texttt{.gitignore}, garantizando que ninguna credencial privada alcance el repositorio remoto.
+
 \section{Ejecución del proyecto en el entorno local}\label{sec:manual_ejecucion}
 
 La plataforma requiere la ejecución simultánea de dos procesos independientes. Para ello, se recomienda disponer de dos terminales de trabajo activas de manera concurrente.

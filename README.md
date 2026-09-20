@@ -71,6 +71,13 @@ cd ../frontend
 npm install
 ~~~
 
+#### Configuración de variables de entorno
+Copia el .env.example en .env y establece las variables necesarias para la ejecución del proyecto.
+
+~~~bash
+cp .env.example .env
+~~~
+
 ### 3. Ejecutar el proyecto
 El proyecto funciona con dos servidores simultáneos (Backend y Frontend). Se recomienda abrir **dos terminales** en tu entorno de desarrollo.
 
