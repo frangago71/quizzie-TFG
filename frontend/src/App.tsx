@@ -24,12 +24,6 @@ import LiveRoom from "./room-play/LiveRoom.tsx";
 
 import "./App.css";
 
-const TeacherDashboard = () => (
-  <div>
-    <h1>Panel de profesores</h1>
-  </div>
-);
-
 const ProtectedRoute = ({
   children,
   isLoggedIn,
@@ -153,14 +147,6 @@ function App() {
                   }
                 />
 
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute isLoggedIn={isLoggedIn}>
-                      <TeacherDashboard />
-                    </ProtectedRoute>
-                  }
-                />
                 <Route
                   path="/profile"
                   element={

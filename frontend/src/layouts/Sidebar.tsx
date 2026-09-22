@@ -43,16 +43,6 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
           <nav className="sidebar-nav">
             <div className="nav-menu-top">
               <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  `nav-item ${isActive ? "active" : ""}`
-                }
-                onClick={handleLinkClick}
-              >
-                Inicio
-              </NavLink>
-
-              <NavLink
                 to="/quizzes"
                 end
                 className={({ isActive }) =>

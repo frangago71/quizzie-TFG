@@ -356,92 +356,100 @@ test.describe("CU-10: Responder Preguntas", () => {
     // 1. Eventos WS: next_question, answer_submitted, answers_visibility_updated
     await page.evaluate(() => {
       // @ts-ignore
-      const ws = window.__mockWSInstances[0];
-      if (ws && ws.onmessage) {
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "next_question",
-            data: {
-              status: "live",
-              answers_count: 3,
-              show_answers_count: true,
-            },
-          }),
-        });
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "answer_submitted",
-            data: { answers_count: 4 },
-          }),
-        });
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "answers_visibility_updated",
-            data: { show_answers_count: false },
-          }),
-        });
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "timer_update",
-            data: { time_left: 12, is_paused: true },
-          }),
-        });
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "participant_verified",
-            data: {},
-          }),
-        });
-      }
+      const instances = window.__mockWSInstances || [];
+      instances.forEach((ws: any) => {
+        if (ws && ws.onmessage) {
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "next_question",
+              data: {
+                status: "live",
+                answers_count: 3,
+                show_answers_count: true,
+              },
+            }),
+          });
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "answer_submitted",
+              data: { answers_count: 4 },
+            }),
+          });
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "answers_visibility_updated",
+              data: { show_answers_count: false },
+            }),
+          });
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "timer_update",
+              data: { time_left: 12, is_paused: true },
+            }),
+          });
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "participant_verified",
+              data: {},
+            }),
+          });
+        }
+      });
     });
 
     // 2. Inyectar evento WS: show_results
     await page.evaluate(() => {
       // @ts-ignore
-      const ws = window.__mockWSInstances[0];
-      if (ws && ws.onmessage) {
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "show_results",
-            data: {
-              statistics: { "1": 5 },
-              correct_option_id: 1,
-              show_ranking: true,
-            },
-          }),
-        });
-      }
+      const instances = window.__mockWSInstances || [];
+      instances.forEach((ws: any) => {
+        if (ws && ws.onmessage) {
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "show_results",
+              data: {
+                statistics: { "1": 5 },
+                correct_option_id: 1,
+                show_ranking: true,
+              },
+            }),
+          });
+        }
+      });
     });
 
     // 3. Inyectar evento WS: show_leaderboard
     await page.evaluate(() => {
       // @ts-ignore
-      const ws = window.__mockWSInstances[0];
-      if (ws && ws.onmessage) {
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "show_leaderboard",
-            data: {
-              leaderboard: [{ name: "LeaderWS", score: 500 }],
-              show_ranking: true,
-            },
-          }),
-        });
-      }
+      const instances = window.__mockWSInstances || [];
+      instances.forEach((ws: any) => {
+        if (ws && ws.onmessage) {
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "show_leaderboard",
+              data: {
+                leaderboard: [{ name: "LeaderWS", score: 500 }],
+                show_ranking: true,
+              },
+            }),
+          });
+        }
+      });
     });
 
     // 4. Inyectar evento WS: room_finish
     await page.evaluate(() => {
       // @ts-ignore
-      const ws = window.__mockWSInstances[0];
-      if (ws && ws.onmessage) {
-        ws.onmessage({
-          data: JSON.stringify({
-            type: "room_finish",
-            data: {},
-          }),
-        });
-      }
+      const instances = window.__mockWSInstances || [];
+      instances.forEach((ws: any) => {
+        if (ws && ws.onmessage) {
+          ws.onmessage({
+            data: JSON.stringify({
+              type: "room_finish",
+              data: {},
+            }),
+          });
+        }
+      });
     });
 
     await expect(page.getByText(/¡Cuestionario finalizado!/i)).toBeVisible();

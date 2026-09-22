@@ -260,7 +260,7 @@ test.describe("CU-07: Validar Nota por QR", () => {
       page.getByText(/Error al cerrar la verificación/i),
     ).toBeVisible();
 
-    // 3. Podio en sala finalizada -> Botón Volver al panel navega a /dashboard
+    // 3. Podio en sala finalizada -> Botón Volver al panel navega a /quizzes
     await page.route("**/stage/rooms/10", async (route) => {
       await route.fulfill({
         status: 200,
@@ -280,7 +280,7 @@ test.describe("CU-07: Validar Nota por QR", () => {
     ).toBeVisible();
     const dashboardBtn = page.getByRole("button", { name: /Volver al panel/i });
     await dashboardBtn.click();
-    await page.waitForURL(/\/dashboard/);
+    await page.waitForURL(/\/quizzes/);
   });
 
   test("2a. Verificación - Profesor escanea un QR invalido, uno de otra sala, uno valido y uno ya verificado", async ({

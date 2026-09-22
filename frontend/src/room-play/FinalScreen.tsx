@@ -311,7 +311,7 @@ const HostView: React.FC<HostViewProps> = ({
           <button
             type="button"
             className="btn-main cyan big"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/quizzes")}
           >
             Volver al panel
           </button>
