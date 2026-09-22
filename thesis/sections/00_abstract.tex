@@ -1,6 +1,11 @@
 \chapter*{Abstract}
-This section should contain an English version of the Spanish abstract.
 
-\vspace{.5cm}
+Gamification in education has established itself as an effective approach to foster dynamic learning and enhance classroom engagement. However, market analysis reveals a notable gap: commercial solutions often prioritize entertainment at the expense of academic rigor, restrict exportable analytics, and enable academic dishonesty through remote impersonation when absent students join sessions by sharing the game PIN. Conversely, institutional quiz platforms ensure formal assessment integrity but lack real-time fluidity and interactive responsiveness in the classroom.
 
-\textbf{Keywords:} Keyword 1, keyword 2, ..., keyword N
+This Bachelor's Thesis presents \textit{Quizzie}, a cross-device platform designed for the dynamic creation, delivery, and real-time management of educational quizzes. The system adopts a decoupled client-server architecture, featuring a reactive web interface built with React, Vite, and TypeScript, deployed on Vercel. The backend, hosted on Render, is powered by an asynchronous server developed in Python using FastAPI and managed via uv, backed by a lightweight relational persistence layer with SQLModel and SQLite. Synchronous, bidirectional communication in live sessions is orchestrated using the \textit{WebSocket} protocol. As an innovative and differential feature, the platform introduces a physical attendance verification mechanism based on generating a unique QR code on the student's device upon quiz completion; this code is scanned by the instructor to unequivocally confirm in-person presence and instantly record the grade. Furthermore, the system complies with the GDPR data minimization principle by enabling student access via the University of Seville's institutional identifier (\textit{uvus}) without requiring traditional user registration.
+
+The project follows a comprehensive software engineering lifecycle, structured around agile methodologies from requirements elicitation and architectural modeling to thorough system verification. The outcome is a functional, robust, and secure product distributed under the open-source MIT license, conceived as a viable tool for adoption across diverse educational and training environments.
+
+\vspace{0.5cm}
+
+\textbf{Keywords:} Educational gamification, Educational technology, Interactive assessment, On-site attendance verification, Digital impersonation prevention, Role-Based Access Control (RBAC), Data minimization, Decoupled client-server architecture, Synchronous bidirectional communication.

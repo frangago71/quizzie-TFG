@@ -1,6 +1,11 @@
 \chapter*{Resumen}
-Incluya aquí un resumen de los aspectos generales de su trabajo, en español.
 
-\vspace{.5cm}
+La gamificación en el ámbito educativo se ha consolidado como un enfoque eficaz para fomentar el aprendizaje dinámico y agilizar las sesiones lectivas. No obstante, el análisis del mercado revela una brecha notable: las soluciones comerciales priorizan el entretenimiento a costa del rigor académico, limitan las analíticas exportables y propician el fraude por suplantación digital al permitir que estudiantes ausentes participen de forma remota compartiendo el código PIN de acceso. Por su parte, los cuestionarios de plataformas institucionales garantizan la formalidad evaluativa, pero sacrifican la inmediatez y la fluidez interactiva en el aula.
 
-\textbf{Palabras clave:} Palabra clave 1, palabra clave 2, ..., palabra clave N
+En este Trabajo de Fin de Grado se presenta \textit{Quizzie}, una plataforma multidispositivo concebida para la creación, realización y gestión dinámica de cuestionarios educativos en tiempo real. La arquitectura adopta un modelo cliente-servidor desacoplado, implementando una interfaz reactiva en React sobre Vite con TypeScript, desplegada en Vercel. El \textit{backend}, alojado en Render, se sustenta sobre un servidor asíncrono desarrollado en Python con FastAPI y gestionado mediante uv, apoyándose en una persistencia relacional ligera con SQLModel y SQLite. La comunicación bidireccional y síncrona de las salas se articula a través del protocolo \textit{WebSocket}. Como elemento innovador y factor diferencial, la plataforma incorpora un mecanismo de verificación de asistencia física basado en la generación de un código QR unívoco en el dispositivo del estudiante al concluir el test, el cual es escaneado por el docente para confirmar de manera inequívoca la presencialidad y registrar la calificación de forma instantánea. Asimismo, el diseño respeta el principio de minimización de datos del RGPD, permitiendo el acceso del alumnado sin registros tradicionales mediante el identificador institucional de la Universidad de Sevilla (\textit{uvus}).
+
+El proyecto se ha abordado siguiendo un ciclo de vida completo de ingeniería del \textit{software}, estructurado mediante metodologías ágiles desde el análisis de requisitos y el modelado arquitectónico hasta la verificación exhaustiva de la solución. El resultado es un producto funcional, robusto y seguro, distribuido bajo licencia de código abierto MIT y concebido como una herramienta viable para su adopción en una amplia variedad de contextos formativos y docentes.
+
+\vspace{0.5cm}
+
+\textbf{Palabras clave:} Gamificación educativa, Tecnología educativa, Evaluación interactiva, Verificación presencial, Prevención de fraude digital, Control de acceso basado en roles (RBAC), Minimización de datos, Arquitectura cliente-servidor desacoplada, Comunicación bidireccional síncrona.
