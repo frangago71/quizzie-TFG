@@ -1,5 +1,107 @@
 \begin{appendices}
 \chapter{Manual de usuario}\label{anexo:manual_de_usuario}
 
-Manual de usuario de quizzie
+El presente manual de usuario tiene como objetivo proporcionar una guía detallada y visual para la utilización de la plataforma \textit{Quizzie}. A diferencia de un catálogo estático de pantallas, este documento estructura la guía siguiendo la experiencia de usuario cronológica real: desde el punto de entrada a la aplicación web y el acceso diferenciado por roles, hasta la navegación por el panel principal, la preparación de contenidos y el desarrollo completo de una sesión interactiva en tiempo real.
+
+\section*{Punto de entrada a la aplicación y roles de usuario}
+
+Al navegar a la dirección raíz del sitio web (\texttt{/}), la plataforma ofrece una interfaz unificada adaptada a los dos perfiles principales:
+
+\begin{itemize}
+    \item[\tiny$\blacksquare$] \textbf{Alumno:} Accede directamente desde la pantalla de bienvenida introduciendo el código PIN proyectado en el aula, sin necesidad de contraseñas ni registros previos.
+    \item[\tiny$\blacksquare$] \textbf{Profesor:} Dispone de accesos dedicados para iniciar sesión (\texttt{/login}) o registrarse (\texttt{/register}). Tras autenticarse, accede a un panel de control privado con una barra de navegación lateral (\textit{sidebar}) para gestionar sus cuestionarios y salas.
+\end{itemize}
+
+\section*{Registro, autenticación y gestión del perfil docente}
+
+El ciclo de vida del usuario docente comienza desde la pantalla principal de la plataforma, guiando al profesor a través de un proceso de registro con correo electrónico, la administración de su cuenta y los mecanismos de recuperación de acceso.
+
+\subsection*{1. Acceso inicial a la plataforma}
+
+Al acceder a la aplicación web, el profesor visualiza la pantalla de inicio, la cual permite iniciar sesión o registrarse, o bien saltar a la zona de estudiantes.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.42\textwidth]{screenshots/inicio.png}
+  \caption{Punto de entrada a la plataforma.}
+  \label{fig:manual_inicio}
+\end{figure}
+
+\subsection*{2. Formulario de registro docente}
+
+Al pulsar sobre la opción de registro, el sistema presenta un formulario donde el profesor debe ingresar su nombre, dirección de correo electrónico y una contraseña.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.44\textwidth]{screenshots/registro.png}
+  \caption{Formulario de registro para el perfil docente.}
+  \label{fig:manual_registro}
+\end{figure}
+
+\subsection*{3. Notificación de verificación de cuenta}
+
+Una vez completado y enviado el formulario, la plataforma envía un correo electrónico a la dirección facilitada con un código numérico temporal de un solo uso para verificar la cuenta.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{screenshots/correo_verificar_cuenta.png}
+  \caption{Correo electrónico con el código de verificación de cuenta.}
+  \label{fig:manual_correo_verificar}
+\end{figure}
+
+\subsection*{4. Confirmación del código y activación}
+
+El profesor es redirigido a una vista específica donde debe introducir el código recibido en el correo. Al pulsar sobre el botón de confirmación, la cuenta queda validada en la base de datos y habilitada para su uso.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.42\textwidth]{screenshots/verificar_cuenta.png}
+  \caption{Pantalla de introducción del código de verificación de cuenta.}
+  \label{fig:manual_verificar_cuenta}
+\end{figure}
+
+\subsection*{5. Panel y opciones del perfil}
+
+Tras iniciar sesión, el docente puede acceder a la sección de su perfil personal. Desde esta vista se muestran los datos del usuario y se facilitan las acciones de actualización de datos, cambio de contraseña o borrado de la cuenta.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{screenshots/mi_perfil.png}
+  \caption{Vista de gestión del perfil docente.}
+  \label{fig:manual_mi_perfil}
+\end{figure}
+
+\subsection*{6. Solicitud y correo de restablecimiento de contraseña}
+
+Si el profesor solicita una modificación o recuperación de contraseña, el sistema envía un nuevo correo electrónico que contiene el código de autorización requerido para efectuar dicho cambio.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.62\textwidth]{screenshots/correo_cambiar_contra.png}
+  \caption{Correo electrónico para el restablecimiento de contraseña.}
+  \label{fig:manual_correo_cambiar_contra}
+\end{figure}
+
+\subsection*{7. Introducción de nueva contraseña}
+
+En la interfaz, el usuario introduce el código de un solo uso recibido por correo junto con su nueva clave de acceso, efectuándose así la actualización de la contraseña.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.45\textwidth]{screenshots/restablecer_contra.png}
+  \caption{Formulario para establecer la nueva contraseña.}
+  \label{fig:manual_restablecer_contra}
+\end{figure}
+
+\subsection*{8. Eliminación definitiva de la cuenta}
+
+Finalmente, la plataforma contempla el derecho al borrado de datos. El docente puede solicitar la supresión completa de su perfil y datos asociados mediante un diálogo de confirmación que advierte sobre la irreversibilidad de la acción.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{screenshots/eliminar_cuenta.png}
+  \caption{Confirmación de eliminación de la cuenta de usuario.}
+  \label{fig:manual_eliminar_cuenta}
+\end{figure}
+
 \end{appendices}
