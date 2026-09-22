@@ -34,7 +34,7 @@ class Room(SQLModel, table=True):
             "idx_active_room_join_code",
             "join_code",
             unique=True,
-            sqlite_where=text("status != 'finished'"),
+            sqlite_where=text("status NOT IN ('finished', 'FINISHED')"),
         ),
     )
 
