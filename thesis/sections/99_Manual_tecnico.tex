@@ -4,7 +4,7 @@
 
 El presente manual técnico detalla el procedimiento para la clonación, configuración de dependencias, puesta en marcha del entorno de desarrollo local y reproducción íntegra de la batería de pruebas y análisis de rendimiento del sistema.
 
-\section{Requisitos previos del sistema}\label{sec:manual_requisitos}
+\section*{Requisitos previos del sistema}\label{sec:manual_requisitos}
 
 Para garantizar la correcta ejecución de la plataforma en un entorno local, la máquina anfitriona debe disponer de las herramientas base instaladas y registradas en las variables de entorno del sistema (\texttt{PATH}):
 
@@ -14,7 +14,7 @@ Para garantizar la correcta ejecución de la plataforma en un entorno local, la 
     \item \textbf{\texttt{uv}}\cite{uv_official} (puede instalarse nativamente o mediante \texttt{pip} si el sistema ya cuenta con un intérprete de Python).
 \end{itemize}
 
-\section{Preparación y configuración del repositorio}\label{sec:manual_preparacion}
+\section*{Preparación y configuración del repositorio}\label{sec:manual_preparacion}
 
 \subsection*{Descarga del código fuente}
 Clonar el repositorio del proyecto e ingresar en el directorio raíz:
@@ -80,7 +80,7 @@ A continuación, editar el archivo \texttt{.env} completando las siguientes secc
 
 El archivo \texttt{.env} resultante se encuentra excluido mediante el archivo \texttt{.gitignore}, garantizando que ninguna credencial privada alcance el repositorio remoto.
 
-\section{Ejecución del proyecto en el entorno local}\label{sec:manual_ejecucion}
+\section*{Ejecución del proyecto en el entorno local}\label{sec:manual_ejecucion}
 
 La plataforma requiere la ejecución simultánea de dos procesos independientes. Para ello, se recomienda disponer de dos terminales de trabajo activas de manera concurrente.
 
@@ -109,7 +109,7 @@ Acceder al directorio de la interfaz y levantar el servidor de desarrollo local:
 
 La interfaz web quedará accesible desde el navegador en \texttt{http://localhost:5173}.
 
-\section{Procedimiento de ejecución de pruebas y cobertura}\label{sec:manual_pruebas}
+\section*{Procedimiento de ejecución de pruebas y cobertura}\label{sec:manual_pruebas}
 
 \subsection*{Pruebas unitarias y de integración del \textit{backend}}
 
