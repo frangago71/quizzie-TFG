@@ -1,6 +1,6 @@
 \begin{appendices}
 
-\chapter{Manual técnico de instalación, ejecución y reproducción}\label{anexo:manual_tecnico}
+\chapter{Manual técnico}\label{anexo:manual_tecnico}
 
 El presente manual técnico detalla el procedimiento para la clonación, configuración de dependencias, puesta en marcha del entorno de desarrollo local y reproducción íntegra de la batería de pruebas y análisis de rendimiento del sistema.
 
@@ -127,7 +127,7 @@ Para auditar la cobertura de código y generar reportes adicionales, se pueden c
     \item \texttt{--cov-report=html}: Genera un informe visual interactivo estructurado dentro del directorio local \texttt{htmlcov/}.
 \end{itemize}
 
-Al combinar estas tres opciones, se imprime en la terminal la tabla de cobertura del \textit{backend} y se genera simultáneamente un informe interactivo en \texttt{htmlcov/index.html}:
+Al combinar estas tres opciones, se imprime en la terminal la tabla de cobertura del \textit{backend} y se genera un informe interactivo en \texttt{htmlcov/index.html}:
 
 \begin{lstlisting}
 (*@\cliPrompt@*) (*@\bashYellow{uv}@*) run pytest (*@\bashGrey{--cov=backend --cov-report=term-missing --cov-report=html}@*)
@@ -135,12 +135,10 @@ Al combinar estas tres opciones, se imprime en la terminal la tabla de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{evidences/terminal_test_backend.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=0.82\textwidth]{evidences/terminal_test_backend.png}}
     \captionsetup{hypcap=false}
     \caption*{Salida por terminal al ejecutar las pruebas y la cobertura del \textit{backend}.}
 \end{evidence}
-
-\newpage
 
 Para abrir el reporte web directamente en el navegador predeterminado desde la consola según el sistema operativo:
 
