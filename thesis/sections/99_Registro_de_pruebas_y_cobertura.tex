@@ -3,7 +3,7 @@
 
 En este anexo se recopilan los resultados de las pruebas, registros de coberturas e informes gráficos generados por las distintas baterías de pruebas automatizadas del proyecto.
 
-\section{Pruebas unitarias y de integración del backend}\label{anexo:sec:backend}
+\section*{Pruebas unitarias y de integración del backend}\label{anexo:sec:backend}
 
 \begin{evidence}[H]
     \centering
@@ -21,7 +21,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
     \label{ev:cobertura_backend}
 \end{evidence}
 
-\section{Pruebas de componentes del frontend}\label{anexo:sec:componentes}
+\section*{Pruebas de componentes del frontend}\label{anexo:sec:componentes}
 
 \begin{evidence}[H]
     \centering
@@ -39,7 +39,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
     \label{ev:cobertura_componentes}
 \end{evidence}
 
-\section{Pruebas End-to-End (E2E)}\label{anexo:sec:e2e}
+\section*{Pruebas End-to-End (E2E)}\label{anexo:sec:e2e}
 
 \begin{evidence}[H]
   \centering
@@ -58,8 +58,13 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 \end{evidence}
 
 \begin{evidence}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/cobertura_e2e.png}}
+  \noindent\makebox[\textwidth][c]{%
+    \begin{minipage}{1.2\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{evidences/cobertura_e2e_1.png}\par\vspace{0pt}
+      \includegraphics[width=\linewidth]{evidences/cobertura_e2e_2.png}
+    \end{minipage}%
+  }
   \captionsetup{hypcap=false}
   \caption{Informe interactivo de cobertura E2E.}
   \label{ev:cobertura_e2e}
@@ -67,11 +72,11 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \newpage
 
-\section{Pruebas de rendimiento y carga}\label{anexo:sec:rendimiento}
+\section*{Pruebas de rendimiento y carga}\label{anexo:sec:rendimiento}
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/terminal_interfaz_locust.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{evidences/terminal_interfaz_locust.png}}
     \captionsetup{hypcap=false}
     \caption{Salida por terminal al iniciar el panel de control de Locust.}
     \label{ev:terminal_interfaz_locust}
@@ -79,7 +84,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/interfaz_locust.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{evidences/interfaz_locust.png}}
     \captionsetup{hypcap=false}
     \caption{Vista de la interfaz web de Locust.}
     \label{ev:interfaz_locust}
@@ -87,7 +92,7 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{evidences/interfaz_locust_resultados.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{evidences/interfaz_locust_resultados.png}}\vspace{3pt}
     \captionsetup{hypcap=false}
     \caption{Vista de los resultados de la prueba en la interfaz web de Locust.}
     \label{ev:locust_resultados}
@@ -95,70 +100,13 @@ En este anexo se recopilan los resultados de las pruebas, registros de cobertura
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{evidences/terminal_test_locust.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{evidences/terminal_test_locust.png}}
     \captionsetup{hypcap=false}
     \caption{Captura de la ejecución de pruebas de carga y rendimiento.}
     \label{ev:terminal_test_locust}
 \end{evidence}
 
-\newpage
-
 A continuación se detallan las métricas consolidadas a partir de los ficheros CSV generados durante la prueba de carga, estructuradas según el comportamiento por \textit{endpoint} y la distribución de latencias.
-
-\begin{table}[H]
-  \centering
-  \scriptsize
-  \setlength{\tabcolsep}{2.6pt}
-  \renewcommand{\arraystretch}{1.2}
-  \makebox[\textwidth][c]{%
-    \begin{tabular}{llrrrrrrrrrrrrrrrrrrrr}
-      \toprule
-      \rotatebox{90}{\textbf{Tipo}} & 
-      \rotatebox{90}{\textbf{Operación}} & 
-      \rotatebox{90}{\textbf{Peticiones}} & 
-      \rotatebox{90}{\textbf{Fallos}} & 
-      \rotatebox{90}{\textbf{Mediana (ms)}} & 
-      \rotatebox{90}{\textbf{Media (ms)}} & 
-      \rotatebox{90}{\textbf{Mínima (ms)}} & 
-      \rotatebox{90}{\textbf{Máxima (ms)}} & 
-      \rotatebox{90}{\textbf{Tamaño Medio (B)}} & 
-      \rotatebox{90}{\textbf{Peticiones/s}} & 
-      \rotatebox{90}{\textbf{Fallos/s}} & 
-      \rotatebox{90}{\textbf{P50 (ms)}} & 
-      \rotatebox{90}{\textbf{P66 (ms)}} & 
-      \rotatebox{90}{\textbf{P75 (ms)}} & 
-      \rotatebox{90}{\textbf{P80 (ms)}} & 
-      \rotatebox{90}{\textbf{P90 (ms)}} & 
-      \rotatebox{90}{\textbf{P95 (ms)}} & 
-      \rotatebox{90}{\textbf{P98 (ms)}} & 
-      \rotatebox{90}{\textbf{P99 (ms)}} & 
-      \rotatebox{90}{\textbf{P99.9 (ms)}} & 
-      \rotatebox{90}{\textbf{P99.99 (ms)}} & 
-      \rotatebox{90}{\textbf{P100 (ms)}} \\
-      \midrule
-      GET       & \texttt{/content/quizzes/}          & 21   & 0 & 15 & 19{,}82 & 8{,}26  & 86{,}49  & 36581{,}05 & 0{,}36  & 0{,}0 & 15  & 16  & 16  & 17  & 20  & 46  & 86  & 86  & 86  & 86  & 86  \\
-      POST      & \texttt{/content/quizzes/}          & 11   & 0 & 19 & 25{,}08 & 10{,}01 & 78{,}32  & 50{,}00    & 0{,}19  & 0{,}0 & 19  & 21  & 24  & 24  & 38  & 78  & 78  & 78  & 78  & 78  & 78  \\
-      GET       & \texttt{/content/quizzes/\textbf{:id}}       & 23   & 0 & 11 & 11{,}62 & 9{,}50  & 19{,}10  & 359{,}43   & 0{,}39  & 0{,}0 & 11  & 11  & 12  & 12  & 17  & 18  & 19  & 19  & 19  & 19  & 19  \\
-      PUT       & \texttt{/content/quizzes/\textbf{:id}}       & 11   & 0 & 20 & 19{,}74 & 17{,}04 & 25{,}04  & 41{,}00    & 0{,}19  & 0{,}0 & 20  & 21  & 21  & 21  & 22  & 25  & 25  & 25  & 25  & 25  & 25  \\
-      POST      & \texttt{/stage/participants}        & 190  & 0 & 15 & 18{,}53 & 3{,}24  & 53{,}91  & 52{,}00    & 3{,}25  & 0{,}0 & 16  & 22  & 28  & 30  & 38  & 43  & 44  & 51  & 54  & 54  & 54  \\
-      GET       & \texttt{/stage/rooms}               & 194  & 0 & 21 & 31{,}99 & 3{,}90  & 173{,}95 & 2188{,}00  & 3{,}32  & 0{,}0 & 22  & 33  & 45  & 49  & 69  & 79  & 150 & 170 & 170 & 170 & 170 \\
-      POST      & \texttt{/stage/rooms/}              & 4    & 0 & 11 & 40{,}45 & 9{,}53  & 84{,}28  & 53{,}00    & 0{,}07  & 0{,}0 & 57  & 57  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  \\
-      GET       & \texttt{/stage/rooms/verify/\textbf{:code}}  & 8    & 0 & 8  & 17{,}97 & 6{,}66  & 48{,}85  & 57{,}00    & 0{,}14  & 0{,}0 & 8   & 13  & 44  & 44  & 49  & 49  & 49  & 49  & 49  & 49  & 49  \\
-      GET       & \texttt{/stage/rooms/\textbf{:id}}           & 268  & 0 & 12 & 17{,}62 & 3{,}47  & 162{,}76 & 546{,}13   & 4{,}59  & 0{,}0 & 12  & 18  & 23  & 26  & 35  & 44  & 52  & 54  & 160 & 160 & 160 \\
-      GET       & \texttt{/stage/rooms/\textbf{:id}/participants}     & 26   & 0 & 8  & 8{,}13  & 3{,}26  & 13{,}29  & 723{,}69   & 0{,}44  & 0{,}0 & 8   & 8   & 8   & 9   & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
-      POST      & \texttt{/users/login}               & 10   & 0 & 94 & 113{,}52 & 68{,}73 & 235{,}30 & 160{,}00   & 0{,}17  & 0{,}0 & 100 & 110 & 130 & 140 & 240 & 240 & 240 & 240 & 240 & 240 & 240 \\
-      GET       & \texttt{/users/me}                  & 18   & 0 & 9  & 9{,}20  & 5{,}40  & 12{,}92  & 117{,}00   & 0{,}31  & 0{,}0 & 9   & 9   & 10  & 11  & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\
-      WS        & \texttt{WS Connect}                 & 190  & 0 & 11 & 14{,}66 & 2{,}00  & 149{,}00 & 0{,}00     & 3{,}25  & 0{,}0 & 11  & 16  & 21  & 23  & 28  & 34  & 37  & 39  & 150 & 150 & 150 \\
-      WS        & \texttt{WS Ping}                    & 2924 & 0 & 0  & 0{,}04  & 0{,}00  & 2{,}00   & 0{,}00     & 50{,}04 & 0{,}0 & 0   & 0   & 0   & 0   & 0   & 0   & 1   & 1   & 1   & 2   & 2   \\
-      \midrule
-      \textbf{Total} &                                & \textbf{3898} & \textbf{0} & \textbf{0} & \textbf{5{,}22} & \textbf{0{,}00} & \textbf{235{,}30} & \textbf{354{,}38} & \textbf{66{,}71} & \textbf{0{,}0} & \textbf{0} & \textbf{0} & \textbf{2} & \textbf{8} & \textbf{17} & \textbf{30} & \textbf{45} & \textbf{65} & \textbf{170} & \textbf{240} & \textbf{240} \\
-      \bottomrule
-    \end{tabular}%
-  }
-  \captionof{evidence}{Métricas y percentiles de latencia en la prueba de carga.}
-  \label{ev:locust_estadisticas_completas}
-\end{table}
-
 
 \begin{table}[H]
   \centering
@@ -166,11 +114,11 @@ A continuación se detallan las métricas consolidadas a partir de los ficheros 
   \renewcommand{\arraystretch}{1.15}
   \makebox[\textwidth][c]{%
     \begin{tabular}{cccc}
-      \toprule
+      \bighline
       \textbf{Recuento} & \textbf{Mensaje} & \textbf{Traza} & \textbf{Proceso} \\
-      \midrule
+      \bighline
       -- & -- & -- & -- \\
-      \bottomrule
+      \bighline
     \end{tabular}%
   }
   \captionof{evidence}{Registro de excepciones detectadas durante la prueba de carga.}
@@ -179,29 +127,12 @@ A continuación se detallan las métricas consolidadas a partir de los ficheros 
 
 \begin{table}[H]
   \centering
-  \small
-  \renewcommand{\arraystretch}{1.15}
-  \makebox[\textwidth][c]{%
-    \begin{tabular}{cccccc}
-      \toprule
-      \textbf{Método} & \textbf{Nombre} & \textbf{Error} & \textbf{Número} & \textbf{Primer registro} & \textbf{Último registro} \\
-      \midrule
-      -- & -- & -- & -- & -- & -- \\
-      \bottomrule
-    \end{tabular}%
-  }
-  \captionof{evidence}{Registro de fallos detectados durante la prueba de carga.}
-  \label{ev:locust_fallos}
-\end{table}
-
-\begin{table}[H]
-  \centering
   \scriptsize
   \setlength{\tabcolsep}{4.1pt}
-  \renewcommand{\arraystretch}{1}
+  \renewcommand{\arraystretch}{1.04}
   \makebox[\textwidth][c]{%
     \begin{tabular}{rrrrrrrrrrrrrrrrrrrrrr}
-      \toprule
+      \bighline
       \rotatebox{90}{\textbf{t (s)}} & 
       \rotatebox{90}{\textbf{Usuarios}} & 
       \rotatebox{90}{\textbf{Pet./s}} & 
@@ -224,76 +155,148 @@ A continuación se detallan las métricas consolidadas a partir de los ficheros 
       \rotatebox{90}{\textbf{Mínimo}} & 
       \rotatebox{90}{\textbf{Máximo}} & 
       \rotatebox{90}{\textbf{Tamaño(B)}} \\
-      \midrule
-      0  & 0   & 0{,}00  & 0{,}0 & -- & -- & -- & -- & -- & -- & --  & --  & --  & --  & --  & 0    & 0 & 0  & 0{,}00  & 0 & 0{,}00   & 0{,}00   \\
-      1  & 15  & 0{,}00  & 0{,}0 & 10 & 14 & 16 & 18 & 21 & 25 & 37  & 40  & 40  & 40  & 40  & 75   & 0 & 10 & 10{,}90 & 0 & 39{,}51  & 557{,}04 \\
-      2  & 30  & 0{,}00  & 0{,}0 & 16 & 22 & 26 & 32 & 50 & 69 & 86  & 130 & 140 & 140 & 140 & 147  & 0 & 16 & 21{,}11 & 0 & 135{,}77 & 793{,}82 \\
-      3  & 45  & 75{,}00 & 0{,}0 & 15 & 24 & 27 & 31 & 43 & 54 & 78  & 86  & 140 & 140 & 140 & 229  & 0 & 15 & 19{,}30 & 0 & 135{,}77 & 694{,}50 \\
-      4  & 60  & 65{,}50 & 0{,}0 & 13 & 20 & 24 & 27 & 38 & 53 & 76  & 86  & 140 & 140 & 140 & 308  & 0 & 13 & 17{,}32 & 0 & 135{,}77 & 643{,}52 \\
-      5  & 75  & 71{,}67 & 0{,}0 & 12 & 18 & 22 & 25 & 33 & 48 & 76  & 92  & 140 & 140 & 140 & 395  & 0 & 12 & 16{,}05 & 0 & 135{,}77 & 698{,}54 \\
-      6  & 105 & 74{,}75 & 0{,}0 & 13 & 20 & 26 & 31 & 42 & 69 & 140 & 160 & 240 & 240 & 240 & 485  & 0 & 13 & 20{,}30 & 0 & 235{,}30 & 651{,}68 \\
-      7  & 120 & 75{,}20 & 0{,}0 & 12 & 19 & 24 & 27 & 40 & 54 & 120 & 150 & 240 & 240 & 240 & 585  & 0 & 12 & 18{,}59 & 0 & 235{,}30 & 674{,}72 \\
-      8  & 135 & 71{,}33 & 0{,}0 & 10 & 17 & 21 & 25 & 38 & 50 & 92  & 150 & 240 & 240 & 240 & 682  & 0 & 10 & 16{,}75 & 0 & 235{,}30 & 636{,}35 \\
-      9  & 150 & 79{,}14 & 0{,}0 & 9  & 14 & 19 & 23 & 35 & 47 & 86  & 140 & 240 & 240 & 240 & 788  & 0 & 9  & 15{,}08 & 0 & 235{,}30 & 650{,}32 \\
-      10 & 165 & 83{,}00 & 0{,}0 & 8  & 13 & 17 & 21 & 33 & 44 & 83  & 140 & 240 & 240 & 240 & 898  & 0 & 8  & 13{,}88 & 0 & 235{,}30 & 615{,}52 \\
-      11 & 180 & 84{,}78 & 0{,}0 & 8  & 13 & 18 & 21 & 32 & 44 & 78  & 130 & 170 & 240 & 240 & 1004 & 0 & 8  & 13{,}70 & 0 & 235{,}30 & 593{,}63 \\
-      12 & 195 & 86{,}80 & 0{,}0 & 8  & 14 & 20 & 24 & 37 & 50 & 78  & 120 & 170 & 240 & 240 & 1127 & 0 & 8  & 14{,}61 & 0 & 235{,}30 & 598{,}67 \\
-      13 & 200 & 88{,}70 & 0{,}0 & 8  & 14 & 20 & 25 & 37 & 49 & 76  & 110 & 170 & 240 & 240 & 1261 & 0 & 8  & 14{,}45 & 0 & 235{,}30 & 567{,}12 \\
-      14 & 200 & 93{,}90 & 0{,}0 & 8  & 13 & 20 & 24 & 36 & 48 & 76  & 100 & 170 & 240 & 240 & 1330 & 0 & 8  & 13{,}89 & 0 & 235{,}30 & 548{,}99 \\
-      15 & 200 & 97{,}40 & 0{,}0 & 7  & 13 & 19 & 23 & 35 & 46 & 72  & 100 & 170 & 240 & 240 & 1384 & 0 & 7  & 13{,}38 & 0 & 235{,}30 & 554{,}64 \\
-      16 & 200 & 98{,}70 & 0{,}0 & 6  & 12 & 18 & 22 & 34 & 46 & 72  & 94  & 170 & 240 & 240 & 1448 & 0 & 6  & 12{,}83 & 0 & 235{,}30 & 531{,}43 \\
-      17 & 200 & 96{,}30 & 0{,}0 & 6  & 11 & 17 & 21 & 33 & 46 & 71  & 94  & 170 & 240 & 240 & 1496 & 0 & 5  & 12{,}42 & 0 & 235{,}30 & 514{,}38 \\
-      18 & 200 & 97{,}40 & 0{,}0 & 5  & 11 & 17 & 21 & 32 & 45 & 69  & 92  & 170 & 240 & 240 & 1558 & 0 & 5  & 11{,}97 & 0 & 235{,}30 & 519{,}13 \\
-      19 & 200 & 90{,}40 & 0{,}0 & 4  & 10 & 16 & 20 & 32 & 44 & 69  & 92  & 170 & 240 & 240 & 1616 & 0 & 4  & 11{,}54 & 0 & 235{,}30 & 500{,}50 \\
-      20 & 200 & 84{,}80 & 0{,}0 & 2  & 10 & 16 & 20 & 32 & 44 & 69  & 92  & 170 & 240 & 240 & 1660 & 0 & 2  & 11{,}24 & 0 & 235{,}30 & 488{,}05 \\
-      21 & 200 & 80{,}60 & 0{,}0 & 0  & 9  & 14 & 19 & 31 & 44 & 69  & 86  & 170 & 240 & 240 & 1744 & 0 & 0  & 10{,}74 & 0 & 235{,}30 & 465{,}83 \\
-      22 & 200 & 75{,}80 & 0{,}0 & 0  & 9  & 14 & 18 & 31 & 43 & 66  & 85  & 170 & 240 & 240 & 1803 & 0 & 0  & 10{,}41 & 0 & 235{,}30 & 451{,}11 \\
-      23 & 200 & 71{,}90 & 0{,}0 & 0  & 9  & 13 & 18 & 30 & 43 & 66  & 85  & 170 & 240 & 240 & 1860 & 0 & 0  & 10{,}11 & 0 & 235{,}30 & 438{,}20 \\
-      24 & 200 & 68{,}70 & 0{,}0 & 0  & 8  & 13 & 17 & 30 & 42 & 65  & 84  & 170 & 240 & 240 & 1915 & 0 & 0  & 9{,}85  & 0 & 235{,}30 & 445{,}22 \\
-      25 & 200 & 62{,}60 & 0{,}0 & 0  & 8  & 12 & 17 & 29 & 41 & 63  & 84  & 170 & 240 & 240 & 1972 & 0 & 0  & 9{,}59  & 0 & 235{,}30 & 433{,}10 \\
-      26 & 200 & 58{,}50 & 0{,}0 & 0  & 8  & 12 & 16 & 29 & 41 & 62  & 83  & 170 & 240 & 240 & 2032 & 0 & 0  & 9{,}34  & 0 & 235{,}30 & 456{,}89 \\
-      27 & 200 & 58{,}60 & 0{,}0 & 0  & 8  & 11 & 16 & 28 & 41 & 61  & 83  & 170 & 240 & 240 & 2085 & 0 & 0  & 9{,}11  & 0 & 235{,}30 & 445{,}54 \\
-      28 & 200 & 58{,}30 & 0{,}0 & 0  & 7  & 11 & 15 & 27 & 40 & 57  & 80  & 170 & 240 & 240 & 2150 & 0 & 0  & 8{,}88  & 0 & 235{,}30 & 450{,}07 \\
-      29 & 200 & 58{,}80 & 0{,}0 & 0  & 7  & 11 & 14 & 27 & 39 & 56  & 79  & 170 & 240 & 240 & 2215 & 0 & 0  & 8{,}63  & 0 & 235{,}30 & 437{,}38 \\
-      30 & 200 & 58{,}30 & 0{,}0 & 0  & 6  & 10 & 14 & 27 & 38 & 56  & 79  & 170 & 240 & 240 & 2270 & 0 & 0  & 8{,}44  & 0 & 235{,}30 & 427{,}79 \\
-      31 & 200 & 59{,}10 & 0{,}0 & 0  & 6  & 10 & 14 & 26 & 38 & 55  & 78  & 170 & 240 & 240 & 2316 & 0 & 0  & 8{,}27  & 0 & 235{,}30 & 419{,}29 \\
-      32 & 200 & 60{,}00 & 0{,}0 & 0  & 5  & 10 & 13 & 26 & 38 & 55  & 78  & 170 & 240 & 240 & 2384 & 0 & 0  & 8{,}08  & 0 & 235{,}30 & 423{,}58 \\
-      33 & 200 & 59{,}70 & 0{,}0 & 0  & 5  & 10 & 13 & 25 & 38 & 54  & 78  & 170 & 240 & 240 & 2445 & 0 & 0  & 7{,}89  & 0 & 235{,}30 & 413{,}54 \\
-      34 & 200 & 57{,}10 & 0{,}0 & 0  & 5  & 9  & 13 & 25 & 37 & 54  & 78  & 170 & 240 & 240 & 2491 & 0 & 0  & 7{,}76  & 0 & 235{,}30 & 406{,}57 \\
-      35 & 200 & 58{,}20 & 0{,}0 & 0  & 4  & 9  & 12 & 24 & 37 & 53  & 76  & 170 & 240 & 240 & 2558 & 0 & 0  & 7{,}58  & 0 & 235{,}30 & 410{,}79 \\
-      36 & 200 & 58{,}10 & 0{,}0 & 0  & 3  & 9  & 12 & 24 & 36 & 53  & 76  & 170 & 240 & 240 & 2624 & 0 & 0  & 7{,}41  & 0 & 235{,}30 & 429{,}03 \\
-      37 & 200 & 57{,}20 & 0{,}0 & 0  & 1  & 9  & 12 & 24 & 36 & 52  & 76  & 170 & 240 & 240 & 2666 & 0 & 0  & 7{,}30  & 0 & 235{,}30 & 422{,}77 \\
-      38 & 200 & 57{,}80 & 0{,}0 & 0  & 1  & 8  & 11 & 23 & 35 & 52  & 72  & 170 & 240 & 240 & 2726 & 0 & 0  & 7{,}15  & 0 & 235{,}30 & 413{,}96 \\
-      39 & 200 & 58{,}50 & 0{,}0 & 0  & 1  & 8  & 11 & 23 & 35 & 52  & 72  & 170 & 240 & 240 & 2790 & 0 & 0  & 7{,}01  & 0 & 235{,}30 & 418{,}25 \\
-      40 & 200 & 57{,}50 & 0{,}0 & 0  & 1  & 8  & 11 & 23 & 34 & 51  & 72  & 170 & 240 & 240 & 2851 & 0 & 0  & 6{,}87  & 0 & 235{,}30 & 409{,}95 \\
-      41 & 200 & 57{,}20 & 0{,}0 & 0  & 0  & 8  & 10 & 22 & 34 & 51  & 71  & 170 & 240 & 240 & 2910 & 0 & 0  & 6{,}75  & 0 & 235{,}30 & 401{,}85 \\
-      42 & 200 & 57{,}00 & 0{,}0 & 0  & 0  & 8  & 10 & 22 & 34 & 51  & 71  & 170 & 240 & 240 & 2977 & 0 & 0  & 6{,}61  & 0 & 235{,}30 & 405{,}92 \\
-      43 & 200 & 57{,}70 & 0{,}0 & 0  & 0  & 8  & 10 & 21 & 33 & 50  & 69  & 170 & 240 & 240 & 3022 & 0 & 0  & 6{,}52  & 0 & 235{,}30 & 400{,}18 \\
-      44 & 200 & 58{,}50 & 0{,}0 & 0  & 0  & 8  & 10 & 21 & 33 & 50  & 69  & 170 & 240 & 240 & 3090 & 0 & 0  & 6{,}39  & 0 & 235{,}30 & 392{,}09 \\
-      45 & 200 & 58{,}10 & 0{,}0 & 0  & 0  & 7  & 10 & 21 & 32 & 50  & 69  & 170 & 240 & 240 & 3150 & 0 & 0  & 6{,}28  & 0 & 235{,}30 & 385{,}28 \\
-      46 & 200 & 57{,}10 & 0{,}0 & 0  & 0  & 7  & 9  & 20 & 32 & 49  & 69  & 170 & 240 & 240 & 3198 & 0 & 0  & 6{,}20  & 0 & 235{,}30 & 379{,}55 \\
-      47 & 200 & 59{,}50 & 0{,}0 & 0  & 0  & 7  & 9  & 20 & 32 & 49  & 69  & 170 & 240 & 240 & 3255 & 0 & 0  & 6{,}10  & 0 & 235{,}30 & 373{,}45 \\
-      48 & 200 & 58{,}90 & 0{,}0 & 0  & 0  & 7  & 9  & 20 & 32 & 48  & 69  & 170 & 240 & 240 & 3311 & 0 & 0  & 6{,}01  & 0 & 235{,}30 & 378{,}64 \\
-      49 & 200 & 57{,}00 & 0{,}0 & 0  & 0  & 6  & 9  & 20 & 31 & 47  & 69  & 170 & 240 & 240 & 3376 & 0 & 0  & 5{,}91  & 0 & 235{,}30 & 371{,}88 \\
-      50 & 200 & 58{,}50 & 0{,}0 & 0  & 0  & 6  & 9  & 19 & 31 & 47  & 69  & 170 & 240 & 240 & 3428 & 0 & 0  & 5{,}83  & 0 & 235{,}30 & 366{,}60 \\
-      51 & 200 & 58{,}00 & 0{,}0 & 0  & 0  & 6  & 9  & 19 & 31 & 46  & 69  & 170 & 240 & 240 & 3488 & 0 & 0  & 5{,}75  & 0 & 235{,}30 & 371{,}65 \\
-      52 & 200 & 58{,}00 & 0{,}0 & 0  & 0  & 5  & 8  & 19 & 31 & 46  & 69  & 170 & 240 & 240 & 3538 & 0 & 0  & 5{,}67  & 0 & 235{,}30 & 366{,}39 \\
-      53 & 200 & 57{,}30 & 0{,}0 & 0  & 0  & 5  & 8  & 19 & 31 & 46  & 66  & 170 & 240 & 240 & 3604 & 0 & 0  & 5{,}58  & 0 & 235{,}30 & 360{,}31 \\
-      54 & 200 & 56{,}00 & 0{,}0 & 0  & 0  & 5  & 8  & 18 & 30 & 46  & 66  & 170 & 240 & 240 & 3665 & 0 & 0  & 5{,}50  & 0 & 235{,}30 & 354{,}85 \\
-      55 & 200 & 57{,}80 & 0{,}0 & 0  & 0  & 4  & 8  & 18 & 30 & 46  & 66  & 170 & 240 & 240 & 3720 & 0 & 0  & 5{,}43  & 0 & 235{,}30 & 360{,}03 \\
-      56 & 200 & 57{,}10 & 0{,}0 & 0  & 0  & 4  & 8  & 18 & 30 & 46  & 66  & 170 & 240 & 240 & 3787 & 0 & 0  & 5{,}36  & 0 & 235{,}30 & 364{,}03 \\
-      57 & 200 & 56{,}60 & 0{,}0 & 0  & 0  & 4  & 8  & 18 & 30 & 45  & 65  & 170 & 240 & 240 & 3840 & 0 & 0  & 5{,}29  & 0 & 235{,}30 & 359{,}45 \\
-      58 & 200 & 58{,}00 & 0{,}0 & 0  & 0  & 2  & 8  & 17 & 30 & 45  & 65  & 170 & 240 & 240 & 3898 & 0 & 0  & 5{,}22  & 0 & 235{,}30 & 354{,}38 \\
-      \bottomrule
+      \bighline
+      0  & 0   & 0{,}00  & 0{,}0 & -- & -- & -- & -- & -- & -- & --  & --  & --  & --  & --  & 0    & 0 & 0  & 0{,}00  & 0 & 0{,}00   & 0{,}00   \\ \hline
+      1  & 15  & 0{,}00  & 0{,}0 & 10 & 14 & 16 & 18 & 21 & 25 & 37  & 40  & 40  & 40  & 40  & 75   & 0 & 10 & 10{,}90 & 0 & 39{,}51  & 557{,}04 \\ \hline
+      2  & 30  & 0{,}00  & 0{,}0 & 16 & 22 & 26 & 32 & 50 & 69 & 86  & 130 & 140 & 140 & 140 & 147  & 0 & 16 & 21{,}11 & 0 & 135{,}77 & 793{,}82 \\ \hline
+      3  & 45  & 75{,}00 & 0{,}0 & 15 & 24 & 27 & 31 & 43 & 54 & 78  & 86  & 140 & 140 & 140 & 229  & 0 & 15 & 19{,}30 & 0 & 135{,}77 & 694{,}50 \\ \hline
+      4  & 60  & 65{,}50 & 0{,}0 & 13 & 20 & 24 & 27 & 38 & 53 & 76  & 86  & 140 & 140 & 140 & 308  & 0 & 13 & 17{,}32 & 0 & 135{,}77 & 643{,}52 \\ \hline
+      5  & 75  & 71{,}67 & 0{,}0 & 12 & 18 & 22 & 25 & 33 & 48 & 76  & 92  & 140 & 140 & 140 & 395  & 0 & 12 & 16{,}05 & 0 & 135{,}77 & 698{,}54 \\ \hline
+      6  & 105 & 74{,}75 & 0{,}0 & 13 & 20 & 26 & 31 & 42 & 69 & 140 & 160 & 240 & 240 & 240 & 485  & 0 & 13 & 20{,}30 & 0 & 235{,}30 & 651{,}68 \\ \hline
+      7  & 120 & 75{,}20 & 0{,}0 & 12 & 19 & 24 & 27 & 40 & 54 & 120 & 150 & 240 & 240 & 240 & 585  & 0 & 12 & 18{,}59 & 0 & 235{,}30 & 674{,}72 \\ \hline
+      8  & 135 & 71{,}33 & 0{,}0 & 10 & 17 & 21 & 25 & 38 & 50 & 92  & 150 & 240 & 240 & 240 & 682  & 0 & 10 & 16{,}75 & 0 & 235{,}30 & 636{,}35 \\ \hline
+      9  & 150 & 79{,}14 & 0{,}0 & 9  & 14 & 19 & 23 & 35 & 47 & 86  & 140 & 240 & 240 & 240 & 788  & 0 & 9  & 15{,}08 & 0 & 235{,}30 & 650{,}32 \\ \hline
+      10 & 165 & 83{,}00 & 0{,}0 & 8  & 13 & 17 & 21 & 33 & 44 & 83  & 140 & 240 & 240 & 240 & 898  & 0 & 8  & 13{,}88 & 0 & 235{,}30 & 615{,}52 \\ \hline
+      11 & 180 & 84{,}78 & 0{,}0 & 8  & 13 & 18 & 21 & 32 & 44 & 78  & 130 & 170 & 240 & 240 & 1004 & 0 & 8  & 13{,}70 & 0 & 235{,}30 & 593{,}63 \\ \hline
+      12 & 195 & 86{,}80 & 0{,}0 & 8  & 14 & 20 & 24 & 37 & 50 & 78  & 120 & 170 & 240 & 240 & 1127 & 0 & 8  & 14{,}61 & 0 & 235{,}30 & 598{,}67 \\ \hline
+      13 & 200 & 88{,}70 & 0{,}0 & 8  & 14 & 20 & 25 & 37 & 49 & 76  & 110 & 170 & 240 & 240 & 1261 & 0 & 8  & 14{,}45 & 0 & 235{,}30 & 567{,}12 \\ \hline
+      14 & 200 & 93{,}90 & 0{,}0 & 8  & 13 & 20 & 24 & 36 & 48 & 76  & 100 & 170 & 240 & 240 & 1330 & 0 & 8  & 13{,}89 & 0 & 235{,}30 & 548{,}99 \\ \hline
+      15 & 200 & 97{,}40 & 0{,}0 & 7  & 13 & 19 & 23 & 35 & 46 & 72  & 100 & 170 & 240 & 240 & 1384 & 0 & 7  & 13{,}38 & 0 & 235{,}30 & 554{,}64 \\ \hline
+      16 & 200 & 98{,}70 & 0{,}0 & 6  & 12 & 18 & 22 & 34 & 46 & 72  & 94  & 170 & 240 & 240 & 1448 & 0 & 6  & 12{,}83 & 0 & 235{,}30 & 531{,}43 \\ \hline
+      17 & 200 & 96{,}30 & 0{,}0 & 6  & 11 & 17 & 21 & 33 & 46 & 71  & 94  & 170 & 240 & 240 & 1496 & 0 & 5  & 12{,}42 & 0 & 235{,}30 & 514{,}38 \\ \hline
+      18 & 200 & 97{,}40 & 0{,}0 & 5  & 11 & 17 & 21 & 32 & 45 & 69  & 92  & 170 & 240 & 240 & 1558 & 0 & 5  & 11{,}97 & 0 & 235{,}30 & 519{,}13 \\ \hline
+      19 & 200 & 90{,}40 & 0{,}0 & 4  & 10 & 16 & 20 & 32 & 44 & 69  & 92  & 170 & 240 & 240 & 1616 & 0 & 4  & 11{,}54 & 0 & 235{,}30 & 500{,}50 \\ \hline
+      20 & 200 & 84{,}80 & 0{,}0 & 2  & 10 & 16 & 20 & 32 & 44 & 69  & 92  & 170 & 240 & 240 & 1660 & 0 & 2  & 11{,}24 & 0 & 235{,}30 & 488{,}05 \\ \hline
+      21 & 200 & 80{,}60 & 0{,}0 & 0  & 9  & 14 & 19 & 31 & 44 & 69  & 86  & 170 & 240 & 240 & 1744 & 0 & 0  & 10{,}74 & 0 & 235{,}30 & 465{,}83 \\ \hline 
+      22 & 200 & 75{,}80 & 0{,}0 & 0  & 9  & 14 & 18 & 31 & 43 & 66  & 85  & 170 & 240 & 240 & 1803 & 0 & 0  & 10{,}41 & 0 & 235{,}30 & 451{,}11 \\ \hline
+      23 & 200 & 71{,}90 & 0{,}0 & 0  & 9  & 13 & 18 & 30 & 43 & 66  & 85  & 170 & 240 & 240 & 1860 & 0 & 0  & 10{,}11 & 0 & 235{,}30 & 438{,}20 \\ \hline
+      24 & 200 & 68{,}70 & 0{,}0 & 0  & 8  & 13 & 17 & 30 & 42 & 65  & 84  & 170 & 240 & 240 & 1915 & 0 & 0  & 9{,}85  & 0 & 235{,}30 & 445{,}22 \\ \hline
+      25 & 200 & 62{,}60 & 0{,}0 & 0  & 8  & 12 & 17 & 29 & 41 & 63  & 84  & 170 & 240 & 240 & 1972 & 0 & 0  & 9{,}59  & 0 & 235{,}30 & 433{,}10 \\ \hline
+      26 & 200 & 58{,}50 & 0{,}0 & 0  & 8  & 12 & 16 & 29 & 41 & 62  & 83  & 170 & 240 & 240 & 2032 & 0 & 0  & 9{,}34  & 0 & 235{,}30 & 456{,}89 \\ \hline
+      27 & 200 & 58{,}60 & 0{,}0 & 0  & 8  & 11 & 16 & 28 & 41 & 61  & 83  & 170 & 240 & 240 & 2085 & 0 & 0  & 9{,}11  & 0 & 235{,}30 & 445{,}54 \\ \hline
+      28 & 200 & 58{,}30 & 0{,}0 & 0  & 7  & 11 & 15 & 27 & 40 & 57  & 80  & 170 & 240 & 240 & 2150 & 0 & 0  & 8{,}88  & 0 & 235{,}30 & 450{,}07 \\ \hline
+      29 & 200 & 58{,}80 & 0{,}0 & 0  & 7  & 11 & 14 & 27 & 39 & 56  & 79  & 170 & 240 & 240 & 2215 & 0 & 0  & 8{,}63  & 0 & 235{,}30 & 437{,}38 \\ \hline
+      30 & 200 & 58{,}30 & 0{,}0 & 0  & 6  & 10 & 14 & 27 & 38 & 56  & 79  & 170 & 240 & 240 & 2270 & 0 & 0  & 8{,}44  & 0 & 235{,}30 & 427{,}79 \\ \hline
+      31 & 200 & 59{,}10 & 0{,}0 & 0  & 6  & 10 & 14 & 26 & 38 & 55  & 78  & 170 & 240 & 240 & 2316 & 0 & 0  & 8{,}27  & 0 & 235{,}30 & 419{,}29 \\ \hline
+      32 & 200 & 60{,}00 & 0{,}0 & 0  & 5  & 10 & 13 & 26 & 38 & 55  & 78  & 170 & 240 & 240 & 2384 & 0 & 0  & 8{,}08  & 0 & 235{,}30 & 423{,}58 \\ \hline
+      33 & 200 & 59{,}70 & 0{,}0 & 0  & 5  & 10 & 13 & 25 & 38 & 54  & 78  & 170 & 240 & 240 & 2445 & 0 & 0  & 7{,}89  & 0 & 235{,}30 & 413{,}54 \\ \hline
+      34 & 200 & 57{,}10 & 0{,}0 & 0  & 5  & 9  & 13 & 25 & 37 & 54  & 78  & 170 & 240 & 240 & 2491 & 0 & 0  & 7{,}76  & 0 & 235{,}30 & 406{,}57 \\ \hline
+      35 & 200 & 58{,}20 & 0{,}0 & 0  & 4  & 9  & 12 & 24 & 37 & 53  & 76  & 170 & 240 & 240 & 2558 & 0 & 0  & 7{,}58  & 0 & 235{,}30 & 410{,}79 \\ \hline
+      36 & 200 & 58{,}10 & 0{,}0 & 0  & 3  & 9  & 12 & 24 & 36 & 53  & 76  & 170 & 240 & 240 & 2624 & 0 & 0  & 7{,}41  & 0 & 235{,}30 & 429{,}03 \\ \hline
+      37 & 200 & 57{,}20 & 0{,}0 & 0  & 1  & 9  & 12 & 24 & 36 & 52  & 76  & 170 & 240 & 240 & 2666 & 0 & 0  & 7{,}30  & 0 & 235{,}30 & 422{,}77 \\ \hline
+      38 & 200 & 57{,}80 & 0{,}0 & 0  & 1  & 8  & 11 & 23 & 35 & 52  & 72  & 170 & 240 & 240 & 2726 & 0 & 0  & 7{,}15  & 0 & 235{,}30 & 413{,}96 \\ \hline
+      39 & 200 & 58{,}50 & 0{,}0 & 0  & 1  & 8  & 11 & 23 & 35 & 52  & 72  & 170 & 240 & 240 & 2790 & 0 & 0  & 7{,}01  & 0 & 235{,}30 & 418{,}25 \\ \hline
+      40 & 200 & 57{,}50 & 0{,}0 & 0  & 1  & 8  & 11 & 23 & 34 & 51  & 72  & 170 & 240 & 240 & 2851 & 0 & 0  & 6{,}87  & 0 & 235{,}30 & 409{,}95 \\ \hline
+      41 & 200 & 57{,}20 & 0{,}0 & 0  & 0  & 8  & 10 & 22 & 34 & 51  & 71  & 170 & 240 & 240 & 2910 & 0 & 0  & 6{,}75  & 0 & 235{,}30 & 401{,}85 \\ \hline
+      42 & 200 & 57{,}00 & 0{,}0 & 0  & 0  & 8  & 10 & 22 & 34 & 51  & 71  & 170 & 240 & 240 & 2977 & 0 & 0  & 6{,}61  & 0 & 235{,}30 & 405{,}92 \\ \hline
+      43 & 200 & 57{,}70 & 0{,}0 & 0  & 0  & 8  & 10 & 21 & 33 & 50  & 69  & 170 & 240 & 240 & 3022 & 0 & 0  & 6{,}52  & 0 & 235{,}30 & 400{,}18 \\ \hline
+      44 & 200 & 58{,}50 & 0{,}0 & 0  & 0  & 8  & 10 & 21 & 33 & 50  & 69  & 170 & 240 & 240 & 3090 & 0 & 0  & 6{,}39  & 0 & 235{,}30 & 392{,}09 \\ \hline
+      45 & 200 & 58{,}10 & 0{,}0 & 0  & 0  & 7  & 10 & 21 & 32 & 50  & 69  & 170 & 240 & 240 & 3150 & 0 & 0  & 6{,}28  & 0 & 235{,}30 & 385{,}28 \\ \hline
+      46 & 200 & 57{,}10 & 0{,}0 & 0  & 0  & 7  & 9  & 20 & 32 & 49  & 69  & 170 & 240 & 240 & 3198 & 0 & 0  & 6{,}20  & 0 & 235{,}30 & 379{,}55 \\ \hline
+      47 & 200 & 59{,}50 & 0{,}0 & 0  & 0  & 7  & 9  & 20 & 32 & 49  & 69  & 170 & 240 & 240 & 3255 & 0 & 0  & 6{,}10  & 0 & 235{,}30 & 373{,}45 \\ \hline
+      48 & 200 & 58{,}90 & 0{,}0 & 0  & 0  & 7  & 9  & 20 & 32 & 48  & 69  & 170 & 240 & 240 & 3311 & 0 & 0  & 6{,}01  & 0 & 235{,}30 & 378{,}64 \\ \hline
+      49 & 200 & 57{,}00 & 0{,}0 & 0  & 0  & 6  & 9  & 20 & 31 & 47  & 69  & 170 & 240 & 240 & 3376 & 0 & 0  & 5{,}91  & 0 & 235{,}30 & 371{,}88 \\ \hline
+      50 & 200 & 58{,}50 & 0{,}0 & 0  & 0  & 6  & 9  & 19 & 31 & 47  & 69  & 170 & 240 & 240 & 3428 & 0 & 0  & 5{,}83  & 0 & 235{,}30 & 366{,}60 \\ \hline
+      51 & 200 & 58{,}00 & 0{,}0 & 0  & 0  & 6  & 9  & 19 & 31 & 46  & 69  & 170 & 240 & 240 & 3488 & 0 & 0  & 5{,}75  & 0 & 235{,}30 & 371{,}65 \\ \hline
+      52 & 200 & 58{,}00 & 0{,}0 & 0  & 0  & 5  & 8  & 19 & 31 & 46  & 69  & 170 & 240 & 240 & 3538 & 0 & 0  & 5{,}67  & 0 & 235{,}30 & 366{,}39 \\ \hline
+      53 & 200 & 57{,}30 & 0{,}0 & 0  & 0  & 5  & 8  & 19 & 31 & 46  & 66  & 170 & 240 & 240 & 3604 & 0 & 0  & 5{,}58  & 0 & 235{,}30 & 360{,}31 \\ \hline
+      54 & 200 & 56{,}00 & 0{,}0 & 0  & 0  & 5  & 8  & 18 & 30 & 46  & 66  & 170 & 240 & 240 & 3665 & 0 & 0  & 5{,}50  & 0 & 235{,}30 & 354{,}85 \\ \hline
+      55 & 200 & 57{,}80 & 0{,}0 & 0  & 0  & 4  & 8  & 18 & 30 & 46  & 66  & 170 & 240 & 240 & 3720 & 0 & 0  & 5{,}43  & 0 & 235{,}30 & 360{,}03 \\ \hline
+      56 & 200 & 57{,}10 & 0{,}0 & 0  & 0  & 4  & 8  & 18 & 30 & 46  & 66  & 170 & 240 & 240 & 3787 & 0 & 0  & 5{,}36  & 0 & 235{,}30 & 364{,}03 \\ \hline
+      57 & 200 & 56{,}60 & 0{,}0 & 0  & 0  & 4  & 8  & 18 & 30 & 45  & 65  & 170 & 240 & 240 & 3840 & 0 & 0  & 5{,}29  & 0 & 235{,}30 & 359{,}45 \\ \hline
+      58 & 200 & 58{,}00 & 0{,}0 & 0  & 0  & 2  & 8  & 17 & 30 & 45  & 65  & 170 & 240 & 240 & 3898 & 0 & 0  & 5{,}22  & 0 & 235{,}30 & 354{,}38 \\ 
+      \bighline
     \end{tabular}%
   }
   \captionof{evidence}{Historial cronológico de la prueba de carga segundo a segundo.}
   \label{ev:locust_historial_segundos}
 \end{table}
 
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.15}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{cccccc}
+      \bighline
+      \textbf{Método} & \textbf{Nombre} & \textbf{Error} & \textbf{Número} & \textbf{Primer registro} & \textbf{Último registro} \\
+      \bighline
+      -- & -- & -- & -- & -- & -- \\
+      \bighline
+    \end{tabular}%
+  }
+  \captionof{evidence}{Registro de fallos detectados durante la prueba de carga.}
+  \label{ev:locust_fallos}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{2.6pt}
+  \renewcommand{\arraystretch}{1.2}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{llrrrrrrrrrrrrrrrrrrrr}
+      \bighline
+      \rotatebox{90}{\textbf{Tipo}} & 
+      \rotatebox{90}{\textbf{Operación}} & 
+      \rotatebox{90}{\textbf{Peticiones}} & 
+      \rotatebox{90}{\textbf{Fallos}} & 
+      \rotatebox{90}{\textbf{Mediana (ms)}} & 
+      \rotatebox{90}{\textbf{Media (ms)}} & 
+      \rotatebox{90}{\textbf{Mínima (ms)}} & 
+      \rotatebox{90}{\textbf{Máxima (ms)}} & 
+      \rotatebox{90}{\textbf{Tamaño Medio (B)}} & 
+      \rotatebox{90}{\textbf{Peticiones/s}} & 
+      \rotatebox{90}{\textbf{Fallos/s}} & 
+      \rotatebox{90}{\textbf{P50 (ms)}} & 
+      \rotatebox{90}{\textbf{P66 (ms)}} & 
+      \rotatebox{90}{\textbf{P75 (ms)}} & 
+      \rotatebox{90}{\textbf{P80 (ms)}} & 
+      \rotatebox{90}{\textbf{P90 (ms)}} & 
+      \rotatebox{90}{\textbf{P95 (ms)}} & 
+      \rotatebox{90}{\textbf{P98 (ms)}} & 
+      \rotatebox{90}{\textbf{P99 (ms)}} & 
+      \rotatebox{90}{\textbf{P99.9 (ms)}} & 
+      \rotatebox{90}{\textbf{P99.99 (ms)}} & 
+      \rotatebox{90}{\textbf{P100 (ms)}} \\
+      \bighline
+      GET       & \texttt{/content/quizzes/}          & 21   & 0 & 15 & 19{,}82 & 8{,}26  & 86{,}49  & 36581{,}05 & 0{,}36  & 0{,}0 & 15  & 16  & 16  & 17  & 20  & 46  & 86  & 86  & 86  & 86  & 86  \\ \hline
+      POST      & \texttt{/content/quizzes/}          & 11   & 0 & 19 & 25{,}08 & 10{,}01 & 78{,}32  & 50{,}00    & 0{,}19  & 0{,}0 & 19  & 21  & 24  & 24  & 38  & 78  & 78  & 78  & 78  & 78  & 78  \\ \hline
+      GET       & \texttt{/content/quizzes/\textbf{:id}}       & 23   & 0 & 11 & 11{,}62 & 9{,}50  & 19{,}10  & 359{,}43   & 0{,}39  & 0{,}0 & 11  & 11  & 12  & 12  & 17  & 18  & 19  & 19  & 19  & 19  & 19  \\ \hline
+      PUT       & \texttt{/content/quizzes/\textbf{:id}}       & 11   & 0 & 20 & 19{,}74 & 17{,}04 & 25{,}04  & 41{,}00    & 0{,}19  & 0{,}0 & 20  & 21  & 21  & 21  & 22  & 25  & 25  & 25  & 25  & 25  & 25  \\ \hline
+      POST      & \texttt{/stage/participants}        & 190  & 0 & 15 & 18{,}53 & 3{,}24  & 53{,}91  & 52{,}00    & 3{,}25  & 0{,}0 & 16  & 22  & 28  & 30  & 38  & 43  & 44  & 51  & 54  & 54  & 54  \\ \hline
+      GET       & \texttt{/stage/rooms}               & 194  & 0 & 21 & 31{,}99 & 3{,}90  & 173{,}95 & 2188{,}00  & 3{,}32  & 0{,}0 & 22  & 33  & 45  & 49  & 69  & 79  & 150 & 170 & 170 & 170 & 170 \\ \hline
+      POST      & \texttt{/stage/rooms/}              & 4    & 0 & 11 & 40{,}45 & 9{,}53  & 84{,}28  & 53{,}00    & 0{,}07  & 0{,}0 & 57  & 57  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  & 84  \\ \hline
+      GET       & \texttt{/stage/rooms/verify/\textbf{:code}}  & 8    & 0 & 8  & 17{,}97 & 6{,}66  & 48{,}85  & 57{,}00    & 0{,}14  & 0{,}0 & 8   & 13  & 44  & 44  & 49  & 49  & 49  & 49  & 49  & 49  & 49  \\ \hline
+      GET       & \texttt{/stage/rooms/\textbf{:id}}           & 268  & 0 & 12 & 17{,}62 & 3{,}47  & 162{,}76 & 546{,}13   & 4{,}59  & 0{,}0 & 12  & 18  & 23  & 26  & 35  & 44  & 52  & 54  & 160 & 160 & 160 \\ \hline
+      GET       & \texttt{/stage/rooms/\textbf{:id}/participants}     & 26   & 0 & 8  & 8{,}13  & 3{,}26  & 13{,}29  & 723{,}69   & 0{,}44  & 0{,}0 & 8   & 8   & 8   & 9   & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\ \hline
+      POST      & \texttt{/users/login}               & 10   & 0 & 94 & 113{,}52 & 68{,}73 & 235{,}30 & 160{,}00   & 0{,}17  & 0{,}0 & 100 & 110 & 130 & 140 & 240 & 240 & 240 & 240 & 240 & 240 & 240 \\ \hline
+      GET       & \texttt{/users/me}                  & 18   & 0 & 9  & 9{,}20  & 5{,}40  & 12{,}92  & 117{,}00   & 0{,}31  & 0{,}0 & 9   & 9   & 10  & 11  & 12  & 13  & 13  & 13  & 13  & 13  & 13  \\ \hline
+      WS        & \texttt{WS Connect}                 & 190  & 0 & 11 & 14{,}66 & 2{,}00  & 149{,}00 & 0{,}00     & 3{,}25  & 0{,}0 & 11  & 16  & 21  & 23  & 28  & 34  & 37  & 39  & 150 & 150 & 150 \\ \hline
+      WS        & \texttt{WS Ping}                    & 2924 & 0 & 0  & 0{,}04  & 0{,}00  & 2{,}00   & 0{,}00     & 50{,}04 & 0{,}0 & 0   & 0   & 0   & 0   & 0   & 0   & 1   & 1   & 1   & 2   & 2   \\
+      \bighline
+      \textbf{Total} &                                & \textbf{3898} & \textbf{0} & \textbf{0} & \textbf{5{,}22} & \textbf{0{,}00} & \textbf{235{,}30} & \textbf{354{,}38} & \textbf{66{,}71} & \textbf{0{,}0} & \textbf{0} & \textbf{0} & \textbf{2} & \textbf{8} & \textbf{17} & \textbf{30} & \textbf{45} & \textbf{65} & \textbf{170} & \textbf{240} & \textbf{240} \\
+      \bighline
+    \end{tabular}%
+  }
+  \captionof{evidence}{Métricas y percentiles de latencia en la prueba de carga.}
+  \label{ev:locust_estadisticas_completas}
+\end{table}
+
+
 \begin{evidence}[H]
     \centering
-    \includegraphics[width=\linewidth]{evidences/terminal_test_umbrales.png}
+    \includegraphics[width=0.83\linewidth]{evidences/terminal_test_umbrales.png}
     \caption{Captura de ejecución de \textit{script} de verificación de umbrales.}
     \label{ev:terminal_umbrales_locust}
 \end{evidence}
