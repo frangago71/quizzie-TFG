@@ -212,4 +212,139 @@ Tras guardar los cambios, la nueva prueba queda registrada en el sistema y pasa 
   \label{fig:manual_cuestionarios_nuevos}
 \end{figure}
 
+\section*{Configuración, control de sala y verificación presencial}
+\label{sec:manual_control_sala_en_directo}
+
+Esta sección documenta el ciclo de vida completo de una sesión desde la perspectiva del profesor: desde el lanzamiento y parametrización de la sala, pasando por la orquestación de la partida en tiempo real, hasta la fase de verificación presencial mediante escaneo de códigos QR.
+
+\subsection*{1. Selección de cuestionario y apertura de sala}
+
+Desde la lista de cuestionarios, el profesor escoge la prueba que desea comenzar y pulsa sobre el botón para crear una nueva sala.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/crear_sala.png}%
+  }
+  \caption{Selección de un cuestionario para inicializar una sala.}
+  \label{fig:manual_crear_sala}
+\end{figure}
+
+\subsection*{2. Configuración de parámetros de la partida}
+
+El profesor configura la dinámica de la partida a través de diversas opciones: orden aleatorio de preguntas, permutación aleatoria de opciones de respuesta para prevenir la copia entre estudiantes, visualización o no de rankings parciales tras cada pregunta (el ranking final siempre estará visible) y el tiempo límite concedido por pregunta. Al confirmar los parámetros, el sistema genera un código de acceso único y da paso a la sala de espera.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/opciones_sala.png}%
+  }
+  \caption{Formulario de configuración de parámetros de la sala.}
+  \label{fig:manual_opciones_sala}
+\end{figure}
+
+\subsection*{3. Sala de espera inicial}
+
+La interfaz proyecta la sala de espera en su estado inicial vacío, exponiendo el código numérico PIN que el alumnado debe ingresar en sus dispositivos para vincularse a la sesión lectiva.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/sala_espera_vacia.png}%
+  }
+  \caption{Sala de espera inicial a la espera de participantes.}
+  \label{fig:manual_sala_espera_vacia}
+\end{figure}
+
+\subsection*{4. Incorporación de estudiantes y lanzamiento de la partida}
+
+A medida que los estudiantes acceden a la sala, sus nombres o identificadores aparecen reflejados en pantalla. Cuando todos los asistentes se han incorporado, el profesor pulsa el botón para comenzar, dando paso a una breve cuenta atrás de sincronización previa al inicio de las preguntas.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/sala_espera.png}%
+  }
+  \caption{Sala de espera con estudiantes incorporados antes de iniciar.}
+  \label{fig:manual_sala_espera}
+\end{figure}
+
+\subsection*{5. Fase de pregunta activa y recepción de respuestas}
+
+Concluida la cuenta atrás, la plataforma proyecta el enunciado de la pregunta y el temporizador en cuenta regresiva según lo configurado. Los estudiantes solo pueden emitir respuestas mientras dicho reloj permanezca activo; si el temporizador se detiene o llega a cero, el sistema bloquea inmediatamente nuevos envíos.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/fase_respuesta_profesor.png}%
+  }
+  \caption{Pregunta proyectada en curso y temporizador activo.}
+  \label{fig:manual_fase_respuesta_profesor}
+\end{figure}
+
+\subsection*{6. Tolerancia a fallos y reconexión del docente}
+
+En caso de que el profesor sufra una pérdida de conexión de red o cierre accidentalmente la ventana, el sistema suspende de inmediato el temporizador para proteger la equidad de la prueba. Al volver a acceder a la plataforma, se ofrece la opción de reconexión directa a la sala activa, reanudándose el reloj y la interacción únicamente tras su regreso.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/reconectarse_a_sala.png}%
+  }
+  \caption{Detección y recuperación de sesión activa tras desconexión.}
+  \label{fig:manual_reconectarse_a_sala}
+\end{figure}
+
+\subsection*{7. Distribución analítica de respuestas}
+
+Una vez agotado el tiempo de respuesta y al avanzar a la siguiente pantalla, el sistema proyecta una gráfica de barras con la distribución de las opciones elegidas por los alumnos. A partir de esta vista, y según las opciones configuradas inicialmente, se habilita la transición al ranking parcial o directamente a la siguiente pregunta o al final del cuestionario.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.9\textwidth]{screenshots/grafica_respuestas.png}%
+  }
+  \caption{Gráfica de distribución de respuestas seleccionadas por el alumnado.}
+  \label{fig:manual_grafica_respuestas}
+\end{figure}
+
+\subsection*{8. Conclusión de la prueba y podio final}
+
+Tras recorrer las rondas restantes de la evaluación, el sistema presenta la pantalla de podio final con las mejores calificaciones del aula. Al presionar el botón de finalización, la sala concluye su fase de preguntas y da paso al mecanismo de verificación presencial.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.9\textwidth]{screenshots/ranking_final.png}%
+  }
+  \caption{Podio de calificaciones globales al término de las preguntas.}
+  \label{fig:manual_ranking_final}
+\end{figure}
+
+\subsection*{9. Panel de verificación presencial}
+
+En esta fase, el profesor dispone de un panel con el listado de participantes para validar su asistencia física en el aula. Desde esta vista se habilita la acción para desplegar la interfaz de escaneo.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.55\textwidth]{screenshots/fase_verificacion.png}%
+  }
+  \caption{Panel para la verificación presencial de asistencia.}
+  \label{fig:manual_fase_verificacion}
+\end{figure}
+
+\subsection*{10. Escáner y concesión de permisos de cámara}
+
+Al solicitar la activación del lector de códigos, la aplicación despliega un diálogo modal que requiere la autorización del navegador para acceder a la cámara del dispositivo. Una vez concedido el permiso, el profesor procede al escaneo secuencial de los códigos QR mostrados en los dispositivos de los estudiantes para validar de forma fehaciente su presencialidad y asentar su nota.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.6\textwidth]{screenshots/modal_verificacion.png}%
+  }
+  \caption{Diálogo modal de captura y solicitud de permisos de cámara.}
+  \label{fig:manual_modal_verificacion}
+\end{figure}
+
 \end{appendices}
