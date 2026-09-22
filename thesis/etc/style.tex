@@ -132,4 +132,25 @@
 \makeatletter
 \renewcommand{\@pnumwidth}{2.2em}
 \renewcommand{\@tocrmarg}{2.5em}
+
+\renewcommand*\l@figure{\@dottedtocline{1}{1.5em}{2.6em}}
+\renewcommand*\l@table{\@dottedtocline{1}{1.5em}{2.6em}}
+
+\ifcsname l@evidence\endcsname
+  \renewcommand*\l@evidence{\@dottedtocline{1}{1.5em}{2.6em}}
+\fi
+
+\ifcsname l@lstlisting\endcsname
+  \renewcommand*\l@lstlisting{\@dottedtocline{1}{1.5em}{2.6em}}
+\fi
+\makeatother
+
+\makeatletter
+\newcommand{\bighline}{%
+  \noalign{%
+    \vspace{1.5pt}
+    \hrule height 1pt
+    \vspace{1.5pt}
+  }%
+}
 \makeatother
