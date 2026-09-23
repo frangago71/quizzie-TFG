@@ -34,7 +34,7 @@ Al pulsar sobre la opción de registro, el sistema presenta un formulario donde 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.44\textwidth]{screenshots/registro.png}
-  \caption{Formulario de registro para el perfil docente.}
+  \caption{Formulario de registro para profesores.}
   \label{fig:manual_registro}
 \end{figure}
 
@@ -67,7 +67,7 @@ Tras iniciar sesión, el docente puede acceder a la sección de su perfil person
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\textwidth]{screenshots/mi_perfil.png}
-  \caption{Vista de gestión del perfil docente.}
+  \caption{Vista de gestión del perfil.}
   \label{fig:manual_mi_perfil}
 \end{figure}
 
@@ -169,7 +169,7 @@ En esta vista se muestran las puntuaciones registradas durante la sala seleccion
   \makebox[\textwidth][c]{%
     \includegraphics[width=1.1\textwidth]{screenshots/resultado_historico.png}%
   }
-  \caption{Métricas detalladas de la sala y opción de exportación a CSV.}
+  \caption{Resultados de la sala y opción de exportación a CSV.}
   \label{fig:manual_resultado_historico}
 \end{figure}
 
@@ -208,7 +208,7 @@ Tras guardar los cambios, la nueva prueba queda registrada en el sistema y pasa 
   \makebox[\textwidth][c]{%
     \includegraphics[width=1.1\textwidth]{screenshots/cuestionarios_nuevos.png}%
   }
-  \caption{Cuestionario recién creado.}
+  \caption{Apartado de cuestionarios nuevos.}
   \label{fig:manual_cuestionarios_nuevos}
 \end{figure}
 
@@ -239,7 +239,7 @@ El profesor configura la dinámica de la partida a través de diversas opciones:
   \makebox[\textwidth][c]{%
     \includegraphics[width=1.1\textwidth]{screenshots/opciones_sala.png}%
   }
-  \caption{Formulario de configuración de parámetros de la sala.}
+  \caption{Configuración de parámetros de la sala.}
   \label{fig:manual_opciones_sala}
 \end{figure}
 
@@ -265,7 +265,7 @@ A medida que los estudiantes acceden a la sala, sus nombres o identificadores ap
   \makebox[\textwidth][c]{%
     \includegraphics[width=1.1\textwidth]{screenshots/sala_espera.png}%
   }
-  \caption{Sala de espera con estudiantes incorporados antes de iniciar.}
+  \caption{Sala de espera con estudiantes incorporados.}
   \label{fig:manual_sala_espera}
 \end{figure}
 
@@ -304,7 +304,7 @@ Una vez agotado el tiempo de respuesta y al avanzar a la siguiente pantalla, el 
   \makebox[\textwidth][c]{%
     \includegraphics[width=0.9\textwidth]{screenshots/grafica_respuestas.png}%
   }
-  \caption{Gráfica de distribución de respuestas seleccionadas por el alumnado.}
+  \caption{Gráfica de respuestas seleccionadas por el alumnado.}
   \label{fig:manual_grafica_respuestas}
 \end{figure}
 
@@ -330,7 +330,7 @@ En esta fase, el profesor dispone de un panel con el listado de participantes pa
   \makebox[\textwidth][c]{%
     \includegraphics[width=0.55\textwidth]{screenshots/fase_verificacion.png}%
   }
-  \caption{Panel para la verificación presencial de asistencia.}
+  \caption{Pantalla de fase de verificación.}
   \label{fig:manual_fase_verificacion}
 \end{figure}
 
@@ -341,10 +341,144 @@ Al solicitar la activación del lector de códigos, la aplicación despliega un 
 \begin{figure}[H]
   \centering
   \makebox[\textwidth][c]{%
-    \includegraphics[width=0.6\textwidth]{screenshots/modal_verificacion.png}%
+    \includegraphics[width=0.7\textwidth]{screenshots/modal_verificacion.png}%
   }
-  \caption{Diálogo modal de captura y solicitud de permisos de cámara.}
+  \caption{Modal de captura y solicitud de permisos de cámara.}
   \label{fig:manual_modal_verificacion}
+\end{figure}
+
+\section*{Participación y experiencia del estudiante}\label{sec:manual_participacion_estudiante}
+
+Esta sección documenta el flujo completo que experimenta el alumnado al unirse a una sesión: desde la introducción del código de sala y la identificación sin registro tradicional mediante un identificador, pasando por la interacción en tiempo real con las preguntas, hasta la obtención del código QR final para la verificación física de su presencia en el aula.
+
+\subsection*{1. Ingreso del código de acceso a la sala}
+
+Al acceder a la aplicación web, el estudiante visualiza un diálogo modal principal donde debe introducir el código numérico PIN proyectado por el docente para unirse a la sala.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.5\textwidth]{screenshots/introducir_codigo.png}%
+  }
+  \caption{Introducción del código de la sala.}
+  \label{fig:manual_introducir_codigo}
+\end{figure}
+
+\subsection*{2. Identificación del alumno mediante UVUS}
+
+Tras validar el código de la sesión, el alumno introduce su identificador único (\textit{uvus}) o \textit{nickname} para vincular sus respuestas y calificación. La interfaz informa si la sala se encuentra en estado de espera o si ya ha comenzado, permitiendo la incorporación de estudiantes incluso con la sesión en curso.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.5\textwidth]{screenshots/introducir_nickname.png}%
+  }
+  \caption{Entrada de \textit{uvus} o apodo.}
+  \label{fig:manual_introducir_nickname}
+\end{figure}
+
+\subsection*{3. Aviso de registro de nuevo identificador}
+
+En caso de que el identificador ingresado no conste previamente en la base de datos de la plataforma, el sistema despliega un aviso preventivo para confirmar si se desea dar de alta dicho identificador o corregir un posible error tipográfico antes de acceder.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.5\textwidth]{screenshots/aviso_nuevo_nickname.png}%
+  }
+  \caption{Confirmación para un nuevo \textit{uvus} o apodo.}
+  \label{fig:manual_aviso_nuevo_nickname}
+\end{figure}
+
+\subsection*{4. Sala de espera del estudiante}
+
+Una vez confirmada la identidad, el alumno pasa a la sala de espera, donde aguarda a que el profesor inicie el cuestionario.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/sala_espera_alumno.png}%
+  }
+  \caption{Sala de espera del alumno.}
+  \label{fig:manual_sala_espera_alumno}
+\end{figure}
+
+\subsection*{5. Fase de pregunta activa y selección de respuesta}
+
+Al comenzar la ronda y proyectarse la pregunta, el alumno dispone de los botones de selección en su dispositivo. El envío de respuestas solo está permitido mientras el temporizador se encuentre en marcha.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/fase_respuesta_alumno.png}%
+  }
+  \caption{Interfaz de selección y envío de respuesta.}
+  \label{fig:manual_fase_respuesta_alumno}
+\end{figure}
+
+\subsection*{6. Retroalimentación de respuesta correcta}
+
+Al concluir el tiempo de la pregunta, la interfaz revela de forma instantánea la solución y notifica al estudiante si su elección ha sido correcta, sumando la puntuación correspondiente.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.83\textwidth]{screenshots/respuesta_correcta.png}%
+  }
+  \caption{Confirmación inmediata de respuesta correcta.}
+  \label{fig:manual_respuesta_correcta}
+\end{figure}
+
+\subsection*{7. Retroalimentación de respuesta incorrecta}
+
+De igual modo, si el alumno falló en su elección, la aplicación le indica que la opción remitida no era la adecuada, mostrando la alternativa válida para afianzar el aprendizaje formativo.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.75\textwidth]{screenshots/respuesta_incorrecta.png}%
+  }
+  \caption{Indicación de respuesta incorrecta y retroalimentación.}
+  \label{fig:manual_respuesta_incorrecta}
+\end{figure}
+
+\subsection*{8. Suspensión de la interacción por pausa o desconexión}
+
+Si el profesor experimenta una caída de red o abandona temporalmente la sala, el sistema entra automáticamente en estado de pausa: el reloj se detiene y la interfaz del estudiante queda bloqueada, impidiendo el envío de respuestas fuera de tiempo hasta que el docente se reincorpore.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/pausa.png}%
+  }
+  \caption{Bloqueo temporal de respuestas por pausa de la sesión.}
+  \label{fig:manual_pausa}
+\end{figure}
+
+\subsection*{9. Agotamiento del tiempo de respuesta}
+
+Cuando la cuenta atrás del temporizador alcanza el valor cero sin que se haya emitido una respuesta previa, el sistema deshabilita las opciones de selección, registrando la ausencia de respuesta para dicha ronda.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=1.1\textwidth]{screenshots/tiempo_acabado.png}%
+  }
+  \caption{Bloqueo de opciones al expirar el tiempo reglamentario.}
+  \label{fig:manual_tiempo_acabado}
+\end{figure}
+
+\subsection*{10. Generación de código QR para verificación presencial}
+
+Al finalizar la totalidad de las preguntas y proyectarse el podio general, la pantalla del alumno genera un código QR efímero que codifica su identidad y los resultados alcanzados. El estudiante presenta esta pantalla al docente para su escaneo físico; una vez verificado por la cámara del profesor, la sesión queda formalmente consolidada y finalizada.
+
+\begin{figure}[H]
+  \centering
+  \makebox[\textwidth][c]{%
+    \includegraphics[width=0.4\textwidth]{screenshots/qr_alumno.png}%
+  }
+  \caption{Código QR de verificación del alumno.}
+  \label{fig:manual_qr_alumno}
 \end{figure}
 
 \end{appendices}
