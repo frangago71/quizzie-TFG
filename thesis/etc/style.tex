@@ -88,6 +88,37 @@
     urlcolor=primaryCyan      % Color para direcciones web 
 }
 
+% URLs en negrita
+\renewcommand{\UrlFont}{\bfseries}
+
+% \href en negrita
+\let\oldhref\href
+\renewcommand{\href}[2]{\oldhref{#1}{\textbf{#2}}}
+
+% \hyperref en negrita
+\let\origHyperref\hyperref
+\makeatletter
+\renewcommand{\hyperref}[2][]{%
+  \if\relax\detokenize{#1}\relax
+    \origHyperref{#2}%
+  \else
+    \origHyperref[#1]{\textbf{#2}}%
+  \fi
+}
+\makeatother
+
+% \cite en negrita
+\AtBeginDocument{%
+  \let\oldcite\cite
+  \renewcommand{\cite}[2][]{%
+    \if\relax\detokenize{#1}\relax
+      \textbf{\oldcite{#2}}%
+    \else
+      \textbf{\oldcite[#1]{#2}}%
+    \fi
+  }%
+}
+
 % Comandos para establecer variables
 \newcommand{\setTitle}[1]{\def\tfgTitle {#1}}
 \newcommand{\setAuthor}[1]{\def\tfgAuthors {#1}}
