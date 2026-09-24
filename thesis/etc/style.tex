@@ -80,6 +80,8 @@
 \definecolor{primaryMagenta}{RGB}{169, 70, 171}
 \definecolor{secondaryCyan}{RGB}{0, 121, 118}
 \definecolor{secondaryMagenta}{RGB}{102, 20, 101}
+\definecolor{neutralGrey}{RGB}{191, 191, 191}
+
 
 \hypersetup{
     colorlinks=true,       
@@ -185,3 +187,15 @@
   }%
 }
 \makeatother
+
+\makeatletter
+\newcommand{\bigcline}[1]{%
+  \noalign{\vspace{1.5pt}\global\dimen@\arrayrulewidth\global\arrayrulewidth=1pt}%
+  \cline{#1}%
+  \noalign{\global\arrayrulewidth\dimen@\vspace{1.5pt}}%
+}
+\makeatother
+
+% Estilos de columna para tablas
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}

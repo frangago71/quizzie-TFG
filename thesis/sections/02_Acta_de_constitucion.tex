@@ -8,10 +8,12 @@ La formalización de \textit{Quizzie} como Trabajo de Fin de Grado requiere esta
 
 \begin{table}[H]
 \centering
+\small
 \renewcommand{\arraystretch}{1.5}
 \setlength{\tabcolsep}{12pt}
-\begin{tabular}{lp{9.5cm}}
-\hline
+\makebox[\textwidth][c]{%
+\begin{tabular}{lp{10cm}}
+\bighline
 \textbf{Nombre del proyecto} & Quizzie \\
 \hline
 \textbf{Descripción} & Plataforma multidispositivo para la realización y gestión dinámica de tests educativos \\
@@ -25,15 +27,16 @@ La formalización de \textit{Quizzie} como Trabajo de Fin de Grado requiere esta
 \textbf{Tutor} & Jesús Moreno León \\
 \hline
 \textbf{Departamento} & Lenguajes y Sistemas Informáticos (LSI) \\ 
-\hline
-\end{tabular}
+\bighline
+\end{tabular}%
+}
 \caption{Datos de identificación del proyecto.}
 \label{tab:datos_proyecto}
 \end{table}
 
 \section{Descripción y propósito}\label{sec:descripcion_y_proposito}
 
-\textit{Quizzie} nace como una plataforma multidispositivo orientada a transformar la dinámica de evaluación en el entorno educativo. El propósito fundamental de su desarrollo es ofrecer una herramienta interactiva que agilice la creación, gestión y ejecución de tests en tiempo real. Frente a soluciones comerciales existentes, la aplicación pone el foco en la inmediatez, la robustez técnica y el control del flujo de evaluación por parte del profesor gracias a la verificación de la presencialidad de los alumnos. El desglose de estas capacidades se materializará detalladamente en el capítulo de \hyperref[cap:analisis_de_requisitos]{análisis de requisitos}.
+\textit{Quizzie} nace como una plataforma multidispositivo orientada a transformar la dinámica de evaluación en el entorno educativo. El propósito fundamental de su desarrollo es ofrecer una \textbf{herramienta interactiva} que agilice la creación, gestión y ejecución de tests en tiempo real. Frente a soluciones comerciales existentes, la aplicación pone el foco en la inmediatez, la robustez técnica y el control del flujo de evaluación por parte del profesor gracias a la \textbf{verificación de la presencialidad de los alumnos}. El desglose de estas capacidades se materializará detalladamente en el capítulo de \hyperref[cap:analisis_de_requisitos]{análisis de requisitos}.
 
 \section{Requerimientos de alto nivel}\label{sec:requerimientos_alto_nivel}
 
@@ -51,18 +54,18 @@ Para validar el correcto estado del sistema, este debe cumplir estrictamente con
 
 \section{Marco legal y normativo}\label{sec:marco_legal_y_normativo}
 
-El desarrollo y uso de \textit{Quizzie} se rige por la normativa vigente en materia de protección de datos, seguridad de la información y propiedad intelectual. Al tratarse de una herramienta orientada al entorno educativo, el diseño del sistema ha priorizado el principio de minimización de datos para mitigar los riesgos asociados al tratamiento de información sensible.
+El desarrollo y uso de \textit{Quizzie} se rige por la \textbf{normativa vigente} en materia de \textbf{protección de datos, seguridad de la información} y \textbf{propiedad intelectual}. Al tratarse de una herramienta orientada al entorno educativo, el diseño del sistema ha priorizado el \textbf{principio de minimización de datos} para mitigar los riesgos asociados al tratamiento de información sensible.
 
 A continuación, se detallan los pilares normativos y legales de la aplicación:
 
 \begin{itemize}
-    \item \textbf{Reglamento General de Protección de Datos (RGPD):} La plataforma aplica el principio de privacidad desde el diseño conforme al Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo \cite{gdpr2016}. Para los estudiantes, el acceso a las salas se realiza mediante un código PIN y su \textit{uvus} (\textit{Usuario Virtual de la Universidad de Sevilla}), prescindiendo de un registro tradicional y limitando el almacenamiento de datos personales a este identificador institucional único. En el caso de los docentes, el registro obligatorio se limita a un correo electrónico y un alias, omitiendo identificadores directos como nombres, apellidos o DNI.
+    \item \textbf{Reglamento General de Protección de Datos (RGPD):} La plataforma aplica el principio de privacidad desde el diseño conforme al Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo \cite{gdpr2016}. Para los estudiantes, el acceso a las salas se realiza mediante un código PIN y su \textit{uvus} (Universidad de Sevilla), prescindiendo de un registro tradicional y limitando el almacenamiento de datos personales a este identificador institucional único. En el caso de los docentes, el registro obligatorio se limita a un correo electrónico y un alias, omitiendo identificadores directos como nombres, apellidos o DNI.
     \item \textbf{Seguridad y persistencia de calificaciones:} El histórico de resultados almacenado en el sistema solo vincula las calificaciones al \textit{uvus} del alumno y cuenta con la previa verificación física del profesor. Esto garantiza la integridad del proceso de evaluación sin exponer la identidad real del estudiantado en la base de datos.
     \item \textbf{Propiedad intelectual y licenciamiento:} El código fuente y los entregables de este Trabajo de Fin de Grado se distribuyen bajo una licencia de código abierto MIT \cite{strayer2020open}. Esta elección garantiza la total transparencia del desarrollo, permite la auditoría pública del sistema y fomenta su reutilización o extensión por parte de la comunidad académica, eximiendo al autor de cualquier responsabilidad derivada de su uso.
 \end{itemize}
 
 \section{Riesgos iniciales de alto nivel}\label{sec:riesgos_iniciales}
-El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos de alcance, técnicos y temporales. Su identificación temprana y categorización mediante matrices de probabilidad e impacto sigue las directrices del cuerpo de conocimiento del PMI \cite{pmi2021pmbok}, lo que permite evaluar la gravedad de cada amenaza y definir las estrategias de mitigación asociadas:
+El desarrollo de una plataforma orientada a la evaluación en tiempo real conlleva una serie de riesgos de \textbf{alcance, técnicos} y \textbf{temporales}. Su identificación temprana y categorización mediante matrices de probabilidad e impacto sigue las directrices del cuerpo de conocimiento del PMI \cite{pmi2021pmbok}, lo que permite evaluar la gravedad de cada amenaza y definir las estrategias de mitigación asociadas:
 
 \subsection{Riesgos de alcance}
 Desviaciones relacionadas con el volumen de funcionalidades implementadas y la correcta definición de los requisitos del sistema:
@@ -70,14 +73,14 @@ Desviaciones relacionadas con el volumen de funcionalidades implementadas y la c
 \begin{table}[H]
 \centering
 \small
-\renewcommand{\arraystretch}{1.4}
-\makebox[\textwidth][c]{
-\begin{tabular}{l p{5.7cm} p{5.7cm} c c}
-\hline
-\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
-\textbf{R-01} & Corrupción del alcance (\textit{Scope Creep}) al querer añadir más modos de juego o analíticas complejas. & Definición estricta del Producto Mínimo Viable (MVP). Las mejoras secundarias se derivan a "Trabajos Futuros". & \textbf{Medio} & \textbf{Alto} \\  \hline
-\textbf{R-02} & Ambigüedad en los requisitos iniciales que obligue a rehacer lógica de negocio ya programada. & Validación previa del modelo de datos e historias de usuario mediante diagramas de flujo antes de codificar. & \textbf{Bajo} & \textbf{Medio} \\ \hline
-\end{tabular}
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l P{5.5cm} P{5.5cm} c c}
+\bighline
+\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \bighline
+\textbf{R-01} & Corrupción del alcance (\textit{Scope Creep}) al querer añadir más modos de juego o analíticas complejas. & Definición estricta del Producto Mínimo Viable (MVP). Las mejoras secundarias se derivan a "Trabajos Futuros". & \covYellow{Media} & \covRed{Alto} \\ \hline
+\textbf{R-02} & Ambigüedad en los requisitos iniciales que obligue a rehacer lógica de negocio ya programada. & Validación previa del modelo de datos e historias de usuario mediante diagramas de flujo antes de codificar. & \covGreen{Baja} & \covYellow{Medio} \\ \bighline
+\end{tabular}%
 }
 \caption{Tabla de riesgos de alcance.}
 \label{tab:riesgos_alcance}
@@ -89,16 +92,16 @@ Incidencias tecnológicas ligadas a la arquitectura del sistema, conectividad de
 \begin{table}[H]
 \centering
 \small
-\renewcommand{\arraystretch}{1.4}
-\makebox[\textwidth][c]{
-\begin{tabular}{l p{5.7cm} p{5.7cm} c c}
-\hline
-\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
-\textbf{R-03} & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez. & Diseñar un modelo de datos ligero para las tramas de WebSockets y realizar pruebas de carga tempranas. & \textbf{Medio} & \textbf{Alto} \\  \hline
-\textbf{R-04} & Indisponibilidad, caídas o latencia elevada en los servicios en la nube de terceros (\textit{Gemini} o \textit{Render}). & Implementación de zonas de control de errores (\textit{error boundaries}) y reintentos exponenciales en el cliente. & \textbf{Bajo} & \textbf{Alto} \\ \hline
-\textbf{R-05} & Despliegue y red: fallos de conectividad o puertos bloqueados en la red wifi que impidan la comunicación. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos de reconexión rápida. & \textbf{Bajo} & \textbf{Alto} \\  \hline
-\textbf{R-06} & Incompatibilidades visuales menores o descuadres de la interfaz en ciertos navegadores o pantallas antiguas. & Uso de CSS responsivo estándar mediante \textit{Flexbox}/\textit{Grid} y testeo rápido en Google Chrome y Firefox. & \textbf{Alto} & \textbf{Bajo} \\ \hline
-\end{tabular}
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l P{5.5cm} P{5.5cm} c c}
+\bighline
+\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \bighline
+\textbf{R-03} & Saturación del servidor o retardos (\textit{lag}) ante múltiples alumnos conectados a la vez. & Diseñar un modelo de datos ligero para las tramas de WebSockets y realizar pruebas de carga tempranas. & \covYellow{Media} & \covRed{Alto} \\ \hline
+\textbf{R-04} & Indisponibilidad, caídas o latencia elevada en los servicios en la nube de terceros (\textit{Gemini} o \textit{Render}). & Implementación de zonas de control de errores (\textit{error boundaries}) y reintentos exponenciales en el cliente. & \covGreen{Baja} & \covRed{Alto} \\ \hline
+\textbf{R-05} & Despliegue y red: fallos de conectividad o puertos bloqueados en la red wifi que impidan la comunicación. & Configurar el despliegue bajo protocolos seguros de producción y prever mecanismos de reconexión rápida. & \covGreen{Baja} & \covRed{Alto} \\ \hline
+\textbf{R-06} & Incompatibilidades visuales menores o descuadres de la interfaz en ciertos navegadores o pantallas antiguas. & Uso de CSS responsivo estándar mediante \textit{Flexbox}/\textit{Grid} y testeo rápido en Google Chrome y Firefox. & \covRed{Alta} & \covGreen{Bajo} \\ \bighline
+\end{tabular}%
 }
 \caption{Tabla de riesgos técnicos.}
 \label{tab:riesgos_tecnicos}
@@ -110,15 +113,15 @@ Amenazas asociadas directa o indirectamente con el cumplimiento de los plazos y 
 \begin{table}[H]
 \centering
 \small
-\renewcommand{\arraystretch}{1.4}
-\makebox[\textwidth][c]{
-\begin{tabular}{l p{5.7cm} p{5.7cm} c c}
-\hline
-\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \hline
-\textbf{R-07} & Retraso en el calendario por la curva de aprendizaje en WebSockets o la API de \textit{Gemini Pro}. & Reservar las primeras semanas para crear pruebas de concepto aisladas antes de programar el núcleo. & \textbf{Medio} & \textbf{Alto} \\  \hline
-\textbf{R-08} & Falta de disponibilidad por la carga de trabajo de otras asignaturas simultáneas del curso. & Planificación mediante \textit{sprints} semanales rígidos con objetivos mínimos viables para mantener el ritmo. & \textbf{Alto} & \textbf{Medio} \\  \hline
-\textbf{R-09} & Retrasos menores en la redacción de la memoria final debido al foco exclusivo en el desarrollo de código. & Establecer bloques de tiempo semanales dedicados a documentar los módulos que se acaban de programar. & \textbf{Medio} & \textbf{Bajo} \\ \hline
-\end{tabular}
+\renewcommand{\arraystretch}{1.5}
+\makebox[\textwidth][c]{%
+\begin{tabular}{l P{5.5cm} P{5.5cm} c c}
+\bighline
+\textbf{ID} & \textbf{Riesgo identificado} & \textbf{Estrategia de mitigación} & \textbf{Prob.} & \textbf{Impacto} \\ \bighline
+\textbf{R-07} & Retraso en el calendario por la curva de aprendizaje en WebSockets o la API de \textit{Gemini Pro}. & Reservar las primeras semanas para crear pruebas de concepto aisladas antes de programar el núcleo. & \covYellow{Media} & \covRed{Alto} \\ \hline
+\textbf{R-08} & Falta de disponibilidad por la carga de trabajo de otras asignaturas simultáneas del curso. & Planificación mediante \textit{sprints} semanales rígidos con objetivos mínimos viables para mantener el ritmo. & \covRed{Alta} & \covYellow{Medio} \\ \hline
+\textbf{R-09} & Retrasos menores en la redacción de la memoria final debido al foco exclusivo en el desarrollo de código. & Establecer bloques de tiempo semanales dedicados a documentar los módulos que se acaban de programar. & \covYellow{Media} & \covGreen{Bajo} \\ \bighline
+\end{tabular}%
 }
 \caption{Tabla de riesgos temporales.}
 \label{tab:riesgos_temporales}
@@ -127,20 +130,19 @@ Amenazas asociadas directa o indirectamente con el cumplimiento de los plazos y 
 \section{Lista de interesados (\textit{Stakeholders})}\label{sec:lista_interesados}
 
 En este apartado se identifica a los actores, grupos e instituciones que interactúan con la plataforma o se ven afectados por su desarrollo, aplicando la metodología de análisis de interesados descrita por Sommerville \cite{sommerville2011ingenieria} para definir sus roles, necesidades y expectativas principales.
-\begin{table}[htbp]
+\begin{table}[H]
+\small
 \centering
 \renewcommand{\arraystretch}{1.5}
 \setlength{\tabcolsep}{6pt}
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-
-\begin{tabularx}{\dimexpr\textwidth-6pt}{l >{\raggedright\arraybackslash}p{4cm} Y}
-\hline
-\textbf{Interesado} & \textbf{Rol en el proyecto} & \textbf{Intereses / expectativas} \\ \hline
+\begin{tabularx}{\dimexpr\textwidth-6pt}{l P{4cm} Y}
+\bighline
+\textbf{Interesado} & \textbf{Rol en el proyecto} & \textbf{Intereses / expectativas} \\ \bighline
 Autor & Desarrollar e implementar el sistema completo. & Diseñar una arquitectura robusta, cumplir los plazos de entrega y superar con éxito la defensa del TFG. \\ \hline
 Tutor & Supervisar, guiar y evaluar el desarrollo del proyecto. & Garantizar el rigor metodológico, la calidad técnica del software y validar el cumplimiento de los objetivos. \\ \hline
 Departamento LSI & Entidad académica de la Universidad responsable de la calificación del TFG. & Asegurar el cumplimiento de la normativa de los Trabajos de Fin de Grado y el correcto proceso de evaluación. \\ \hline
 Cuerpo docente & Futuros usuarios (Profesores). & Disponer de una herramienta intuitiva que facilite la evaluación de los alumnos y asegure su presencialidad. \\ \hline
-Alumnado & Futuros usuarios (Estudiantes). & Acceder de forma ágil y multidispositivo sin registros complejos para participar en las evaluaciones dinámicas. \\ \hline
+Alumnado & Futuros usuarios (Estudiantes). & Acceder de forma ágil y multidispositivo sin registros complejos para participar en las evaluaciones dinámicas. \\ \bighline
 \end{tabularx}
 \caption{Lista de interesados y roles en el proyecto.}
 \label{tab:lista_interesados}
