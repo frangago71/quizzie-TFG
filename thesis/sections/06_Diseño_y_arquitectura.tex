@@ -1,6 +1,6 @@
 \chapter{Diseño y arquitectura}\label{cap:diseno_y_arquitectura}
 
-En este capítulo se describe la estructura técnica y conceptual sobre la que se asienta el sistema, detallando las decisiones arquitectónicas que garantizan su correcto funcionamiento, mantenibilidad y rendimiento. El diseño propuesto responde tanto a los requisitos funcionales del proyecto como a sus restricciones operativas: la ejecución de cuestionarios en tiempo real, la baja latencia en la transmisión de eventos a múltiples participantes simultáneos y una rigurosa separación de responsabilidades entre el cliente y el servidor.
+En este capítulo se describe la \textbf{estructura técnica y conceptual} sobre la que se asienta el sistema, detallando las decisiones arquitectónicas que garantizan su correcto \textbf{funcionamiento, mantenibilidad y rendimiento}. El diseño propuesto responde tanto a los requisitos funcionales del proyecto como a sus restricciones operativas: la ejecución de cuestionarios en tiempo real, la baja latencia en la transmisión de eventos a múltiples participantes simultáneos y una rigurosa separación de responsabilidades entre el cliente y el servidor.
 
 \section{Patrones arquitectónicos elegidos}
 
@@ -47,9 +47,9 @@ Para las sesiones en tiempo real, el sistema adopta una arquitectura basada en e
 
 \begin{figure}[H]
     \centering
-    \makebox[0pt][c]{
-        \includegraphics[width=1.2\textwidth]{figures/estados_sala.png}
-    }
+    \makebox[0pt][c]{%
+        \includegraphics[width=1.1\textwidth]{figures/estados_sala.png}
+    }%
     \caption{Estados de la sala de juego en tiempo real.}
     \label{fig:estados_sala}
 \end{figure}
@@ -63,153 +63,127 @@ El diseño de este comportamiento se apoya en los siguientes componentes concept
 
 \begin{figure}[H]
     \centering
-    \makebox[0pt][c]{
-        \includegraphics[width=1.06\textwidth]{figures/diagrama_secuencia_eventos.png}
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=1.015\textwidth]{figures/diagrama_secuencia_eventos.png}
     }
     \caption{Diagrama de secuencia de la transmisión de eventos en una sala.}
     \label{fig:diagrama_secuencia_eventos}
 \end{figure}
 
-\newpage
-
 \section{Arquitectura global del sistema}
 
-La combinación de los tres patrones previamente descritos se consolida en una estructura global unificada. En la \hyperref[fig:comparativa_arquitectura]{compartiva de la arquitectura} se presenta, a la izquierda, el marco conceptual abstracto de la arquitectura global y, a la derecha, su correspondencia directa con los componentes de software, módulos y tecnologías reales que ejecutan el sistema.
+La combinación de los tres patrones previamente descritos se consolida en una estructura global unificada. En la compartiva de la arquitectura se presenta, a la izquierda, el marco conceptual abstracto de la arquitectura global y, a la derecha, su correspondencia directa con los componentes de software, módulos y tecnologías reales que ejecutan el sistema.
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[b]{0.493\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/arquitectura_global.png}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.5\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/diagrama_componentes.png}
-    \end{minipage}
-    \vspace{0.3cm}
-    \caption{Comparativa entre la arquitectura global y su implementación concreta.}
+    \makebox[\textwidth][c]{% 
+        \begin{minipage}[b]{0.58\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/arquitectura_global.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[b]{0.59\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figures/diagrama_componentes.png}
+        \end{minipage}
+    } %
+    \caption{Arquitectura global del sistema y su implementación concreta.}
     \label{fig:comparativa_arquitectura}
 \end{figure}
 
 Como se observa en la comparativa, cada capa conceptual se corresponde de forma directa con sus módulos de software equivalentes: la interfaz y el estado en el cliente React, los controladores y gestores de eventos en FastAPI, y el mapeo de datos mediante SQLModel sobre el motor SQLite en la persistencia.
 
-\newpage
-
 \section{Justificación y decisiones de arquitectura}\label{sec:justificacion_arquitectura}
 
-Una vez definidos el esquema conceptual y la estructura de componentes del sistema, resulta imprescindible formalizar las decisiones tecnológicas adoptadas y verificar su alineación con las necesidades del proyecto. En este apartado se aborda dicho proceso desde dos perspectivas complementarias: la documentación formal de las decisiones de diseño clave y la verificación explícita de su impacto sobre los atributos de calidad del proyecto.
+Una vez definidos el esquema conceptual y la estructura de componentes del sistema, resulta imprescindible formalizar las decisiones tecnológicas adoptadas y verificar su alineación con las necesidades del proyecto. En este apartado se aborda dicho proceso desde dos perspectivas complementarias: la documentación formal de las \textbf{decisiones de diseño clave} y la verificación explícita de su impacto sobre los \textbf{atributos de calidad} del proyecto.
 
-\subsection{Registros de decisiones de arquitectura \textit{(ADR)}}\label{subsec:adrs}
+\subsection{Registros de decisiones de arquitectura \textbf{(ADR)}}\label{subsec:adrs}
 
-Para documentar y formalizar las decisiones de diseño estructural más críticas del proyecto, se ha adoptado el patrón de registros de decisiones de arquitectura (\textit{Architecture Decision Records}, ADR) propuesto por Nygard \cite{nygard2011adr}. A continuación se detallan las decisiones arquitectónicas fundamentales que vertebran el diseño de \textit{Quizzie}:
+Para documentar y formalizar las decisiones de diseño estructural más críticas del proyecto, se ha adoptado el patrón de registros de decisiones de arquitectura (\textit{Architecture Decision Records}, \textbf{ADR}) propuesto por Nygard \cite{nygard2011adr}. A continuación se detallan las decisiones arquitectónicas que fundamentan el diseño de \textit{Quizzie}:
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
+\small
+\renewcommand{\arraystretch}{1.3}
+\setlength{\tabcolsep}{6pt}
 \makebox[\textwidth][c]{%
-\begin{tabular}{lp{12.5cm}}
-\hline
-\textbf{ADR} & ADR-01: Adopción de FastAPI y WebSockets para la comunicación en tiempo real \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & La plataforma requiere gestionar la comunicación bidireccional y síncrona con hasta 100 alumnos por sala, ofreciendo baja latencia en la transmisión de preguntas y recepción de respuestas. \\
-\hline
-\textbf{Alternativas} & API REST mediante \textit{polling} tradicional y \textit{Server-Sent Events (SSE)}. \\
-\hline
-\textbf{Decisión} & Utilizar FastAPI como motor asíncrono con protocolo \textit{WebSockets} bidireccional nativo. \\
-\hline
-\textbf{Consecuencias} & \textbf{Positivas:} Se logra una latencia inferior a 50 ms en la propagación de eventos y un consumo mínimo de RAM por conexión activa. \\
-\cline{2-2}
-& \textbf{Negativas:} Exige gestionar manualmente la reconexión y retención de estado de sockets en el cliente. \\
-\hline
-\end{tabular}%
+\begin{tabularx}{1.1\textwidth}{l Y}
+\bighline
+\multicolumn{2}{c}{\textbf{ADR-01: Adopción de FastAPI y WebSockets para la comunicación en tiempo real}\label{adr:01}} \\ \bighline
+\textbf{Estado} & Aprobado. \\ \hline
+\textbf{Contexto} & La app requiere gestionar la comunicación bidireccional y síncrona con hasta 100 alumnos por sala, ofreciendo baja latencia en la transmisión de eventos. \\ \hline
+\textbf{Alternativas} & API REST mediante \textit{polling} tradicional y \textit{Server-Sent Events (SSE)}. \\ \hline
+\textbf{Decisión} & Utilizar FastAPI, motor asíncrono con protocolo \textit{WebSockets} bidireccional nativo. \\ \hline
+\textbf{Consecuencias} & \textbf{Positivas:} Se logra una latencia inferior a 50 ms en la propagación de eventos y un consumo mínimo de RAM por conexión activa. \\ \cline{2-2}
+                       & \textbf{Negativas:} Exige gestionar manualmente la reconexión y retención de estado de sockets en el cliente. \\ \bighline
+\end{tabularx}%
 }
-\caption{Registro de decisiones de arquitectura - ADR-01.}
-\label{adr_01}
+\caption[ADR-01: Adopción de FastAPI y WebSockets]{Registro de decisiones de arquitectura - ADR-01.}
+\label{tab:adr_01}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\setlength{\tabcolsep}{6pt}
+\makebox[\textwidth][c]{%
+\begin{tabularx}{1.1\textwidth}{l Y}
+\bighline
+\multicolumn{2}{c}{\textbf{ADR-02: Arquitectura basada en eventos para el manejo de salas}\label{adr:02}} \\ \bighline
+\textbf{Estado} & Aprobado. \\ \hline
+\textbf{Contexto} & El ciclo de vida de una sala exige informar inmediatamente a todos los clientes en tiempo real, ya que todos deben estar en la misma fase en todo momento. \\ \hline
+\textbf{Alternativas} & Bucle síncrono \textit{polling} desde el cliente o \textit{sockets} puros sin tipado de eventos. \\ \hline
+\textbf{Decisión} & Diseñar un gestor centralizado de eventos (\texttt{ConnectionManager}) que difunda mensajes JSON mediante un patrón de publicación/suscripción local. \\ \hline
+\textbf{Consecuencias} & \textbf{Positivas:} Desacoplamiento total entre la lógica del juego y la capa de transporte; facilidad para testear eventos aislados. \\ \cline{2-2}
+                       & \textbf{Negativas:} Dificultad en serialización y deserialización de esquemas Pydantic. \\ \bighline
+\end{tabularx}%
+}
+\caption[ADR-02: Arquitectura basada en eventos]{Registro de decisiones de arquitectura - ADR-02.}
+\label{tab:adr_02}
 \end{table}
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
+\small
+\renewcommand{\arraystretch}{1.4}
+\setlength{\tabcolsep}{9pt}
 \makebox[\textwidth][c]{%
-\begin{tabular}{lp{12.5cm}}
-\hline
-\textbf{ADR} & ADR-02: Arquitectura basada en eventos para el manejo de salas \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & El ciclo de vida de una sala exige informar inmediatamente a todos los clientes en tiempo real, ya que todos deben estar en la misma fase en todo momento. \\
-\hline
-\textbf{Alternativas} & Bucle de consulta síncrono \textit{polling} desde el cliente o \textit{sockets} puros sin tipado de eventos. \\
-\hline
-\textbf{Decisión} & Diseñar un gestor centralizado de eventos (\texttt{ConnectionManager}) que difunda mensajes estructurados JSON mediante un patrón de publicación/suscripción local. \\
-\hline
-\textbf{Consecuencias} & \textbf{Positivas:} Desacoplamiento total entre la lógica del juego y la capa de transporte; facilidad para testear eventos aislados. \\
-\cline{2-2}
-& \textbf{Negativas:} Mayor complejidad en la serialización y deserialización de esquemas Pydantic. \\
-\hline
-\end{tabular}%
+\begin{tabularx}{1.1\textwidth}{l Y}
+\bighline
+\multicolumn{2}{c}{\textbf{ADR-03: Selección del stack de persistencia SQLite + SQLModel}\label{adr:03}} \\ \bighline
+\textbf{Estado} & Aprobado. \\ \hline
+\textbf{Contexto} & Se requiere un motor relacional liviano, de coste cero y portabilidad total, minimizando la carga operativa en el servidor sin duplicar esquemas de validación de datos. \\ \hline
+\textbf{Alternativas} & PostgreSQL administrado en la nube o SQLAlchemy + Pydantic desacoplados. \\ \hline
+\textbf{Decisión} & Adoptar SQLite como motor relacional en contenedor combinado con SQLModel como \textit{ORM} unificado. \\ \hline
+\textbf{Consecuencias} & \textbf{Positivas:} Cumplimiento estricto del principio \textit{DRY (Don't Repeat Yourself)}; despliegue sin dependencias complejas de infraestructura. \\ \cline{2-2}
+                       & \textbf{Negativas:} Bloqueo a nivel de archivo en escrituras masivas concurrentes. \\ \bighline
+\end{tabularx}%
 }
-\caption{Registro de decisiones de arquitectura - ADR-02.}
-\label{adr_02}
+\caption[ADR-03: Stack de persistencia SQLite + SQLModel]{Registro de decisiones de arquitectura - ADR-03.}
+\label{tab:adr_03}
 \end{table}
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
+\small
+\renewcommand{\arraystretch}{1.4}
+\setlength{\tabcolsep}{9pt}
 \makebox[\textwidth][c]{%
-\begin{tabular}{lp{12.5cm}}
-\hline
-\textbf{ADR} & ADR-03: Selección del stack de persistencia SQLite + SQLModel \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & Se requiere un motor relacional liviano, de coste cero y portabilidad total, minimizando la carga operativa en el servidor sin duplicar esquemas de validación de datos. \\
-\hline
-\textbf{Alternativas} & PostgreSQL administrado en la nube o SQLAlchemy + Pydantic desacoplados. \\
-\hline
-\textbf{Decisión} & Adoptar SQLite como motor relacional en contenedor combinado con SQLModel como \textit{ORM} unificado. \\
-\hline
-\textbf{Consecuencias} & \textbf{Positivas:} Cumplimiento estricto del principio \textit{DRY (Don't Repeat Yourself)}; despliegue sin dependencias complejas de infraestructura. \\
-\cline{2-2}
-& \textbf{Negativas:} Bloqueo a nivel de archivo en escrituras masivas concurrentes. \\
-\hline
-\end{tabular}%
+\begin{tabularx}{1.1\textwidth}{l Y}
+\bighline
+\multicolumn{2}{c}{\textbf{ADR-04: Autenticación híbrida JWT + Código QR presencial}\label{adr:04}} \\ \bighline
+\textbf{Estado} & Aprobado. \\ \hline
+\textbf{Contexto} & Es necesario conciliar el acceso seguro del profesor (persistente) con la incorporación rápida del alumno (efímera y sin registro), garantizando que la nota solo se consolide si el estudiante está presente en el aula. \\ \hline
+\textbf{Alternativas} & Cuentas obligatorias de usuario para alumnos o comprobación manual en lista por parte del docente. \\ \hline
+\textbf{Decisión} & Implementar autenticación síncrona JWT para docentes y un flujo de tokens efímeros firmados criptográficamente presentados en formato código QR por el alumno al finalizar la prueba. \\ \hline
+\textbf{Consecuencias} & \textbf{Positivas:} Eliminación del fraude por participación a distancia; fricción nula para el estudiante. \\ \cline{2-2}
+                       & \textbf{Negativas:} Requiere el uso de la cámara del dispositivo docente durante la fase de cierre de la sesión. \\ \bighline
+\end{tabularx}%
 }
-\caption{Registro de decisiones de arquitectura - ADR-03.}
-\label{adr_03}
-\end{table}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{12.5cm}}
-\hline
-\textbf{ADR} & ADR-04: Autenticación híbrida JWT + Código QR presencial \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & Es necesario conciliar el acceso seguro del profesor (persistente) con la incorporación rápida del alumno (efímera y sin registro), garantizando que la nota solo se consolide si el estudiante está presente en el aula. \\
-\hline
-\textbf{Alternativas} & Cuentas obligatorias de usuario para alumnos o comprobación manual en lista por parte del docente. \\
-\hline
-\textbf{Decisión} & Implementar autenticación síncrona JWT para docentes y un flujo de tokens efímeros firmados criptográficamente presentados en formato código QR por el alumno al finalizar la prueba. \\
-\hline
-\textbf{Consecuencias} & \textbf{Positivas:} Eliminación del fraude por participación a distancia; fricción nula para el estudiante. \\
-\cline{2-2}
-& \textbf{Negativas:} Requiere el uso de la cámara del dispositivo docente durante la fase de cierre de la sesión. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de decisiones de arquitectura - ADR-04.}
-\label{adr_04}
+\caption[ADR-04: Autenticación híbrida JWT + Código QR]{Registro de decisiones de arquitectura - ADR-04.}
+\label{tab:adr_04}
 \end{table}
 
 \subsection{Trazabilidad entre RNF y tácticas arquitectónicas}\label{sec:trazabilidad_rnf_arquitectura}
@@ -219,11 +193,11 @@ Para garantizar que el diseño propuesto satisface los atributos de calidad defi
 \begin{table}[H]
 \centering
 \small
-\renewcommand{\arraystretch}{1.4}
+\renewcommand{\arraystretch}{1.5}
 \makebox[\textwidth][c]{%
-\begin{tabularx}{16cm}{l X p{3.5cm} p{3cm}}
-\hline
-\textbf{Requisito} & \textbf{Táctica arquitectónica} & \textbf{Responsable} & \textbf{Verificación} \\ \hline
+\begin{tabularx}{0.95\textwidth}{l Y P{3cm} P{3cm}}
+\bighline
+\textbf{Requisito} & \textbf{Táctica arquitectónica} & \textbf{Responsable} & \textbf{Verificación} \\ \bighline
 \hyperref[rnf:01]{\textbf{RNF-01}} & Canales bidireccionales y difusión asíncrona (\textit{broadcasting}). & Controladores (\texttt{routers/}) & Test de latencia ($<50$ ms) \\ \hline
 \hyperref[rnf:02]{\textbf{RNF-02}} & Bucle de eventos no bloqueante e E/S asíncrona. & Motor FastAPI y Uvicorn & Carga simultánea ($100$ usuarios) \\ \hline
 \hyperref[rnf:03]{\textbf{RNF-03}} & Tokens criptográficos firmados con HMAC de un solo uso. & \texttt{routers/} y \texttt{auth.py} & Test de unicidad de firmas \\ \hline
@@ -233,7 +207,7 @@ Para garantizar que el diseño propuesto satisface los atributos de calidad defi
 \hyperref[rnf:07]{\textbf{RNF-07}} & Escaneo optimizado del flujo de cámara en hilo secundario. & Módulo de partida (\texttt{room-play/}) & Medición de tiempo ($<1$ s) \\ \hline
 \hyperref[rnf:08]{\textbf{RNF-08}} & Persistencia de sesión local y reconexión mediante token/PIN. & Estado global (\texttt{context/}) & Simulación de caída de red \\ \hline
 \hyperref[rnf:09]{\textbf{RNF-09}} & Transacciones relacionales ACID con sincronización en disco. & Motor SQLite y SQLModel & Prueba de fallo de proceso \\ \hline
-\hyperref[rnf:10]{\textbf{RNF-10}} & Separación estricta de responsabilidades en capas independientes. & Arquitectura global & Inspección de dependencias \\ \hline
+\hyperref[rnf:10]{\textbf{RNF-10}} & Separación estricta de responsabilidades en capas independientes. & Arquitectura global & Inspección de dependencias \\ \bighline
 \end{tabularx}%
 }
 \caption{Matriz de trazabilidad entre RNF y tácticas arquitectónicas.}
@@ -242,9 +216,9 @@ Para garantizar que el diseño propuesto satisface los atributos de calidad defi
 
 \section{Estructura modular del código}
 
-Para trasladar los patrones arquitectónicos descritos a la fase de diseño, el sistema se organiza conceptualmente en torno a una estructura monorepo dividida en dos grandes módulos independientes (\texttt{backend/} y \texttt{frontend/}). Esta organización delimita claramente las responsabilidades y facilita el desarrollo desacoplado de ambos componentes.
+Para trasladar los patrones arquitectónicos descritos a la \textbf{fase de diseño}, el sistema se organiza conceptualmente en torno a una estructura \textit{monorepo} dividida en dos grandes módulos independientes (\texttt{backend/} y \texttt{frontend/}). Esta organización delimita claramente las responsabilidades y facilita el desarrollo desacoplado de ambos componentes.
 
-A continuación se presenta el esquema preliminar de la jerarquía de directorios y componentes principales del proyecto:
+A continuación se presenta el \textbf{esquema preliminar} de la jerarquía de directorios y componentes principales del proyecto:
 
 \begin{figure}[H]
 \centering
@@ -282,36 +256,53 @@ A continuación se presenta el esquema preliminar de la jerarquía de directorio
 En el servidor, la estructura abstrae la lógica en tres archivos clave de inicialización y tres paquetes fundamentales que responden a la arquitectura en capas:
 
 \begin{itemize}
-    \item \textbf{Servicios base de arranque:} Los módulos \texttt{main.py}, \texttt{database.py} y \texttt{seed.py} se encargan del punto de entrada del servidor, la gestión del motor de conexión a la base de datos y la siembra inicial de información necesaria para la ejecución.
-    \item \textbf{Capa de controladores (\texttt{routers/}):} Define los puntos de entrada para las peticiones HTTP REST y gestiona las conexiones bidireccionales mediante \textit{WebSocket}.
-    \item \textbf{Capa de modelos (\texttt{models/}):} Define la representación de las entidades del dominio y sus relaciones en la base de datos relacional.
-    \item \textbf{Capa de validación y DTOs (\texttt{schemas/}):} Define el manejo de datos para la entrada y salida de la API, garantizando el filtrado y la validación de la información.
+    \item \textbf{Arranque y soporte:} Los módulos \texttt{main.py}, \texttt{database.py} y \texttt{seed.py} se encargan del punto de entrada del servidor, la gestión del motor de base de datos y la siembra inicial de información necesaria para la ejecución.
+    \item \textbf{Controladores (\texttt{routers/}):} Definen los puntos de entrada para las peticiones HTTP REST y gestionan las conexiones bidireccionales mediante \textit{WebSockets}.
+    \item \textbf{Modelos (\texttt{models/}):} Representan las entidades del dominio y sus relaciones en la base de datos relacional.
+    \item \textbf{Esquemas y DTOs (\texttt{schemas/}):} Definen el manejo de datos para la entrada y salida de la API, garantizando el filtrado y la validación de la información.
 \end{itemize}
 
 \subsection{Organización del frontend}
 
-En el cliente, el directorio \texttt{src/} agrupa los componentes organizados por dominios funcionales y capas de soporte:
+En el cliente, el directorio \texttt{src/} estructura la aplicación por dominios funcionales y capas de soporte:
 
 \begin{itemize}
-    \item \textbf{Puntos de entrada y enrutamiento:} Los archivos \texttt{main.tsx} y \texttt{App.tsx} inicializan la aplicación cliente y configuran las rutas de navegación.
-    \item \textbf{Módulos de dominio funcional:} Las carpetas \texttt{auth/}, \texttt{management/}, \texttt{room-access/} y \texttt{room-play/} encapsulan de forma independiente las distintas pantallas y flujos de trabajo de la aplicación.
-    \item \textbf{Módulos de soporte e infraestructura:} Las carpetas \texttt{context/}, \texttt{hooks/} y \texttt{layouts/} proporcionan los servicios comunes de gestión del estado global, ganchos de lógica reutilizable y la estructura visual compartida.
+    \item \textbf{Entrada y enrutamiento:} \texttt{main.tsx} y \texttt{App.tsx} inicializan la aplicación cliente y gestionan las rutas de navegación.
+    \item \textbf{Módulos de dominio:} Las carpetas \texttt{auth/}, \texttt{management/}, \texttt{room-access/} y \texttt{room-play/} encapsulan las vistas y los flujos de trabajo de la aplicación.
+    \item \textbf{Soporte transversal:} Las carpetas \texttt{context/}, \texttt{hooks/} y \texttt{layouts/} proporcionan el estado global, la lógica reutilizable y la estructura visual compartida.
 \end{itemize}
 
 \section{Modelo de datos}\label{sec:modelado_datos}
 
-El diseño de la capa de persistencia se articula en torno a la definición de las entidades del dominio, sus relaciones y las restricciones de integridad necesarias para soportar la ejecución del sistema. En el \hyperref[fig:modelo_conceptual]{diagrama de clases} se ilustra la estructura general y la interacción entre las distintas entidades previstas para la aplicación.
+El diseño de la capa de persistencia se articula en torno a la definición de las entidades del dominio, sus relaciones y las restricciones de integridad necesarias para soportar la ejecución del sistema. En el diagrama de clases se ilustra la estructura general y la interacción entre las distintas entidades previstas para la aplicación.
 
 \begin{figure}[H]
     \centering
     \makebox[\textwidth][c]{%
-        \includegraphics[width=1.13\textwidth]{figures/diagrama_modelo_conceptual.png}%
+        \includegraphics[width=1.16\textwidth]{figures/diagrama_modelo_conceptual.png}%
     }
     \caption{Diagrama de clases conceptual y relaciones globales del dominio.}
     \label{fig:modelo_conceptual}
 \end{figure}
 
-Las entidades del sistema se organizan conceptualmente en tres módulos funcionales: \textbf{usuarios}, \textbf{contenido} y \textbf{sesiones}. A continuación se analiza cada uno de estos bloques.
+Las entidades del sistema se organizan conceptualmente en tres módulos funcionales: \textbf{sesiones}, \textbf{usuarios} y \textbf{contenido}. A continuación se analiza cada uno de estos bloques.
+
+\subsection{Módulo de sesiones}
+
+Engloba la lógica persistente encargada de soportar las partidas síncronas en tiempo real y el registro de la actividad de los estudiantes:
+
+\begin{itemize}
+    \item \textbf{\texttt{Room}:} Entidad central que gestiona la instancia activa de un cuestionario en directo, controlando el acceso mediante un código PIN único y su disponibilidad.
+    \item \textbf{\texttt{Participant}:} Actúa como entidad intermedia para resolver la relación de muchos a muchos entre \texttt{Student} y \texttt{Room}, registrando la incorporación del alumno a la partida en una marca de tiempo específica.
+    \item \textbf{\texttt{Answer}:} Almacena los eventos de respuesta enviados por los participantes, registrando la opción elegida, los puntos calculados y el instante exacto de recepción.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/entidades_sesiones.png}
+    \caption{Entidades y atributos del módulo de sesiones.}
+    \label{fig:entidades_sesiones}
+\end{figure}
 
 \subsection{Módulo de gestión de usuarios}
 
@@ -340,36 +331,21 @@ Comprende las entidades que estructuran el material de evaluación generado por 
     \item \textbf{\texttt{Option}:} Contiene las alternativas de respuesta propuestas por ítem, marcando mediante un booleano cuál es la opción correcta para la validación automática.
 \end{itemize}
 
+\vspace{0.5cm}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/entidades_contenido.png}
+    \includegraphics[width=0.875\textwidth]{figures/entidades_contenido.png}
     \caption{Entidades y atributos del módulo de contenido.}
     \label{fig:entidades_contenido}
-\end{figure}
-
-\subsection{Módulo de sesiones}
-
-Engloba la lógica persistente encargada de soportar las partidas síncronas en tiempo real y el registro de la actividad de los estudiantes:
-
-\begin{itemize}
-    \item \textbf{\texttt{Room}:} Gestiona la instancia activa de un cuestionario en vivo, controlando el acceso mediante un código de acceso y su disponibilidad.
-    \item \textbf{\texttt{Participant}:} Actúa como entidad intermedia para resolver la relación de muchos a muchos entre \texttt{Student} y \texttt{Room}, registrando la incorporación del alumno a la partida en una marca de tiempo específica.
-    \item \textbf{\texttt{Answer}:} Almacena los eventos de respuesta enviados por los participantes, registrando la opción elegida, los puntos calculados y el instante exacto de recepción.
-\end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/entidades_sesiones.png}
-    \caption{Entidades y atributos del módulo de sesiones.}
-    \label{fig:entidades_sesiones}
 \end{figure}
 
 
 \section{Diseño de interfaz de usuario}\label{sec:diseno_ui_ux}
 
-El diseño de las interfaces de usuario (UI) y la experiencia de usuario (UX) constituye una fase crítica dentro del desarrollo de la plataforma, ya que condiciona la adopción, la facilidad de uso y la fluidez interactiva durante las sesiones de \textit{tests}. 
+El diseño de las interfaces de usuario (\textbf{UI}) y la experiencia de usuario (\textbf{UX}) constituye una fase crítica dentro del desarrollo de la plataforma, ya que condiciona la adopción, la facilidad de uso y la fluidez interactiva durante las sesiones de \textit{tests}. 
 
-Para satisfacer las necesidades del sistema, el diseño ha considerado de manera diferenciada dos perfiles de usuario principales: el \textbf{profesorado}, que requiere herramientas de gestión, control de salas y análisis de resultados con baja latencia visual; y el \textbf{alumnado}, para el cual prima una interfaz limpia, altamente intuitiva y libre de distracciones, orientada al envío rápido de respuestas en entornos móviles o de escritorio.
+Para satisfacer las necesidades del sistema, el diseño ha considerado de manera diferenciada dos perfiles de usuario principales: el \textbf{profesorado}, que requiere herramientas de gestión, control de salas y análisis de resultados; y el \textbf{alumnado}, para el cual prima una interfaz limpia, altamente intuitiva y libre de distracciones, orientada al envío rápido de respuestas en entornos móviles o de escritorio.
 
 \subsection{Principios de diseño y guía de estilo}
 
@@ -387,12 +363,12 @@ Las interfaces han sido diseñadas siguiendo principios consolidados de usabilid
 
 \subsection{Flujos funcionales y prototipos}
 
-La arquitectura de navegación y la interacción visual de la plataforma se han organizado en cuatro secuencias funcionales principales. Estos escenarios se han maquetado en prototipos de alta fidelidad \textit{(mockups)} y se encuentran detallados en el \hyperref[anexo:prototipos_interfaz_usuario]{\textbf{Anexo A: Prototipos de interfaz de usuario}}. 
+La arquitectura de navegación y la interacción visual de la plataforma se han organizado en cuatro secuencias funcionales principales. Estos escenarios se han maquetado en prototipos de alta fidelidad \textit{(mockups)} y se encuentran detallados en el \hyperref[anexo:prototipos_interfaz_usuario]{\textbf{anexo de prototipos UI}}. 
 
 Los cuatro flujos cubren el ciclo de vida completo de una sesión interactiva, estructurándose según el momento operativo de la actividad:
 
 \begin{enumerate}
-    \item \textbf{\hyperref[anexo:flujo_registro_autenticacion]{Registro y autenticación de usuarios}}: Módulo administrativo de control de acceso y alta del perfil docente mediante credenciales institucionales.
+    \item \textbf{\hyperref[anexo:flujo_registro_autenticacion]{Registro y autenticación de usuarios}}: Módulo administrativo de control de acceso y alta del perfil docente mediante correo y contraseña.
     \item \textbf{\hyperref[anexo:flujo_creacion_cuestionarios_gestion_salas]{Creación de cuestionarios y gestión de salas}}: Entorno de preparación previa donde el profesorado gestiona los contenidos, configura los parámetros de la sesión y habilita la sala de espera.
     \item \textbf{\hyperref[anexo:flujo_incorporacion_estudiante_sala]{Incorporación del estudiante a la sala}}: Proceso simplificado de acceso en tiempo real para el alumnado mediante código PIN e identificación por UVUS o apodo, diseñado para minimizar la fricción de entrada.
     \item \textbf{\hyperref[anexo:flujo_ejecucion_partida_vivo]{Ejecución de la partida en vivo}}: Núcleo dinámico del sistema que coordina la experiencia síncrona entre ambos perfiles durante el desarrollo del cuestionario, abarcando la sincronización de tiempos, el envío de respuestas, la retroalimentación inmediata y la presentación de clasificaciones.
@@ -403,18 +379,20 @@ El diseño integrado de estos cuatro módulos responde a una lógica de interacc
 \section{Seguridad}
 \label{sec:seguridad}
 
-La seguridad de la plataforma se ha diseñado atendiendo a la naturaleza diferenciada de sus dos perfiles de usuario: los profesores (usuarios registrados que requieren acceso persistente mediante credenciales) y los alumnos (usuarios efímeros que acceden a las partidas en vivo mediante un PIN y un alias, sin necesidad de registro previo).
+La seguridad de la plataforma se ha diseñado atendiendo a la naturaleza diferenciada de sus dos perfiles de usuario: los \textbf{profesores} (usuarios registrados que requieren \textbf{acceso persistente} mediante credenciales) y los \textbf{alumnos} (usuarios efímeros que acceden a las partidas en vivo mediante un \textbf{PIN} y un \textbf{alias}, sin necesidad de registro previo).
 
 \subsection{Autenticación síncrona mediante JWT}
 \label{sec:autenticacion_jwt}
 
-Para la gestión de accesos del perfil docente se ha optado por un esquema sin estado (\textit{stateless}) basado en \textit{JSON Web Tokens} (JWT). Este enfoque evita almacenar el estado de las sesiones en el servidor para la API REST, permitiendo un diseño desacoplado.
+Para la gestión de accesos del perfil docente se ha optado por un esquema sin estado (\textit{stateless}) basado en \textit{JSON Web Tokens} (\textbf{JWT}). Este enfoque evita almacenar el estado de las sesiones en el servidor para la API REST, permitiendo un diseño \textbf{desacoplado}.
 
-El token se genera tras verificar las credenciales del usuario (cuyas contraseñas se almacenan de forma segura mediante algoritmos de \textit{hashing} y derivación de claves) y se adjunta en el encabezado estándar \texttt{Authorization: Bearer <token>} para validar las solicitudes posteriores. A continuación se ilustra la secuencia de emisión y validación del token.
+El token se genera tras verificar las credenciales del usuario (cuyas contraseñas se almacenan de forma segura mediante algoritmos de \textbf{\textit{hashing}} y derivación de claves) y se adjunta en el encabezado estándar \texttt{\textbf{Authorization: Bearer <token>}} para validar las solicitudes posteriores. A continuación se ilustra la secuencia de emisión y validación del token.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figures/diagrama_autenticacion_jwt.png}
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.95\textwidth]{figures/diagrama_autenticacion_jwt.png}
+    }
     \caption{Flujo de autenticación del profesor mediante JWT.}
     \label{fig:diagrama_autenticacion_jwt}
 \end{figure}
@@ -422,57 +400,61 @@ El token se genera tras verificar las credenciales del usuario (cuyas contraseñ
 \subsection{Gestión de roles y control de acceso (RBAC)}
 \label{sec:gestion_roles}
 
-El control de acceso se fundamenta en un modelo RBAC (\textit{Role-Based Access Control}), definiendo dos niveles de autorización claramente delimitados:
+El control de acceso se fundamenta en un modelo \textbf{RBAC} (\textit{Role-Based Access Control}), definiendo dos niveles de autorización claramente delimitados:
 
 \begin{itemize}
     \item \textbf{Rol de profesor (Autenticado):} Protegido mediante la validación del JWT, otorga privilegios para la gestión integral de cuestionarios, la creación de salas en vivo, el control del flujo del juego y la consulta de informes.
     \item \textbf{Rol de participante (Efímero / No autenticado):} Asignado temporalmente a la sala activa sin requerir registro previo, restringe los permisos exclusivamente al envío de respuestas a las preguntas habilitadas en ese instante.
 \end{itemize}
 
-Bajo una arquitectura con autoridad en el servidor (\textit{Server-Authoritative Architecture}), toda la lógica de validación, la temporización de la partida y la corrección de respuestas residen exclusivamente en el \textit{backend}. El servidor actúa así como la única fuente de verdad (\textit{Single Source of Truth}, SSOT) del sistema, garantizando la integridad del proceso de evaluación y previniendo la manipulación de datos desde el cliente (\textit{anti-cheat}).
+Bajo una arquitectura con \textbf{autoridad en el servidor} (\textit{Server-Authoritative Architecture}), toda la lógica de validación, la temporización de la partida y la corrección de respuestas residen exclusivamente en el \textit{backend}. El servidor actúa así como la \textbf{única fuente de verdad} (\textit{Single Source of Truth}, SSOT)\cite{hunt1999pragmatic} del sistema, garantizando la \textbf{integridad} del proceso de evaluación y previniendo la manipulación de datos desde el cliente (\textbf{\textit{anti-cheat}}).
 
 \subsection{Tokens de verificación para participantes}
 \label{sec:tokens_verificacion}
 
-Para consolidar las calificaciones de forma presencial y asegurar que el resultado pertenece al estudiante correspondiente, la plataforma incluye un mecanismo de verificación mediante códigos QR. El docente escanea en el aula el código presentado por el alumno, el cual contiene su alias y su token de verificación temporal (\texttt{verification\_token}).
+Para \textbf{consolidar} las calificaciones de forma presencial y \textbf{asegurar} que el resultado pertenece al estudiante correspondiente, la plataforma incluye un mecanismo de verificación mediante \textbf{códigos QR}. El docente escanea en el aula el código presentado por el alumno, el cual contiene su \textbf{alias} y su \textbf{token de verificación temporal} (\texttt{verification\_token}).
 
-Como se resume en el siguiente diagrama, al realizar el escaneo la aplicación solicita al \textit{backend} la verificación del participante. El servidor valida la correspondencia del token con la sala activa, confirma la actualización del estado del participante inscribiendo la nota en la base de datos y difunde la actualización a la sala mediante la conexión en tiempo real por \textit{WebSocket}.
+Como se resume en el siguiente diagrama, al realizar el escaneo la aplicación solicita al \textit{backend} la \textbf{verificación del participante}. El servidor valida la correspondencia del token con la sala activa, confirma la actualización del estado del participante inscribiendo la nota en la base de datos y difunde la actualización a la sala mediante la conexión en tiempo real por \textbf{\textit{WebSocket}}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figures/diagrama_token_participante.png}
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.95\textwidth]{figures/diagrama_token_participante.png}
+    }
     \caption{Diagrama del proceso de verificación del participante.}
     \label{fig:diagrama_token_participante}
 \end{figure}
 
 \section{Documentación de la API}\label{sec:documentacion_api}
 
-Para garantizar un desarrollo desacoplado entre el \textit{frontend} y el \textit{backend}, así como facilitar la mantenibilidad y evolución del sistema, la \textit{API} de Quizzie se ha diseñado bajo el estándar OpenAPI. 
+Para garantizar un desarrollo desacoplado entre el \textit{frontend} y el \textit{backend}, así como facilitar la mantenibilidad y evolución del sistema, la API de Quizzie se ha diseñado bajo el estándar OpenAPI. 
 
 \subsection{Integración con OpenAPI y Swagger}\label{sec:integracion_openapi}
 
-La generación automatizada de la documentación se fundamenta en el uso de modelos de datos estrictos mediante Pydantic. Al definir las estructuras de solicitud (\textit{request bodies}), parámetros de consulta (\textit{query parameters}) y respuestas esperadas mediante esquemas fuertemente tipados, el servidor compila y expone dinámicamente la especificación en formato JSON (\texttt{openapi.json}).
+La generación automatizada de la documentación técnica se fundamenta en el uso de modelos de datos declarativos mediante \textbf{Pydantic}. Al definir las cargas útiles de solicitud (\textit{request bodies}), los parámetros de consulta y las respuestas esperadas mediante esquemas fuertemente tipados, el motor de \textbf{FastAPI} sintetiza e infiere automáticamente la especificación formal del sistema bajo el estándar \textbf{OpenAPI} (\texttt{openapi.json}). 
 
-Esta integración proporciona dos interfaces gráficas de documentación accesibles desde el propio navegador:
+Este enfoque de \textbf{documentación viva} elimina las incongruencias habituales entre el código en ejecución y su especificación escrita. De esta forma, el servidor expone de forma nativa dos interfaces web complementarias orientadas a cubrir diferentes necesidades del ciclo de vida del proyecto:
 
 \begin{itemize}
-    \item \textbf{Swagger UI (\texttt{/docs}):} Entorno interactivo para probar y explorar los endpoints en tiempo real.
-    \item \textbf{ReDoc (\texttt{/redoc}):} Vista estructurada orientada a especificación técnica de producción.
+    \item \textbf{Swagger UI (\texttt{/docs}):} Proporciona una interfaz interactiva basada en el estándar visual de OpenAPI. Resulta clave durante la fase de desarrollo y depuración (\textit{testing}), ya que permite autenticarse y ejecutar peticiones directas contra los \textit{endpoints} del servidor en tiempo real desde el propio navegador.
+    \item \textbf{ReDoc (\texttt{/redoc}):} Ofrece una presentación estructurada, jerárquica y de lectura limpia de la especificación técnica. Está pensada como documentación de referencia para la integración de clientes externos o para entornos de producción, optimizando la consulta de esquemas de datos complejos.
 \end{itemize}
 
-Como se ilustra en la siguiente figura, cualquier validación de tipo o código de estado HTTP se refleja en la documentación.
+Como se ilustra en la siguiente figura, el flujo abarca desde la declaración formal de los esquemas en el código fuente hasta la exposición y renderizado de ambas herramientas de consulta.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figures/diagrama_openapi.png}
-    \caption{Flujo de generación de documentación OpenAPI desde los esquemas Pydantic.}
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=1.05\textwidth]{figures/diagrama_openapi.png}
+    }
+    \caption{Flujo de generación de documentación OpenAPI.}
     \label{fig:diagrama_openapi}
 \end{figure}
 
 \subsection{Especificación de rutas fundamentales}
 \label{sec:rutas_fundamentales}
 
-La API traslada de forma directa los módulos conceptuales definidos en la \hyperref[sec:modelado_datos]{sección de modelado de datos}. Esta separación de responsabilidades se materializa en el código fuente dividiendo los enrutadores (\texttt{routers/}) y los modelos de datos (\texttt{models/}) en tres bloques principales: \texttt{users}, \texttt{content} y \texttt{stage}.
+La API traslada de forma directa los módulos conceptuales definidos en el \hyperref[sec:modelado_datos]{modelo de datos}. Esta separación de responsabilidades se materializa en el código fuente dividiendo los enrutadores (\texttt{routers/}) y los modelos de datos (\texttt{models/}) en tres bloques principales: \texttt{users}, \texttt{content} y \texttt{stage}.
 
 A continuación se resumen las rutas proyectadas más representativas para cada uno de estos módulos:
 
@@ -488,20 +470,25 @@ A continuación se resumen las rutas proyectadas más representativas para cada 
 \end{itemize}
 
 \paragraph{Sesiones (\texttt{routers/stage.py})}
-
 Combina peticiones REST para la gestión del estado de la sala y un canal WebSocket para la comunicación en tiempo real:
 
 \begin{itemize}
     \item \texttt{POST /stage/rooms}: Crea e inicializa una nueva sala de juego asociada a un cuestionario y aplica su configuración inicial.
     \item \texttt{POST /stage/participants}: Permite el acceso efímero de los estudiantes a una sala activa mediante un PIN y un alias.
     \item \texttt{POST /stage/answers}: Almacena la respuesta enviada por un alumno a la pregunta activa.
-    \item \texttt{POST} \path{/stage/rooms/{room_id}/verify-participant}: Permite al docente verificar presencialmente el resultado de un estudiante en el aula, según se describe en la \hyperref[sec:tokens_verificacion]{sección de verificación de seguridad}.
+    \item \texttt{POST} \path{/stage/rooms/{room_id}/verify-participant}: Permite al docente verificar presencialmente el resultado de un estudiante en el aula, según se describe en el \hyperref[fig:diagrama_token_participante]{diagrama de verificación del token}.
     \item \texttt{WS} \path{/stage/rooms/{room_id}/ws}: Mantiene la conexión en tiempo real para sincronizar el avance del juego, los temporizadores y la clasificación entre todos los participantes.
 \end{itemize}
 
+\subsubsection*{Ciclo de vida y orquestación de la sesión en tiempo real}
+
+Para ilustrar la articulación práctica del canal \texttt{WS} junto a los \textit{endpoints} REST, la siguiente figura describe la interacción y el flujo de control entre el profesor, el servidor y los estudiantes. El diagrama organiza el ciclo completo de la sala activa, desde la apertura de la sesión hasta la verificación de resultados.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figures/diagrama_ws_sala.png}
-    \caption{Secuencia del intercambio de eventos durante la sesión en tiempo real.}
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=1.1\textwidth]{figures/diagrama_ws_sala.png}
+    }
+    \caption{Secuencia del intercambio de eventos en una sala.}
     \label{fig:diagrama_ws_sala}
 \end{figure}

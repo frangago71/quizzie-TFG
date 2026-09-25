@@ -1,0 +1,66 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'noteBkgColor': '#a946ab',
+    'noteTextColor': '#ffffff',
+    'noteBorderColor': '#661465',
+    'actorBorder': '#55ccaa',
+    'actorLineColor': '#007976',
+    'actorTextColor': '#000000',
+    'sequenceNumberColor': '#ffffff',
+    'lineColor': '#333333',
+    'labelBoxBkgColor': '#f4faf8',
+    'labelBoxBorderColor': '#661465',
+    'labelTextColor': '#661465',
+    'loopTextColor': '#333333'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+
+    actor A as Alumno (Cliente)
+    participant S as Servidor (Eventos)
+    actor T as Profesor (Cliente)
+    participant DB as BD
+
+    T->>S: POST /start (Iniciar sala)
+    S->>DB: Actualizar estado de sala
+
+    loop Bucle por cada pregunta
+        S-->>T: Broadcast: Fase lectura
+        S-->>A: Broadcast: Fase lectura
+
+        Note over S: Transición automática
+        S-->>T: Auto: Fase respuesta
+        S-->>A: Auto: Fase respuesta
+
+        A->>S: Enviar respuesta
+        S->>DB: Registrar respuesta
+        S-->>A: 200 OK
+        S-->>T: Broadcast: Actualizar respuestas
+
+        Note over S: Fin de tiempo
+        S->>DB: Transición a resultados
+        S-->>T: Broadcast: Resultados globales
+        S-->>A: Broadcast: Resultado individual
+
+        T->>S: POST /next-question (Avanzar)
+        S->>DB: Evaluar preguntas pendientes
+
+        alt Quedan preguntas pendientes
+            Note over S: El bucle se repite
+        else Era la última pregunta
+            S-->>T: Broadcast: Fase QR
+            S-->>A: Broadcast: Mostrar QR
+
+            Note over T: Escanear QR del alumno
+            T->>S: POST /verify-participant (Verificar nota)
+            S->>DB: Registrar asistencia y entrega
+            S-->>A: Broadcast: Oficialización de nota
+        end
+    end
+
+    T->>S: POST /finish (Finalizar sala)
+    S->>DB: Cerrar sala
+    S-->>T: Broadcast: Partida finalizada
+    S-->>A: Broadcast: Partida finalizada

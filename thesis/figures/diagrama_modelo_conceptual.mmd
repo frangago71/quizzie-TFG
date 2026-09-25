@@ -1,0 +1,36 @@
+%%{init: {
+  'theme': 'neutral'
+}}%%
+classDiagram
+    direction LR
+
+    Room --o Quiz
+
+    Teacher *-- Quiz
+    Teacher *-- Group
+    Teacher *-- Room
+    Quiz *-- Question
+    Question *-- Option
+    Room *-- Participant
+    Student *-- Participant
+    Participant *-- Answer
+
+    Group "0..1" -- "*" Student
+    Group "0..1" -- "*" Room
+    Question "0..1" -- "*" Answer
+    Option "0..1" -- "*" Answer
+
+    %% Entidades maestras / Usuarios: Borde Cyan oscuro
+    style Teacher stroke:#007976,stroke-width:2px,fill:#eee;
+    style Group stroke:#007976,stroke-width:2px,fill:#eee;
+    style Student stroke:#007976,stroke-width:2px,fill:#eee;
+
+    %% Sesión y tiempo real: Borde Magenta claro
+    style Room stroke:#a946ab,stroke-width:2px,fill:#eee;
+    style Participant stroke:#a946ab,stroke-width:2px,fill:#eee;
+    style Answer stroke:#a946ab,stroke-width:2px,fill:#eee;
+
+    %% Contenido evaluativo: Borde Cyan claro
+    style Quiz stroke:#55ccaa,stroke-width:2px,fill:#eee;
+    style Question stroke:#55ccaa,stroke-width:2px,fill:#eee;
+    style Option stroke:#55ccaa,stroke-width:2px,fill:#eee;

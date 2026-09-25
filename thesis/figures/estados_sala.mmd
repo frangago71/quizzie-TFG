@@ -1,0 +1,43 @@
+%%{init: {'theme': 'neutral', 'themeVariables': {'specialStateColor': '#661465'}}}%%
+stateDiagram-v2
+    direction TB
+
+    [*] --> SalaEspera
+    SalaEspera: Sala de espera
+
+    state "Dinámica de la ronda de preguntas" as RondaPreguntas {
+        direction LR
+        Lectura: Lectura de pregunta
+        FaseResp: Fase de respuesta
+        Resultados: Resultados
+        Ranking: Ranking
+
+        Lectura --> FaseResp: Automático
+        FaseResp --> Resultados: Fin de tiempo
+        Resultados --> Lectura: Siguiente pregunta
+        Resultados --> Ranking: Ver ranking
+        Ranking --> Lectura: Siguiente pregunta
+    }
+
+    SalaEspera --> RondaPreguntas: Iniciar
+
+    state "Cierre de sesión" as Cierre {
+        direction LR
+        Verificacion: Verificación de notas
+        Fin: Fin
+
+        Verificacion --> Fin: Confirmar
+        Fin --> [*]
+    }
+
+    RondaPreguntas --> Cierre: Última pregunta
+
+    style SalaEspera fill:#007976,stroke:#005553,color:#ffffff,stroke-width:1.5px
+
+    style Lectura fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1.5px
+    style FaseResp fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1.5px
+    style Resultados fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1.5px
+    style Ranking fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1.5px
+
+    style Verificacion fill:#55ccaa,stroke:#007976,color:#ffffff,stroke-width:1.5px
+    style Fin fill:#55ccaa,stroke:#007976,color:#ffffff,stroke-width:1.5px

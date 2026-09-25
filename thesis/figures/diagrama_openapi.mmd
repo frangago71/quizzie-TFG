@@ -1,0 +1,20 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'lineColor': '#333333'
+  }
+}}%%
+flowchart LR
+    Pydantic["Modelos Pydantic\n(Schemas)"] --> FastAPI["FastAPI Engine"]
+    FastAPI --> OpenAPI["Especificación OpenAPI\n(openapi.json)"]
+    OpenAPI --> Swagger["Swagger UI\n(/docs)"]
+    OpenAPI --> ReDoc["ReDoc\n(/redoc)"]
+
+    %% Pipeline principal: progresión de magenta claro a oscuro (borde -> sólido claro -> sólido oscuro)
+    style Pydantic stroke:#a946ab,stroke-width:2px,fill:#eee;
+    style FastAPI fill:#a946ab,stroke:#661465,color:#ffffff,stroke-width:1.5px;
+    style OpenAPI fill:#661465,stroke:#4a0e49,color:#ffffff,stroke-width:1.5px;
+
+    %% Salidas de documentación final: los 2 tonos de cyan en sólido
+    style Swagger fill:#55ccaa,stroke:#007976,color:#ffffff,stroke-width:1.5px;
+    style ReDoc fill:#007976,stroke:#005553,color:#ffffff,stroke-width:1.5px;

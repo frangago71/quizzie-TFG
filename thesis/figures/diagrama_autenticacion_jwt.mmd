@@ -1,0 +1,29 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'noteBkgColor': '#a946ab',
+    'noteTextColor': '#ffffff',
+    'noteBorderColor': '#661465',
+    'actorBorder': '#55ccaa',
+    'actorLineColor': '#007976',
+    'actorTextColor': '#000000',
+    'sequenceNumberColor': '#ffffff',
+    'lineColor': '#333333',
+    'labelBoxBkgColor': '#f4faf8',
+    'labelBoxBorderColor': '#661465',
+    'labelTextColor': '#661465',
+    'loopTextColor': '#333333'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    actor P as Profesor
+    participant B as Backend (FastAPI / Auth)
+    participant D as Base de Datos
+
+    P->>B: POST /login (Email y contraseña)
+    B->>D: Verifica usuario y hash de contraseña
+    D-->>B: Credenciales válidas
+    B-->>P: Devuelve Access Token (JWT Signed)
+    P->>B: HTTP Request con Header "Authorization: Bearer <JWT>"
+    B->>B: Valida la firma y la expiración del JWT (Stateless)

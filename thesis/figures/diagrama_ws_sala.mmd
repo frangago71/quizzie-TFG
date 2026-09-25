@@ -1,0 +1,46 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'noteBkgColor': '#a946ab',
+    'noteTextColor': '#ffffff',
+    'noteBorderColor': '#661465',
+    'actorBorder': '#55ccaa',
+    'actorLineColor': '#007976',
+    'actorTextColor': '#000000',
+    'sequenceNumberColor': '#ffffff',
+    'lineColor': '#333333',
+    'labelBoxBkgColor': '#f4faf8',
+    'labelBoxBorderColor': '#661465',
+    'labelTextColor': '#661465',
+    'loopTextColor': '#333333'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    actor P as Profesor
+    participant B as Backend
+    actor A as Alumno
+
+    note over B: Pregunta activa
+    P->>B: Iniciar juego o avanzar a la siguiente pregunta
+    B-->>A: Notifica inicio de sala / nueva pregunta activa
+    A->>B: Envía respuesta a la pregunta activa
+    B-->>P: Notifica recepción de respuesta (recuento acumulado)
+    B-->>A: Transmite sincronización del tiempo restante
+
+    note over B: Resultados y feedback
+    P->>B: Finalizar tiempo de la pregunta activa
+    B-->>A: Notifica fin de pregunta (feedback individual y puntos)
+    P->>B: Solicitar visualización de clasificación
+    B-->>A: Publica pantalla de clasificación global
+    B-->>P: Devuelve resumen y estadísticas globales de la sala
+
+    note over B: Cierre y verificación presencial
+    P->>B: Solicitar paso a la fase de verificación
+    B-->>A: Notifica fase de verificación
+    P->>B: Escanea QR y envía datos de verificación del alumno
+    B->>B: Valida token y actualiza estado a verificado
+    B-->>P: Confirma verificación realizada
+    B-->>A: Notifica al alumno que su resultado ha sido verificado
+    P->>B: Finalizar la sesión de juego
+    B-->>A: Notifica cierre definitivo de la sala

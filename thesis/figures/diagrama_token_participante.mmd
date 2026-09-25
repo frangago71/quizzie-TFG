@@ -1,0 +1,30 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'noteBkgColor': '#a946ab',
+    'noteTextColor': '#ffffff',
+    'noteBorderColor': '#661465',
+    'actorBorder': '#55ccaa',
+    'actorLineColor': '#007976',
+    'actorTextColor': '#000000',
+    'sequenceNumberColor': '#ffffff',
+    'lineColor': '#333333',
+    'labelBoxBkgColor': '#f4faf8',
+    'labelBoxBorderColor': '#661465',
+    'labelTextColor': '#661465',
+    'loopTextColor': '#333333'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    actor P as Profesor
+    participant B as Backend (FastAPI / REST / WS)
+    participant D as Base de Datos
+
+    P->>B: POST /verify-participant (nickname, token)
+    B->>D: Verifica token y recupera participante
+    D-->>B: Datos del participante válidos
+    B->>D: Actualiza estado de verificación e is_verified = True
+    D-->>B: Confirmación de persistencia
+    B->>B: Notifica actualización a la sala (WebSocket)
+    B-->>P: Confirmación de verificación
