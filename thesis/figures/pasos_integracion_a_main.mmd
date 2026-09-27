@@ -1,0 +1,14 @@
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A["<div style='min-width: 350px;'>1. Confirmar el estado exitoso de la integración</div>"] --> B["<div style='min-width: 350px;'>2. Acceder a la rama de integración local</div>"]
+    B --> C["<div style='min-width: 350px;'>3. Sincronizar los cambios locales con el remoto</div>"]
+    C --> D["<div style='min-width: 350px;'>4. Cambiar a la rama de producción</div>"]
+    D --> E["<div style='min-width: 350px;'>5. Consolidar los cambios validados localmente</div>"]
+    E --> F["<div style='min-width: 350px;'>6. Iniciar despliegue a producción</div>"]
+
+    style A stroke:#55ccaa,stroke-width:2px
+    style B stroke:#55ccaa,stroke-width:2px
+    style C stroke:#55ccaa,stroke-width:2px
+    style D stroke:#55ccaa,stroke-width:2px
+    style E stroke:#55ccaa,stroke-width:2px
+    style F stroke:#55ccaa,stroke-width:2px

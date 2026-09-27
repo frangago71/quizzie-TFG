@@ -133,8 +133,8 @@
 
 \newcommand{\covRed}[1]{\textcolor{red!80!black}{\textbf{#1}}}
 \newcommand{\covCross}{\textcolor{red!80!black}{\scalebox{1.4}{\textbf{\texttimes}}}}
-\newcommand{\traceCross}{\textcolor{black}{\scalebox{1.6}{\textbf{\texttimes}}}}
-\newcommand{\traceCrossGray}{\textcolor{gray!90!black}{\scalebox{1.6}{\textbf{\texttimes}}}}
+\newcommand{\traceCross}{\textcolor{black}{\raisebox{-1.5pt}{\scalebox{1.6}{\textbf{\texttimes}}}}}
+\newcommand{\traceCrossGray}{\textcolor{gray!90!black}{\raisebox{-1.5pt}{\scalebox{1.6}{\textbf{\texttimes}}}}}
 \definecolor{covYellow}{RGB}{218,165,32}
 \newcommand{\covYellow}[1]{\textcolor{covYellow}{\textbf{#1}}} 
 \newcommand{\covPartial}{\textcolor{covYellow}{\raisebox{0.25ex}{\scalebox{1.8}{\textbf{\texttildelow}}}}}
@@ -201,3 +201,74 @@
 % Estilos de columna para tablas
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% Paleta ajustada al tema de la imagen
+\definecolor{pypurple}{RGB}{135, 40, 145}   
+\definecolor{pyself}{RGB}{0, 140, 240}       
+\definecolor{pyfunc}{RGB}{0, 50, 200}        
+\definecolor{pytypeclass}{RGB}{20, 45, 120}  
+\definecolor{pytypeprim}{RGB}{75, 25, 130}  
+\definecolor{pytext}{RGB}{25, 25, 25}        
+\definecolor{pycomment}{RGB}{0, 128, 0}      
+
+\lstdefinestyle{sourcecode}{
+    language=Python,
+    backgroundcolor=\color{white},
+    basicstyle=\ttfamily\footnotesize\color{pytext},
+    % Comentarios con # en VERDE
+    morecomment=[l]{\#},
+    commentstyle=\color{pycomment},
+    % Grupo 1: Palabras clave y sentencias de control en PURPURA
+    keywords=[1]{def, async, class, await, if, not, in, for, try, except, return, from, import, as, is, raise, else},
+    keywordstyle=[1]\color{pypurple},
+    % Grupo 2: Tipos y clases estandar
+    keywords=[2]{int, dict, str, list},
+    keywordstyle=[2]\color{pytypeprim},
+    % Grupo 3: Clases con mayuscula inicial, modelos y dependencias de seguridad
+    keywords=[3]{Dict, List, WebSocket, Exception, Room, Session, RoomStatus, hashlib, Question, Participant, RoomPhase, HTTPException, Annotated, Depends, VerificationRequest, Student, HTTPBearer, HTTPAuthorizationCredentials},
+    keywordstyle=[3]\color{pytypeclass},
+    % Grupo 4: Literales, constantes, singletons y modulos en AZUL
+    emph={[1]self, None, True, False, manager, db, ROOM_NOT_FOUND, secrets, router, PARTICIPANT_NOT_FOUND, security, SECRET_KEY, ALGORITHM, jwt},
+    emphstyle={[1]\color{pyself}},
+    % Grupo 5: Funciones, metodos y llamadas en AZUL
+    emph={[2]ConnectionManager, connect, disconnect, broadcast_to_room, __init__, get_calculated_time_left, get_utc_now, max, min, handle_teacher_disconnect, query, filter, first, commit, deterministic_shuffle, sort_key, sorted, encode, hexdigest, next_question, get_session, select, where, order_by, all, add, get, exec, split, join, map, len, patch, token_hex, verify_participant, post, sum, get_current_teacher_id, decode},
+    emphstyle={[2]\color{pyfunc}},
+    % Parametros de presentacion
+    numbers=none,
+    frame=none,
+    keepspaces=true,
+    tabsize=4,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=false
+}
+
+\newcommand{\lstsquote}{'}
+\newcommand{\lstdquote}{"}
+
+\definecolor{jsstring}{RGB}{163, 21, 21}   
+\definecolor{jscomment}{RGB}{200, 100, 0}  
+
+% Lenguaje JavaScript / TypeScript con variables y desestructuraciones coloreadas
+\lstdefinelanguage{JavaScript}{
+  % 1. Palabras clave del lenguaje en PURPURA
+  keywords=[1]{break, case, catch, class, const, continue, debugger, default, delete, do, else, export, extends, finally, for, function, if, import, in, instanceof, new, return, super, switch, this, throw, try, typeof, var, void, while, with, yield, let, async, await},
+  keywordstyle=[1]\color{pypurple},
+  % 2. Literales y booleanos en CELESTE
+  keywords=[2]{true, false, null, undefined, NaN},
+  keywordstyle=[2]\color{pyself},
+  % 3. Objetos globales, hooks, contextos y tipos en AZUL 
+  keywords=[3]{useEffect, useCallback, useState, useRef, useMemo, WebSocket, Number, JSON, MessageEvent, ReactNode, RoomDataType, RoomContext, Readonly, String},
+  keywordstyle=[3]\color{pyfunc},
+  % 4. Variables desestructuradas, props y almacenamiento en CELESTE
+  emph={[1]type, data, event, idToUse, roomId, urlRoomId, isHost, ws, sessionStorage, children, rawRoomCode, rawRoomId, rawUserNickname, rawParticipantId, roomData, code, cleanCode, cleanId, name, cleanNickname, cleanParticipantId, contextValue, setRoomCode, setRoomId, setUserNickname, setParticipantId, setRoomData},
+  emphstyle={[1]\color{pyself}},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{jscomment},
+  string=[b]',
+  morestring=[b]",
+  morestring=[b]`,
+  stringstyle=\color{jsstring}
+}

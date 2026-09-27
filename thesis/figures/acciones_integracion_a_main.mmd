@@ -1,0 +1,14 @@
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A["<div style='min-width: 210px; text-align: center;'>Ver GitHub Actions (develop)</div>"] --> B["<div style='min-width: 210px; text-align: center;'><code>git checkout develop</code></div>"]
+    B --> C["<div style='min-width: 210px; text-align: center;'><code>git pull origin develop</code></div>"]
+    C --> D["<div style='min-width: 210px; text-align: center;'><code>git checkout main</code></div>"]
+    D --> E["<div style='min-width: 210px; text-align: center;'><code>git merge develop</code></div>"]
+    E --> F["<div style='min-width: 210px; text-align: center;'><code>git push origin main</code></div>"]
+
+    style A stroke:#a946ab,stroke-width:2px
+    style B stroke:#a946ab,stroke-width:2px
+    style C stroke:#a946ab,stroke-width:2px
+    style D stroke:#a946ab,stroke-width:2px
+    style E stroke:#a946ab,stroke-width:2px
+    style F stroke:#a946ab,stroke-width:2px

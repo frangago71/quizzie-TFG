@@ -1,42 +1,98 @@
 \chapter{Implementación y pruebas}\label{cap:implementacion_y_pruebas}
 
-Una vez establecida la base arquitectónica y el diseño del sistema, corresponde abordar la materialización técnica de la plataforma, transformando los requisitos y decisiones de diseño arquitectónico previamente definidos en componentes funcionales de software. Para ello, en primer lugar se detallan los módulos críticos de la implementación tanto en el \textit{backend} como en el \textit{frontend}, haciendo especial énfasis en la sincronización en tiempo real y la seguridad. Posteriormente, se expone la estrategia integral de pruebas, los criterios de calidad adoptados y los resultados de cobertura obtenidos para garantizar la robustez del sistema.
+Una vez establecida la base arquitectónica y el diseño del sistema, corresponde abordar la materialización técnica de la plataforma, transformando los requisitos y decisiones de diseño arquitectónico previamente definidos en componentes funcionales de software. Para ello, en primer lugar se detallan los \textbf{módulos críticos} de la implementación tanto en el \textit{backend} como en el \textit{frontend}, haciendo especial énfasis en la sincronización en \textbf{tiempo real} y la \textbf{seguridad}. Posteriormente, se expone la \textbf{estrategia integral de pruebas}, los criterios de calidad adoptados y los resultados de \textbf{cobertura} obtenidos para garantizar la robustez del sistema.
 
 \section{Componentes clave e implementación del sistema}\label{sec:componentes_clave}
 
-En esta sección se exponen los aspectos más representativos del núcleo de \textit{Quizzie}, analizando las decisiones de diseño y patrones de software adoptados para dar respuesta a los requisitos funcionales más complejos: la comunicación bidireccional, la gestión del ciclo de vida de las salas y la seguridad del estado en el \textit{frontend}.
+En esta sección se exponen los aspectos más representativos del núcleo de \textit{Quizzie}, analizando las decisiones de diseño y \textbf{patrones de software} adoptados para dar respuesta a los requisitos funcionales más complejos: la \textbf{comunicación bidireccional}, la \textbf{gestión del ciclo de vida de las salas} y la \textbf{seguridad del estado} en el \textit{frontend}.
 
-\subsection{Comunicación en tiempo real mediante WebSockets}\label{subsec:impl_websockets}
+\subsection{Comunicación en tiempo real mediante \textit{WebSockets}}\label{subsec:impl_websockets}
 
 La interactividad en vivo entre el profesor y los alumnos requiere una arquitectura de baja latencia capaz de difundir eventos de forma simultánea a múltiples clientes mediante el protocolo WebSocket~\cite{websocket_protocol}.
 
-\subsubsection{Gestor de conexiones en el backend (\texttt{ConnectionManager})}
+\subsubsection{Gestor de conexiones en el \textit{backend} (\texttt{ConnectionManager})}
+
 En la ruta \texttt{backend/routers/stage.py}, el gestor de conexiones implementa una adaptación concurrente del patrón de diseño \textit{Observer}~\cite{gamma1994design} combinada con una arquitectura de publicación-suscripción (\textit{Pub-Sub})~\cite{eugster2003pubsub}, permitiendo registrar, desacoplar y administrar dinámicamente el ciclo de vida de las instancias activas de \texttt{WebSocket} asociadas a cada sala mediante su identificador único (\texttt{room\_id}).
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{listings/gestor_conexiones_backend.png}}
-  \captionof{lstlisting}{Gestor de conexiones en el \textit{backend}}
-  \label{lst:gestor_conexiones_backend}
-\end{figure}
+\vspace{0.1cm}
 
-Esta estructura permite emitir mensajes masivos con formato JSON mediante el método \texttt{broadcast\_to\_room}. Asimismo, incluye un mecanismo de tolerancia a fallos en bloque \texttt{try-except} que elimina automáticamente las conexiones diferidas o corruptas sin interrumpir la emisión hacia el resto de los participantes.
+\begin{lstlisting}[style=sourcecode, captionpos=b, caption={Gestor de conexiones en el \textit{backend}.}, label={lst:gestor_conexiones_backend}]
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[int, List[WebSocket]] = {}
 
-\newpage
+    async def connect(self, websocket: WebSocket, room_id: int):
+        await websocket.accept()
+        if room_id not in self.active_connections:
+            self.active_connections[room_id] = []
+        self.active_connections[room_id].append(websocket)
+
+    def disconnect(self, websocket: WebSocket, room_id: int):
+        if room_id in self.active_connections:
+            if websocket in self.active_connections[room_id]:
+                self.active_connections[room_id].remove(websocket)
+
+    async def broadcast_to_room(self, room_id: int, message: dict):
+        if room_id in self.active_connections:
+            for connection in self.active_connections[room_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    self.active_connections[room_id].remove(connection)
+\end{lstlisting}
+
+Esta estructura permite emitir mensajes masivos en formato JSON mediante el método \texttt{broadcast\_to\_room}. Asimismo, incluye un mecanismo de tolerancia a fallos mediante un bloque \texttt{try-except} que elimina automáticamente las conexiones diferidas o corruptas sin interrumpir la emisión hacia el resto de los participantes.
 
 \subsubsection{Suscripción y recepción de eventos en el cliente React}
-En el \textit{frontend}, el componente establece la conexión WebSocket con el servidor enviando el parámetro del rol (\texttt{teacher} o \texttt{student}) como parámetro de consulta.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{listings/recepcion_eventos_react.png}}
-  \captionof{lstlisting}{Conexión y enrutamiento de eventos WebSocket en React}
-  \label{lst:recepcion_eventos_react}
-\end{figure}
+En el componente principal de la sala (\texttt{frontend/src/room-play/LiveRoom.tsx}), el \textit{frontend} se acopla a este flujo mediante un cliente WebSocket. Tal y como se ilustra en el código, la conexión se inicializa aportando el rol correspondiente (\texttt{teacher} o \texttt{student}) como parámetro de consulta en la fase de enlace (\textit{handshake}).
 
-El \textit{handler} \texttt{onmessage} actúa como un enrutador de eventos de la interfaz de usuario, mutando el estado local de React en función del tipo de evento recibido. Asimismo, la función de retorno del \textit{hook} \texttt{useEffect} (\textit{cleanup function}) garantiza el cierre formal del socket al desmontar el componente, previniendo fugas de memoria.
+\begin{lstlisting}[style=sourcecode, language=JavaScript, captionpos=b, caption={Conexión y enrutamiento de eventos WebSocket en React.}, label={lst:recepcion_eventos_react}]
 
-\newpage
+const onMessage = useCallback(
+  (event: MessageEvent) => {
+    const { type, data } = JSON.parse(event.data);
+    switch (type) {
+      case "next_question":
+      case "room_start":
+      case "room_update":
+        updateRoomStatus(data);
+        break;
+      case "show_results":
+        setStatistics(data.statistics);
+        setCorrectOptionId(data.correct_option_id);
+        break;
+      case "show_leaderboard":
+        setLeaderboardData(data.leaderboard);
+        break;
+      case "timer_update":
+        if (data.time_left !== undefined) setTimeLeft(data.time_left);
+        if (data.is_paused !== undefined) setIsPaused(data.is_paused);
+        break;
+      // [...] Otros eventos: answer_submitted, room_finish, participant_verified, etc.
+    }
+  },
+  [updateRoomStatus, setRoomData],
+);
+
+useEffect(() => {
+  const idToUse = Number(urlRoomId || roomId);
+  if (!idToUse || Number.isNaN(idToUse)) return;
+
+  // [...] Sincronizacion inicial del estado de la sala mediante API REST: syncRoom()
+
+  const ws = new WebSocket(
+    `${WS_BASE_URL}/stage/rooms/${idToUse}/ws?role=${isHost ? "teacher" : "student"}`,
+  );
+  ws.onopen = () => setIsConnected(true);
+  ws.onclose = () => setIsConnected(false);
+  ws.onmessage = onMessage;
+  return () => ws.close();
+}, [roomId, urlRoomId, isHost, updateRoomStatus, onMessage]);
+
+\end{lstlisting}
+
+El \textit{handler} \texttt{onmessage}, optimizado mediante el \textit{hook} \texttt{useCallback}, actúa como un enrutador de eventos de la interfaz de usuario, mutando el estado local de React en función de la acción recibida del servidor. Asimismo, la función de retorno del \textit{hook} \texttt{useEffect} (\textit{cleanup function}) garantiza el cierre formal del socket al desmontar el componente, previniendo fugas de memoria y conexiones huérfanas en el cliente.
 
 \subsection{Gestión de sala, estado, tiempo y aleatoriedad}\label{subsec:impl_state_time}
 
@@ -45,100 +101,259 @@ El correcto funcionamiento de las sesiones depende de mantener la sala sincroniz
 \subsubsection{Cálculo determinista del tiempo restante en UTC}
 En \texttt{backend/routers/stage.py}, la medición del tiempo no depende del reloj del cliente, sino de la diferencia estricta de marcas temporales en UTC.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{listings/calculo_tiempo_utc.png}}
-  \captionof{lstlisting}{Cálculo determinista del tiempo restante en el servidor}
-  \label{lst:calculo_tiempo_utc}
-\end{figure}
+\begin{lstlisting}[style=sourcecode, language=Python, captionpos=b, caption={Cálculo del tiempo restante sincronizado en el \textit{backend}.}, label={lst:calculo_tiempo_restante}]
+def get_calculated_time_left(room: Room) -> int:
+    if room.is_paused:
+        return room.remaining_time_at_pause
+    if not room.timer_started_at:
+        return room.remaining_time_at_pause
+
+    now = get_utc_now()
+    started_at = room.timer_started_at
+    if started_at.tzinfo is None:
+        from datetime import timezone as tz
+        started_at = started_at.replace(tzinfo=tz.utc)
+
+    elapsed = (now - started_at).total_seconds()
+    calculated_time = room.remaining_time_at_pause - int(elapsed)
+    return max(0, min(room.answer_time, calculated_time))
+\end{lstlisting}
 
 Al restar el instante actual (\texttt{get\_utc\_now()}) del momento de inicio (\texttt{timer\_started\_at}), el sistema inmuniza la cuenta atrás frente a retrasos de red o pausas de ejecución en el cliente.
 
-\newpage
-
 \subsubsection{Pausa automática por desconexión del profesor}
-Para mitigar imprevistos técnicos durante una sesión presencial, el servidor detecta si la conexión WebSocket del docente cae inesperadamente.
+Para mitigar imprevistos técnicos durante una sesión presencial, el servidor detecta si la conexión WebSocket del docente cae inesperadamente. En la ruta \texttt{backend/routers/stage.py}, se implementa una rutina de contingencia encargada de preservar la integridad temporal de la sala activa.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{listings/desconexion_profesor.png}}
-  \captionof{lstlisting}{Gestión de desconexión imprevista del profesor}
-  \label{lst:desconexion_profesor}
-\end{figure}
+\begin{lstlisting}[style=sourcecode, language=Python, captionpos=b, caption={Rutina de pausa automática ante la desconexión del docente.}, label={lst:pausa_automatica_docente}]
+async def handle_teacher_disconnect(room_id: int, db: Session):
+    room = db.query(Room).filter(Room.id == room_id).first()
+    if not room or room.is_paused or room.status != RoomStatus.IN_PROGRESS:
+        return
+
+    room.is_paused = True
+    room.remaining_time_at_pause = get_calculated_time_left(room)
+    db.commit()
+
+    await manager.broadcast_to_room(
+        room_id,
+        {
+            "type": "timer_update",
+            "time_left": room.remaining_time_at_pause,
+            "is_paused": True,
+        },
+    )
+\end{lstlisting}
 
 La función congela la partida almacenando el tiempo restante exacto en \texttt{remaining\_time\_at\_pause} mediante \texttt{get\_calculated\_time\_left} y notifica inmediatamente a todos los estudiantes, pausando la interfaz hasta la reconexión del profesor.
 
 \subsubsection{Barajado determinista de opciones}
-Para evitar que los estudiantes copien observando la opción seleccionada en la pantalla de un compañero, el \textit{backend} desordena las opciones mediante una semilla \textit{hash}.
+Para mitigar que los estudiantes puedan copiar visualmente la alternativa seleccionada en la pantalla de un compañero contiguo durante sesiones presenciales, el \textit{backend} altera la disposición de las opciones de respuesta. No obstante, delegar esta tarea en generadores de números pseudoaleatorios convencionales (como el módulo estándar \texttt{random} de Python) introduce dos problemas críticos: la pérdida de determinismo ante caídas de conexión y bloqueos en el análisis estático de código.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{listings/barajado_anticopia.png}}
-  \captionof{lstlisting}{Algoritmo de barajado determinista anti-copia}
-  \label{lst:barajado_anticopia}
-\end{figure}
+Herramientas de aseguramiento de calidad como SonarQube restringen el uso de generadores pseudoaleatorios estándar en flujos de datos sensibles, catalogándolos como debilidades de seguridad si no garantizan entropía criptográfica o cuando su estado mutable global puede generar condiciones de carrera entre hilos de FastAPI. Para cumplir con el \textit{Quality Gate} y preservar una arquitectura estrictamente sin estado (\textit{stateless}), se implementó en el mismo módulo del enrutador (\texttt{backend/routers/stage.py}) un algoritmo de barajado determinista basado en dispersión criptográfica:
 
-El algoritmo genera un \textit{hash SHA-256} combinando la sala, la pregunta y la opción. Esto altera la disposición de las respuestas para cada partida pero mantiene un orden idéntico si un alumno reconecta o recarga su cliente.
+\begin{lstlisting}[style=sourcecode, language=Python, captionpos=b, caption={Algoritmo de barajado determinista anti-copia.}, label={lst:barajado_anticopia}]
+def deterministic_shuffle(items: List[dict], room_id: int, question_id: int) -> List[dict]:
+    def sort_key(item):
+        seed_str = f"{room_id}_{question_id}_{item['id']}"
+        return hashlib.sha256(seed_str.encode("utf-8")).hexdigest()
+
+    return sorted(items, key=sort_key)
+\end{lstlisting}
+
+El algoritmo ordena los elementos calculando al vuelo una clave derivada del algoritmo \textit{SHA-256}, resultante de concatenar el identificador de la sala (\texttt{room\_id}), la pregunta en curso (\texttt{question\_id}) y el identificador único de cada respuesta (\texttt{item['id']}). Esta solución aporta tres garantías técnicas fundamentales:
+
+\begin{itemize}
+  \item \textbf{Cumplimiento estricto de calidad (SonarQube):} Elimina el uso de funciones no seguras o pseudoaleatorias basadas en semillas globales mutables, superando las reglas de análisis estático sin requerir excepciones manuales en la tubería de CI/CD.
+  \item \textbf{Idempotencia y tolerancia a fallos:} Al ser una función pura y reproducible, si un alumno pierde la conexión WebSocket o refresca el navegador en mitad de la cuenta atrás, el reenvío del evento recalcula exactamente la misma ordenación sin discrepancias con el estado previo.
+  \item \textbf{Eficiencia y desacoplamiento de base de datos:} Evita persistir campos de ordenación efímeros en PostgreSQL o en memoria de sesión de FastAPI, reduciendo el volumen de operaciones de escritura por cada ronda de preguntas.
+\end{itemize}
 
 \subsubsection{Transición de preguntas y fase de verificación}
-El endpoint \texttt{PATCH /rooms/:room\_id/next-question} coordina el avance del cuestionario o la transición a la fase final.
+El \textit{endpoint} \texttt{PATCH /rooms/:room\_id/next-question} en el módulo \texttt{backend/routers/stage.py} coordina el avance secuencial del cuestionario o la transición a la fase final de la partida. Su diseño garantiza la persistencia del orden de preguntas en la sesión, la aplicación del barajado determinista y la sincronización en tiempo real vía WebSocket.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{listings/siguiente_pregunta_verificacion.png}}
-  \captionof{lstlisting}{Avance de pregunta y paso a siguiente fase}
-  \label{lst:siguiente_pregunta_verificacion}
-\end{figure}
+\begin{lstlisting}[style=sourcecode, language=Python, captionpos=b, caption={Transición entre preguntas y paso a verificación.}, label={lst:transicion_preguntas_verificacion}]
+@router.patch("/rooms/{room_id}/next-question")
+async def next_question(room_id: int, db: Annotated[Session, Depends(get_session)]):
+    # [...] Validacion de existencia de sala y comprobacion de estado LIVE
+
+    q_ids = [int(x) for x in room.question_order.split(",") if x] if room.question_order else [
+        q.id for q in db.exec(select(Question).where(Question.quiz_id == room.quiz_id).order_by(Question.id)).all()
+    ]
+    if not room.question_order:
+        room.question_order = ",".join(map(str, q_ids))
+        db.add(room)
+        db.commit()
+
+    next_index = room.current_question_index + 1
+
+    if next_index <= len(q_ids):
+        next_q = db.get(Question, q_ids[next_index - 1])
+        room.current_question_index = next_index
+        room.phase = RoomPhase.ANSWERING
+        room.remaining_time_at_pause = room.answer_time
+        room.timer_started_at = get_utc_now()
+        room.is_paused = False
+        db.commit()
+
+        options_list = [{"id": opt.id, "text": opt.text} for opt in next_q.options]
+        if room.shuffle_options:
+            options_list = deterministic_shuffle(options_list, room.id, next_q.id)
+
+        # [...] Construccion del payload de estado y emision via WebSocket (next_question)
+        await manager.broadcast_to_room(room_id, {"type": "next_question", "data": data})
+        return data
+    else:
+        room.status = RoomStatus.VERIFYING
+        participants = db.exec(select(Participant).where(Participant.room_id == room_id)).all()
+        for p in participants:
+            p.verification_token = secrets.token_hex(8)
+            db.add(p)
+
+        db.commit()
+        await manager.broadcast_to_room(
+            room_id,
+            {"type": "room_verifying", "data": {"status": "VERIFYING", "total_questions": len(q_ids)}},
+        )
+        return {"status": "VERIFYING"}
+\end{lstlisting}
 
 Si restan preguntas por responder, el controlador actualiza el índice y emite el evento correspondiente. Al agotar la batería de preguntas, la sala cambia al estado \texttt{VERIFYING} y genera tokens criptográficos efímeros mediante \texttt{secrets.token\_hex(8)}.
 
-\newpage
-
 \subsubsection{Verificación presencial mediante código QR}
-Una vez concluida la partida, el resultado acumulado debe ser validado por el docente escaneando un código QR en el dispositivo del alumno.
+Una vez concluida la partida, la calificación debe ser validada por el profesor escaneando un código QR generado en el dispositivo del alumno. En el módulo \texttt{backend/routers/stage.py}, el \textit{endpoint} \texttt{POST /rooms/:room\_id/verify-participant} gestiona la recepción de la carga útil del código QR para auditar y validar la calificación.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{listings/verificacion_presencial_qr.png}}
-  \captionof{lstlisting}{Validación presencial del participante mediante token QR}
-  \label{lst:verificacion_presencial_qr}
-\end{figure}
+\newpage 
+
+\begin{lstlisting}[style=sourcecode, language=Python, captionpos=b, caption={Validación del token y consolidación de calificación.}, label={lst:verificacion_participante_qr}]
+@router.post("/rooms/{room_id}/verify-participant")
+async def verify_participant(
+    room_id: int, req: VerificationRequest, db: Annotated[Session, Depends(get_session)]
+):
+    statement = (
+        select(Participant)
+        .join(Student)
+        .where(Student.name == req.nickname, Participant.room_id == room_id)
+    )
+    participant = db.exec(statement).first()
+
+    # [...] Comprobacion de existencia, no verificacion previa y token efimero
+    if not participant:
+        raise HTTPException(status_code=404, detail=PARTICIPANT_NOT_FOUND)
+    if participant.verification_token != req.token:
+        raise HTTPException(status_code=400, detail="Token de verificacion invalido")
+    if participant.is_verified:
+        raise HTTPException(status_code=409, detail="Resultado ya verificado")
+
+    actual_score = sum(a.points_earned for a in participant.answers)
+    if participant.score != actual_score:
+        participant.score = actual_score
+
+    participant.is_verified = True
+    participant.verified_at = get_utc_now()
+    db.add(participant)
+    db.commit()
+
+    # [...] Notificacion en tiempo real via WebSocket de la verificacion
+    await manager.broadcast_to_room(
+        room_id,
+        {
+            "type": "participant_verified",
+            "data": {"nickname": req.nickname, "participant_id": participant.id},
+        },
+    )
+    return {"status": "success", "nickname": req.nickname}
+\end{lstlisting}
 
 El controlador valida el token efímero (\texttt{req.token}), recalcula la puntuación final sumando los puntos auditados, marca al participante como verificado y notifica la confirmación en tiempo real.
-
-\newpage
 
 \subsection{Seguridad, contexto y autenticación}\label{subsec:impl_security_context}
 
 Este bloque aborda el tratamiento del estado del jugador, el saneamiento de datos en la SPA y la protección de endpoints sensibles mediante tokens JWT.
 
 \subsubsection{Persistencia y saneamiento de estado en la SPA}
-En \texttt{RoomContext} se encapsula la gestión de la sesión del jugador mediante la \textit{API Context} de React.
+En el módulo \texttt{frontend/src/context/RoomContext.tsx} se encapsula la gestión de la sesión del jugador mediante la \textit{API Context} de React.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1.05\textwidth]{listings/contexto_sala.png}}
-  \captionof{lstlisting}{Gestión del contexto de la sala}
-  \label{lst:contexto_sala}
-\end{figure}
+\begin{lstlisting}[
+  style=sourcecode,
+  language=JavaScript,
+  literate={@SQ@}{{\lstsquote}}1 {@DQ@}{{\lstdquote}}1,
+  captionpos=b,
+  caption={Persistencia y saneamiento frente a inyecciones XSS.},
+  label={lst:persistencia_context_spa}
+]
+export function RoomProvider({ children }: Readonly<{ children: ReactNode }>) {
+  // Inicializacion sincronica desde almacenamiento de sesion
+  const [rawRoomCode, setRawRoomCode] = useState(sessionStorage.getItem("roomCode") || "");
+  const [rawRoomId, setRawRoomId] = useState<number | null>(() => {
+    const savedId = sessionStorage.getItem("roomId");
+    return savedId ? Number(savedId) : null;
+  });
+  // [...] Estados analogos para rawUserNickname, rawParticipantId y roomData
+
+  // Saneamiento de datos antes de persistir y actualizar el estado
+  const setRoomCode = useCallback((code: string) => {
+    const cleanCode = code.replace(/[^a-zA-Z0-9_-]/g, "");
+    if (/^[a-zA-Z0-9_-]*$/.test(cleanCode)) {
+      setRawRoomCode(cleanCode);
+      sessionStorage.setItem("roomCode", cleanCode);
+    }
+  }, []);
+
+  const setUserNickname = useCallback((name: string | undefined) => {
+    setRawUserNickname(name);
+    if (name !== undefined) {
+      const cleanNickname = name.replace(/[<>@SQ@@DQ@&]/g, "");
+      if (/^[^<>@SQ@@DQ@&]*$/.test(cleanNickname)) {
+        sessionStorage.setItem("userNickname", cleanNickname);
+      }
+    } else {
+      sessionStorage.removeItem("userNickname");
+    }
+  }, []);
+
+  // [...] Manejadores identicos de mutacion saneada para setRoomId y setParticipantId
+
+  const contextValue = useMemo(
+    () => ({ roomCode: rawRoomCode, setRoomCode, userNickname: rawUserNickname, setUserNickname /* [...] */ }),
+    [rawRoomCode, setRoomCode, rawUserNickname, setUserNickname /* [...] */],
+  );
+
+  return <RoomContext.Provider value={contextValue}>{children}</RoomContext.Provider>;
+}
+\end{lstlisting}
 
 El componente recupera de forma síncrona los identificadores desde \texttt{sessionStorage} para garantizar la persistencia del estado frente a recargas accidentales del navegador. Asimismo, se aplica una función de saneamiento que purga caracteres sensibles (\texttt{<, >, ', ", \&}) antes de su persistencia y renderizado, mitigando vectores de ataque por inyección de scripts en sitios cruzados o XSS (\textit{Cross-Site Scripting}) \cite{owaspTop10, zalewski2011tangold}.
 
 \subsubsection{Autenticación y protección de endpoints con JWT}
 En \texttt{backend/auth.py}, se implementa un mecanismo de inyección de dependencias para autenticar las peticiones de los docentes mediante cabeceras HTTP.
 
-\begin{figure}[H]
-  \centering
-  \makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{listings/autenticacion_jwt_backend.png}}
-  \captionof{lstlisting}{Inyección de dependencia para la validación de tokens JWT}
-  \label{lst:autenticacion_jwt_backend}
-\end{figure}
+\begin{lstlisting}[style=sourcecode, language=Python, captionpos=b, caption={Extracción y verificación criptográfica de cabeceras JWT.}, label={lst:autenticacion_jwt_backend}]
+security = HTTPBearer()
+
+def get_current_teacher_id(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+) -> int:
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        raw_sub = payload.get("sub")
+        if raw_sub is None:
+            raise HTTPException(status_code=401, detail="Token sin campo 'sub'")
+        return int(raw_sub)
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="El token ha expirado")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token invalido. Inicia sesion de nuevo.")
+    except Exception:
+        raise HTTPException(status_code=401, detail="No autorizado")
+\end{lstlisting}
 
 Esta función intercepta el \textit{Bearer token} emitido en las peticiones HTTP, descifra la firma criptográfica del estándar JSON Web Token~\cite{ietf_jwt_rfc7519} utilizando la clave secreta del servidor (\texttt{SECRET\_KEY}) y verifica su validez temporal antes de permitir el acceso a los controladores protegidos.
 
 \section{Estrategia de \textit{testing}}\label{sec:estrategia_testing}
 
-Para garantizar la estabilidad del sistema, la integridad de los datos en tiempo real y una experiencia de usuario fluida, se ha diseñado un marco integral de verificación y pruebas automatizadas fundamentado en el modelo clásico de la pirámide de pruebas~\cite{cohn2009succeeding}. Este enfoque distribuye el esfuerzo analítico en distintos niveles de granularidad, equilibrando la velocidad de ejecución con el nivel de confianza obtenido sobre el comportamiento de la plataforma.
+Para garantizar la \textbf{estabilidad} del sistema, la \textbf{integridad} de los datos en tiempo real y una experiencia de usuario \textbf{fluida}, se ha diseñado un marco integral de verificación y pruebas automatizadas fundamentado en el modelo clásico de la \textbf{pirámide de pruebas}~\cite{cohn2009succeeding}. Este enfoque distribuye el esfuerzo analítico en distintos niveles de granularidad, equilibrando la velocidad de ejecución con el nivel de confianza obtenido sobre el comportamiento de la plataforma.
 
 \subsection{Niveles de prueba y selección de herramientas}\label{subsec:niveles_herramientas}
 
@@ -147,20 +362,25 @@ El ecosistema de pruebas desacopla las tecnologías encargadas de la ejecución 
 \begin{table}[H]
   \centering
   \small
+  \renewcommand{\arraystretch}{1.3}
   \makebox[\textwidth][c]{%
-    \begin{tabular}{l p{8cm} p{3.5cm}}
-      \hline
+    \begin{tabularx}{1.07\textwidth}{l Y P{3.2cm}}
+      \bighline
       \textbf{Nivel de prueba} & \textbf{Objetivo principal} & \textbf{Herramientas} \\
+      \bighline
+      Unitarias (\textit{Backend}) & Validar lógica de negocio aislada (cálculo de puntuaciones, \textit{hashing}, validaciones Pydantic). & pytest \\
       \hline
-      \textbf{Unitarias (\textit{Backend})} & Validar lógica de negocio aislada (cálculo de puntuaciones, \textit{hashing}, validaciones Pydantic). & pytest \\
-      \textbf{Integración} & Comprobar la interacción entre API REST, persistencia relacional y WebSockets. & pytest + TestClient (FastAPI) \\
-      \textbf{Componentes (\textit{Frontend})} & Verificar el renderizado y comportamiento reactivo de la interfaz en aislamiento. & Vitest + React Testing Library \\
-      \textbf{Extremo a Extremo (E2E)} & Simular flujos completos de navegación y concurrencia entre roles (docente y alumno). & Playwright \\
-      \textbf{Rendimiento y carga} & Evaluar la estabilidad y latencia del servidor ante concurrencia masiva en tiempo real. & Locust \\
+      Integración (\textit{Backend}) & Comprobar la interacción entre API REST, persistencia relacional y \textit{WebSockets}. & pytest + TestClient (FastAPI) \\
       \hline
-    \end{tabular}%
+      Componentes (\textit{Frontend}) & Verificar el renderizado y comportamiento reactivo de la interfaz en aislamiento. & Vitest + React Testing Library \\
+      \hline
+      Extremo a Extremo & Simular flujos completos de navegación y concurrencia entre roles (docente y alumno). & Playwright \\
+      \hline
+      Rendimiento y carga & Evaluar la estabilidad y latencia del servidor ante concurrencia masiva en tiempo real. & Locust \\
+      \bighline
+    \end{tabularx}%
   }
-  \caption{Clasificación de niveles de prueba y herramientas del sistema}
+  \caption{Clasificación de niveles de prueba y herramientas del sistema.}
   \label{tab:herramientas_pruebas}
 \end{table}
 
@@ -180,7 +400,7 @@ La \textit{suite} de pruebas se estructura modularmente y se alinea con la evolu
         \item En el \textit{backend}, las suites se organizan por áreas funcionales: \texttt{contenido} (cuestionarios y preguntas), \texttt{sesiones} (gestión de salas y sincronización en vivo) y \texttt{usuarios} (autenticación y perfiles).
         \item En el \textit{frontend}, las pruebas se delimitan en los cuatro módulos cliente principales: autenticación (\texttt{auth}), gestión (\texttt{management}), acceso a salas (\texttt{room-access}) y juego en vivo (\texttt{room-play}).
     \end{itemize}
-    \item \textbf{Evolución por fases de desarrollo:} La implementación de los casos de prueba acompañó el ciclo iterativo del software, priorizando los flujos mínimos esenciales (\textit{MVP}), consolidando la sincronización en vivo y la lógica central (\textit{Core}), e incorporando finalmente las auditorías de seguridad, control de fraude y gestión de desconexiones (\textit{Final Release}).
+    \item \textbf{Evolución por fases de desarrollo:} Las pruebas se estructuraron formalmente en tres bloques, correspondientes a cada una de las fases del proyecto (\hyperref[fase:mvp]{\textit{MVP}}, \hyperref[fase:core]{\textit{Core}} y \hyperref[fase:qa]{\textit{QA}}), facilitando la organización del trabajo y permitiendo abordar la verificación del sistema de manera progresiva y ordenada.
 \end{itemize}
 
 \subsection{Auditoría y umbrales de cobertura de código}\label{subsec:metricas_cobertura}
@@ -190,23 +410,22 @@ Para evaluar el alcance y la exhaustividad de la batería de pruebas, se estable
 \begin{table}[H]
   \centering
   \small
-  \makebox[\textwidth][c]{%
-    \begin{tabular}{l l l}
-      \hline
-      \textbf{Capa del sistema} & \textbf{Herramienta} & \textbf{Umbral mínimo exigido} \\
-      \hline
-      \textbf{\textit{Backend}} & pytest-cov & $\ge 90$\% en endpoints y rutas API \\
-                                &                      & $\ge 80$\% en código global del servidor \\
-      \hline
-      \textbf{\textit{Frontend}}      & @vitest/coverage-v8 & $\ge 80$\% en líneas, funciones y sentencias \\
-                                &                              & $\ge 75$\% en ramas (\textit{branches}) \\
-      \hline
-      \textbf{Pruebas E2E}      & monocart-coverage-reports & $\ge 80$\% en líneas, funciones y sentencias \\
-                                &                                    & $\ge 75$\% en ramas \\
-      \hline
-    \end{tabular}%
-  }
-  \caption{Métricas y umbrales mínimos de cobertura por capa}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabularx}{\textwidth}{l l Y}
+    \bighline
+    \textbf{Ámbito} & \textbf{Herramienta} & \textbf{Umbral mínimo exigido} \\
+    \bighline
+    \textit{Backend} & pytest-cov & $\ge 90$\% en endpoints y rutas API \\
+                     &            & $\ge 80$\% en código global del servidor \\
+    \hline
+    \textit{Frontend} & @vitest/coverage-v8 & $\ge 80$\% en líneas, funciones y sentencias \\
+                      &                     & $\ge 75$\% en ramas (\textit{branches}) \\
+    \hline
+    Pruebas E2E & monocart-coverage-reports & $\ge 80$\% en líneas, funciones y sentencias \\
+                &                           & $\ge 75$\% en ramas \\
+    \bighline
+  \end{tabularx}
+  \caption{Métricas y umbrales mínimos de cobertura por ámbito de prueba.}
   \label{tab:umbrales_cobertura}
 \end{table}
 
@@ -222,96 +441,118 @@ Asimismo, tal y como se describió en la especificación del \hyperref[subsec:pi
 
 Esta sección expone los casos de prueba implementados para verificar el cumplimiento de los criterios de aceptación y las reglas de negocio del sistema, estructurados según los niveles de la pirámide de pruebas definida previamente.
 
-\newpage
-
 \subsection{Pruebas de la capa \textit{Backend}}\label{subsec:casos_backend}
 
-Las pruebas unitarias y de integración se definen y ejecutan de forma conjunta mediante Pytest y el cliente de pruebas asíncrono de FastAPI. Esta batería cubre desde la lógica de dominio pura hasta la interacción coordinada entre la API REST, la persistencia en base de datos y la comunicación en tiempo real por WebSockets, estructurándose en tres módulos funcionales:
+Las pruebas unitarias y de integración se definen y ejecutan de forma conjunta mediante Pytest y el cliente de pruebas asíncrono de FastAPI. Esta batería cubre desde la lógica de dominio pura hasta la interacción coordinada entre la API REST, la persistencia en base de datos y la comunicación en tiempo real por \textit{WebSockets}, estructurándose en tres módulos funcionales:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{llp{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PB-01}\label{pb:01} & Control de acceso JWT & Intercepción mediante la dependencia \texttt{get\_current\_teacher\_id} ante tokens expirados, firmas ilegítimas o ausencia de cabecera \texttt{Authorization}, asegurando el rechazo inmediato y la protección de endpoints privados. \\ 
-\textbf{PB-02}\label{pb:02} & Ciclo de vida y verificación & Flujo de registro con derivación segura de claves mediante bcrypt, emisión de códigos temporales de 6 dígitos, prevención de accesos no autorizados a cuentas pendientes de validación y modo de contingencia del servicio de mensajería. \\ 
-\textbf{PB-03}\label{pb:03} & Integridad relacional y datos & Cumplimiento estricto del borrado en cascada sobre cuestionarios, grupos y salas al tramitar la baja de una cuenta docente, control de concurrencia y colisiones por identificadores duplicados, y garantía de enmascaramiento irreversible de contraseñas en las respuestas serializadas por Pydantic. \\ 
-\textbf{PB-04}\label{pb:04} & Gestión de estudiantes & Instanciación e identificación de alumnos en sala, validación formal del identificador universitario (UVUS) y detección de perfiles preexistentes. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{backend}: Módulo de usuarios.}
-\label{tab:casos_prueba_backend_usuarios}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{2.7cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PB-01\label{pb:01} & Control de acceso JWT & Intercepción mediante la dependencia \texttt{get\_current\_teacher\_id} ante tokens expirados, firmas ilegítimas o ausencia de cabecera \texttt{Authorization}, asegurando el rechazo inmediato y la protección de endpoints privados. \\
+      \hline
+      PB-02\label{pb:02} & Ciclo de vida y verificación & Flujo de registro con derivación segura de claves mediante bcrypt, emisión de códigos temporales de 6 dígitos, prevención de accesos no autorizados a cuentas pendientes de validación y modo de contingencia del servicio de mensajería. \\
+      \hline
+      PB-03\label{pb:03} & Integridad relacional y datos & Cumplimiento estricto del borrado en cascada sobre cuestionarios, grupos y salas al tramitar la baja de una cuenta docente, control de concurrencia y colisiones por identificadores duplicados, y garantía de enmascaramiento irreversible de contraseñas en las respuestas serializadas por Pydantic. \\
+      \hline
+      PB-04\label{pb:04} & Gestión de estudiantes & Instanciación e identificación de alumnos, validación formal del identificador universitario \textit{(uvus)} y detección de alias preexistente. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{backend}: Módulo de usuarios.}
+  \label{tab:casos_prueba_backend_usuarios}
 \end{table}
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{llp{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PB-05}\label{pb:05} & Persistencia transaccional & Creación y actualización atómica de cuestionarios con preguntas y opciones en una única transacción de base de datos, validación estricta de límites operativos y aseguramiento de que toda pregunta contenga obligatoriamente una opción marcada como correcta. \\ 
-\textbf{PB-06}\label{pb:06} & Seguridad y aislamiento & Comprobación de que ningún usuario pueda consultar, mutar o eliminar cuestionarios ajenos, bloqueando cualquier intento de escalado horizontal de privilegios. \\ 
-\textbf{PB-07}\label{pb:07} & Integridad referencial & Bloqueo de borrado físico (\textit{hard delete}) si el cuestionario posee salas activas asociadas, con validación de la eliminación en cascada de preguntas y opciones solo cuando las salas vinculadas ya han sido finalizadas. \\ 
-\textbf{PB-08}\label{pb:08} & Filtrado, historial y exportación & Auditoría de la lógica de segmentación de cuestionarios, consulta y agregación histórica de las sesiones finalizadas asociadas a cada cuestionario, y extracción estructurada de calificaciones y aciertos formateados para su descarga en CSV. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{backend}: Módulo de contenido.}
-\label{tab:casos_prueba_backend_contenido}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{2.7cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PB-05\label{pb:05} & Persistencia transaccional & Creación y actualización atómica de cuestionarios con preguntas y opciones en una única transacción de base de datos, validación estricta de límites operativos y aseguramiento de que toda pregunta contenga obligatoriamente una opción marcada como correcta. \\
+      \hline
+      PB-06\label{pb:06} & Seguridad y aislamiento & Comprobación de que ningún usuario pueda consultar, mutar o eliminar cuestionarios ajenos, bloqueando cualquier intento de escalado horizontal de privilegios. \\
+      \hline
+      PB-07\label{pb:07} & Integridad referencial & Bloqueo de borrado (\textit{hard delete}) si el cuestionario posee salas activas asociadas, con validación de la eliminación en cascada de preguntas y opciones solo cuando las salas vinculadas ya han sido finalizadas. \\
+      \hline
+      PB-08\label{pb:08} & Filtrado, historial y exportación & Auditoría de la lógica de segmentación de cuestionarios, consulta y agregación histórica de las sesiones finalizadas asociadas a cada cuestionario, y extracción estructurada de calificaciones y aciertos formateados para su descarga en CSV. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{backend}: Módulo de contenido.}
+  \label{tab:casos_prueba_backend_contenido}
 \end{table}
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{llp{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PB-09}\label{pb:09} & Salas únicas y transición & Control estricto de concurrencia que impide abrir múltiples salas simultáneas para un mismo cuestionario y gestión del ciclo de vida y transiciones de los estados y fases de la sala. \\ 
-\textbf{PB-10}\label{pb:10} & Sincronización y temporizador & Validación del bucle asíncrono \texttt{timer\_sync\_loop} en el servidor, garantizando la emisión periódica de marcas de tiempo UTC sin bloqueo del hilo principal, junto con el control docente de pausas, reanudaciones y cierres forzados. \\ 
-\textbf{PB-11}\label{pb:11} & Mecanismos anti-fraude y QR & Comprobación del algoritmo de barajado pseudoaleatorio de opciones, procesamiento atómico de respuestas con rechazo de dobles envíos, validación mediante escaneo del código QR y purga de alumnos no validados al cerrar la sala. \\ 
-\textbf{PB-12}\label{pb:12} & Resiliencia en \textit{WebSockets} & Verificación de la resiliencia del \texttt{ConnectionManager} ante desconexiones abruptas por WebSockets, asegurando la expulsión ordenada de sockets corruptos sin interrumpir la difusión de eventos al resto del aula. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{backend}: Módulo de sesiones.}
-\label{tab:casos_prueba_backend_sesiones}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{2.7cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PB-09\label{pb:09} & Salas únicas y transición & Control estricto de concurrencia que impide abrir múltiples salas simultáneas para un mismo cuestionario y gestión del ciclo de vida y transiciones de los estados y fases de la sala. \\
+      \hline
+      PB-10\label{pb:10} & Sincronización y temporizador & Validación del bucle asíncrono \texttt{timer\_sync\_loop} en el servidor, garantizando la emisión periódica de marcas de tiempo UTC sin bloqueo del hilo principal, junto con el control docente de pausas, reanudaciones y cierres forzados. \\
+      \hline
+      PB-11\label{pb:11} & Mecanismos anti-fraude y QR & Comprobación del algoritmo de barajado pseudoaleatorio de opciones, procesamiento atómico de respuestas con rechazo de dobles envíos, validación mediante escaneo del código QR y purga de alumnos no validados al cerrar la sala. \\
+      \hline
+      PB-12\label{pb:12} & Resiliencia en \textit{WebSockets} & Verificación de la resiliencia del \texttt{ConnectionManager} ante desconexiones abruptas por WebSockets, asegurando la expulsión ordenada de sockets corruptos sin interrumpir la difusión de eventos al resto del aula. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{backend}: Módulo de sesiones.}
+  \label{tab:casos_prueba_backend_sesiones}
 \end{table}
 
 Para garantizar la cobertura sistemática de los requisitos del sistema, la siguiente tabla sintetiza la correspondencia entre los casos de prueba y las Historias de Usuario, junto con los Requisitos Funcionales que auditan de forma directa:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{llll}
-\hline
-\textbf{Módulo} & \textbf{ID} & \textbf{Historia de Usuario} & \textbf{Requisitos Funcionales} \\ \hline
-
-Usuarios & \textbf{\hyperref[pb:01]{PB-01}} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:01]{RF-01}, \hyperref[req:02]{RF-02}, \hyperref[req:03]{RF-03} \\ 
- & \textbf{\hyperref[pb:02]{PB-02}} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:04]{RF-04}, \hyperref[req:05]{RF-05}, \hyperref[req:06]{RF-06} \\ 
- & \textbf{\hyperref[pb:03]{PB-03}} & \hyperref[hu:pr-01]{HU-PR-01}, \hyperref[hu:pr-07]{HU-PR-07} & \hyperref[req:06]{RF-06}, \hyperref[req:38]{RF-38} \\ 
- & \textbf{\hyperref[pb:04]{PB-04}} & \hyperref[hu:al-01]{HU-AL-01} & \hyperref[req:16]{RF-16}, \hyperref[req:17]{RF-17} \\ \hline
-
-Contenido & \textbf{\hyperref[pb:05]{PB-05}} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:07]{RF-07}, \hyperref[req:08]{RF-08}, \hyperref[req:13]{RF-13}, \hyperref[req:14]{RF-14} \\ 
- & \textbf{\hyperref[pb:06]{PB-06}} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:07]{RF-07}, \hyperref[req:10]{RF-10} \\ 
- & \textbf{\hyperref[pb:07]{PB-07}} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:12]{RF-12}, \hyperref[req:41]{RF-41} \\ 
- & \textbf{\hyperref[pb:08]{PB-08}} & \hyperref[hu:pr-10]{HU-PR-10}, \hyperref[hu:pr-13]{HU-PR-13}, \hyperref[hu:pr-14]{HU-PR-14} & \hyperref[req:39]{RF-39}, \hyperref[req:46]{RF-46}, \hyperref[req:47]{RF-47} \\ \hline
-
-Sesiones & \textbf{\hyperref[pb:09]{PB-09}} & \hyperref[hu:pr-03]{HU-PR-03}, \hyperref[hu:pr-05]{HU-PR-05} & \hyperref[req:11]{RF-11}, \hyperref[req:15]{RF-15}, \hyperref[req:18]{RF-18}, \hyperref[req:19]{RF-19} \\ 
- & \textbf{\hyperref[pb:10]{PB-10}} & \hyperref[hu:pr-03]{HU-PR-03}, \hyperref[hu:al-03]{HU-AL-03} & \hyperref[req:20]{RF-20}, \hyperref[req:22]{RF-22} \\ 
- & \textbf{\hyperref[pb:11]{PB-11}} & \hyperref[hu:pr-04]{HU-PR-04}, \hyperref[hu:pr-06]{HU-PR-06}, \hyperref[hu:al-04]{HU-AL-04} & \hyperref[req:23]{RF-23}, \hyperref[req:24]{RF-24}, \hyperref[req:27]{RF-27}, \hyperref[req:28]{RF-28}, \hyperref[req:30]{RF-30}, \hyperref[req:31]{RF-31} \\ 
- & \textbf{\hyperref[pb:12]{PB-12}} & \hyperref[hu:pr-05]{HU-PR-05}, \hyperref[hu:al-02]{HU-AL-02} & \hyperref[req:21]{RF-21}, \hyperref[req:40]{RF-40} \\ \hline
-
-\end{tabular}
-}
-\caption{Matriz de trazabilidad de pruebas \textit{backend} con HU y RF.}
-\label{tab:trazabilidad_backend}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.35}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l l l Y}
+      \bighline
+      \textbf{Módulo} & \textbf{ID} & \textbf{Historias de Usuario} & \textbf{Requisitos Funcionales} \\
+      \bighline
+      Usuarios & \hyperref[pb:01]{PB-01} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:01]{RF-01}, \hyperref[req:02]{RF-02}, \hyperref[req:03]{RF-03} \\
+      \cline{2-4}
+               & \hyperref[pb:02]{PB-02} & \hyperref[hu:pr-01]{HU-PR-01} & \hyperref[req:04]{RF-04}, \hyperref[req:05]{RF-05}, \hyperref[req:06]{RF-06} \\
+      \cline{2-4}
+               & \hyperref[pb:03]{PB-03} & \hyperref[hu:pr-01]{HU-PR-01}, \hyperref[hu:pr-07]{HU-PR-07} & \hyperref[req:06]{RF-06}, \hyperref[req:38]{RF-38} \\
+      \cline{2-4}
+               & \hyperref[pb:04]{PB-04} & \hyperref[hu:al-01]{HU-AL-01} & \hyperref[req:16]{RF-16}, \hyperref[req:17]{RF-17} \\
+      \hline
+      Contenido & \hyperref[pb:05]{PB-05} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:07]{RF-07}, \hyperref[req:08]{RF-08}, \hyperref[req:13]{RF-13}, \hyperref[req:14]{RF-14} \\
+      \cline{2-4}
+                & \hyperref[pb:06]{PB-06} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:07]{RF-07}, \hyperref[req:10]{RF-10} \\
+      \cline{2-4}
+                & \hyperref[pb:07]{PB-07} & \hyperref[hu:pr-02]{HU-PR-02} & \hyperref[req:12]{RF-12}, \hyperref[req:41]{RF-41} \\
+      \cline{2-4}
+                & \hyperref[pb:08]{PB-08} & \hyperref[hu:pr-10]{HU-PR-10}, \hyperref[hu:pr-13]{HU-PR-13}, \hyperref[hu:pr-14]{HU-PR-14} & \hyperref[req:39]{RF-39}, \hyperref[req:46]{RF-46}, \hyperref[req:47]{RF-47} \\
+      \hline
+      Sesiones & \hyperref[pb:09]{PB-09} & \hyperref[hu:pr-03]{HU-PR-03}, \hyperref[hu:pr-05]{HU-PR-05} & \hyperref[req:11]{RF-11}, \hyperref[req:15]{RF-15}, \hyperref[req:18]{RF-18}, \hyperref[req:19]{RF-19} \\
+      \cline{2-4}
+               & \hyperref[pb:10]{PB-10} & \hyperref[hu:pr-03]{HU-PR-03}, \hyperref[hu:al-03]{HU-AL-03} & \hyperref[req:20]{RF-20}, \hyperref[req:22]{RF-22} \\
+      \cline{2-4}
+               & \hyperref[pb:11]{PB-11} & \hyperref[hu:pr-04]{HU-PR-04}, \hyperref[hu:pr-06]{HU-PR-06}, \hyperref[hu:al-04]{HU-AL-04} & \hyperref[req:23]{RF-23}, \hyperref[req:24]{RF-24}, \hyperref[req:27]{RF-27}, \hyperref[req:28]{RF-28}, \hyperref[req:30]{RF-30}, \hyperref[req:31]{RF-31} \\
+      \cline{2-4}
+               & \hyperref[pb:12]{PB-12} & \hyperref[hu:pr-05]{HU-PR-05}, \hyperref[hu:al-02]{HU-AL-02} & \hyperref[req:21]{RF-21}, \hyperref[req:40]{RF-40} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Matriz de trazabilidad de pruebas \textit{backend} con HU y RF.}
+  \label{tab:trazabilidad_backend}
 \end{table}
 
 \subsection{Pruebas de componentes de la interfaz (\textit{Frontend})}\label{subsec:casos_componentes}
@@ -319,156 +560,205 @@ Sesiones & \textbf{\hyperref[pb:09]{PB-09}} & \hyperref[hu:pr-03]{HU-PR-03}, \hy
 Las pruebas de componentes se ejecutan de manera aislada mediante Vitest y React Testing Library sobre un entorno DOM simulado (\texttt{jsdom}). Esta batería evalúa tanto los elementos visuales como las vistas completas de la interfaz, verificando el renderizado de componentes en pantalla, la gestión del estado reactivo ante eventos del usuario y la accesibilidad en las diferentes áreas del cliente web:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{lp{5.5cm}p{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PF-01}\label{pf:01} & Interacción accesible en entradas de códigos & Verificación del componente de cuadrícula de seis dígitos (\texttt{CodeInputGrid}), evaluando el avance automático de foco entre celdas, el borrado secuencial y el soporte de pegado desde el portapapeles. \\ 
-\textbf{PF-02}\label{pf:02} & Validación de credenciales y tratamiento de respuestas & Pruebas sobre los formularios de acceso, registro y restablecimiento de contraseña, asegurando el manejo visual de errores y la persistencia segura de credenciales en almacenamiento local. \\ 
-\textbf{PF-03}\label{pf:03} & Confirmación modal de acciones críticas & Comprobación del renderizado y comportamiento de los diálogos de cierre de sesión y baja definitiva de cuenta con validación previa de contraseña. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{frontend}: Módulo de autenticación y perfil.}
-\label{tab:casos_prueba_frontend_auth}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{3.4cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PF-01\label{pf:01} & Interacción accesible en entradas de códigos & Verificación del componente de códigos (\texttt{CodeInputGrid}), evaluando el avance automático de foco entre celdas, el borrado secuencial y el soporte de pegado desde el portapapeles. \\
+      \hline
+      PF-02\label{pf:02} & Validación de credenciales y permisos & Pruebas sobre los formularios de acceso, registro y restablecimiento de contraseña, asegurando el manejo visual de errores y la persistencia segura de credenciales en almacenamiento local. \\
+      \hline
+      PF-03\label{pf:03} & Confirmación modal de acciones críticas & Comprobación del renderizado y comportamiento de los diálogos de cierre de sesión y baja definitiva de cuenta con validación previa de contraseña. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de autenticación y perfil.}
+  \label{tab:casos_prueba_frontend_auth}
 \end{table}
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{lp{5.5cm}p{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PF-04}\label{pf:04} & Filtrado dinámico e indicadores de estado & Renderizado de la lista de cuestionarios con filtrado reactivo y opciones de reconexión para salas en curso. \\ 
-\textbf{PF-05}\label{pf:05} & Formularios de edición y creación de cuestionarios & Creación y modificación interactiva de cuestionarios, límites en el número de preguntas y opciones, imposibilidad de guardar una pregunta sin opción correcta, atajos de teclado y gestos táctiles (\textit{swipe}). \\ 
-\textbf{PF-06}\label{pf:06} & Configuración de salas & Ajuste de temporizador y controles para el barajado de preguntas y la visibilidad del podio. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{frontend}: Módulo de gestión de contenidos.}
-\label{tab:casos_prueba_frontend_gestion}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{3.7cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PF-04\label{pf:04} & Filtrado dinámico e indicadores de estado & Renderizado de la lista de cuestionarios con filtrado reactivo y opciones de reconexión para salas en curso. \\
+      \hline
+      PF-05\label{pf:05} & Formularios de edición y creación de cuestionarios & Creación y modificación de cuestionarios, límites en el número de preguntas y opciones, imposibilidad de guardar una pregunta sin opción correcta, atajos de teclado y gestos táctiles (\textit{swipe}). \\
+      \hline
+      PF-06\label{pf:06} & Configuración de salas & Ajuste de temporizador y controles para el barajado de preguntas y la visibilidad del podio. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de gestión de contenidos.}
+  \label{tab:casos_prueba_frontend_gestion}
 \end{table}
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{lp{5.5cm}p{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PF-07}\label{pf:07} & Introducción y verificación del código de sala & Validación visual del campo numérico de acceso y gestión de mensajes de error ante códigos inexistentes o salas cerradas. \\ 
-\textbf{PF-08}\label{pf:08} & Validación preventiva de UVUS & Comprobación del identificador mediante expresiones regulares previa a la llamada al servidor. \\ 
-\textbf{PF-09}\label{pf:09} & Flujo de confirmación de nuevos alumnos & Gestión de diálogos emergentes de vinculación de identidad para participantes no registrados con anterioridad. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{frontend}: Módulo de acceso a salas.}
-\label{tab:casos_prueba_frontend_acceso}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{3.4cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PF-07\label{pf:07} & Introducción del código de sala y verificación & Validación visual del campo numérico de acceso y gestión de mensajes de error ante códigos inexistentes o salas cerradas. \\
+      \hline
+      PF-08\label{pf:08} & Validación de formato de \textit{uvus} & Comprobación del identificador mediante expresiones regulares previa a la llamada al servidor. \\
+      \hline
+      PF-09\label{pf:09} & Confirmación de nuevos alumnos & Gestión de diálogos emergentes de vinculación de identidad para participantes no registrados con anterioridad. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de acceso a salas.}
+  \label{tab:casos_prueba_frontend_acceso}
 \end{table}
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{lp{5.5cm}p{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PF-10}\label{pf:10} & Sincronización visual de sala de espera & Despliegue del código de sala, detalles de la sala y listado reactivo de participantes conectados. \\ 
-\textbf{PF-11}\label{pf:11} & Experiencia interactiva del estudiante & Renderizado de alternativas barajadas, temporizador visual animado y bloqueo de botones tras la emisión del voto para evitar respuestas duplicadas. \\ 
-\textbf{PF-12}\label{pf:12} & Control docente y visualización de resultados & Botones de finalización del temporizador, gráficos de barras con el recuento de opciones y podio animado con las mejores calificaciones. \\ 
-\textbf{PF-13}\label{pf:13} & Generación de credenciales QR y escaneo presencial & Renderizado del código QR personal con token efímero en el dispositivo del alumno y modal con visor de cámara para la validación de notas por parte del profesor. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba de la capa \textit{frontend}: Módulo de sala en directo.}
-\label{tab:casos_prueba_frontend_sala}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{3.4cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PF-10\label{pf:10} & Sincronización visual de sala de espera & Despliegue del código de sala, detalles de la sala y listado reactivo de participantes conectados. \\
+      \hline
+      PF-11\label{pf:11} & Experiencia interactiva del estudiante & Renderizado de alternativas barajadas, temporizador visual animado y bloqueo de botones tras la emisión del voto para evitar respuestas duplicadas. \\
+      \hline
+      PF-12\label{pf:12} & Control docente y visualización de resultados & Botones de finalización del temporizador, gráficos de barras con el recuento de opciones y podio animado con las mejores calificaciones. \\
+      \hline
+      PF-13\label{pf:13} & Generación de credenciales QR y escaneo presencial & Renderizado del código QR personal con token efímero en el dispositivo del alumno y modal con visor de cámara para la validación de notas por parte del profesor. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de sala en directo.}
+  \label{tab:casos_prueba_frontend_sala}
 \end{table}
+
+Con el fin de garantizar que la interfaz de usuario no solo sea funcionalmente correcta, sino que también cumpla con los estándares de rendimiento, accesibilidad, seguridad y diseño responsivo exigidos, se ha establecido una correspondencia explícita entre las pruebas de componentes y los requisitos no funcionales del sistema:
 
 \begin{table}[H]
-\centering
-\footnotesize
-\renewcommand{\arraystretch}{1.25} 
-\setlength{\tabcolsep}{4.5pt} 
-\makebox[\textwidth][c]{
-\begin{tabular}{l*{10}{c}}
-\cline{2-11}
-\multicolumn{1}{c}{} & \hyperref[rnf:01]{RNF-01} & \hyperref[rnf:02]{RNF-02} & \hyperref[rnf:03]{RNF-03} & \hyperref[rnf:04]{RNF-04} & \hyperref[rnf:05]{RNF-05} & \hyperref[rnf:06]{RNF-06} & \hyperref[rnf:07]{RNF-07} & \hyperref[rnf:08]{RNF-08} & \hyperref[rnf:09]{RNF-09} & \hyperref[rnf:10]{RNF-10} \\ \hline
-\hyperref[pf:01]{PF-01} &   &   &   &   &   & X &   &   &   & X \\ \hline
-\hyperref[pf:02]{PF-02} &   &   &   & X & X & X &   &   &   & X \\ \hline
-\hyperref[pf:03]{PF-03} &   &   &   & X &   & X &   &   &   & X \\ \hline
-\hyperref[pf:04]{PF-04} &   &   &   &   &   & X &   & X &   & X \\ \hline
-\hyperref[pf:05]{PF-05} &   &   &   &   &   & X &   &   &   & X \\ \hline
-\hyperref[pf:06]{PF-06} &   &   &   &   &   & X &   &   &   & X \\ \hline
-\hyperref[pf:07]{PF-07} &   &   &   &   &   & X &   & X &   & X \\ \hline
-\hyperref[pf:08]{PF-08} &   &   &   &   &   & X &   &   &   & X \\ \hline
-\hyperref[pf:09]{PF-09} &   &   &   &   &   & X &   &   &   & X \\ \hline
-\hyperref[pf:10]{PF-10} & X & X &   &   & X & X &   & X &   & X \\ \hline
-\hyperref[pf:11]{PF-11} & X & X &   &   & X & X &   & X & X & X \\ \hline
-\hyperref[pf:12]{PF-12} & X &   &   &   & X & X &   &   & X & X \\ \hline
-\hyperref[pf:13]{PF-13} &   &   & X &   & X & X & X &   &   & X \\ \hline
-\end{tabular}
-}
-\caption{Matriz de trazabilidad pruebas \textit{frontend} con RNF.}
-\label{tab:matriz_trazabilidad_pf_rnf}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{2.5pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}m{1.35cm} *{10}{>{\centering\arraybackslash}X}}
+      \bighline
+      \diagbox[width=1.35cm, height=0.85cm]{\raisebox{1.5pt}{\scriptsize\textbf{PF}}}{\raisebox{-0.5pt}{\scriptsize\textbf{RNF}}} & 
+      \hyperref[rnf:01]{01} & 
+      \hyperref[rnf:02]{02} & 
+      \hyperref[rnf:03]{03} & 
+      \hyperref[rnf:04]{04} & 
+      \hyperref[rnf:05]{05} & 
+      \hyperref[rnf:06]{06} & 
+      \hyperref[rnf:07]{07} & 
+      \hyperref[rnf:08]{08} & 
+      \hyperref[rnf:09]{09} & 
+      \hyperref[rnf:10]{10} \\
+      \bighline
+      \hyperref[pf:01]{01} & & & & & & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:02]{02} & & & & \traceCross & \traceCrossGray & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:03]{03} & & & & \traceCross & & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:04]{04} & & & & & & \traceCross & & \traceCross & & \traceCross \\ \hline
+      \hyperref[pf:05]{05} & & & & & & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:06]{06} & & & & & & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:07]{07} & & & & & & \traceCross & & \traceCross & & \traceCross \\ \hline
+      \hyperref[pf:08]{08} & & & & & & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:09]{09} & & & & & & \traceCross & & & & \traceCross \\ \hline
+      \hyperref[pf:10]{10} & \traceCrossGray & \traceCross & & & \traceCrossGray & \traceCross & & \traceCross & & \traceCross \\ \hline
+      \hyperref[pf:11]{11} & \traceCrossGray & \traceCross & & & \traceCrossGray & \traceCross & & \traceCross & \traceCrossGray & \traceCross \\ \hline
+      \hyperref[pf:12]{12} & \traceCrossGray & & & & \traceCrossGray & \traceCross & & & \traceCrossGray & \traceCross \\ \hline
+      \hyperref[pf:13]{13} & & & \traceCrossGray & & \traceCrossGray & \traceCross & \traceCrossGray & & & \traceCross \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Matriz de trazabilidad pruebas \textit{frontend} con RNF.}
+  \label{tab:matriz_trazabilidad_pf_rnf}
 \end{table}
-
 
 \subsection{Pruebas de extremo a extremo (\textit{E2E})}\label{subsec:casos_e2e}
 
 Las pruebas de extremo a extremo se implementan con Playwright sobre instancias reales de Chromium, automatizando los flujos de interacción completos sin recurrir a emulaciones intermedias. Esta \textit{suite} reproduce fielmente la experiencia de uso del sistema mediante escenarios que validan de forma integrada el cliente web, la API REST, la base de datos y la comunicación en tiempo real. Los casos de prueba definidos para este nivel se recogen en la siguiente tabla:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{
-\begin{tabular}{llp{9cm}}
-\hline
-\textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\ \hline
-\textbf{PE-01}\label{pe:01} & Autenticación y perfil docente & Verificación de rutas protegidas (redirección a \textit{login} si no existe sesión activa), registro docente con validación de formularios, introducción de códigos en la vista de verificación de correo, restablecimiento de contraseña y baja irreversible de usuario. \\ 
-\textbf{PE-02}\label{pe:02} & Gestión de cuestionarios & Ciclo completo de creación de cuestionarios con preguntas de diversa ponderación, edición de enunciados, borrado lógico con opción de restauración y eliminación física definitiva con comprobación de avisos sobre salas históricas. \\ 
-\textbf{PE-03}\label{pe:03} & Configuración y apertura de sala & Configuración de parámetros de sala, apertura de la sala de espera en estado \texttt{WAITING} y transición sincronizada hacia la cuenta atrás inicial tras la orden docente de arranque. \\ 
-\textbf{PE-04}\label{pe:04} & Acceso a sala de espera & Acceso secuencial de participantes mediante código PIN, validación del formato UVUS, confirmación de identidad y recepción concurrente de la lista de espera por WebSockets. \\ 
-\textbf{PE-05}\label{pe:05} & Podio y puntuaciones & Renderizado del podio con las mejores puntuaciones entre fases de preguntas, tratamiento de empates y visualización personalizada de la posición y puntuación individual en el navegador de cada alumno. \\ 
-\textbf{PE-06}\label{pe:06} & Validación QR & Flujo de cierre de partida con muestra del código QR personal en el dispositivo del alumno, apertura del modal con cámara en el panel docente, escaneo del token criptográfico, rechazo de códigos ajenos a la partida y confirmación visual de calificación auditada. \\ 
-\textbf{PE-07}\label{pe:07} & Historial de resultados & Revisión del histórico de sesiones pasadas y desglose porcentual de opciones seleccionadas por los alumnos al término de cada pregunta. \\ 
-\textbf{PE-08}\label{pe:08} & Exportación de calificaciones & Descarga en el navegador del fichero CSV normalizado con las notas finales y número de aciertos de los alumnos tras finalizar la sala. \\ 
-\textbf{PE-09}\label{pe:09} & Emisión de respuestas & Selección y emisión de votos por parte del alumno con desactivación inmediata de botones anti-duplicidad, gestión del temporizador (pausa y corte anticipado) y propagación coordinada de eventos WebSocket. \\ \hline
-\end{tabular}
-}
-\caption{Casos de prueba \textit{E2E}.}
-\label{tab:casos_prueba_e2e}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{3cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Caso de prueba} & \textbf{Alcance y condiciones verificadas} \\
+      \bighline
+      PE-01\label{pe:01} & Autenticación y perfil docente & Verificación de rutas protegidas (redirección a \textit{login} si no existe sesión activa), registro docente con validación de formularios, introducción de códigos en la vista de verificación de correo, restablecimiento de contraseña y baja irreversible de usuario. \\
+      \hline
+      PE-02\label{pe:02} & Gestión de cuestionarios & Ciclo completo de creación de cuestionarios con preguntas de diversa ponderación, edición de enunciados, borrado lógico con opción de restauración y eliminación física definitiva con comprobación de avisos sobre salas históricas. \\
+      \hline
+      PE-03\label{pe:03} & Configuración y apertura de sala & Configuración de parámetros de sala, apertura de la sala de espera en estado \texttt{WAITING} y transición sincronizada hacia la cuenta atrás inicial tras la orden docente de arranque. \\
+      \hline
+      PE-04\label{pe:04} & Acceso a sala de espera & Acceso secuencial de participantes mediante código PIN, validación del formato UVUS, confirmación de identidad y recepción concurrente de la lista de espera por \textit{WebSockets}. \\
+      \hline
+      PE-05\label{pe:05} & Podio y puntuaciones & Renderizado del podio con las mejores puntuaciones entre fases de preguntas, tratamiento de empates y visualización personalizada de la posición y puntuación individual en el navegador de cada alumno. \\
+      \hline
+      PE-06\label{pe:06} & Validación QR & Flujo de cierre de partida con muestra del código QR personal en el dispositivo del alumno, apertura del modal con cámara en el panel docente, escaneo del token criptográfico, rechazo de códigos ajenos a la partida y confirmación visual de calificación auditada. \\
+      \hline
+      PE-07\label{pe:07} & Historial de resultados & Revisión del histórico de sesiones pasadas y desglose porcentual de opciones seleccionadas por los alumnos al término de cada pregunta. \\
+      \hline
+      PE-08\label{pe:08} & Exportación de calificaciones & Descarga en el navegador del fichero CSV normalizado con las notas finales y número de aciertos de los alumnos tras finalizar la sala. \\
+      \hline
+      PE-09\label{pe:09} & Emisión de respuestas & Selección y emisión de votos por parte del alumno con desactivación inmediata de botones anti-duplicidad, gestión del temporizador (pausa y corte anticipado) y propagación de eventos \textit{WebSocket}. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Casos de prueba \textit{E2E}.}
+  \label{tab:casos_prueba_e2e}
 \end{table}
-
-\newpage
 
 Para asegurar una cobertura funcional completa y garantizar que los flujos críticos del sistema han sido evaluados en condiciones reales de ejecución, la siguiente matriz recoge la correspondencia entre los escenarios de prueba y los Casos de Uso del sistema.
 
 \begin{table}[H]
-\centering
-\footnotesize
-\renewcommand{\arraystretch}{1.25} 
-\setlength{\tabcolsep}{4.5pt} 
-\makebox[\textwidth][c]{
-\begin{tabular}{l*{9}{c}}
-\cline{2-10}
-\multicolumn{1}{c}{} & \hyperref[cu:01]{CU-01} & \hyperref[cu:02]{CU-02} & \hyperref[cu:04]{CU-04} & \hyperref[cu:05]{CU-05} & \hyperref[cu:06]{CU-06} & \hyperref[cu:07]{CU-07} & \hyperref[cu:08]{CU-08} & \hyperref[cu:09]{CU-09} & \hyperref[cu:10]{CU-10} \\ \hline
-\hyperref[pe:01]{PE-01} & X &   &   &   &   &   &   &   &   \\ \hline
-\hyperref[pe:02]{PE-02} &   & X &   &   &   &   &   &   &   \\ \hline
-\hyperref[pe:03]{PE-03} &   &   & X &   &   &   &   &   &   \\ \hline
-\hyperref[pe:04]{PE-04} &   &   &   & X &   &   &   &   &   \\ \hline
-\hyperref[pe:05]{PE-05} &   &   &   &   & X &   &   &   &   \\ \hline
-\hyperref[pe:06]{PE-06} &   &   &   &   &   & X &   &   &   \\ \hline
-\hyperref[pe:07]{PE-07} &   &   &   &   &   &   & X &   &   \\ \hline
-\hyperref[pe:08]{PE-08} &   &   &   &   &   &   &   & X &   \\ \hline
-\hyperref[pe:09]{PE-09} &   &   &   &   &   &   &   &   & X \\ \hline
-\end{tabular}
-}
-\caption{Matriz de trazabilidad pruebas \textit{E2E} con CU.}
-\label{tab:matriz_trazabilidad_pe_cu}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{2.5pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}m{1.35cm} *{9}{>{\centering\arraybackslash}X}}
+      \bighline
+      \diagbox[width=1.35cm, height=0.85cm]{\raisebox{1.5pt}{\scriptsize\textbf{PE}}}{\raisebox{-1.5pt}{\scriptsize\textbf{CU}}} & 
+      \hyperref[cu:01]{01} & 
+      \hyperref[cu:02]{02} & 
+      \hyperref[cu:04]{04} & 
+      \hyperref[cu:05]{05} & 
+      \hyperref[cu:06]{06} & 
+      \hyperref[cu:07]{07} & 
+      \hyperref[cu:08]{08} & 
+      \hyperref[cu:09]{09} & 
+      \hyperref[cu:10]{10} \\
+      \bighline
+      \hyperref[pe:01]{01} & \traceCrossGray & & & & & & & & \\ \hline
+      \hyperref[pe:02]{02} & & \traceCross & & & & & & & \\ \hline
+      \hyperref[pe:03]{03} & & & \traceCrossGray & & & & & & \\ \hline
+      \hyperref[pe:04]{04} & & & & \traceCross & & & & & \\ \hline
+      \hyperref[pe:05]{05} & & & & & \traceCrossGray & & & & \\ \hline
+      \hyperref[pe:06]{06} & & & & & & \traceCross & & & \\ \hline
+      \hyperref[pe:07]{07} & & & & & & & \traceCrossGray & & \\ \hline
+      \hyperref[pe:08]{08} & & & & & & & & \traceCross & \\ \hline
+      \hyperref[pe:09]{09} & & & & & & & & & \traceCrossGray \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Matriz de trazabilidad pruebas \textit{E2E} con CU.}
+  \label{tab:matriz_trazabilidad_pe_cu}
 \end{table}
 
 Cabe señalar que los casos de uso \hyperref[cu:03]{CU-03} (asociado al \hyperref[obj:09]{OBJ-09}) y \hyperref[cu:11]{CU-11} (asociado al \hyperref[obj:11]{OBJ-11}) no se encuentran reflejados en esta batería de pruebas, ya que no forman parte del alcance implementado actualmente. La justificación técnica, el análisis del estado de ambas funcionalidades y su planificación futura se detallan en la sección de \hyperref[sec:cumplimiento_alcance]{cumplimiento del alcance}.
@@ -484,7 +774,7 @@ El reparto del volumen total de usuarios simulados se distribuye como se muestra
 \begin{enumerate}
     \item \textbf{\texttt{TeacherManagerUser}} (3\,\%, 6 usuarios): simula la navegación administrativa del profesor, la consulta del catálogo y la edición interactiva de cuestionarios.
     \item \textbf{\texttt{TeacherHostUser}} (2\,\%, 4 usuarios): modela a los profesores dirigiendo salas activas en tiempo real, ordenando el tránsito entre fases de preguntas y forzando el despliegue de las clasificaciones.
-    \item \textbf{\texttt{StudentUser}} (95\,\%, 190 usuarios): representa al grueso del alumnado interactuando de forma concurrente, manteniendo conexiones persistentes mediante WebSockets, emitiendo respuestas masivas al unísono y enviando señales periódicas de \textit{ping}.
+    \item \textbf{\texttt{StudentUser}} (95\,\%, 190 usuarios): representa al grueso del alumnado interactuando de forma concurrente, manteniendo conexiones persistentes mediante \textit{WebSockets}, emitiendo respuestas masivas al unísono y enviando señales periódicas de \textit{ping}.
 \end{enumerate}
 
 Para evaluar los tiempos de respuesta de forma rigurosa, se utiliza como métrica principal el \textbf{percentil 90 (P90)}. Este indicador asegura que al menos el 90\% de las peticiones analizadas se resuelven en un tiempo igual o inferior al límite establecido, garantizando una percepción de inmediatez para la inmensa mayoría de los usuarios concurrentes y evitando que los valores atípicos extremos distorsionen la evaluación del sistema.
@@ -496,17 +786,21 @@ Para superar la auditoría de rendimiento, el sistema debe satisfacer estrictame
   \small
   \renewcommand{\arraystretch}{1.3}
   \makebox[\textwidth][c]{%
-    \begin{tabular}{llp{7.5cm}c}
-      \hline
+    \begin{tabularx}{\textwidth}{P{2.6cm} P{2.3cm} Y >{\centering\arraybackslash}c}
+      \bighline
       \textbf{Ámbito} & \textbf{Métrica} & \textbf{Operación evaluada / Condición} & \textbf{Umbral objetivo} \\
+      \bighline
+      Global & Tasa de error & Régimen continuo con 200 usuarios concurrentes en carga sostenida & $< 1{,}0$\,\% \\
       \hline
-      Global & Tasa de error & Régimen continuo con 200 usuarios concurrentes & $< 1{,}0$\,\% \\
-      REST API & Latencia P90 & Peticiones generales (lectura, salas, voto) & $\le 200\text{ ms}$ \\
-      Autenticación & Latencia P90 & \texttt{POST /users/login} (derivación de claves con Bcrypt) & $\le 500\text{ ms}$ \\
-      WebSockets & Latencia P90 & Negociación inicial (\textit{handshake}) y apertura de canal & $\le 200\text{ ms}$ \\
-      Concurrencia & Latencia P90 & Ráfagas masivas de respuestas (\texttt{POST /stage/answers}) & $\le 200\text{ ms}$ \\
+      REST API & Latencia P90 & Peticiones generales de lectura, unión a salas y emisión de votos & $\le 200\text{ ms}$ \\
       \hline
-    \end{tabular}%
+      Autenticación & Latencia P90 & Inicio de sesión (\texttt{POST /users/login} con Bcrypt) y resto de rutas protegidas bajo token JWT & $\le 500\text{ ms}$ \\
+      \hline
+      \textit{WebSockets} & Latencia P90 & Negociación inicial (\textit{handshake}), validación de token y apertura de canal & $\le 200\text{ ms}$ \\
+      \hline
+      Concurrencia & Latencia P90 & Ráfagas masivas de respuestas concurrentes de alumnos (\texttt{POST /stage/answers}) & $\le 200\text{ ms}$ \\
+      \bighline
+    \end{tabularx}%
   }
   \caption{Umbrales y criterios de aceptación para las pruebas de rendimiento.}
   \label{tab:metricas_rendimiento}
