@@ -1,11 +1,229 @@
 \begin{appendices}
-\chapter{Informe de dedicación temporal con \textit{Clockify}}\label{anexo:clockify}
+\chapter{Informe de dedicación temporal}\label{anexo:clockify}
 
-En este anexo se adjunta el informe completo de seguimiento temporal exportado directamente de la herramienta Clockify, donde se detalla el cómputo de horas imputadas a cada una de las tareas del proyecto y sus correspondientes etiquetas de vinculación con las actividades.
+En este anexo se consolida y procesa el registro del seguimiento temporal extraído de la plataforma Clockify. Para facilitar la auditoría y verificación del esfuerzo invertido frente a la planificación original, las imputaciones horarias se presentan estructuradas en tres niveles progresivos de agregación.
 
-\includepdf[
-    pages=-,
-    scale=0.85,
-    pagecommand={}
-]{assets/informe_clockify.pdf}
+El primer reporte ofrece una visión general de la dedicación temporal, desglosando las horas acumuladas y el peso porcentual de cada etapa del ciclo de vida del proyecto:
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{l l c c}
+      \bighline
+      \textbf{ID} & \textbf{Fase} & \textbf{Duración (h)} & \textbf{Dedicación (\%)} \\
+      \bighline
+      \hyperref[fase:planificacion]{F-01} & Planificación & 11,00\,h & 3,34\% \\
+      \hline
+      \hyperref[fase:documentacion]{F-02} & Documentación & 26,80\,h & 8,15\% \\
+      \hline
+      \hyperref[fase:inicio]{F-03} & Inicio & 12,50\,h & 3,80\% \\
+      \hline
+      \hyperref[fase:ci-cd]{F-04} & CI/CD & 18,75\,h & 5,70\% \\
+      \hline
+      \hyperref[fase:mvp]{F-05} & MVP & 49,70\,h & 15,11\% \\
+      \hline
+      \hyperref[fase:testing]{F-06} & Testing & 41,11\,h & 12,50\% \\
+      \hline
+      \hyperref[fase:core]{F-07} & Core & 40,21\,h & 12,22\% \\
+      \hline
+      \hyperref[fase:qa]{F-08} & QA & 21,42\,h & 6,51\% \\
+      \hline
+      \hyperref[fase:memoria]{F-09} & Memoria & 87,43\,h & 26,58\% \\
+      \hline
+      \hyperref[fase:defensa]{F-10} & Defensa & 20,00\,h & 6,09\% \\
+      \bighline
+      \multicolumn{2}{l}{\textbf{Total}} & \textbf{328,94\,h} & \textbf{100,00\%} \\
+      \bighline
+    \end{tabular}%
+  }
+  \caption{Distribución global del tiempo invertido por fases del proyecto.}
+  \label{tab:resumen_fases}
+\end{table}
+
+Descendiendo al nivel de actividad, el siguiente balance detalla el total de horas registradas a través de las 29 actividades definidas en el proyecto, vinculando cada tarea a su fase correspondiente para garantizar la trazabilidad:
+
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l c Y c}
+      \bighline
+      \textbf{Fase} & \textbf{Actividad} & \textbf{Descripción de la actividad} & \textbf{Horas} \\
+      \bighline
+      \hyperref[fase:planificacion]{F-01} 
+        & \hyperref[act:01]{ACT-01} & Redacción del acta de constitución & 4,83\,h \\
+        \cline{2-4}
+        & \hyperref[act:02]{ACT-02} & Definición de hitos y estimación del cronograma inicial & 6,17\,h \\
+      \hline
+      \hyperref[fase:documentacion]{F-02} 
+        & \hyperref[act:03]{ACT-03} & Elección de estilos, paleta de colores y componentes básicos & 0,72\,h \\
+        \cline{2-4}
+        & \hyperref[act:04]{ACT-04} & Diseño de prototipos de las pantallas de gestión de profesor & 4,06\,h \\
+        \cline{2-4}
+        & \hyperref[act:05]{ACT-05} & Diseño de la interfaz de respuesta para pantallas de alumnos & 0,37\,h \\
+        \cline{2-4}
+        & \hyperref[act:06]{ACT-06} & Elaboración del manual funcional como guía para usuarios & 0,82\,h \\
+        \cline{2-4}
+        & \hyperref[act:07]{ACT-07} & Redacción del manual de despliegue técnico de infraestructura & 4,09\,h \\
+        \cline{2-4}
+        & \hyperref[act:08]{ACT-08} & Elicitación y redacción de requisitos funcionales y no funcionales & 3,41\,h \\
+        \cline{2-4}
+        & \hyperref[act:09]{ACT-09} & Modelado de diagramas de casos de uso y flujos esenciales & 1,50\,h \\
+        \cline{2-4}
+        & \hyperref[act:10]{ACT-10} & Diseño del modelo conceptual y lógico de datos & 4,14\,h \\
+        \cline{2-4}
+        & \hyperref[act:11]{ACT-11} & Modelado del diagrama de entidades relacional & 3,80\,h \\
+        \cline{2-4}
+        & \hyperref[act:12]{ACT-12} & Generación del \textit{script} de inicialización de tablas y poblado & 3,90\,h \\
+      \hline
+      \hyperref[fase:inicio]{F-03} 
+        & \hyperref[act:13]{ACT-13} & Inicialización del repositorio en GitHub y estructura base & 12,50\,h \\
+      \hline
+      \hyperref[fase:ci-cd]{F-04} 
+        & \hyperref[act:14]{ACT-14} & Diseño de plantillas para \textit{issues} y automatización base & 4,69\,h \\
+        \cline{2-4}
+        & \hyperref[act:15]{ACT-15} & Desarrollo de \textit{scripts} de despliegue e integración continuos & 14,06\,h \\
+      \hline
+      \hyperref[fase:mvp]{F-05} 
+        & \hyperref[act:16]{ACT-16} & Diseño y desarrollo de la persistencia base para cuestionarios & 16,31\,h \\
+        \cline{2-4}
+        & \hyperref[act:17]{ACT-17} & Implementación de la interfaz de creación de test y panel base & 15,56\,h \\
+        \cline{2-4}
+        & \hyperref[act:18]{ACT-18} & Lógica de control y validación para la ejecución asíncrona & 17,83\,h \\
+      \hline
+      \hyperref[fase:testing]{F-06} 
+        & \hyperref[act:19]{ACT-19} & Desarrollo y ejecución de test de integración de servicios & 17,49\,h \\
+        \cline{2-4}
+        & \hyperref[act:20]{ACT-20} & Pruebas de componentes, de carga y \textit{end-to-end} & 23,62\,h \\
+      \hline
+      \hyperref[fase:core]{F-07} 
+        & \hyperref[act:21]{ACT-21} & Desarrollo de la infraestructura síncrona y canales \textit{WebSocket} & 24,27\,h \\
+        \cline{2-4}
+        & \hyperref[act:22]{ACT-22} & Implementación en \textit{frontend} de la conexión reactiva a salas & 9,46\,h \\
+        \cline{2-4}
+        & \hyperref[act:23]{ACT-23} & Programación del motor de validación y control de integridad & 6,48\,h \\
+      \hline
+      \hyperref[fase:qa]{F-08} 
+        & \hyperref[act:24]{ACT-24} & Implementación del módulo de autenticación y panel avanzado & 9,28\,h \\
+        \cline{2-4}
+        & \hyperref[act:25]{ACT-25} & Desarrollo de vistas de historial y exportación de datos & 3,75\,h \\
+        \cline{2-4}
+        & \hyperref[act:26]{ACT-26} & Puesta a punto, empaquetado, corrección de errores y despliegue & 8,40\,h \\
+      \hline
+      \hyperref[fase:memoria]{F-09} 
+        & \hyperref[act:27]{ACT-27} & Redacción y estructuración técnica de la memoria en LaTeX & 87,43\,h \\
+      \hline
+      \hyperref[fase:defensa]{F-10} 
+        & \hyperref[act:28]{ACT-28} & Diseño, desarrollo y maquetación de diapositivas de defensa & 10,00\,h \\
+        \cline{2-4}
+        & \hyperref[act:29]{ACT-29} & Ensayos de oratoria y preparación de la defensa pública & 10,00\,h \\
+      \bighline
+      \multicolumn{3}{l}{\textbf{Total acumulado}} & \textbf{328,94\,h} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Desglose detallado del cómputo temporal por fase y actividad.}
+  \label{tab:desglose_actividades}
+\end{table}
+
+Finalmente, se agrupan las horas registradas por rol profesional, sirviendo de base directa para el cálculo de los costes de personal en el balance económico:
+
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.2}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{0.75\textwidth}{Ycc}
+      \bighline
+      \textbf{Recurso (Rol)} & \textbf{Actividad} & \textbf{Horas} \\
+      \bighline
+      \textbf{Project Manager} 
+        & \hyperref[act:01]{\textbf{ACT-01}} & 4,83\,h \\
+        \cline{2-3}
+        & \hyperref[act:02]{\textbf{ACT-02}} & 6,17\,h \\
+        \cline{2-3}
+        & \hyperref[act:29]{\textbf{ACT-29}} & 10,00\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{21,00\,h} \\
+      \hline
+      \textbf{Analista} 
+        & \hyperref[act:06]{\textbf{ACT-06}} & 0,82\,h \\
+        \cline{2-3}
+        & \hyperref[act:08]{\textbf{ACT-08}} & 3,41\,h \\
+        \cline{2-3}
+        & \hyperref[act:09]{\textbf{ACT-09}} & 1,50\,h \\
+        \cline{2-3}
+        & \hyperref[act:10]{\textbf{ACT-10}} & 4,14\,h \\
+        \cline{2-3}
+        & \hyperref[act:11]{\textbf{ACT-11}} & 3,80\,h \\
+        \cline{2-3}
+        & \hyperref[act:27]{\textbf{ACT-27}} & 87,43\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{101,10\,h} \\
+      \hline
+      \textbf{Diseñador UI} 
+        & \hyperref[act:03]{\textbf{ACT-03}} & 0,72\,h \\
+        \cline{2-3}
+        & \hyperref[act:04]{\textbf{ACT-04}} & 4,06\,h \\
+        \cline{2-3}
+        & \hyperref[act:05]{\textbf{ACT-05}} & 0,37\,h \\
+        \cline{2-3}
+        & \hyperref[act:28]{\textbf{ACT-28}} & 10,00\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{15,15\,h} \\
+      \hline
+      \textbf{Programador Backend} 
+        & \hyperref[act:12]{\textbf{ACT-12}} & 3,90\,h \\
+        \cline{2-3}
+        & \hyperref[act:16]{\textbf{ACT-16}} & 16,31\,h \\
+        \cline{2-3}
+        & \hyperref[act:18]{\textbf{ACT-18}} & 17,83\,h \\
+        \cline{2-3}
+        & \hyperref[act:21]{\textbf{ACT-21}} & 24,27\,h \\
+        \cline{2-3}
+        & \hyperref[act:23]{\textbf{ACT-23}} & 6,48\,h \\
+        \cline{2-3}
+        & \hyperref[act:24]{\textbf{ACT-24}} & 9,28\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{78,07\,h} \\
+      \hline
+      \textbf{Programador Frontend} 
+        & \hyperref[act:17]{\textbf{ACT-17}} & 15,56\,h \\
+        \cline{2-3}
+        & \hyperref[act:22]{\textbf{ACT-22}} & 9,46\,h \\
+        \cline{2-3}
+        & \hyperref[act:25]{\textbf{ACT-25}} & 3,75\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{28,77\,h} \\
+      \hline
+      \textbf{Tester} 
+        & \hyperref[act:19]{\textbf{ACT-19}} & 17,49\,h \\
+        \cline{2-3}
+        & \hyperref[act:20]{\textbf{ACT-20}} & 23,62\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{41,11\,h} \\
+      \hline
+      \textbf{Técnico} 
+        & \hyperref[act:07]{\textbf{ACT-07}} & 4,09\,h \\
+        \cline{2-3}
+        & \hyperref[act:13]{\textbf{ACT-13}} & 12,50\,h \\
+        \cline{2-3}
+        & \hyperref[act:14]{\textbf{ACT-14}} & 4,69\,h \\
+        \cline{2-3}
+        & \hyperref[act:15]{\textbf{ACT-15}} & 14,06\,h \\
+        \cline{2-3}
+        & \hyperref[act:26]{\textbf{ACT-26}} & 8,40\,h \\
+        \bigcline{2-3}
+        & \textbf{Subtotal} & \textbf{43,74\,h} \\
+      \bighline
+      \textbf{TOTAL} & & \textbf{328,94\,h} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Horas reales computadas agrupadas por perfil profesional.}
+  \label{tab:horas_personal_rol}
+\end{table}
+
 \end{appendices}
