@@ -1,125 +1,130 @@
 \chapter{Resultados y evaluación}\label{cap:resultados_y_evaluacion}
 
-Una vez finalizado el ciclo de desarrollo e implementadas las pruebas de verificación expuestas en el capítulo anterior, el presente capítulo aborda la auditoría cuantitativa y cualitativa del proyecto. A través de este análisis se evalúa el desempeño de la solución construida respecto a los compromisos definidos durante la fase de planificación, contrastando la ejecución real frente a las líneas base establecidas. Asimismo, se documenta la gestión de cambios articulada durante el desarrollo, la resolución efectiva de las pruebas y una retrospectiva técnica en torno a la infraestructura de integración continua y métricas de calidad de código.
- 
+Una vez finalizado el ciclo de desarrollo e implementadas las pruebas de verificación expuestas en el capítulo anterior, el presente capítulo aborda la \textbf{auditoría cuantitativa y cualitativa} del proyecto. A través de este análisis se evalúa el desempeño de la solución construida respecto a los compromisos definidos durante la fase de planificación, contrastando la \textbf{ejecución real frente a las líneas base} establecidas. Asimismo, se documenta la \textbf{gestión de cambios} articulada durante el desarrollo, la resolución efectiva de las pruebas y una retrospectiva técnica en torno a la infraestructura de integración continua y métricas de calidad de código.
+
 \section{Cumplimiento de la Línea Base del Alcance}\label{sec:cumplimiento_alcance}
 
 La \hyperref[sec:linea_base_del_alcance]{Línea Base del Alcance} quedó formalizada en la \hyperref[cap:gestion_del_proyecto]{planificación del proyecto} a través de la \hyperref[subsec:edt]{EDT} y su correspondiente \hyperref[subsec:diccionario_edt]{diccionario}, distribuyendo el esfuerzo en cuatro paquetes troncales: Gestión del proyecto, Diseño y arquitectura, Producto software y Documentación final. 
 
-A nivel global del proyecto, los entregables documentales, de gestión y de diseño preliminar se han completado al \textbf{100\%}, quedando consolidados a lo largo de los capítulos técnicos, anexos y código fuente de esta memoria. Por su parte, el paquete \textbf{Producto software} materializa con éxito el flujo íntegro del sistema a través de las tres \textit{releases} planificadas; no obstante, al haberse pospuesto dos de los doce objetivos funcionales contemplados en el diseño inicial, el grado de consecución de dichos objetivos se sitúa en el \textbf{83{,}33\%}.
+A nivel global del proyecto, los entregables documentales, de gestión y de diseño preliminar se han completado al \textbf{100\,\%}, quedando consolidados a lo largo de los capítulos técnicos, anexos y código fuente de esta memoria. Por su parte, el paquete \textbf{Producto software} materializa con éxito el flujo íntegro del sistema a través de las tres \textit{releases} planificadas; no obstante, al haberse pospuesto dos de los doce objetivos funcionales contemplados en el diseño inicial, el grado de consecución de dichos objetivos se sitúa en el \textbf{83{,}33\,\%}.
 
-Para auditar las desviaciones del alcance del sistema, el siguiente cuadro detalla en primer término los dos objetivos funcionales que resultaron formalmente pospuestos, justificando el motivo de su aplazamiento. Estas decisiones de cambio de alcance y su impacto cronológico en los hitos del proyecto quedan formalmente registradas en el \hyperref[sub:registro_cambios]{registro de cambios}:
+Para auditar las desviaciones respecto al alcance inicial, el siguiente cuadro detalla los objetivos funcionales pospuestos y su justificación técnica. Estas decisiones y su repercusión cronológica en los hitos del proyecto quedan documentadas formalmente en el \hyperref[sub:registro_cambios]{registro de cambios}.
 
 \begin{table}[H]
-\centering
-\normalsize
-\renewcommand{\arraystretch}{1.5}
-\makebox[\textwidth][c]{%
-\begin{tabular}{llp{10.7cm}}
-\hline
-\textbf{ID} & \textbf{Objetivo funcional} & \textbf{Motivo del aplazamiento} \\ \hline
-\hyperref[obj:09]{OBJ-09} & Asistente IA & Evitar la dependencia de cuotas de facturación por consumo de \textit{tokens}, límites de tasa (\textit{rate limits}) y sobrecostes imprevistos de servicios externos, priorizando un núcleo completamente autosuficiente. \\ 
-\hyperref[obj:11]{OBJ-11} & Gestión de grupos & Elevado coste de oportunidad: el gran esfuerzo temporal necesario para su implementación no justificaba el valor añadido, decidiendo concentrar ese tiempo en consolidar la concurrencia y la estabilidad de las salas en vivo. \\ \hline
-\end{tabular}%
-}
-\caption{Objetivos funcionales pospuestos.}
-\label{tab:objetivos_pospuestos}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{3.5cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Objetivo funcional} & \textbf{Motivo del aplazamiento} \\
+      \bighline
+      \hyperref[obj:09]{OBJ-09} & Asistente IA & Evitar la dependencia de cuotas de facturación por consumo de \textit{tokens}, límites de tasa (\textit{rate limits}) y sobrecostes imprevistos de servicios externos, priorizando un núcleo completamente autosuficiente. \\
+      \hline
+      \hyperref[obj:11]{OBJ-11} & Gestión de grupos & Elevado coste de oportunidad: el gran esfuerzo temporal necesario para su implementación no justificaba el valor añadido, decidiendo concentrar ese tiempo en consolidar la concurrencia y la estabilidad de las salas en vivo. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Objetivos funcionales pospuestos.}
+  \label{tab:objetivos_pospuestos}
 \end{table}
 
-Gracias a las relaciones establecidas en la \hyperref[tab:matriz_trazabilidad]{matriz de trazabilidad unificada}, es posible determinar con precisión cómo repercute la postergación de estos dos objetivos en los casos de uso, historias de usuario y requisitos funcionales asociados:
-
-\begin{itemize}
-    \item \textbf{Asistente de IA (\hyperref[obj:09]{OBJ-09}):} Conlleva la postergación completa del caso de uso \textbf{\hyperref[cu:03]{CU-03} - Generar preguntas con IA} y de la historia de usuario \textbf{\hyperref[hu:pr-09]{HU-PR-09} - Generación asistida de preguntas}, afectando a cuatro requisitos funcionales. Estos requisitos han quedado formalizados en el repositorio del proyecto como líneas de evolución futura:
+Gracias a las relaciones fijadas en la \hyperref[tab:matriz_trazabilidad]{matriz de trazabilidad unificada}, es posible conocer de forma exhaustiva el alcance afectado por la postergación de ambos objetivos: el aplazamiento de los casos de uso \textbf{\hyperref[cu:03]{CU-03}} y \textbf{\hyperref[cu:11]{CU-11}}, y de las historias de usuario \textbf{\hyperref[hu:pr-09]{HU-PR-09}} y \textbf{\hyperref[hu:pr-07]{HU-PR-07}}. En consecuencia, quedan pospuestos cinco requisitos funcionales, catalogados como trabajo futuro en el repositorio del proyecto:
 
 \begin{table}[H]
-\centering
-\normalsize
-\renewcommand{\arraystretch}{1.5}
-
-\makebox[\textwidth][c]{%
-\begin{tabular}{llc}
-\hline
-\textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \hline
-\hyperref[req:34]{RF-34} & Generación preguntas & \issue{95}  \\
-\hyperref[req:35]{RF-35} & Asistente de ayuda &  \issue{96} \\
-\hyperref[req:36]{RF-36} & Navegación y tutorial por IA & \issue{97} \\
-\hyperref[req:37]{RF-37} & Revisión post IA & \issue{98} \\ \hline
-\end{tabular}%
-}
-\caption{Requisitos funcionales pospuestos para OBJ-09.}
-\label{tab:rf_pospuestos_obj09}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{0.75\textwidth}{l l Y c}
+      \bighline
+      \textbf{Objetivo} & \textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\
+      \bighline
+        \hyperref[obj:09]{OBJ-09} & \hyperref[req:34]{RF-34} & Generación preguntas & \issue{95} \\
+        \cline{2-4}
+        & \hyperref[req:35]{RF-35} & Asistente de ayuda & \issue{96} \\
+        \cline{2-4}
+        & \hyperref[req:36]{RF-36} & Navegación y tutorial por IA & \issue{97} \\
+        \cline{2-4}
+        & \hyperref[req:37]{RF-37} & Revisión post IA & \issue{98} \\
+      \hline
+      \hyperref[obj:11]{OBJ-11}
+        & \hyperref[req:38]{RF-38} & Crear clase & \issue{99} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Requisitos funcionales pospuestos asociados a OBJ-09 y OBJ-11.}
+  \label{tab:rf_pospuestos_objetivos}
 \end{table}
 
-    \item \textbf{Gestión de grupos (\hyperref[obj:11]{OBJ-11}):} Implica posponer íntegramente el caso de uso \textbf{\hyperref[cu:11]{CU-11} - Gestionar grupos} y la historia de usuario \textbf{\hyperref[hu:pr-07]{HU-PR-07} - Organización por grupos de clase}, afectando a un único requisito funcional:
-\begin{table}[H]
-\centering
-\normalsize
-\renewcommand{\arraystretch}{1.5}
-\makebox[\textwidth][c]{%
-\begin{tabular}{llc}
-\hline
-\textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \hline
-\hyperref[req:38]{RF-38} & Crear clase & \issue{99} \\ \hline
-\end{tabular}%
-}
-\caption{Requisito funcional pospuesto para OBJ-11.}
-\label{tab:rf_pospuestos_grupos}
-\end{table}
 
-\end{itemize}
 
-Por otro lado, los diez objetivos funcionales restantes alcanzaron cobertura operativa suficiente para la entrega. La siguiente tabla resume la retrospectiva técnica, los desafíos de diseño y las decisiones clave adoptadas durante su materialización:
+Asimismo, dentro de los objetivos completados se identificaron siete requisitos funcionales secundarios que fueron catalogados como mejoras o extensiones secundarias para salvaguardar la estabilidad del núcleo y ajustarse al calendario. En la siguiente tabla se detallan estos requisitos de ampliación y las \textit{issues} abiertas para su integración en versiones sucesivas:
 
 \begin{table}[H]
-\centering
-\normalsize
-\renewcommand{\arraystretch}{1.5}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{3.7cm}p{10.7cm}}
-\hline
-\textbf{ID} & \textbf{Objetivo funcional} & \textbf{Retrospectiva técnica e impacto en el desarrollo} \\ \hline
-\hyperref[obj:01]{OBJ-01} & Módulo de usuario y autenticación & Implementación sólida de JWT y Bcrypt. Para evitar bloqueos en el hilo principal de la API por la latencia del servidor SMTP de Gmail, el envío del código de verificación por correo se delegó a tareas en segundo plano. \\ 
-\hyperref[obj:02]{OBJ-02} & Gestión de cuestionarios & Se optó por borrado lógico (\textit{soft delete}) en cascada para impedir que la edición o eliminación de preguntas corrompiera los registros de salas históricas. \\ 
-\hyperref[obj:03]{OBJ-03} & Creación de salas & Se implementó una máquina de estados en el servidor para controlar las fases de la partida, garantizando un flujo sincronizado y previniendo saltos de estado indebidos. \\ 
-\hyperref[obj:04]{OBJ-04} & Acceso rápido & Entrada ágil e inmediata sin necesidad de registro previo. Para evitar que un refresco accidental del navegador expulsara al estudiante de la partida, la sesión activa se conservó localmente mediante \texttt{sessionStorage}. \\ 
-\hyperref[obj:05]{OBJ-05} & Interacción en tiempo real & La recepción de respuestas se gestionó en memoria garantizando que cada participante emitiera un único voto por pregunta. Además, se centralizó el temporizador en el servidor para anular intentos de manipulación o ventajas por desajustes horarios entre los clientes. \\ 
-\hyperref[obj:06]{OBJ-06} & Verificación QR & Generación distribuida en el cliente para liberar de procesamiento al servidor mediante la librería \texttt{qrcode.react}. La carga útil del código QR estructura un objeto JSON con los datos clave de la evaluación (UVUS, sala y puntuación), acompañado de un token criptográfico de un solo uso. \\ 
-\hyperref[obj:07]{OBJ-07} & Persistencia validada & Se logró el desacoplamiento entre el estado efímero de la partida y el almacenamiento persistente: solo los resultados verificados se consolidan en la base de datos. \\  
-\hyperref[obj:08]{OBJ-08} & Estadísticas y análisis & Agregación reactiva en memoria al cierre de cada ronda para computar la distribución de respuestas, aciertos globales y el podio en tiempo real, evitando sobrecargar la base de datos con consultas recurrentes. \\  
-\hyperref[obj:10]{OBJ-10} & Escaneo de código QR & Lectura ágil mediante \texttt{html5-qrcode} con solicitud de permisos de cámara, validando el \textit{token} criptográfico contra el servidor en un solo paso atómico. \\  
-\hyperref[obj:12]{OBJ-12} & Exportación de datos & Se habilitó la descarga de resultados en formato CSV, garantizando la compatibilidad con hojas de cálculo. \\  \hline
-\end{tabular}%
-}
-\caption{Retrospectiva técnica de los objetivos funcionales.}
-\label{tab:objetivos_completados}
-\end{table}
-
-\newpage
-
-Cabe destacar que los nueve casos de uso y dieciséis historias de usuario que sustentan estos diez objetivos están plenamente disponibles en sus flujos troncales. Sin embargo, para cumplir con el calendario fijado sin comprometer la estabilidad, se decidió catalogar como mejoras o extensiones secundarias siete requisitos funcionales. La siguiente tabla detalla estos requisitos de ampliación y las \textit{issues} abiertas para su integración en versiones sucesivas:
-
-\begin{table}[H]
-\centering
-\normalsize
-\renewcommand{\arraystretch}{1.5}
-\makebox[\textwidth][c]{%
-\begin{tabular}{llc}
-\hline
-\textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \hline
-\hyperref[req:12]{RF-12} & Importación & \issue{100} \\
-\hyperref[req:32]{RF-32} & Listado en vivo & \issue{101} \\
-\hyperref[req:33]{RF-33} & Estadísticas & \issue{102} \\
-\hyperref[req:42]{RF-42} & Bonificación por tiempo & \issue{103} \\
-\hyperref[req:43]{RF-43} & Sistema de rachas & \issue{104} \\
-\hyperref[req:44]{RF-44} & Configuración de puntuación & \issue{105} \\
-\hyperref[req:46]{RF-46} & Creación/edición avanzada & \issue{106} \\ \hline
-\end{tabular}%
-}
-\caption{Requisitos funcionales pospuestos como puntos de extensión.}
-\label{tab:rf_mejoras_issues}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{0.65\textwidth}{l Y c}
+    \bighline
+    \textbf{ID} & \textbf{Requisito funcional} & \textbf{GitHub Issue} \\ \bighline
+    \hyperref[req:12]{RF-12} & Importación & \issue{100} \\ \hline
+    \hyperref[req:32]{RF-32} & Listado en vivo & \issue{101} \\ \hline
+    \hyperref[req:33]{RF-33} & Estadísticas & \issue{102} \\ \hline
+    \hyperref[req:42]{RF-42} & Bonificación por tiempo & \issue{103} \\ \hline
+    \hyperref[req:43]{RF-43} & Sistema de rachas & \issue{104} \\ \hline
+    \hyperref[req:44]{RF-44} & Configuración de puntuación & \issue{105} \\ \hline
+    \hyperref[req:46]{RF-46} & Creación/edición avanzada & \issue{106} \\ 
+    \bighline
+    \end{tabularx}%
+  }
+  \caption{Requisitos funcionales pospuestos como puntos de extensión.}
+  \label{tab:rf_mejoras_issues}
 \end{table}
 
 En términos cuantitativos, este ajuste de alcance deliberado se traduce en que 9 de los 11 casos de uso diseñados (\textbf{81{,}82\,\%}) y 16 de las 18 historias de usuario (\textbf{88{,}89\,\%}) se encuentran plenamente operativos en sus flujos de valor principal. En el nivel de especificación atómica, 35 de los 47 requisitos funcionales (\textbf{74{,}47\,\%}) han sido implementados y verificados con éxito, garantizando la totalidad de la operativa requerida en el aula presencial y dejando acotadas las extensiones como \hyperref[sec:trabajo_futuro]{trabajo futuro}.
+
+Como balance global del alcance, a continuación se recoge la retrospectiva técnica completa de los doce objetivos funcionales contemplados en el proyecto, sintetizando tanto los retos técnicos resueltos en los objetivos operativos como la resolución final adoptada en los aplazados:
+
+\begin{table}[H]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l P{2.5cm} Y}
+      \bighline
+      \textbf{ID} & \textbf{Objetivo} & \textbf{Retrospectiva técnica e impacto en el desarrollo} \\
+      \bighline
+      \hyperref[obj:01]{OBJ-01} & Módulo de usuario y autenticación & Implementación sólida de JWT y Bcrypt. Para evitar bloqueos en el hilo principal de la API por la latencia del servidor SMTP de Gmail, el envío del código de verificación por correo se delegó a tareas en segundo plano. \\
+      \hline
+      \hyperref[obj:02]{OBJ-02} & Gestión de cuestionarios & Se optó por borrado lógico (\textit{soft delete}) en cascada para impedir que la edición o eliminación de preguntas corrompiera los registros de salas históricas. \\
+      \hline
+      \hyperref[obj:03]{OBJ-03} & Creación de salas & Se implementó una máquina de estados en el servidor para controlar las fases de la partida, garantizando un flujo sincronizado y previniendo saltos de estado indebidos. \\
+      \hline
+      \hyperref[obj:04]{OBJ-04} & Acceso rápido & Entrada ágil e inmediata sin necesidad de registro previo. Para evitar que un refresco accidental del navegador expulsara al estudiante de la partida, la sesión activa se conservó localmente mediante \texttt{sessionStorage}. \\
+      \hline
+      \hyperref[obj:05]{OBJ-05} & Interacción en tiempo real & La recepción de respuestas se gestionó en memoria garantizando que cada participante emitiera un único voto por pregunta. Además, se centralizó el temporizador en el servidor para anular intentos de manipulación o ventajas por desajustes horarios entre los clientes. \\
+      \hline
+      \hyperref[obj:06]{OBJ-06} & Verificación QR & Generación distribuida en el cliente para liberar de procesamiento al servidor mediante la librería \texttt{qrcode.react}. La carga útil del código QR estructura un objeto JSON con los datos clave de la evaluación (UVUS, sala y puntuación), acompañado de un token criptográfico de un solo uso. \\
+      \hline
+      \hyperref[obj:07]{OBJ-07} & Persistencia validada & Se logró el desacoplamiento entre el estado efímero de la partida y el almacenamiento persistente: solo los resultados verificados se consolidan en la base de datos. \\
+      \hline
+      \hyperref[obj:08]{OBJ-08} & Estadísticas y análisis & Agregación reactiva en memoria al cierre de cada ronda para computar la distribución de respuestas, aciertos globales y el podio en tiempo real, evitando sobrecargar la base de datos con consultas recurrentes. \\
+      \hline
+      \hyperref[obj:09]{OBJ-09} & Asistente IA & Pospuesto conforme a lo descrito en el \hyperref[tab:cr_02_ia]{CR-02}. \\
+      \hline
+      \hyperref[obj:10]{OBJ-10} & Escaneo de código QR & Lectura ágil mediante \texttt{html5-qrcode} con solicitud de permisos de cámara, validando el \textit{token} criptográfico contra el servidor en un solo paso atómico. \\
+      \hline
+      \hyperref[obj:11]{OBJ-11} & Gestión de grupos & Pospuesto conforme a lo descrito en el \hyperref[tab:cr_03_grupos]{CR-03}. \\
+      \hline
+      \hyperref[obj:12]{OBJ-12} & Exportación de datos & Se habilitó la descarga de resultados en formato CSV, garantizando la compatibilidad con hojas de cálculo. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Retrospectiva técnica global de los objetivos funcionales.}
+  \label{tab:objetivos_retrospectiva_global}
+\end{table}
 
 \section{Tiempo real frente a Línea Base del Cronograma}\label{sec:tiempo_real_vs_cronograma}
 
@@ -167,11 +172,11 @@ A continuación, se muestra una comparativa entre la Línea Base del Cronograma 
     hgrid=false, 
     vgrid=false, 
     x unit=0.0636cm,
-    y unit title=0.55cm,
-    y unit chart=0.72cm, 
+    y unit title=0.65cm,
+    y unit chart=0.96cm, 
     time slot format=isodate,
     inline,
-    title label font=\scriptsize\bfseries,
+    title label font=\small\bfseries,
     title calendar link/.style={draw=black},
     canvas/.style={draw=black, fill=white}
 ]{2026-01-15}{2026-10-17}
@@ -188,95 +193,140 @@ A continuación, se muestra una comparativa entre la Línea Base del Cronograma 
     \gantttitle{Oct}{17} \\
 
     % F01 
-    \ganttbar[bar/.style={fill=gray!45, draw=primaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}, ganttbar label node/.append style={xshift=0.35cm}]{F01-Plan}{2026-01-15}{2026-01-28}
-    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}, ganttbar label node/.append style={xshift=0.15cm}]{F01}{2026-01-15}{2026-01-26} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}, ganttbar label node/.append style={xshift=0.35cm}]{F01}{2026-01-15}{2026-01-28}
+    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}, ganttbar label node/.append style={xshift=0.25cm}]{F01}{2026-01-15}{2026-01-26} \\
 
     % F02  
-    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F02-Plan}{2026-01-29}{2026-04-14}
-    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F02}{2026-01-26}{2026-06-07} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F02}{2026-01-29}{2026-04-14}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F02}{2026-01-26}{2026-06-07} \\
 
     % F03 
-    \ganttbar[bar/.style={fill=gray!45, draw=primaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F03-Plan}{2026-01-29}{2026-02-11}
-    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F03}{2026-01-30}{2026-02-09} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F03}{2026-01-29}{2026-02-11}
+    \ganttbar[bar/.style={fill=primaryMagenta, draw=primaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F03}{2026-01-30}{2026-02-09} \\
 
     % F04  
-    \ganttbar[bar/.style={fill=gray!45, draw=secondaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F04-Plan}{2026-02-12}{2026-04-26}
-    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F04}{2026-02-11}{2026-08-14} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F04}{2026-02-12}{2026-04-26}
+    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F04}{2026-02-11}{2026-08-14} \\
 
     % F05  
-    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F05-Plan}{2026-02-19}{2026-03-08}
-    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F05}{2026-02-12}{2026-04-04} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F05}{2026-02-19}{2026-03-08}
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F05}{2026-02-12}{2026-04-04} \\
 
     % F06 
-    \ganttbar[bar/.style={fill=gray!45, draw=secondaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F06-Plan}{2026-02-24}{2026-04-26}
-    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F06}{2026-04-06}{2026-08-14} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F06}{2026-02-24}{2026-04-26}
+    \ganttbar[bar/.style={fill=secondaryCyan, draw=secondaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F06}{2026-04-06}{2026-08-14} \\
 
     % F07 
-    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F07-Plan}{2026-03-09}{2026-04-12}
-    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F07}{2026-04-15}{2026-04-28} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F07}{2026-03-09}{2026-04-12}
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F07}{2026-04-15}{2026-04-28} \\
 
     % F08 
-    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F08-Plan}{2026-04-13}{2026-04-24}
-    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F08}{2026-04-28}{2026-07-23} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=primaryCyan, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F08}{2026-04-13}{2026-04-24}
+    \ganttbar[bar/.style={fill=primaryCyan, draw=primaryCyan, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F08}{2026-04-28}{2026-07-23} \\
 
     % F09 
-    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F09-Plan}{2026-04-15}{2026-05-17}
-    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F09}{2026-05-04}{2026-10-17} \\
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F09}{2026-04-15}{2026-05-17}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F09}{2026-05-04}{2026-10-17} \\
 
     % F10 
-    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.08, bar label font=\tiny\bfseries\color{black!80}]{F10-Plan}{2026-05-18}{2026-06-12}
-    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.48, bar label font=\tiny\bfseries\color{white}]{F10}{2026-10-01}{2026-10-17}
+    \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F10}{2026-05-18}{2026-06-12}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F10}{2026-10-01}{2026-10-17}
 
-    % Líneas semanales 
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{19}{2026-01-19}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{26}{2026-01-26}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{02}{2026-02-02}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{09}{2026-02-09}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{16}{2026-02-16}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{23}{2026-02-23}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{02}{2026-03-02}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{09}{2026-03-09}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{16}{2026-03-16}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{23}{2026-03-23}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{30}{2026-03-30}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{06}{2026-04-06}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{13}{2026-04-13}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{20}{2026-04-20}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{27}{2026-04-27}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{04}{2026-05-04}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{11}{2026-05-11}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{18}{2026-05-18}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{25}{2026-05-25}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{01}{2026-06-01}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{08}{2026-06-08}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{15}{2026-06-15}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{22}{2026-06-22}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{29}{2026-06-29}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{06}{2026-07-06}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{13}{2026-07-13}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{20}{2026-07-20}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{27}{2026-07-27}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{03}{2026-08-03}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{10}{2026-08-10}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{17}{2026-08-17}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{24}{2026-08-24}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{31}{2026-08-31}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{07}{2026-09-07}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{14}{2026-09-14}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{21}{2026-09-21}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{28}{2026-09-28}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{05}{2026-10-05}
-    \ganttvrule[vrule/.style={draw=gray!60, dotted, line width=0.4pt}, vrule label node/.style={anchor=south, yshift=7.22cm, font=\tiny\bfseries\color{gray!80!black}, fill=white, inner sep=0.5pt}]{12}{2026-10-12}
+    \begin{pgfonlayer}{behind}
+        % Líneas semanales discontinuas por detrás de las barras
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-01-19}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-01-26}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-02-02}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-02-09}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-02-16}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-02-23}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-03-02}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-03-09}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-03-16}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-03-23}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-03-30}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-04-06}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-04-13}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-04-20}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-04-27}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-05-04}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-05-11}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-05-18}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-05-25}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-06-01}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-06-08}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-06-15}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-06-22}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-06-29}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-07-06}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-07-13}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-07-20}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-07-27}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-08-03}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-08-10}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-08-17}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-08-24}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-08-31}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-09-07}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-09-14}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-09-21}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-09-28}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-10-05}
+        \ganttvrule[vrule/.style={draw=gray!70, densely dotted, thick}]{}{2026-10-12}
+
+        % Números de día semanales superiores con fondo blanco
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{19}{2026-01-19}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{26}{2026-01-26}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{02}{2026-02-02}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{09}{2026-02-09}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{16}{2026-02-16}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{23}{2026-02-23}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{02}{2026-03-02}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{09}{2026-03-09}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{16}{2026-03-16}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{23}{2026-03-23}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{30}{2026-03-30}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{06}{2026-04-06}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{13}{2026-04-13}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{20}{2026-04-20}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{27}{2026-04-27}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{04}{2026-05-04}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{11}{2026-05-11}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{18}{2026-05-18}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{25}{2026-05-25}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{01}{2026-06-01}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{08}{2026-06-08}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{15}{2026-06-15}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{22}{2026-06-22}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{29}{2026-06-29}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{06}{2026-07-06}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{13}{2026-07-13}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{20}{2026-07-20}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{27}{2026-07-27}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{03}{2026-08-03}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{10}{2026-08-10}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{17}{2026-08-17}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{24}{2026-08-24}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{31}{2026-08-31}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{07}{2026-09-07}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{14}{2026-09-14}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{21}{2026-09-21}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{28}{2026-09-28}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{05}{2026-10-05}
+        \ganttvrule[vrule/.style={draw=none}, vrule label node/.style={at end, anchor=north, yshift=281pt, font=\footnotesize\bfseries\color{gray!90!black}, fill=white, inner sep=2pt, rounded corners=1pt}]{12}{2026-10-12}
+    \end{pgfonlayer}
+
 \end{ganttchart}%
 }
-\vspace{0.25cm}
+\vspace{0.35cm}
 \begin{center}
-\footnotesize
+\small
 \begin{tabular}{clccl}
-\fcolorbox{black}{primaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
-\fcolorbox{black}{primaryCyan}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Desarrollo de código \\
-\fcolorbox{black}{secondaryCyan}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
-\fcolorbox{black}{secondaryMagenta}{\rule{0pt}{4pt}\rule{4pt}{0pt}} & Documentación y cierre
+\fcolorbox{black}{primaryMagenta}{\rule{0pt}{5pt}\rule{5pt}{0pt}} & Gestión y planificación & \hspace{0.5cm} &
+\fcolorbox{black}{primaryCyan}{\rule{0pt}{5pt}\rule{5pt}{0pt}} & Desarrollo de código \\
+\fcolorbox{black}{secondaryCyan}{\rule{0pt}{5pt}\rule{5pt}{0pt}} & Ciclo de vida y calidad & \hspace{0.5cm} &
+\fcolorbox{black}{secondaryMagenta}{\rule{0pt}{5pt}\rule{5pt}{0pt}} & Documentación y cierre \\
+\multicolumn{5}{c}{\fcolorbox{black}{gray!45}{\rule{0pt}{5pt}\rule{5pt}{0pt}}\hspace{0.2cm} Cronograma planificado}
 \end{tabular}
 \end{center}
 \caption{Diagrama de Gantt de seguimiento: cronograma planificado vs. real.}
@@ -355,192 +405,199 @@ A lo largo del ciclo de vida del proyecto surgieron contingencias técnicas, res
 En este apartado se recoge el historial de las principales decisiones de cambio gestionadas durante el desarrollo, estructuradas como \textit{Change Requests} (CR). Cada ficha documenta el estado de la solicitud, el contexto que la motivó, la decisión adoptada y las consecuencias derivadas de su resolución.
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-01: Aplazamiento de la defensa a convocatoria de octubre. \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & El esfuerzo necesario para estabilizar las pruebas de integración en WebSockets y redactar la memoria con el rigor exigido impidió concluir en junio sin comprometer la calidad. \\
-\hline
-\textbf{Decisión} & Trasladar formalmente la entrega de la memoria y la defensa técnica de la convocatoria ordinaria de junio a la extraordinaria de octubre de 2026. \\
-\hline
-\textbf{Impacto en alcance} & Ninguno. \\
-\hline
-\textbf{Impacto en tiempo} & Ampliación de 4 meses en la ventana temporal global del proyecto. \\
-\hline
-\textbf{Impacto en coste} & Incremento de 29,10 \euro{} en licencias de desarrollo CAPEX por 4 meses adicionales de GitHub Team y Microsoft Teams Essentials. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-01.}
-\label{tab:cr_01_aplazamiento}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-01: Aplazamiento de la defensa a convocatoria de octubre}\label{cr:01}} \\
+      \bighline
+      \textbf{Estado} & Aprobado. \\
+      \hline
+      \textbf{Contexto} & El esfuerzo necesario para estabilizar las pruebas de integración en WebSockets y redactar la memoria con el rigor exigido impidió concluir en junio sin comprometer la calidad. \\
+      \hline
+      \textbf{Decisión} & Trasladar formalmente la entrega de la memoria y la defensa técnica de la convocatoria ordinaria de junio a la extraordinaria de octubre de 2026. \\
+      \hline
+      \textbf{Impacto en alcance} & Ninguno. \\
+      \hline
+      \textbf{Impacto en tiempo} & Ampliación de 4 meses en la ventana temporal global del proyecto. \\
+      \hline
+      \textbf{Impacto en coste} & Incremento de 29,10\,\euro{} en licencias de desarrollo CAPEX por 4 meses adicionales de GitHub Team y Microsoft Teams Essentials. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-01: Aplazamiento de la defensa a octubre]{Registro de cambios - CR-01.}
+  \label{tab:cr_01_aplazamiento}
 \end{table}
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-02: Aplazamiento de funcionalidades del asistente de generación con IA (\hyperref[obj:09]{OBJ-09}). \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & La latencia y los límites de consumo (\textit{rate limits}) de la API de Gemini planteaban riesgos de bloqueo operativo en vivo, exigiendo un esfuerzo desproporcionado para asegurar un comportamiento determinista. \\
-\hline
-\textbf{Decisión} & Desacoplar la generación con IA del alcance actual, registrarla como línea de trabajo futuro en GitHub y priorizar la creación e importación manual de cuestionarios. \\
-\hline
-\textbf{Impacto en alcance} & Reducción del alcance funcional inmediato, preservando íntegro el flujo estándar de gestión de cuestionarios. \\
-\hline
-\textbf{Impacto en tiempo} & Liberación de horas de desarrollo backend y frontend, mitigando retrasos en el núcleo del sistema. \\
-\hline
-\textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-02.}
-\label{tab:cr_02_ia}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-02: Aplazamiento del asistente de generación con IA (\hyperref[obj:09]{OBJ-09})}\label{cr:02}} \\
+      \bighline
+      \textbf{Estado} & Aprobado. \\
+      \hline
+      \textbf{Contexto} & La latencia y los límites de consumo (\textit{rate limits}) de la API de Gemini planteaban riesgos de bloqueo operativo en vivo, exigiendo un esfuerzo desproporcionado para asegurar un comportamiento determinista. \\
+      \hline
+      \textbf{Decisión} & Desacoplar la generación con IA del alcance actual, registrarla como línea de trabajo futuro en GitHub y priorizar la creación e importación manual de cuestionarios. \\
+      \hline
+      \textbf{Impacto en alcance} & Reducción del alcance funcional inmediato, preservando íntegro el flujo estándar de gestión de cuestionarios. \\
+      \hline
+      \textbf{Impacto en tiempo} & Liberación de horas de desarrollo \textit{backend} y \textit{frontend}, mitigando retrasos en el núcleo del sistema. \\
+      \hline
+      \textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-02: Aplazamiento del asistente de IA]{Registro de cambios - CR-02.}
+  \label{tab:cr_02_ia}
 \end{table}
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-03: Postergación de la creación de grupos de alumnos (\hyperref[obj:11]{OBJ-11}). \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & Se priorizó centrar el tiempo de desarrollo en la estabilidad de las partidas en tiempo real antes que en la gestión de grupos. \\
-\hline
-\textbf{Decisión} & Posponer la gestión de grupos de alumnos y dejarla registrada en GitHub como trabajo futuro. \\
-\hline
-\textbf{Impacto en alcance} & Se excluye la funcionalidad de grupos de alumnos en esta entrega para asegurar el funcionamiento del juego en vivo. \\
-\hline
-\textbf{Impacto en tiempo} & Se liberan horas de desarrollo para dedicarlas a la estabilidad y pruebas del sistema. \\
-\hline
-\textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-03.}
-\label{tab:cr_03_obj11}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-03: Postergación de la creación de grupos de alumnos (\hyperref[obj:11]{OBJ-11})}\label{cr:03}} \\
+      \bighline
+      \textbf{Estado} & Aprobado. \\
+      \hline
+      \textbf{Contexto} & Se priorizó centrar el tiempo de desarrollo en la estabilidad de las partidas en tiempo real antes que en la gestión de grupos. \\
+      \hline
+      \textbf{Decisión} & Posponer la gestión de grupos de alumnos y dejarla registrada en GitHub como trabajo futuro. \\
+      \hline
+      \textbf{Impacto en alcance} & Se excluye la funcionalidad de grupos de alumnos en esta entrega para asegurar el funcionamiento del juego en vivo. \\
+      \hline
+      \textbf{Impacto en tiempo} & Se liberan horas de desarrollo para dedicarlas a la estabilidad y pruebas del sistema. \\
+      \hline
+      \textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-03: Postergación de la creación de grupos]{Registro de cambios - CR-03.}
+  \label{tab:cr_03_grupos}
 \end{table}
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-04: Ampliación de la batería y estrategia de pruebas. \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & La estrategia de pruebas planificada inicialmente resultó insuficiente para asegurar la calidad global del sistema, haciendo necesario un enfoque de verificación más exhaustivo. \\
-\hline
-\textbf{Decisión} & Rediseñar y ampliar la estrategia de pruebas, incorporando una batería más completa de casos de prueba tanto a nivel unitario como de integración. \\
-\hline
-\textbf{Impacto en alcance} & Incremento sustancial en la cobertura de pruebas y en la robustez general de la aplicación. \\
-\hline
-\textbf{Impacto en tiempo} & Aumento notable de horas dedicadas a la fase de pruebas frente a las 15 horas presupuestadas originalmente. \\
-\hline
-\textbf{Impacto en coste} & Incremento en el coste imputado al rol de Tester dentro del balance contable del CAPEX. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-04.}
-\label{tab:cr_04_testing}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-04: Ampliación de la batería y estrategia de pruebas}\label{cr:04}} \\
+      \bighline
+      \textbf{Estado} & Aprobado. \\
+      \hline
+      \textbf{Contexto} & La estrategia de pruebas planificada inicialmente resultó insuficiente para asegurar la calidad global del sistema, haciendo necesario un enfoque de verificación más exhaustivo. \\
+      \hline
+      \textbf{Decisión} & Rediseñar y ampliar la estrategia de pruebas, incorporando una batería más completa de casos de prueba tanto a nivel unitario como de integración. \\
+      \hline
+      \textbf{Impacto en alcance} & Incremento sustancial en la cobertura de pruebas y en la robustez general de la aplicación. \\
+      \hline
+      \textbf{Impacto en tiempo} & Aumento notable de horas dedicadas a la fase de pruebas frente a las 15 horas presupuestadas originalmente. \\
+      \hline
+      \textbf{Impacto en coste} & Incremento en el coste imputado al rol de \textit{Tester} dentro del balance contable del CAPEX. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-04: Ampliación de la batería de pruebas]{Registro de cambios - CR-04.}
+  \label{tab:cr_04_testing}
 \end{table}
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-05: Incorporación de Redis para la sincronización de la sala. \\
-\hline
-\textbf{Estado} & Desestimado. \\
-\hline
-\textbf{Contexto} & Se evaluó utilizar Redis para guardar el estado de las salas y permitir que varios servidores pudieran comunicarse entre sí ante un gran número de usuarios simultáneos. \\
-\hline
-\textbf{Decisión} & Desestimar el uso de Redis y mantener la gestión de las salas en la propia memoria del servidor actual. \\
-\hline
-\textbf{Impacto en alcance} & Ninguno; se mantiene una arquitectura más simple y directa, suficiente para las necesidades del proyecto. \\
-\hline
-\textbf{Impacto en tiempo} & Se evita un trabajo extra estimado entre 10 y 15 horas de desarrollo y configuración. \\
-\hline
-\textbf{Impacto en coste} & Ninguno; además, se evita el coste mensual extra de contratar un servicio adicional en la nube. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-05.}
-\label{tab:cr_05_redis}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-05: Incorporación de Redis para la sincronización de la sala}\label{cr:05}} \\
+      \bighline
+      \textbf{Estado} & Desestimado. \\
+      \hline
+      \textbf{Contexto} & Se evaluó utilizar Redis para guardar el estado de las salas y permitir que varios servidores pudieran comunicarse entre sí ante un gran número de usuarios simultáneos. \\
+      \hline
+      \textbf{Decisión} & Desestimar el uso de Redis y mantener la gestión de las salas en la propia memoria del servidor actual. \\
+      \hline
+      \textbf{Impacto en alcance} & Ninguno; se mantiene una arquitectura más simple y directa, suficiente para las necesidades del proyecto. \\
+      \hline
+      \textbf{Impacto en tiempo} & Se evita un trabajo extra estimado entre 10 y 15 horas de desarrollo y configuración. \\
+      \hline
+      \textbf{Impacto en coste} & Ninguno; además, se evita el coste mensual extra de contratar un servicio adicional en la nube. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-05: Incorporación de Redis]{Registro de cambios - CR-05.}
+  \label{tab:cr_05_redis}
 \end{table}
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-06: Despliegue efectivo de SonarQube y refuerzo de controles en local (\textit{pre-commits}). \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & La activación en CI/CD del análisis con SonarQube se demoró; al procesar el código acumulado, el volumen de avisos obligó a atajar las incidencias antes de subirlas al repositorio. \\
-\hline
-\textbf{Decisión} & Habilitar formalmente el análisis continuo en GitHub Actions e implantar ganchos de \textit{pre-commit} junto a formateadores locales para filtrar defectos de estilo y tipado en local. \\
-\hline
-\textbf{Impacto en alcance} & Incorporación de controles estáticos automatizados en el entorno local y en la integración continua. \\
-\hline
-\textbf{Impacto en tiempo} & Dedicación técnica imprevista en configurar las herramientas locales y solventar los avisos acumulados. \\
-\hline
-\textbf{Impacto en coste} & Ninguno en licencias (uso del plan gratuito de SonarQube); imputación adicional de horas al rol Técnico. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-06.}
-\label{tab:cr_06_sonar}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-06: Despliegue de SonarQube y refuerzo de controles locales}\label{cr:06}} \\
+      \bighline
+      \textbf{Estado} & Aprobado. \\
+      \hline
+      \textbf{Contexto} & La activación en CI/CD del análisis con SonarQube se demoró; al procesar el código acumulado, el volumen de avisos obligó a atajar las incidencias antes de subirlas al repositorio. \\
+      \hline
+      \textbf{Decisión} & Habilitar formalmente el análisis continuo en GitHub Actions e implantar ganchos de \textit{pre-commit} junto a formateadores locales para filtrar defectos de estilo y tipado en local. \\
+      \hline
+      \textbf{Impacto en alcance} & Incorporación de controles estáticos automatizados en el entorno local y en la integración continua. \\
+      \hline
+      \textbf{Impacto en tiempo} & Dedicación técnica imprevista en configurar las herramientas locales y solventar los avisos acumulados. \\
+      \hline
+      \textbf{Impacto en coste} & Ninguno en licencias (uso del plan gratuito de SonarQube); imputación adicional de horas al rol Técnico. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-06: Despliegue de SonarQube y controles locales]{Registro de cambios - CR-06.}
+  \label{tab:cr_06_sonar}
 \end{table}
 
 \begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\setlength{\tabcolsep}{12pt}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lp{11.5cm}}
-\hline
-\textbf{CR} & CR-07: Reducción de deuda técnica en SonarQube y congelación del alcance. \\
-\hline
-\textbf{Estado} & Aprobado. \\
-\hline
-\textbf{Contexto} & La integración tardía del análisis de SonarQube generó un volumen acumulado de deuda técnica que exigió atención inmediata, poniendo en riesgo la fecha límite de entrega si se continuaba desarrollando nuevas funcionalidades. \\
-\hline
-\textbf{Decisión} & Congelar el desarrollo de nuevas características para priorizar la corrección de errores críticos en Sonar, posponiendo los requisitos de mejora no esenciales como tareas de trabajo futuro en GitHub, en consonancia con la retrospectiva del alcance. \\
-\hline
-\textbf{Impacto en alcance} & Se detiene la incorporación de requisitos de mejora secundarios, asegurando una base de código limpia y libre de fallos graves para el núcleo de la plataforma. \\
-\hline
-\textbf{Impacto en tiempo} & Permite cumplir con los plazos de entrega y dedicar el tiempo necesario a la redacción rigurosa de la memoria técnica. \\
-\hline
-\textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
-\hline
-\end{tabular}%
-}
-\caption{Registro de cambios - CR-07.}
-\label{tab:cr_07_backlog}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \setlength{\tabcolsep}{6pt}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{l Y}
+      \bighline
+      \multicolumn{2}{c}{\textbf{CR-07: Reducción de deuda técnica en SonarQube y congelación del alcance}\label{cr:07}} \\
+      \bighline
+      \textbf{Estado} & Aprobado. \\
+      \hline
+      \textbf{Contexto} & La integración tardía del análisis de SonarQube generó un volumen acumulado de deuda técnica que exigió atención inmediata, poniendo en riesgo la fecha límite de entrega si se continuaba desarrollando nuevas funcionalidades. \\
+      \hline
+      \textbf{Decisión} & Congelar el desarrollo de nuevas características para priorizar la corrección de errores críticos en Sonar, posponiendo los requisitos de mejora no esenciales como tareas de trabajo futuro en GitHub, en consonancia con la retrospectiva del alcance. \\
+      \hline
+      \textbf{Impacto en alcance} & Se detiene la incorporación de requisitos de mejora secundarios, asegurando una base de código limpia y libre de fallos graves para el núcleo de la plataforma. \\
+      \hline
+      \textbf{Impacto en tiempo} & Permite cumplir con los plazos de entrega y dedicar el tiempo necesario a la redacción rigurosa de la memoria técnica. \\
+      \hline
+      \textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption[CR-07: Reducción de deuda técnica y congelación de alcance]{Registro de cambios - CR-07.}
+  \label{tab:cr_07_backlog}
 \end{table}
 
 Este conjunto de solicitudes de cambio pone de manifiesto que las desviaciones temporales y económicas registradas no fueron fruto de la improvisación, sino de decisiones conscientes de ingeniería orientadas a priorizar la estabilidad técnica, la verificación exhaustiva y la calidad del producto final frente a las restricciones temporales.
@@ -689,40 +746,51 @@ La trazabilidad completa del procedimiento se respalda en el anexo: la ejecució
 A modo de síntesis, la siguiente tabla resume los resultados obtenidos en las distintas \textit{suites} de verificación frente a los umbrales de aceptación definidos en el plan de pruebas:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\makebox[\textwidth][c]{%
-\begin{tabular}{l l c c}
-\hline
-\textbf{Objetivo} & \textbf{Umbral} & \textbf{Resultado} & \textbf{Estado} \\ \hline
-\multicolumn{4}{l}{\textbf{Pruebas unitarias y de integración}} \\
-Cobertura global & $\ge 80\%$ & 97,4\% & \covCheck \\
-\texttt{routers/content.py} & $\ge 90\%$ & 100\% & \covCheck \\ 
-\texttt{routers/stage.py} & $\ge 90\%$ & 98\% & \covCheck \\
-\texttt{routers/users.py} & $\ge 90\%$ & 100\% & \covCheck \\ \hline
-\multicolumn{4}{l}{\textbf{Pruebas de componentes}} \\
-Líneas & $\ge 80\%$ & 92,68\% & \covCheck \\
-Funciones & $\ge 80\%$ & 88,56\% & \covCheck \\
-Sentencias & $\ge 80\%$ & 90,13\% & \covCheck \\
-Ramas & $\ge 75\%$ & 80,29\% & \covCheck \\ \hline
-\multicolumn{4}{l}{\textbf{Pruebas de extremo a extremo}} \\
-Líneas & $\ge 80\%$ & 92,58\% & \covCheck \\
-Funciones & $\ge 80\%$ & 91,41\% & \covCheck \\
-Sentencias & $\ge 80\%$ & 91,30\% & \covCheck \\
-Ramas & $\ge 75\%$ & 83,92\% & \covCheck \\ \hline
-\multicolumn{4}{l}{\textbf{Pruebas de carga y rendimiento}} \\
-Tasa global de errores & $< 1,0\%$ & 0,00\% & \covCheck \\
-Rutas \textit{Auth} & P90 $\le 500$\,ms & Media: 99\,ms & \covCheck \\
-Rutas generales & P90 $\le 200$\,ms & Media: 38\,ms & \covCheck \\
-\textit{WebSocket} & P90 $\le 200$\,ms & 28\,ms & \covCheck \\ \hline
-\end{tabular}%
-}
-\caption{Resumen del cumplimiento de métricas de cobertura.}
-\label{tab:resumen_testing_umbrales}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{P{4.4cm} Y c c >{\centering\arraybackslash}m{1.8cm}}
+      \bighline
+      \textbf{\textit{Suite}} & \textbf{Métrica / Objetivo} & \textbf{Umbral} & \textbf{Resultado} & \textbf{Estado} \\
+      \bighline
+      Unitarias e integración & Cobertura global & $\ge 80\%$ & 97,4\% & \covCheck \\
+      \cline{2-5}
+      & \texttt{routers/content.py} & $\ge 90\%$ & 100\% & \covCheck \\
+      \cline{2-5}
+      & \texttt{routers/stage.py} & $\ge 90\%$ & 98\% & \covCheck \\
+      \cline{2-5}
+      & \texttt{routers/users.py} & $\ge 90\%$ & 100\% & \covCheck \\
+      \hline
+      Componentes & Líneas & $\ge 80\%$ & 92,68\% & \covCheck \\
+      \cline{2-5}
+      & Funciones & $\ge 80\%$ & 88,56\% & \covCheck \\
+      \cline{2-5}
+      & Sentencias & $\ge 80\%$ & 90,13\% & \covCheck \\
+      \cline{2-5}
+      & Ramas & $\ge 75\%$ & 80,29\% & \covCheck \\
+      \hline
+      Extremo a extremo (E2E) & Líneas & $\ge 80\%$ & 92,58\% & \covCheck \\
+      \cline{2-5}
+      & Funciones & $\ge 80\%$ & 91,41\% & \covCheck \\
+      \cline{2-5}
+      & Sentencias & $\ge 80\%$ & 91,30\% & \covCheck \\
+      \cline{2-5}
+      & Ramas & $\ge 75\%$ & 83,92\% & \covCheck \\
+      \hline
+      Carga y rendimiento & Tasa global de errores & $< 1,0\%$ & 0,00\% & \covCheck \\
+      \cline{2-5}
+      & Rutas \textit{Auth} & P90 $\le 500$\,ms & Media: 99\,ms & \covCheck \\
+      \cline{2-5}
+      & Rutas generales & P90 $\le 200$\,ms & Media: 38\,ms & \covCheck \\
+      \cline{2-5}
+      & \textit{WebSocket} & P90 $\le 200$\,ms & 28\,ms & \covCheck \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Resumen del cumplimiento de umbrales en las baterías de pruebas.}
+  \label{tab:resumen_testing_umbrales}
 \end{table}
-
-\newpage
 
 \section{Análisis estático de código (SonarQube)}\label{sec:sonar}
 
@@ -739,22 +807,28 @@ En paralelo a las pruebas funcionales y de rendimiento analizadas en los apartad
 La siguiente tabla compara los valores obtenidos sobre el código completo (\textit{Overall Code}) con los \hyperref[tab:sonar_quality_gate]{umbrales y métricas objetivo} de referencia:
 
 \begin{table}[H]
-\centering
-\normalsize
-\renewcommand{\arraystretch}{1.4}
-\makebox[\textwidth][c]{%
-\begin{tabular}{l l c c}
-\hline
-\textbf{Métrica} & \textbf{Objetivo} & \textbf{Valor obtenido} & \textbf{Estado} \\ \hline
-\textbf{Cobertura} & $> 80\%$ & \textbf{97,4\%} & \covCheck \\
-\textbf{Duplicación} & $< 3\%$ & \textbf{1,2\%} & \covCheck \\
-\textbf{Seguridad} & Calificación A & \covGreen{A} & \covCheck \\
-\textbf{Fiabilidad} & Calificación A & \covGreen{A} (3 \textit{issues}) & \covCheck \\
-\textbf{Mantenibilidad} & Calificación A & \covGreen{A} (38 \textit{code smells}) & \covCheck \\
-\end{tabular}%
-}
-\caption{Comparativa de los umbrales del \textit{Quality Gate} frente a resultados obtenidos.}
-\label{tab:comparativa_sonar}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabular}{l c c c}
+      \bighline
+      \textbf{Métrica} & \textbf{Objetivo} & \textbf{Valor obtenido} & \textbf{Estado} \\
+      \bighline
+      Cobertura & $> 80\%$ & 97,4\% & \covCheck \\
+      \hline
+      Duplicación & $< 3\%$ & 1,2\% & \covCheck \\
+      \hline
+      Seguridad & Calificación A & \covGreen{A} & \covCheck \\
+      \hline
+      Fiabilidad & Calificación A & \covGreen{A} (3 \textit{issues}) & \covCheck \\
+      \hline
+      Mantenibilidad & Calificación A & \covGreen{A} (38 \textit{code smells}) & \covCheck \\
+      \bighline
+    \end{tabular}%
+  }
+  \caption{Comparativa de los umbrales del \textit{Quality Gate} frente a resultados obtenidos.}
+  \label{tab:comparativa_sonar}
 \end{table}
 
 A continuación, se presenta la evolución temporal del volumen de incidencias y de la calidad del código a lo largo de las distintas sesiones de trabajo, acompañada del desglose cuantitativo detallado por nivel de severidad y área técnica:
@@ -865,11 +939,11 @@ A continuación, se presenta la evolución temporal del volumen de incidencias y
 \begin{table}[H]
 \centering
 \small
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\arraystretch}{1.3}
 \makebox[\textwidth][c]{%
-\begin{tabular}{c c c c c}
-\hline
-\textbf{Análisis} & \textbf{\textit{Issues}} & \makecell{\textbf{Severidad}\\\footnotesize(Alta / Media / Baja)} & \makecell{\textbf{Categoría}\\\footnotesize(Seg / Fiab / Mant)} & \makecell{\textbf{Calificación}\\\footnotesize(Seg / Fiab / Mant)} \\ \hline
+\begin{tabular}{l c c c c}
+\bighline
+\textbf{Análisis} & \textbf{\textit{Issues}} & \makecell{\textbf{Severidad}\\\footnotesize(Alta / Media / Baja)} & \makecell{\textbf{Categoría}\\\footnotesize(Seg / Fiab / Mant)} & \makecell{\textbf{Calificación}\\\footnotesize(Seg / Fiab / Mant)} \\ \bighline
 AS-01 & 261 & 45 / 130 / 86 & 20 / 26 / 215 & \covRed{C} \covRed{C} \covRed{C} \\ \hline
 AS-02 & 152 & 24 / 74 / 54  & 27 / 48 / 109 & \covRed{C} \covRed{C} \covYellow{B} \\ \hline
 AS-03 & 150 & 23 / 82 / 71  & 25 / 48 / 108 & \covRed{C} \covRed{C} \covYellow{B} \\ \hline
@@ -884,7 +958,7 @@ AS-11 & 83  & 4 / 70 / 9    & 4 / 52 / 27   & \covGreen{A} \covRed{C} \covGreen{
 AS-12 & 26  & 3 / 14 / 9    & 0 / 0 / 26    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
 AS-13 & 37  & 5 / 22 / 10   & 0 / 1 / 37    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
 AS-14 & 36  & 4 / 22 / 10   & 0 / 1 / 35    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
-AS-15 & 38  & 4 / 24 / 12   & 0 / 3 / 38    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \hline
+AS-15 & 38  & 4 / 24 / 12   & 0 / 3 / 38    & \covGreen{A} \covGreen{A} \covGreen{A} \\ \bighline
 \end{tabular}%
 }
 \caption{Desglose de historial de \textit{issues} registradas en SonarQube.}
