@@ -85,7 +85,7 @@ Asimismo, dentro de los objetivos completados se identificaron siete requisitos 
 
 En términos cuantitativos, este ajuste de alcance deliberado se traduce en que 9 de los 11 casos de uso diseñados (\textbf{81{,}82\,\%}) y 16 de las 18 historias de usuario (\textbf{88{,}89\,\%}) se encuentran plenamente operativos en sus flujos de valor principal. En el nivel de especificación atómica, 35 de los 47 requisitos funcionales (\textbf{74{,}47\,\%}) han sido implementados y verificados con éxito, garantizando la totalidad de la operativa requerida en el aula presencial y dejando acotadas las extensiones como \hyperref[sec:trabajo_futuro]{trabajo futuro}.
 
-Como balance global del alcance, a continuación se recoge la retrospectiva técnica completa de los doce objetivos funcionales contemplados en el proyecto, sintetizando tanto los retos técnicos resueltos en los objetivos operativos como la resolución final adoptada en los aplazados:
+Como balance global del alcance, a continuación se recoge la retrospectiva técnica completa de los doce objetivos funcionales contemplados en el proyecto, sintetizando tanto los retos técnicos resueltos en los objetivos operativos como el cambio adoptado en los aplazados:
 
 \begin{table}[H]
   \centering
@@ -128,42 +128,56 @@ Como balance global del alcance, a continuación se recoge la retrospectiva téc
 
 \section{Tiempo real frente a Línea Base del Cronograma}\label{sec:tiempo_real_vs_cronograma}
 
-Para auditar el desempeño temporal del proyecto frente a la \hyperref[sec:linea_base_del_cronograma]{Línea Base del Cronograma}, se ha consolidado el registro continuo de dedicación temporal a través de Clockify, cuyo informe detallado queda recogido íntegramente en el \hyperref[anexo:clockify]{anexo de dedicación temporal}. Las horas se han computado a nivel de tareas operativas individuales, asignando en la herramienta una etiqueta (\textit{tag}) que las vincula directamente con su actividad homóloga más próxima de la planificación inicial. Este mecanismo permite clasificar el esfuerzo según el rol profesional desempeñado, trazabilidad que se empleará más adelante en la \hyperref[tab:horas_roles_previstas_reales]{tabla de dedicación por roles} para calcular las desviaciones en los gastos de contratación.
-
-\textcolor{red}{\textbf{[TODO: Actualizar informe cuando estén todas las horas computadas]}}
+Para auditar el desempeño temporal del proyecto frente a la \hyperref[sec:linea_base_del_cronograma]{Línea Base del Cronograma}, se ha consolidado un registro continuo de dedicación temporal a través de Clockify, cuyo desglose queda recogido íntegramente en el \hyperref[anexo:clockify]{anexo de dedicación temporal}. Las horas se han computado a nivel de tareas operativas individuales, asignando en la herramienta una etiqueta (\textit{tag}) que las vincula directamente con su actividad homóloga más próxima de la planificación inicial. Este mecanismo permite clasificar el esfuerzo según el rol profesional desempeñado, trazabilidad que se empleará más adelante en la \hyperref[tab:horas_roles_previstas_reales]{tabla de dedicación por roles} para calcular las desviaciones en los gastos de contratación.
 
 El siguiente cuadro resume la comparativa entre la estimación inicial y la dedicación real registrada por fase de trabajo:
 
-\textcolor{red}{\textbf{[TODO: Rellenar las horas]}}
-
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{llcc}
-\hline
-\textbf{ID} & \textbf{Fase} & \textbf{Horas previstas} & \textbf{Horas reales} \\ \hline
-F-01 & Planificación & 20 h & 11 h \\
-F-02 & Documentación & 20 h & 27,14 h \\
-F-03 & Inicio        & 11 h & 12,50 h \\
-F-04 & CI/CD         & 17 h & 19,87 h \\
-F-05 & MVP           & 65 h & 55,40 h \\
-F-06 & Testing       & 15 h & 42,74 h \\
-F-07 & Core          & 49 h & 45,24 h \\
-F-08 & QA            & 13 h & 23,73 h \\
-F-09 & Memoria       & 70 h &   \\
-F-10 & Defensa       & 20 h &  \\ \hline
-\multicolumn{2}{l}{\textbf{Total}} & \textbf{300 h} &   \\ \hline
-\end{tabular}
-\caption{Comparativa de horas previstas y reales por fase del proyecto.}
-\label{tab:horas_fases_previstas_reales}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{0.8\textwidth}{l Y r r r}
+      \bighline
+      \textbf{ID} & \textbf{Fase} & \textbf{Previstas} & \textbf{Reales} & \textbf{Desviación} \\
+      \bighline
+      \hyperref[fase:planificacion]{F-01} & Planificación & 20,00\,h & 11,00\,h & $-9,00$\,h \\
+      \hline
+      \hyperref[fase:documentacion]{F-02} & Documentación & 20,00\,h & 26,80\,h & $+6,80$\,h \\
+      \hline
+      \hyperref[fase:inicio]{F-03} & Inicio        & 11,00\,h & 12,50\,h & $+1,50$\,h \\
+      \hline
+      \hyperref[fase:ci-cd]{F-04} & CI/CD         & 17,00\,h & 18,75\,h & $+1,75$\,h \\
+      \hline
+      \hyperref[fase:mvp]{F-05} & MVP           & 65,00\,h & 49,70\,h & $-15,30$\,h \\
+      \hline
+      \hyperref[fase:testing]{F-06} & Testing       & 15,00\,h & 41,11\,h & $+26,11$\,h \\
+      \hline
+      \hyperref[fase:core]{F-07} & Core          & 49,00\,h & 40,21\,h & $-8,79$\,h \\
+      \hline
+      \hyperref[fase:qa]{F-08} & QA            & 13,00\,h & 21,42\,h & $+8,42$\,h \\
+      \hline
+      \hyperref[fase:memoria]{F-09} & Memoria       & 70,00\,h & 87,43\,h & $+17,43$\,h \\
+      \hline
+      \hyperref[fase:defensa]{F-10} & Defensa       & 20,00\,h & 20,00\,h & $0,00$\,h \\
+      \bighline
+      \multicolumn{2}{l}{\textbf{Total}} & \textbf{300,00\,h} & \textbf{328,94\,h} & \textbf{+28,94\,h} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Comparativa de horas previstas y reales por fase del proyecto.}
+  \label{tab:horas_fases_previstas_reales}
 \end{table}
 
-\textcolor{red}{\textbf{[TODO: Redactar retrospectiva general de desviaciones temporales una vez cerrado el cómputo final de horas en Clockify]}}
+El análisis de las desviaciones temporales evidencia una redistribución del esfuerzo motivada por tres factores clave:
 
-Este incremento en el esfuerzo dedicado a la robustez técnica y las pruebas del sistema impactó de forma directa en los plazos globales. Si bien la planificación inicial contemplaba finalizar el proyecto para la convocatoria ordinaria de junio, mantener dicha fecha habría obligado a comprometer la calidad del producto o recortar el rigor de la memoria técnica. Por ello, se optó formalmente por trasladar la finalización y defensa a la convocatoria extraordinaria de octubre, quedando esta modificación justificada y registrada en la sección de \hyperref[sec:desviaciones_y_gestion_cambios]{gestión de cambios}.
+\begin{itemize}
+    \item \textbf{Eficiencia en la implementación funcional:} El buen trabajo de análisis y diseño facilitó el desarrollo directo de los requisitos funcionales, lo que permitió reducir el tiempo invertido en las fases de \hyperref[fase:mvp]{MVP} y \hyperref[fase:core]{Core}.
+    \item \textbf{Gestión de deuda técnica:} Al integrar el análisis estático en una etapa avanzada del desarrollo, fue necesario corregir un volumen importante de \textit{issues}, lo que obligó a incrementar el esfuerzo previsto en la fase de \hyperref[fase:qa]{QA} para mejorar la calidad del código.
+    \item \textbf{Subestimación del esfuerzo de pruebas:} El plan de pruebas se planificó a la baja; la exigencia de alcanzar una cobertura sólida y asegurar el comportamiento de la plataforma elevó notablemente las horas de la fase de \hyperref[fase:testing]{Testing}, suponiendo la mayor desviación del proyecto.
+\end{itemize}
 
-A continuación, se muestra una comparativa entre la Línea Base del Cronograma y la ejecución real, representada mediante un diagrama de Gantt:
+Estas desviaciones y la redistribución del esfuerzo terminaron condicionando el calendario previsto. Para no comprometer la robustez del producto ni el rigor técnico de la memoria por alcanzar la convocatoria ordinaria de junio, se optó formalmente por trasladar la defensa a la convocatoria extraordinaria de octubre, decisión detallada en el apartado de \hyperref[sec:desviaciones_y_gestion_cambios]{gestión de cambios}.
 
 \begin{figure}[H]
 \centering
@@ -226,11 +240,11 @@ A continuación, se muestra una comparativa entre la Línea Base del Cronograma 
 
     % F09 
     \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F09}{2026-04-15}{2026-05-17}
-    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F09}{2026-05-04}{2026-10-17} \\
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F09}{2026-05-04}{2026-09-22} \\
 
     % F10 
     \ganttbar[bar/.style={fill=gray!45, draw=secondaryMagenta, line width=0.5pt, rounded corners=1pt}, bar height=0.40, bar top shift=0.10, bar label font=\small\bfseries\color{black!80}]{F10}{2026-05-18}{2026-06-12}
-    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F10}{2026-10-01}{2026-10-17}
+    \ganttbar[bar/.style={fill=secondaryMagenta, draw=secondaryMagenta, rounded corners=1pt}, bar height=0.40, bar top shift=0.50, bar label font=\small\bfseries\color{white}]{F10}{2026-09-23}{2026-10-17}
 
     \begin{pgfonlayer}{behind}
         % Líneas semanales discontinuas por detrás de las barras
@@ -333,7 +347,6 @@ A continuación, se muestra una comparativa entre la Línea Base del Cronograma 
 \label{fig:gantt_comparativa}
 \end{figure}
 
-\textcolor{red}{\textbf{[TODO: Establecer fin de fase 9 y comienzo de fase 10]}}
 
 \section{Gastos incurridos frente a Línea Base de Costes}\label{sec:gastos_incurridos_costes}
 
@@ -344,57 +357,70 @@ La variación del CAPEX se debe principalmente a dos factores derivados de las d
 En la siguiente tabla se recoge el balance consolidado del presupuesto de capital frente a los costes reales:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.2}
-\makebox[\textwidth][c]{%
-\begin{tabular}{lrrr}
-\hline
-\textbf{Concepto} & \textbf{Coste previsto} & \textbf{Coste real} & \textbf{Desviación} \\ \hline
-Costes laborales                                        & 11.552,65 \euro & [   \euro] & [   \euro] \\
-Equipamiento informático                                & 500,00 \euro    & 500,00 \euro & 0,00 \euro \\
-Licencia Google AI Premium (anual)                      & 218,07 \euro    & 218,07 \euro & 0,00 \euro \\
-Licencia GitHub Team                                    & 21,82 \euro{} (6 m)   & 36,37 \euro{} (10 m) & 14,55 \euro \\
-Licencia Microsoft Teams Essentials                     & 21,82 \euro{} (6 m)   & 36,37 \euro{} (10 m) & 14,55 \euro \\
-Reserva de contingencia                                 & 12.314,36 \euro & [   \euro] & [   \euro] \\ \hline
-\textbf{Total CAPEX}                                    & \textbf{13.545,80 \euro} & \textbf{[   \euro]} & \textbf{[   \euro]} \\ \hline
-\end{tabular}%
-}
-\caption{Comparativa de Gastos de Capital (CAPEX) presupuestados vs. reales.}
-\label{tab:resumen_capex_real}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.24}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{Y r r r}
+      \bighline
+      \textbf{Concepto} & \textbf{Coste previsto} & \textbf{Coste real} & \textbf{Desviación} \\
+      \bighline
+      Costes laborales & 11.552,65\,\euro & 12.645,84\,\euro & $+1.093,19$\,\euro \\
+      \hline
+      Equipamiento informático & 500,00\,\euro & 500,00\,\euro & $0,00$\,\euro \\
+      \hline
+      Licencia Google AI Premium (anual) & 218,07\,\euro & 218,07\,\euro & $0,00$\,\euro \\
+      \hline
+      Licencia GitHub Team & {\scriptsize (ENE--JUN)} 21,82\,\euro & {\scriptsize (ENE--OCT)} 36,37\,\euro & $+14,55$\,\euro \\
+      \hline
+      Licencia Microsoft Teams Essentials & {\scriptsize (ENE--JUN)} 21,82\,\euro & {\scriptsize (ENE--OCT)} 36,37\,\euro & $+14,55$\,\euro \\
+      \hline
+      Reserva de contingencia (10\%) & 1.231,44\,\euro & 1.343,67\,\euro & $+112,23$\,\euro \\
+      \bighline
+      \textbf{Total CAPEX} & \textbf{13.545,80\,\euro} & \textbf{14.780,32\,\euro} & \textbf{+1.234,52\,\euro} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Comparativa de CAPEX presupuestado vs. real.}
+  \label{tab:resumen_capex_real}
 \end{table}
 
-\textcolor{red}{\textbf{[TODO:Completar tabla]}}
-
-Para comprender de dónde procede la desviación observada en la partida de costes laborales, es necesario descender al detalle del esfuerzo por rol profesional. La redistribución de horas entre tareas alteró la dedicación asignada a cada perfil. A continuación se desglosan las horas e importes correspondientes a partir de las tarifas por hora fijadas en la planificación inicial:
+Para comprender el origen de la desviación observada en la partida de costes laborales, es necesario descender al detalle del esfuerzo por rol profesional. La redistribución de horas entre tareas alteró la dedicación asignada a cada perfil. A partir de las tarifas por hora fijadas en la planificación inicial, la base salarial neta resultante pasa de los 8.886,65\,\euro{} previstos a 9.727,57\,\euro{} reales. Sobre este importe se aplica el correspondiente recargo del 30\% en concepto de cotizaciones a la Seguridad Social y costes de contratación, elevando el coste laboral efectivo a \textbf{12.645,84\,\euro{}}. A continuación se desglosan las horas e importes netos asociados a cada perfil:
 
 \begin{table}[H]
-\centering
-\small
-\renewcommand{\arraystretch}{1.3}
-\noindent\makebox[\textwidth][c]{%
-\begin{tabular}{lccccc}
-\hline
-\textbf{Rol} & \textbf{Precio/hora} & \textbf{Horas previstas} & \textbf{Horas reales} & \textbf{Coste previsto} & \textbf{Coste real} \\ \hline
-Project Manager      & 46,09 \euro & 18 h  & [   h] & 829,62 \euro   & [   \euro] \\
-Analista             & 38,33 \euro & 87 h  & [   h] & 3.334,71 \euro & [   \euro] \\
-Diseñador UI         & 33,43 \euro & 22 h  & [   h] & 735,46 \euro   & [   \euro] \\
-Programador Backend  & 23,85 \euro & 79 h  & [   h] & 1.884,15 \euro & [   \euro] \\
-Programador Frontend & 23,85 \euro & 47 h  & [   h] & 1.120,95 \euro & [   \euro] \\
-Tester               & 23,68 \euro & 15 h  & [   h] & 355,20 \euro   & [   \euro] \\
-Técnico              & 19,58 \euro & 32 h  & [   h] & 626,56 \euro   & [   \euro] \\ \hline
-\textbf{Total}       & --          & \textbf{300 h} & \textbf{[   h]} & \textbf{8.886,65 \euro} & \textbf{[   \euro]} \\ \hline
-\end{tabular}%
-}
-\caption{Comparativa de dedicación y costes de personal por rol profesional.}
-\label{tab:horas_roles_previstas_reales}
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \makebox[\textwidth][c]{%
+    \begin{tabularx}{1.1\textwidth}{Ycrrrr}
+      \bighline
+      \textbf{Rol profesional} & \textbf{Precio/hora} & \textbf{Horas prev.} & \textbf{Horas reales} & \textbf{Coste previsto} & \textbf{Coste real} \\
+      \bighline
+      Project Manager      & 46,09\,\euro & 18,00\,h  & 21,00\,h  & 829,62\,\euro   & 967,89\,\euro   \\
+      \hline
+      Analista             & 38,33\,\euro & 87,00\,h  & 101,10\,h & 3.334,71\,\euro & 3.875,16\,\euro \\
+      \hline
+      Diseñador UI         & 33,43\,\euro & 22,00\,h  & 15,15\,h  & 735,46\,\euro   & 506,46\,\euro   \\
+      \hline
+      Programador Backend  & 23,85\,\euro & 79,00\,h  & 78,07\,h  & 1.884,15\,\euro & 1.861,97\,\euro \\
+      \hline
+      Programador Frontend & 23,85\,\euro & 47,00\,h  & 28,77\,h  & 1.120,95\,\euro & 686,16\,\euro   \\
+      \hline
+      Tester               & 23,68\,\euro & 15,00\,h  & 41,11\,h  & 355,20\,\euro   & 973,48\,\euro   \\
+      \hline
+      Técnico              & 19,58\,\euro & 32,00\,h  & 43,74\,h  & 626,56\,\euro   & 856,43\,\euro   \\
+      \bighline
+      \textbf{Total}       & \textbf{--}  & \textbf{300,00\,h} & \textbf{328,94\,h} & \textbf{8.886,65\,\euro} & \textbf{9.727,57\,\euro} \\
+      \bighline
+    \end{tabularx}%
+  }
+  \caption{Comparativa de dedicación y costes de personal por rol profesional.}
+  \label{tab:horas_roles_previstas_reales}
 \end{table}
 
-\textcolor{red}{\textbf{[TODO: Completar tabla y redactar pequeña retrospectiva final de desviaciones de los roles]}}
+Este balance horario refleja un claro trasvase de esfuerzo desde la implementación hacia el aseguramiento de la calidad y la documentación. Esto se evidencia en el notable incremento de horas en los roles de Tester y Analista, frente a la reducción experimentada en Programador \textit{Frontend}. El perfil de Programador \textit{Backend} habría seguido una tendencia descendente similar de no ser por el tiempo invertido en mitigar la deuda técnica.
 
-Como consecuencia de esta variación en el gasto de capital y al mantenerse inmutable el OPEX, el coste total de propiedad (TCO) del proyecto pasa de los 15.198,56 € estimados inicialmente a un valor definitivo de [   \euro], cerrando la auditoría económica del desarrollo.
-
-\textcolor{red}{\textbf{[TODO: Añadir tco final]}}
+Como consecuencia de las desviaciones acumuladas en el CAPEX y dado que el OPEX no experimentó variaciones, el coste total de propiedad (TCO) del proyecto pasa de los 15.198,56\,\euro{} presupuestados a una cifra definitiva de \textbf{16.433,08\,\euro{}}, concluyendo así la evaluación económica del proyecto.
 
 \section{Desviaciones y gestión de cambios}\label{sec:desviaciones_y_gestion_cambios}
 
@@ -407,38 +433,40 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
-      \bighline
-      \multicolumn{2}{c}{\textbf{CR-01: Aplazamiento de la defensa a convocatoria de octubre}\label{cr:01}} \\
-      \bighline
-      \textbf{Estado} & Aprobado. \\
-      \hline
-      \textbf{Contexto} & El esfuerzo necesario para estabilizar las pruebas de integración en WebSockets y redactar la memoria con el rigor exigido impidió concluir en junio sin comprometer la calidad. \\
-      \hline
-      \textbf{Decisión} & Trasladar formalmente la entrega de la memoria y la defensa técnica de la convocatoria ordinaria de junio a la extraordinaria de octubre de 2026. \\
-      \hline
-      \textbf{Impacto en alcance} & Ninguno. \\
-      \hline
-      \textbf{Impacto en tiempo} & Ampliación de 4 meses en la ventana temporal global del proyecto. \\
-      \hline
-      \textbf{Impacto en coste} & Incremento de 29,10\,\euro{} en licencias de desarrollo CAPEX por 4 meses adicionales de GitHub Team y Microsoft Teams Essentials. \\
-      \bighline
+    \begin{tabularx}{\textwidth}{l Y}
+        \bighline
+        \multicolumn{2}{c}{\textbf{CR-01: Aplazamiento de la defensa a convocatoria de octubre}\label{cr:01}} \\
+        \bighline
+        \textbf{Estado} & Aprobado. \\
+        \hline
+        \textbf{Contexto} & El esfuerzo necesario para estabilizar las pruebas de integración en WebSockets y redactar la memoria con el rigor exigido impidió concluir en junio sin comprometer la calidad. \\
+        \hline
+        \textbf{Decisión} & Traslado de la entrega y defensa del TFG de la convocatoria ordinaria de junio a la extraordinaria de octubre de 2026. \\
+        \hline
+        \textbf{Impacto en alcance} & Ninguno. \\
+        \hline
+        \textbf{Impacto en tiempo} & Ampliación de 4 meses en la ventana temporal global del proyecto. \\
+        \hline
+        \textbf{Impacto en coste} & Incremento de 29,10\,\euro{} en CAPEX por 4 meses adicionales de licencias de GitHub Team y Microsoft Teams Essentials. \\
+        \bighline
     \end{tabularx}%
   }
   \caption[CR-01: Aplazamiento de la defensa a octubre]{Registro de cambios - CR-01.}
   \label{tab:cr_01_aplazamiento}
 \end{table}
 
+\vspace*{0.1cm}
+
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
+    \begin{tabularx}{1\textwidth}{l Y}
       \bighline
       \multicolumn{2}{c}{\textbf{CR-02: Aplazamiento del asistente de generación con IA (\hyperref[obj:09]{OBJ-09})}\label{cr:02}} \\
       \bighline
@@ -446,27 +474,29 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
       \hline
       \textbf{Contexto} & La latencia y los límites de consumo (\textit{rate limits}) de la API de Gemini planteaban riesgos de bloqueo operativo en vivo, exigiendo un esfuerzo desproporcionado para asegurar un comportamiento determinista. \\
       \hline
-      \textbf{Decisión} & Desacoplar la generación con IA del alcance actual, registrarla como línea de trabajo futuro en GitHub y priorizar la creación e importación manual de cuestionarios. \\
+      \textbf{Decisión} & Desacoplar la generación con IA del alcance actual, registrarla como línea de trabajo futuro en GitHub y priorizar la implementación de funcionalidades más críticas como la gestión de cuestionarios. \\
       \hline
       \textbf{Impacto en alcance} & Reducción del alcance funcional inmediato, preservando íntegro el flujo estándar de gestión de cuestionarios. \\
       \hline
       \textbf{Impacto en tiempo} & Liberación de horas de desarrollo \textit{backend} y \textit{frontend}, mitigando retrasos en el núcleo del sistema. \\
       \hline
-      \textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
-      \bighline
+        \textbf{Impacto en coste} & Desviación en los costes laborales derivada de la redistribución de horas y de la diferencia de tarifas entre los perfiles profesionales implicados. \\
+        \bighline
     \end{tabularx}%
   }
   \caption[CR-02: Aplazamiento del asistente de IA]{Registro de cambios - CR-02.}
   \label{tab:cr_02_ia}
 \end{table}
 
+\vspace{0.5cm}
+
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
+    \begin{tabularx}{1\textwidth}{l Y}
       \bighline
       \multicolumn{2}{c}{\textbf{CR-03: Postergación de la creación de grupos de alumnos (\hyperref[obj:11]{OBJ-11})}\label{cr:03}} \\
       \bighline
@@ -480,7 +510,7 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
       \hline
       \textbf{Impacto en tiempo} & Se liberan horas de desarrollo para dedicarlas a la estabilidad y pruebas del sistema. \\
       \hline
-      \textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+      \textbf{Impacto en coste} &  Desviación en los costes laborales derivada de la redistribución de horas y de la diferencia de tarifas entre los perfiles profesionales implicados. \\
       \bighline
     \end{tabularx}%
   }
@@ -488,13 +518,15 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
   \label{tab:cr_03_grupos}
 \end{table}
 
+\vspace*{0.2cm}
+
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
+    \begin{tabularx}{1\textwidth}{l Y}
       \bighline
       \multicolumn{2}{c}{\textbf{CR-04: Ampliación de la batería y estrategia de pruebas}\label{cr:04}} \\
       \bighline
@@ -508,36 +540,38 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
       \hline
       \textbf{Impacto en tiempo} & Aumento notable de horas dedicadas a la fase de pruebas frente a las 15 horas presupuestadas originalmente. \\
       \hline
-      \textbf{Impacto en coste} & Incremento en el coste imputado al rol de \textit{Tester} dentro del balance contable del CAPEX. \\
-      \bighline
+        \textbf{Impacto en coste} & Sobrecoste en el CAPEX del proyecto como consecuencia del aumento de horas imputadas al perfil de Tester. \\
+        \bighline
     \end{tabularx}%
   }
   \caption[CR-04: Ampliación de la batería de pruebas]{Registro de cambios - CR-04.}
   \label{tab:cr_04_testing}
 \end{table}
 
+\vspace{0.6cm}
+
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
-      \bighline
-      \multicolumn{2}{c}{\textbf{CR-05: Incorporación de Redis para la sincronización de la sala}\label{cr:05}} \\
-      \bighline
-      \textbf{Estado} & Desestimado. \\
-      \hline
-      \textbf{Contexto} & Se evaluó utilizar Redis para guardar el estado de las salas y permitir que varios servidores pudieran comunicarse entre sí ante un gran número de usuarios simultáneos. \\
-      \hline
-      \textbf{Decisión} & Desestimar el uso de Redis y mantener la gestión de las salas en la propia memoria del servidor actual. \\
-      \hline
-      \textbf{Impacto en alcance} & Ninguno; se mantiene una arquitectura más simple y directa, suficiente para las necesidades del proyecto. \\
-      \hline
-      \textbf{Impacto en tiempo} & Se evita un trabajo extra estimado entre 10 y 15 horas de desarrollo y configuración. \\
-      \hline
-      \textbf{Impacto en coste} & Ninguno; además, se evita el coste mensual extra de contratar un servicio adicional en la nube. \\
-      \bighline
+    \begin{tabularx}{1\textwidth}{l Y}
+        \bighline
+        \multicolumn{2}{c}{\textbf{CR-05: Incorporación de Redis para la sincronización de la sala}\label{cr:05}} \\
+        \bighline
+        \textbf{Estado} & Desestimado. \\
+        \hline
+        \textbf{Contexto} & Se evaluó utilizar Redis para guardar el estado de las salas y permitir que varios servidores pudieran comunicarse entre sí ante un gran número de usuarios simultáneos. \\
+        \hline
+        \textbf{Decisión} & Desestimar el despliegue de Redis, manteniendo la sincronización de las salas en la memoria del servidor actual a través de las propiedades \textit{room\_status} y \textit{room\_phase}, evitando complejidad innecesaria en la persistencia. \\
+        \hline
+        \textbf{Impacto en alcance} & Ninguno, se mantiene una arquitectura más simple y directa, suficiente para las necesidades del proyecto. \\
+        \hline
+        \textbf{Impacto en tiempo} & Se evita un trabajo extra estimado entre 10 y 15 horas de desarrollo y configuración. \\
+        \hline
+        \textbf{Impacto en coste} & Ninguno. Además, se evita el coste mensual extra de contratar un servicio adicional en la nube. \\
+        \bighline
     \end{tabularx}%
   }
   \caption[CR-05: Incorporación de Redis]{Registro de cambios - CR-05.}
@@ -547,10 +581,10 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
+    \begin{tabularx}{1\textwidth}{l Y}
       \bighline
       \multicolumn{2}{c}{\textbf{CR-06: Despliegue de SonarQube y refuerzo de controles locales}\label{cr:06}} \\
       \bighline
@@ -564,7 +598,7 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
       \hline
       \textbf{Impacto en tiempo} & Dedicación técnica imprevista en configurar las herramientas locales y solventar los avisos acumulados. \\
       \hline
-      \textbf{Impacto en coste} & Ninguno en licencias (uso del plan gratuito de SonarQube); imputación adicional de horas al rol Técnico. \\
+      \textbf{Impacto en coste} & Ninguno en licencias (uso del plan gratuito de SonarQube). Sobrecoste en el CAPEX del proyecto como consecuencia del aumento de horas imputadas al perfil de Técnico.  \\
       \bighline
     \end{tabularx}%
   }
@@ -572,13 +606,15 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
   \label{tab:cr_06_sonar}
 \end{table}
 
+\vspace{0.5cm}
+
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.4}
+  \setlength{\tabcolsep}{12pt}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{l Y}
+    \begin{tabularx}{1\textwidth}{l Y}
       \bighline
       \multicolumn{2}{c}{\textbf{CR-07: Reducción de deuda técnica en SonarQube y congelación del alcance}\label{cr:07}} \\
       \bighline
@@ -592,7 +628,7 @@ En este apartado se recoge el historial de las principales decisiones de cambio 
       \hline
       \textbf{Impacto en tiempo} & Permite cumplir con los plazos de entrega y dedicar el tiempo necesario a la redacción rigurosa de la memoria técnica. \\
       \hline
-      \textbf{Impacto en coste} & Derivado de la redistribución de horas entre roles profesionales. \\
+      \textbf{Impacto en coste} &  Desviación en los costes laborales derivada de la redistribución de horas y de la diferencia de tarifas entre los perfiles profesionales implicados. \\
       \bighline
     \end{tabularx}%
   }
@@ -741,16 +777,20 @@ A lo largo de la simulación no se registró ningún fallo en las peticiones ni 
 
 La trazabilidad completa del procedimiento se respalda en el anexo: la ejecución de la batería queda reflejada en la \hyperref[ev:terminal_test_locust]{captura de terminal de las pruebas de carga}, cuyos resultados brutos se recopilaron en los registros CSV correspondientes y fueron evaluados posteriormente mediante la \hyperref[ev:terminal_umbrales_locust]{ejecución del script de verificación de umbrales} de rendimiento.
 
+\vspace{0.1cm}
+
 \subsection{Resumen de resultados de las pruebas}\label{sub:resumen_pruebas}
 
-A modo de síntesis, la siguiente tabla resume los resultados obtenidos en las distintas \textit{suites} de verificación frente a los umbrales de aceptación definidos en el plan de pruebas:
+A modo de resumen, la siguiente tabla unifica los resultados obtenidos en las distintas \textit{suites} de verificación frente a los umbrales de aceptación definidos en el plan de pruebas:
+
+\vspace{0.1cm}
 
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\arraystretch}{1.3}
+  \renewcommand{\arraystretch}{1.4}
   \makebox[\textwidth][c]{%
-    \begin{tabularx}{1.1\textwidth}{P{4.4cm} Y c c >{\centering\arraybackslash}m{1.8cm}}
+    \begin{tabular}{l l c c >{\centering\arraybackslash}m{1.8cm}}
       \bighline
       \textbf{\textit{Suite}} & \textbf{Métrica / Objetivo} & \textbf{Umbral} & \textbf{Resultado} & \textbf{Estado} \\
       \bighline
@@ -780,13 +820,13 @@ A modo de síntesis, la siguiente tabla resume los resultados obtenidos en las d
       \hline
       Carga y rendimiento & Tasa global de errores & $< 1,0\%$ & 0,00\% & \covCheck \\
       \cline{2-5}
-      & Rutas \textit{Auth} & P90 $\le 500$\,ms & Media: 99\,ms & \covCheck \\
+      & Rutas \textit{Auth} & P90 $\le 500$\,ms & \makecell{99\,ms \\ {\footnotesize (media)}} & \covCheck \\
       \cline{2-5}
-      & Rutas generales & P90 $\le 200$\,ms & Media: 38\,ms & \covCheck \\
+      & Rutas generales & P90 $\le 200$\,ms & \makecell{38\,ms \\ {\footnotesize (media)}} & \covCheck \\
       \cline{2-5}
       & \textit{WebSocket} & P90 $\le 200$\,ms & 28\,ms & \covCheck \\
       \bighline
-    \end{tabularx}%
+    \end{tabular}%
   }
   \caption{Resumen del cumplimiento de umbrales en las baterías de pruebas.}
   \label{tab:resumen_testing_umbrales}
@@ -798,7 +838,7 @@ En paralelo a las pruebas funcionales y de rendimiento analizadas en los apartad
 
 \begin{evidence}[H]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{evidences/informe_sonar.png}}
+    \makebox[\textwidth][c]{\includegraphics[width=\textwidth]{evidences/informe_sonar.png}}
     \captionsetup{hypcap=false}
     \caption{Estado del \textit{Quality Gate} y métricas consolidadas en SonarQube.}
     \label{ev:sonar_overall_code}
@@ -827,7 +867,7 @@ La siguiente tabla compara los valores obtenidos sobre el código completo (\tex
       \bighline
     \end{tabular}%
   }
-  \caption{Comparativa de los umbrales del \textit{Quality Gate} frente a resultados obtenidos.}
+  \caption{Umbrales del \textit{Quality Gate} frente a resultados obtenidos.}
   \label{tab:comparativa_sonar}
 \end{table}
 
@@ -838,7 +878,7 @@ A continuación, se presenta la evolución temporal del volumen de incidencias y
 \begin{tikzpicture}
 \begin{axis}[
     width=0.95\textwidth,
-    height=6.8cm,
+    height=7cm,
     xlabel={Historial de análisis en SonarQube},
     ylabel={Número de incidencias},
     xmin=0.5, xmax=15.5,
@@ -849,8 +889,8 @@ A continuación, se presenta la evolución temporal del volumen de incidencias y
     minor y tick num=1,
     ymajorgrids=true,
     yminorgrids=true,
-    grid style={dashed, gray!35},
-    minor grid style={dashed, gray!25},
+    grid style={dashed, gray!65},
+    minor grid style={dashed, gray!50},
     tick label style={font=\footnotesize},
     x tick label style={font=\scriptsize, rotate=45, anchor=north east},
     label style={font=\small\bfseries},
