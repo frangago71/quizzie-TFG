@@ -1,6 +1,6 @@
 \chapter{Diseño y arquitectura}\label{cap:diseno_y_arquitectura}
 
-En este capítulo se describe la \textbf{estructura técnica y conceptual} sobre la que se asienta el sistema, detallando las decisiones arquitectónicas que garantizan su correcto \textbf{funcionamiento, mantenibilidad y rendimiento}. El diseño propuesto responde tanto a los requisitos funcionales del proyecto como a sus restricciones operativas: la ejecución de cuestionarios en tiempo real, la baja latencia en la transmisión de eventos a múltiples participantes simultáneos y una rigurosa separación de responsabilidades entre el cliente y el servidor.
+En este capítulo se describe la estructura técnica y conceptual sobre la que se asienta el sistema, detallando las decisiones arquitectónicas que garantizan su correcto funcionamiento, mantenibilidad y rendimiento. El diseño propuesto responde tanto a los requisitos funcionales del proyecto como a sus restricciones operativas: la ejecución de cuestionarios en tiempo real, la baja latencia en la transmisión de eventos a múltiples participantes simultáneos y una rigurosa separación de responsabilidades entre el cliente y el servidor.
 
 \section{Patrones arquitectónicos elegidos}
 
@@ -48,7 +48,7 @@ Para las sesiones en tiempo real, el sistema adopta una arquitectura basada en e
 \begin{figure}[H]
     \centering
     \makebox[0pt][c]{%
-        \includegraphics[width=1.1\textwidth]{figures/estados_sala.png}
+        \includegraphics[width=1.2\textwidth]{figures/estados_sala.png}
     }%
     \caption{Estados de la sala de juego en tiempo real.}
     \label{fig:estados_sala}
@@ -95,9 +95,9 @@ Como se observa en la comparativa, cada capa conceptual se corresponde de forma 
 
 \section{Justificación y decisiones de arquitectura}\label{sec:justificacion_arquitectura}
 
-Una vez definidos el esquema conceptual y la estructura de componentes del sistema, resulta imprescindible formalizar las decisiones tecnológicas adoptadas y verificar su alineación con las necesidades del proyecto. En este apartado se aborda dicho proceso desde dos perspectivas complementarias: la documentación formal de las \textbf{decisiones de diseño clave} y la verificación explícita de su impacto sobre los \textbf{atributos de calidad} del proyecto.
+Una vez definidos el esquema conceptual y la estructura de componentes del sistema, resulta imprescindible formalizar las decisiones tecnológicas adoptadas y verificar su alineación con las necesidades del proyecto. En este apartado se aborda dicho proceso desde dos perspectivas complementarias: la documentación formal de las decisiones de diseño clave y la verificación explícita de su impacto sobre los atributos de calidad del proyecto.
 
-\subsection{Registros de decisiones de arquitectura \textbf{(ADR)}}\label{subsec:adrs}
+\subsection{Registros de decisiones de arquitectura (ADR)}\label{subsec:adrs}
 
 Para documentar y formalizar las decisiones de diseño estructural más críticas del proyecto, se ha adoptado el patrón de registros de decisiones de arquitectura (\textit{Architecture Decision Records}, \textbf{ADR}) propuesto por Nygard \cite{nygard2011adr}. A continuación se detallan las decisiones arquitectónicas que fundamentan el diseño de \textit{Quizzie}:
 
@@ -216,7 +216,7 @@ Para garantizar que el diseño propuesto satisface los atributos de calidad defi
 
 \section{Estructura modular del código}
 
-Para trasladar los patrones arquitectónicos descritos a la \textbf{fase de diseño}, el sistema se organiza conceptualmente en torno a una estructura \textit{monorepo} dividida en dos grandes módulos independientes (\texttt{backend/} y \texttt{frontend/}). Esta organización delimita claramente las responsabilidades y facilita el desarrollo desacoplado de ambos componentes.
+Para trasladar los patrones arquitectónicos descritos a la fase de diseño, el sistema se organiza conceptualmente en torno a una estructura \textit{monorepo} dividida en dos grandes módulos independientes (\texttt{backend/} y \texttt{frontend/}). Esta organización delimita claramente las responsabilidades y facilita el desarrollo desacoplado de ambos componentes.
 
 A continuación se presenta el \textbf{esquema preliminar} de la jerarquía de directorios y componentes principales del proyecto:
 
@@ -379,14 +379,14 @@ El diseño integrado de estos cuatro módulos responde a una lógica de interacc
 \section{Seguridad}
 \label{sec:seguridad}
 
-La seguridad de la plataforma se ha diseñado atendiendo a la naturaleza diferenciada de sus dos perfiles de usuario: los \textbf{profesores} (usuarios registrados que requieren \textbf{acceso persistente} mediante credenciales) y los \textbf{alumnos} (usuarios efímeros que acceden a las partidas en vivo mediante un \textbf{PIN} y un \textbf{alias}, sin necesidad de registro previo).
+La seguridad de la plataforma se ha diseñado atendiendo a la naturaleza diferenciada de sus dos perfiles de usuario: los \textbf{profesores} (usuarios registrados que requieren acceso persistente mediante credenciales) y los \textbf{alumnos} (usuarios efímeros que acceden a las partidas en vivo mediante un PIN y un alias, sin necesidad de registro previo).
 
 \subsection{Autenticación síncrona mediante JWT}
 \label{sec:autenticacion_jwt}
 
 Para la gestión de accesos del perfil docente se ha optado por un esquema sin estado (\textit{stateless}) basado en \textit{JSON Web Tokens} (\textbf{JWT}). Este enfoque evita almacenar el estado de las sesiones en el servidor para la API REST, permitiendo un diseño \textbf{desacoplado}.
 
-El token se genera tras verificar las credenciales del usuario (cuyas contraseñas se almacenan de forma segura mediante algoritmos de \textbf{\textit{hashing}} y derivación de claves) y se adjunta en el encabezado estándar \texttt{\textbf{Authorization: Bearer <token>}} para validar las solicitudes posteriores. A continuación se ilustra la secuencia de emisión y validación del token.
+El token se genera tras verificar las credenciales del usuario (cuyas contraseñas se almacenan de forma segura mediante algoritmos de \textit{hashing} y derivación de claves) y se adjunta en el encabezado estándar \texttt{Authorization: Bearer <token>} para validar las solicitudes posteriores. A continuación se ilustra la secuencia de emisión y validación del token.
 
 \begin{figure}[H]
     \centering
@@ -407,14 +407,14 @@ El control de acceso se fundamenta en un modelo \textbf{RBAC} (\textit{Role-Base
     \item \textbf{Rol de participante (Efímero / No autenticado):} Asignado temporalmente a la sala activa sin requerir registro previo, restringe los permisos exclusivamente al envío de respuestas a las preguntas habilitadas en ese instante.
 \end{itemize}
 
-Bajo una arquitectura con \textbf{autoridad en el servidor} (\textit{Server-Authoritative Architecture}), toda la lógica de validación, la temporización de la partida y la corrección de respuestas residen exclusivamente en el \textit{backend}. El servidor actúa así como la \textbf{única fuente de verdad} (\textit{Single Source of Truth}, SSOT)\cite{hunt1999pragmatic} del sistema, garantizando la \textbf{integridad} del proceso de evaluación y previniendo la manipulación de datos desde el cliente (\textbf{\textit{anti-cheat}}).
+Bajo una arquitectura con \textbf{autoridad en el servidor} (\textit{Server-Authoritative Architecture}), toda la lógica de validación, la temporización de la partida y la corrección de respuestas residen exclusivamente en el \textit{backend}. El servidor actúa así como la única fuente de verdad (\textit{Single Source of Truth}, \textbf{SSOT})\cite{hunt1999pragmatic} del sistema, garantizando la integridad del proceso de evaluación y previniendo la manipulación de datos desde el cliente (\textit{anti-cheat}).
 
 \subsection{Tokens de verificación para participantes}
 \label{sec:tokens_verificacion}
 
-Para \textbf{consolidar} las calificaciones de forma presencial y \textbf{asegurar} que el resultado pertenece al estudiante correspondiente, la plataforma incluye un mecanismo de verificación mediante \textbf{códigos QR}. El docente escanea en el aula el código presentado por el alumno, el cual contiene su \textbf{alias} y su \textbf{token de verificación temporal} (\texttt{verification\_token}).
+Para consolidar las calificaciones de forma presencial y asegurar que el resultado pertenece al estudiante correspondiente, la plataforma incluye un mecanismo de verificación mediante códigos QR. El docente escanea en el aula el código presentado por el alumno, el cual contiene su alias y su token de verificación temporal (\texttt{verification\_token}).
 
-Como se resume en el siguiente diagrama, al realizar el escaneo la aplicación solicita al \textit{backend} la \textbf{verificación del participante}. El servidor valida la correspondencia del token con la sala activa, confirma la actualización del estado del participante inscribiendo la nota en la base de datos y difunde la actualización a la sala mediante la conexión en tiempo real por \textbf{\textit{WebSocket}}.
+Como se resume en el siguiente diagrama, al realizar el escaneo la aplicación solicita al \textit{backend} la verificación del participante. El servidor valida la correspondencia del token con la sala activa, confirma la actualización del estado del participante inscribiendo la nota en la base de datos y difunde la actualización a la sala mediante la conexión en tiempo real por \textit{WebSocket}.
 
 \begin{figure}[H]
     \centering

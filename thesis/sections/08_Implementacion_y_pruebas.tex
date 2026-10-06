@@ -1,10 +1,10 @@
 \chapter{Implementación y pruebas}\label{cap:implementacion_y_pruebas}
 
-Una vez establecida la base arquitectónica y el diseño del sistema, corresponde abordar la materialización técnica de la plataforma, transformando los requisitos y decisiones de diseño arquitectónico previamente definidos en componentes funcionales de software. Para ello, en primer lugar se detallan los \textbf{módulos críticos} de la implementación tanto en el \textit{backend} como en el \textit{frontend}, haciendo especial énfasis en la sincronización en \textbf{tiempo real} y la \textbf{seguridad}. Posteriormente, se expone la \textbf{estrategia integral de pruebas}, los criterios de calidad adoptados y los resultados de \textbf{cobertura} obtenidos para garantizar la robustez del sistema.
+Una vez establecida la base arquitectónica y el diseño del sistema, corresponde abordar la materialización técnica de la plataforma, transformando los requisitos y decisiones de diseño arquitectónico previamente definidos en componentes funcionales de software. Para ello, en primer lugar se detallan los módulos críticos de la implementación tanto en el \textit{backend} como en el \textit{frontend}, haciendo especial énfasis en la sincronización en tiempo real y la seguridad. Posteriormente, se expone la estrategia integral de pruebas, los criterios de calidad adoptados y los resultados de cobertura obtenidos para garantizar la robustez del sistema.
 
 \section{Componentes clave e implementación del sistema}\label{sec:componentes_clave}
 
-En esta sección se exponen los aspectos más representativos del núcleo de \textit{Quizzie}, analizando las decisiones de diseño y \textbf{patrones de software} adoptados para dar respuesta a los requisitos funcionales más complejos: la \textbf{comunicación bidireccional}, la \textbf{gestión del ciclo de vida de las salas} y la \textbf{seguridad del estado} en el \textit{frontend}.
+En esta sección se exponen los aspectos más representativos del núcleo de \textit{Quizzie}, analizando las decisiones de diseño y patrones de \textit{software} adoptados para dar respuesta a los requisitos funcionales más complejos: la comunicación bidireccional, la gestión del ciclo de vida de las salas y la seguridad del estado en el \textit{frontend}.
 
 \subsection{Comunicación en tiempo real mediante \textit{WebSockets}}\label{subsec:impl_websockets}
 
@@ -464,7 +464,7 @@ Las pruebas unitarias y de integración se definen y ejecutan de forma conjunta 
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{backend}: Módulo de usuarios.}
+  \caption[Casos de prueba del \textit{backend}: Módulo de usuarios.]{Casos de prueba de la capa \textit{backend}: Módulo de usuarios.}
   \label{tab:casos_prueba_backend_usuarios}
 \end{table}
 
@@ -487,7 +487,7 @@ Las pruebas unitarias y de integración se definen y ejecutan de forma conjunta 
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{backend}: Módulo de contenido.}
+  \caption[Casos de prueba del \textit{backend}: Módulo de contenido.]{Casos de prueba de la capa \textit{backend}: Módulo de contenido.}
   \label{tab:casos_prueba_backend_contenido}
 \end{table}
 
@@ -510,7 +510,7 @@ Las pruebas unitarias y de integración se definen y ejecutan de forma conjunta 
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{backend}: Módulo de sesiones.}
+  \caption[Casos de prueba del \textit{backend}: Módulo de sesiones.]{Casos de prueba de la capa \textit{backend}: Módulo de sesiones.}
   \label{tab:casos_prueba_backend_sesiones}
 \end{table}
 
@@ -576,7 +576,7 @@ Las pruebas de componentes se ejecutan de manera aislada mediante Vitest y React
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de autenticación y perfil.}
+  \caption[Casos de prueba del \textit{frontend}: Módulo de autenticación.]{Casos de prueba de la capa \textit{frontend}: Módulo de autenticación y perfil.}
   \label{tab:casos_prueba_frontend_auth}
 \end{table}
 
@@ -597,7 +597,7 @@ Las pruebas de componentes se ejecutan de manera aislada mediante Vitest y React
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de gestión de contenidos.}
+  \caption[Casos de prueba del \textit{frontend}: Módulo de gestión.]{Casos de prueba de la capa \textit{frontend}: Módulo de gestión de contenidos.}
   \label{tab:casos_prueba_frontend_gestion}
 \end{table}
 
@@ -618,7 +618,7 @@ Las pruebas de componentes se ejecutan de manera aislada mediante Vitest y React
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de acceso a salas.}
+  \caption[Casos de prueba del \textit{frontend}: Módulo de acceso a salas.]{Casos de prueba de la capa \textit{frontend}: Módulo de acceso a salas.}
   \label{tab:casos_prueba_frontend_acceso}
 \end{table}
 
@@ -641,7 +641,7 @@ Las pruebas de componentes se ejecutan de manera aislada mediante Vitest y React
       \bighline
     \end{tabularx}%
   }
-  \caption{Casos de prueba de la capa \textit{frontend}: Módulo de sala en directo.}
+  \caption[Casos de prueba del \textit{frontend}: Módulo de sala en directo.]{Casos de prueba de la capa \textit{frontend}: Módulo de sala en directo.}
   \label{tab:casos_prueba_frontend_sala}
 \end{table}
 
@@ -802,7 +802,7 @@ Para superar la auditoría de rendimiento, el sistema debe satisfacer estrictame
       \bighline
     \end{tabularx}%
   }
-  \caption{Umbrales y criterios de aceptación para las pruebas de rendimiento.}
+  \caption{Criterios de aceptación para las pruebas de rendimiento.}
   \label{tab:metricas_rendimiento}
 \end{table}
 

@@ -1,16 +1,16 @@
 \chapter{Metodología técnica y de desarrollo}\label{cap:metodologia_tecnica}
 
-Una vez establecida la arquitectura y el diseño conceptual del sistema, resulta imprescindible definir un \textbf{marco operativo riguroso} para la fase de construcción e integración del código. En el desarrollo de software, la ausencia de políticas explícitas en el control de versiones incrementa paulatinamente la deuda técnica y dificulta la detección temprana de errores.
+Una vez establecida la arquitectura y el diseño conceptual del sistema, resulta imprescindible definir un marco operativo riguroso para la fase de construcción e integración del código. En el desarrollo de software, la ausencia de políticas explícitas en el control de versiones incrementa paulatinamente la deuda técnica y dificulta la detección temprana de errores.
 
-Este capítulo detalla la metodología técnica implantada en el proyecto \textit{Quizzie}. En él se abordan las \textbf{políticas de trabajo en el repositorio}, la automatización del ciclo de integración continua y despliegue continuo (\textbf{CI/CD}), la gestión segura de \textbf{perfiles de configuración} y el \textbf{análisis estático} de la calidad del código.
+Este capítulo detalla la metodología técnica implantada en el proyecto \textit{Quizzie}. En él se abordan las políticas de trabajo en el repositorio, la automatización del ciclo de integración continua y despliegue continuo (\textbf{CI/CD}), la gestión segura de perfiles de configuración y el análisis estático de la calidad del código.
 
 \section{Ecosistema base de desarrollo local}\label{sec:ecosistema_base}
 
 Concretando la selección tecnológica descrita en la subsección \hyperref[subsec:soporte_desarrollo]{soporte de desarrollo}, el trabajo local se sostiene sobre tres pilares operativos principales. La integración de este ecosistema busca asegurar la reproducibilidad homogénea del proyecto, garantizar el aislamiento de dependencias y simplificar la ejecución de herramientas de desarrollo:
 
 \begin{itemize}
-    \item Gestión de entorno \textbf{\textit{backend}} con \textbf{uv}: En lugar de recurrir a entornos virtuales creados manualmente (\texttt{venv}) o gestores tradicionales, el ciclo de vida del \textit{backend} se articula íntegramente mediante el gestor de dependencias \textit{uv}. Esta herramienta centraliza el aislamiento de la versión de Python, la resolución del árbol de dependencias expresado en \texttt{pyproject.toml} y la ejecución de comandos de soporte (linters, formateadores y motores de prueba) en un entorno reproducible mediante el prefijo \texttt{uv run}.
-    \item Gestión de entorno \textbf{\textit{frontend}} con \textbf{npm} y \textbf{Node.js}: Para la parte cliente, el ecosistema de trabajo se apoya en \textbf{npm} sobre el entorno de ejecución de \textbf{Node.js}. A través del fichero \texttt{package.json}, se estandarizan las tareas de desarrollo, la compilación y la verificación de tipos con TypeScript.
+    \item Gestión de entorno \textit{backend} con \textbf{uv}: En lugar de recurrir a entornos virtuales creados manualmente (\texttt{venv}) o gestores tradicionales, el ciclo de vida del \textit{backend} se articula íntegramente mediante el gestor de dependencias \textit{uv}. Esta herramienta centraliza el aislamiento de la versión de Python, la resolución del árbol de dependencias expresado en \texttt{pyproject.toml} y la ejecución de comandos de soporte (linters, formateadores y motores de prueba) en un entorno reproducible mediante el prefijo \texttt{uv run}.
+    \item Gestión de entorno \textit{frontend} con \textbf{npm} y \textbf{Node.js}: Para la parte cliente, el ecosistema de trabajo se apoya en npm sobre el entorno de ejecución de Node.js. A través del fichero \texttt{package.json}, se estandarizan las tareas de desarrollo, la compilación y la verificación de tipos con TypeScript.
     \item Sistema de control de versiones distribuido con \textbf{Git}: Registra la evolución del código fuente, sirviendo de nexo entre el trabajo en la máquina local y las políticas de integración remota que se detallan a continuación.
 \end{itemize}
 
@@ -19,7 +19,7 @@ Esta combinación permite que cualquier desarrollador pueda clonar el repositori
 Los pasos detallados para la preparación inicial del entorno y el registro de dependencias se recogen en el \hyperref[anexo:manual_tecnico]{manual técnico}.
 \section{Políticas del repositorio y flujo de trabajo}\label{sec:politicas_repositorio}
 
-Para asegurar un desarrollo \textbf{estructurado, auditable y mantenible}, se ha definido una \textbf{normativa estricta} sobre el repositorio centralizado en GitHub~\cite{github_quizzie}. Esta normativa abarca desde el modelado de tareas hasta la consolidación de cambios en los entornos estables, siguiendo un flujo secuencial estandarizado compuesto por \textbf{seis etapas consecutivas}:
+Para asegurar un desarrollo estructurado, auditable y mantenible, se ha definido una normativa estricta sobre el repositorio centralizado en GitHub~\cite{github_quizzie}. Esta normativa abarca desde el modelado de tareas hasta la consolidación de cambios en los entornos estables, siguiendo un flujo secuencial estandarizado compuesto por seis etapas consecutivas:
 
 \begin{figure}[H]
 \centering
@@ -47,7 +47,7 @@ El uso de esta estructura estandarizada asegura que cualquier incidencia registr
 
 \subsection{Estrategia de ramas}
 
-El proyecto adopta una variante adaptada del modelo \textbf{\textit{Git Flow}} orientada a entornos de desarrollo ágil. A diferencia del modelo tradicional que emplea solicitudes de extracción (\textit{Pull Requests}) complejas para un único desarrollador, \textit{Quizzie} utiliza \textbf{ramas de trabajo efímeras} e integración mediante \textbf{fusiones directas} (\textit{merge}) locales.
+El proyecto adopta una variante adaptada del modelo \textbf{\textit{Git Flow}} orientada a entornos de desarrollo ágil. A diferencia del modelo tradicional que emplea solicitudes de extracción (\textit{Pull Requests}) complejas para un único desarrollador, \textit{Quizzie} utiliza ramas de trabajo efímeras e integración mediante fusiones directas (\textit{merge}) locales.
 
 \begin{table}[H]
 \centering
@@ -91,14 +91,14 @@ El flujo de aislamiento y convergencia entre las ramas temporales, la rama de in
 
 \subsection{Verificación local mediante \textit{pre-commit}}\label{subsec:precommits}
 
-Antes de que cualquier \textit{commit} (modificación en el código) sea registrada definitivamente en el historial de Git, es fundamental asegurar que cumple con los \textbf{estándares de calidad y formato} fijados en el proyecto. Para automatizar este control, en la máquina local del desarrollador se utiliza la herramienta \textbf{pre-commit}, la cual evalúa el código de forma previa a la confirmación.
+Antes de que cualquier \textit{commit} (modificación en el código) sea registrada definitivamente en el historial de Git, es fundamental asegurar que cumple con los estándares de calidad y formato fijados en el proyecto. Para automatizar este control, en la máquina local del desarrollador se utiliza la herramienta \textbf{pre-commit}, la cual evalúa el código de forma previa a la confirmación.
 
 La configuración centralizada de estas verificaciones se define en el archivo \texttt{.pre-commit-config.yaml} ubicado en la raíz del repositorio. En dicho fichero se declaran los conectores (\textbf{\textit{hooks}}) y herramientas que se deben ejecutar de forma transparente sobre los archivos modificados:
 
 \begin{enumerate}
     \item \textbf{\textit{Backend} (Python):} Se integra la herramienta \textbf{Ruff} para realizar un \textbf{análisis estático} ultrarrápido, corregir automáticamente fallos de formato, eliminar importaciones sin usar y garantizar el cumplimiento del estándar \textbf{PEP 8}~\cite{pep8}.
-    \item \textbf{\textit{Frontend} (React / TypeScript):} Se ejecutan \textbf{ESLint} y \textbf{Prettier} para inspeccionar la sintaxis de los componentes JSX/TSX y unificar el \textbf{estilo visual} del código.
-    \item \textbf{Seguridad y limpieza:} Se añaden verificaciones generales para detectar y bloquear la subida accidental de \textbf{archivos de secretos} (\texttt{.env}), claves privadas o archivos con formato incorrecto.
+    \item \textbf{\textit{Frontend} (React / TypeScript):} Se ejecutan \textbf{ESLint} y \textbf{Prettier} para inspeccionar la sintaxis de los componentes JSX/TSX y unificar el estilo visual del código.
+    \item \textbf{Seguridad y limpieza:} Se añaden verificaciones generales para detectar y bloquear la subida accidental de archivos de secretos (\texttt{.env}), claves privadas o archivos con formato incorrecto.
 \end{enumerate}
 
 Para forzar manualmente la inspección de la totalidad del código fuente sin necesidad de intentar un \textit{commit}, se utiliza la instrucción:
@@ -111,7 +111,7 @@ Si alguna de las comprobaciones detecta un fallo o una discrepancia de formato, 
 
 \subsection{Estandarización de commits}\label{subsec:estandarizacion_commits}
 
-Para mantener un historial de control de versiones limpio, semántico y legible, se ha adoptado la especificación \textbf{Conventional Commits}. Esta convención asigna un significado explícito a cada confirmación, lo que permite auditar la evolución del código y automatizar la gestión de versiones mediante Versionado Semántico (\textbf{\textit{SemVer}}) \cite{semver}.
+Para mantener un historial de control de versiones limpio, semántico y legible, se ha adoptado la especificación \textbf{Conventional Commits}. Esta convención asigna un significado explícito a cada confirmación, lo que permite auditar la evolución del código y automatizar la gestión de versiones mediante Versionado Semántico (\textit{SemVer}) \cite{semver}.
 
 La construcción de los mensajes en la máquina local se canaliza a través de la herramienta \textbf{Commitizen}. Al ejecutar la instrucción interactiva correspondiente, se guía al desarrollador en la redacción del mensaje respetando la estructura obligatoria:
 \[
@@ -186,11 +186,11 @@ Para garantizar la estabilidad del entorno de producción, la rama \texttt{main}
 
 \section{Métricas de calidad y análisis estático de código}\label{sec:metricas_calidad}
 
-Con el fin de asegurar la \textbf{mantenibilidad y robustez} del código consolidado en la rama principal (\texttt{main}), se utiliza \textbf{SonarQube} como auditor externo para el \textbf{análisis estático}. Esta herramienta evalúa de forma continuada la salud del proyecto, monitorizando la presencia de errores lógicos, brechas de seguridad, complejidad cognitiva y el porcentaje global de \textbf{cobertura de pruebas} tras cada integración en \texttt{main}, definiendo los criterios de calidad que posteriormente se automatizan en el flujo de CI/CD.
+Con el fin de asegurar la mantenibilidad y robustez del código consolidado en la rama principal (\texttt{main}), se utiliza \textbf{SonarQube} como auditor externo para el análisis estático. Esta herramienta evalúa de forma continuada la salud del proyecto, monitorizando la presencia de errores lógicos, brechas de seguridad, complejidad cognitiva y el porcentaje global de cobertura de pruebas tras cada integración en \texttt{main}, definiendo los criterios de calidad que posteriormente se automatizan en el flujo de CI/CD.
 
 \subsection{Justificación y métricas objetivo (\textit{Quality Gate})}\label{subsec:sonar_quality_gate}
 
-Con el objetivo de evitar la acumulación de deuda técnica y asegurar la \textbf{mantenibilidad} a largo plazo, se ha configurado un \textbf{umbral de calidad} (\textbf{\textit{Quality Gate}}) de obligado cumplimiento para cualquier nueva funcionalidad integrada en \texttt{main}.
+Con el objetivo de evitar la acumulación de deuda técnica y asegurar la mantenibilidad a largo plazo, se ha configurado un umbral de calidad (\textit{Quality Gate}) de obligado cumplimiento para cualquier nueva funcionalidad integrada en \texttt{main}.
 
 La siguiente tabla resume los objetivos mínimos exigidos por el sistema y la justificación técnica de cada uno:
 
@@ -232,11 +232,11 @@ Para que los indicadores del panel de control sean un reflejo fiel de la calidad
 
 \section{Integración y despliegue continuos}\label{sec:cicd}
 
-Para garantizar la calidad del software, la detección temprana de errores, la seguridad de las dependencias y la entrega continua del servicio en \textit{Quizzie}, se ha diseñado e implementado una arquitectura de integración y despliegue continuos (\textbf{CI/CD}) fundamentada en \textbf{GitHub Actions}. Este flujo automatizado actúa como un \textbf{control de calidad estricto} antes de consolidar cualquier versión del código hacia los entornos de integración y producción.
+Para garantizar la calidad del software, la detección temprana de errores, la seguridad de las dependencias y la entrega continua del servicio en \textit{Quizzie}, se ha diseñado e implementado una arquitectura de integración y despliegue continuos (\textbf{CI/CD}) fundamentada en \textbf{GitHub Actions}. Este flujo automatizado actúa como un control de calidad estricto antes de consolidar cualquier versión del código hacia los entornos de integración y producción.
 
 \subsection{Ciclo de vida y arquitectura}\label{subsec:cicd_arquitectura}
 
-El flujo de trabajo automatizado se estructura en \textbf{tres \textit{workflows} independientes} en GitHub Actions, los cuales responden a eventos específicos en el repositorio y gestionan las distintas fases de validación técnica:
+El flujo de trabajo automatizado se estructura en tres \textit{workflows} independientes en GitHub Actions, los cuales responden a eventos específicos en el repositorio y gestionan las distintas fases de validación técnica:
 
 \begin{enumerate}
     \item \textbf{Integración Continua (CI):} Se activa automáticamente ante eventos de \textit{push} en la rama \texttt{develop}. Ejecuta la batería de análisis estático, seguridad, pruebas unitarias y de integración, de componentes, \textit{End-to-End} y evaluación de rendimiento.
@@ -336,7 +336,7 @@ A partir de dicha plantilla, el desarrollador genera su archivo local \texttt{.e
 
 \subsection{Distribución de secretos por plataforma}\label{subsec:secretos_plataformas}
 
-En los entornos remotos se aplica de forma estricta el \textbf{principio de mínimo privilegio}, tal y como define el \textit{National Institute of Standards and Technology} (NIST) en su informe especial SP 800-53 \cite{nist_least_privilege}. Bajo este criterio, se garantiza que cada plataforma o servicio contenga de forma aislada únicamente las variables estrictamente necesarias para cumplir su función técnica, reduciendo la superficie de ataque y minimizando el impacto ante eventuales vulnerabilidades.
+En los entornos remotos se aplica de forma estricta el principio de mínimo privilegio, tal y como define el \textit{National Institute of Standards and Technology} (NIST) en su informe especial SP 800-53 \cite{nist_least_privilege}. Bajo este criterio, se garantiza que cada plataforma o servicio contenga de forma aislada únicamente las variables estrictamente necesarias para cumplir su función técnica, reduciendo la superficie de ataque y minimizando el impacto ante eventuales vulnerabilidades.
 
 La siguiente tabla resume la matriz de presencia de variables de entorno y secretos según la plataforma de despliegue:
 
@@ -379,7 +379,7 @@ La siguiente tabla resume la matriz de presencia de variables de entorno y secre
 
 \subsubsection{Justificación por entorno}
 \begin{itemize}
-    \item \textbf{GitHub (Actions):} Registra únicamente las credenciales requeridas para ejecutar las suites de prueba durante los \textit{workflows}, la autenticación del escáner en Sonar y el disparador del despliegue en producción.
-    \item \textbf{Render (Backend):} Concentra la configuración del servidor de aplicaciones, alojando la infraestructura de correo SMTP, la clave de acceso a la API de Gemini, los parámetros de runtime de Python y la gestión del ciclo de vida de los tokens JWT.
-    \item \textbf{Vercel (Frontend):} Contiene exclusivamente el parámetro público \texttt{VITE\_API\_URL} para el enrutamiento de peticiones HTTP desde la SPA React hacia la API, además de los parámetros de control de sesión en el cliente.
+    \item \textbf{GitHub (\textit{Actions}):} Registra únicamente las credenciales requeridas para ejecutar las suites de prueba durante los \textit{workflows}, la autenticación del escáner en Sonar y el disparador del despliegue en producción.
+    \item \textbf{Render (\textit{Backend}):} Concentra la configuración del servidor de aplicaciones, alojando la infraestructura de correo SMTP, la clave de acceso a la API de Gemini, los parámetros de runtime de Python y la gestión del ciclo de vida de los tokens JWT.
+    \item \textbf{Vercel (\textit{Frontend}):} Contiene exclusivamente el parámetro público \texttt{VITE\_API\_URL} para el enrutamiento de peticiones HTTP desde la SPA React hacia la API, además de los parámetros de control de sesión en el cliente.
 \end{itemize}
